@@ -1,0 +1,101 @@
+:root{
+    --randColor: ;
+    --randColorOpacity: ;
+}
+
+.App{
+    font-family: 'Tahoma', sans-serif;
+    background-color: var(--randColor);
+    font-size: calc(10px + 2vmin);
+    color: var(--randColor);
+}
+
+.Widgets{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.draggable{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+}
+
+#quote-box{
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    padding: 5px 30px 25px;
+    border-radius: 25px;
+    max-width: 800px;
+    #draggable-quote-box{
+        visibility: hidden;
+    }
+    #rand-quote{
+        padding-top: 10px;
+    }
+    #author{
+        font-size: calc(8px + 1vmin);
+        text-align: right;
+        font-style: italic;
+        margin-right: 30px;
+    }
+    #btn-left{
+        display: inline-flex;
+        margin-left: 25px;
+        gap: 10px;
+    }
+    
+    #tweet-quote{
+        display: inline-flex;
+    }
+    
+    #new-quote{
+        margin-right: 25px;
+    }
+    
+    #btn-container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    #text{
+        display: flex;
+        flex-direction: row;
+        margin-top: 20px;
+    }
+}
+
+.large-quote{
+    font-size: calc(30px + 2vmin);
+    font-weight: bold;
+    margin: 0px 10px;
+}
+
+.btn-match{
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: var(--randColor);
+    &:hover{
+        background-color: rgba(var(--randColorOpacity), 0.8);
+        cursor: pointer;
+    }
+}
+
+@keyframes fadeIn{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
