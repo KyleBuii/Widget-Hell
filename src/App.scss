@@ -3,14 +3,50 @@
     --randColorOpacity: ;
 }
 
-.App{
+.widget{
+    position: absolute;
+    z-index: 2;
+}
+
+.widgetAnimation{
+    padding: 25px;
+    border-radius: 25px;
+}
+
+.draggable{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--randColor);
+    filter: brightness(70%);
+}
+
+.btn-match{
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: var(--randColor);
+    &:hover{
+        background-color: rgba(var(--randColorOpacity), 0.8);
+        cursor: pointer;
+    }
+    &:active{
+        transform: scale(0.98);
+    }
+}
+
+#App{
+    position: relative;
     font-family: 'Tahoma', sans-serif;
     background-color: var(--randColor);
     font-size: calc(10px + 2vmin);
     color: var(--randColor);
+    overflow: hidden;
 }
 
-.Widgets{
+#Widget-container{
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -19,23 +55,36 @@
     min-height: 100vh;
 }
 
-.draggable{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 1;
+#settings-box{
+    z-index: 3;
+    top: 20px;
+    right: 20px;
+    #draggable-settings-box{
+        visibility: hidden;
+    }
+    #animation-settings-box{
+        background-color: white;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 5px;
+    }
 }
 
 #quote-box{
-    position: absolute;
-    z-index: 2;
-    background-color: white;
-    padding: 5px 30px 25px;
-    border-radius: 25px;
     max-width: 800px;
+    top: 20px;
+    left: 20px;
     #draggable-quote-box{
         visibility: hidden;
+    }
+    #animation-quote-box{
+        background-color: white;
+        padding: 5px 30px 25px;
+    }
+    #large-quote{
+        font-size: calc(30px + 2vmin);
+        font-weight: bold;
+        margin: 0px 10px;
     }
     #rand-quote{
         padding-top: 10px;
@@ -73,29 +122,43 @@
     }
 }
 
-.large-quote{
-    font-size: calc(30px + 2vmin);
-    font-weight: bold;
-    margin: 0px 10px;
-}
-
-.btn-match{
-    padding: 8px;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    background-color: var(--randColor);
-    &:hover{
-        background-color: rgba(var(--randColorOpacity), 0.8);
-        cursor: pointer;
-    }
-}
-
 @keyframes fadeIn{
-    0%{
-        opacity: 0;
-    }
-    100%{
-        opacity: 1;
-    }
+    0%   {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+@keyframes spin{
+    0%   {transform: rotate(0deg);}
+    100% {transform: rotate(720deg);}
+}
+
+@keyframes flip{
+	0%{
+		transform: perspective(400px) rotateY(0);
+		animation-timing-function: ease-out;
+	}
+	40%{
+		transform: perspective(400px) translateZ(150px) rotateY(170deg);
+		animation-timing-function: ease-out;
+	}
+	50%{
+		transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
+		animation-timing-function: ease-in;
+	}
+	80%{
+		transform: perspective(400px) rotateY(360deg) scale(.95);
+		animation-timing-function: ease-in;
+	}
+	100%{
+		transform: perspective(400px) scale(1);
+		animation-timing-function: ease-in;
+	}
+}
+
+@keyframes hinge{
+    0%   {transform: rotate(0); transform-origin: top left; animation-timing-function: ease-in-out;}  
+    20%, 60% {transform: rotate(80deg); transform-origin: top left; animation-timing-function: ease-in-out;}  
+    40%  {transform: rotate(60deg); transform-origin: top left; animation-timing-function: ease-in-out;} 
+    80%  {transform: rotate(60deg) translateY(0); opacity: 1; transform-origin: top left; animation-timing-function: ease-in-out;} 
+    100% {transform: translateY(700px); opacity: 0; }
 }

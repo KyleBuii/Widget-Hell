@@ -4,6 +4,54 @@ import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
+const widgetsArray = ["animation-quote-box", "animation-settings-box"];
+const animationsArray = ["spin", "flip", "hinge"];
+
+class SettingWidget extends Component{
+    handleTrick(){
+        const randWidget = Math.floor(Math.random() * widgetsArray.length);
+        const randAnimation = Math.floor(Math.random() * animationsArray.length);
+        const e = document.getElementById(widgetsArray[randWidget]);
+        e.style.animation = "none";
+        window.requestAnimationFrame(function(){
+            e.style.animation = animationsArray[randAnimation] + " 2s";
+        });
+    };
+    handleStart(){
+        document.getElementById("draggable-settings-box").style.visibility = "visible";
+        document.getElementById("settings-box").style.opacity = "0.5";
+    };
+    handleStop(){
+        document.getElementById("draggable-settings-box").style.visibility = "hidden";
+        document.getElementById("settings-box").style.opacity = "1";
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={this.handleStart}
+                onStop={this.handleStop}
+                cancel="button, span, p"
+                bounds="parent">
+                <div id="settings-box"
+                    className="widget">
+                    <div id="animation-settings-box"
+                        className="widgetAnimation">
+                        <span className="draggable"
+                            id="draggable-settings-box">
+                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <button id="button-trick"
+                            className="btn-match"
+                            onClick={this.handleTrick}>Do a trick!</button>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+}
+
 class QuoteWidget extends Component{
     constructor(props){
         super(props);
@@ -39,10 +87,8 @@ class QuoteWidget extends Component{
             + "," + Math.floor(Math.random() * 255) 
             + "," + Math.floor(Math.random() * 255);
         const randColor = "rgb(" + randColorOpacity + ")";
-        const randColorDarker = 
         r.style.setProperty("--randColor", randColor);
         r.style.setProperty("--randColorOpacity", randColorOpacity);
-        r.style.setProperty("--randColorDarker", randColorDarker);
         this.setState({
             currentQuote: this.state.quotes[randQuote],
             currentAuthor: this.state.authors[randQuote]
@@ -56,47 +102,54 @@ class QuoteWidget extends Component{
     };
     handleStart(){
         document.getElementById("draggable-quote-box").style.visibility = "visible";
-        document.getElementById("quote-box").style.opacity = "0.7";
+        document.getElementById("quote-box").style.opacity = "0.5";
+        document.getElementById("quote-box").style.zIndex = "3";
     };
     handleStop(){
         document.getElementById("draggable-quote-box").style.visibility = "hidden";
         document.getElementById("quote-box").style.opacity = "1";
+        document.getElementById("quote-box").style.zIndex = "2";
     };
     render(){
         return(
             <Draggable
                 onStart={this.handleStart}
                 onStop={this.handleStop}
-                cancel="button, span, p">
-                <div id="quote-box">
-                    <span className="draggable"
-                        id="draggable-quote-box">
-                        <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
-                            <FaGripHorizontal/>
-                        </IconContext.Provider>
-                    </span>
-                    <div id="text">
-                        <span className="large-quote">"</span>
-                        <span id="rand-quote">{this.state.currentQuote}</span>
-                        <span className="large-quote">"</span>
-                    </div>
-                    <p id="author">- {this.state.currentAuthor}</p>
-                    <div id="btn-container">
-                        <span id="btn-left">
-                            <a id="tweet-quote"
-                                href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
-                                target="_blank"
-                                rel="noreferrer">
-                                <button className="btn-match">
-                                    <IconContext.Provider value={{ color: "white", className: "global-class-name" }}>
-                                        <FaTwitter/>
-                                    </IconContext.Provider>
-                                </button>
-                            </a>
+                cancel="button, span, p"
+                bounds="parent">
+                <div id="quote-box"
+                    className="widget">
+                    <div id="animation-quote-box"
+                        className="widgetAnimation">
+                        <span className="draggable"
+                            id="draggable-quote-box">
+                            <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
                         </span>
-                        <button id="new-quote"
-                            className="btn-match"
-                            onClick={this.handleNewQuote}>New quote</button>
+                        <div id="text">
+                            <span id="large-quote">"</span>
+                            <span id="rand-quote">{this.state.currentQuote}</span>
+                            <span id="large-quote">"</span>
+                        </div>
+                        <p id="author">- {this.state.currentAuthor}</p>
+                        <div id="btn-container">
+                            <span id="btn-left">
+                                <a id="tweet-quote"
+                                    href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    <button className="btn-match">
+                                        <IconContext.Provider value={{ color: "white", className: "global-class-name" }}>
+                                            <FaTwitter/>
+                                        </IconContext.Provider>
+                                    </button>
+                                </a>
+                            </span>
+                            <button id="new-quote"
+                                className="btn-match"
+                                onClick={this.handleNewQuote}>New quote</button>
+                        </div>
                     </div>
                 </div>
             </Draggable>
@@ -106,8 +159,9 @@ class QuoteWidget extends Component{
 
 export default function App(){
     return(
-        <div className="App">
-            <div className="Widgets">
+        <div id="App">
+            <div id="Widget-container">
+                <SettingWidget/>
                 <QuoteWidget/>
             </div>
         </div>
