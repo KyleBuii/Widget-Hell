@@ -1,9 +1,9 @@
-# Random Quote Machine
+# Widget Hell
 > Web application made using React. This project is mainly to practice my programming skills.
 
 ## Features
 - Randomly generate quotes
-- Can share the quote on twitter
+- Make your widgets do funny things with the "Do a trick!" button
 
 ## Node Modules
 - react
