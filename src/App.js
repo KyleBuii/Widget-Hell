@@ -157,12 +157,63 @@ class QuoteWidget extends Component{
     };
 }
 
+class TranslatorWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            input: ""
+        };
+        this.handleChange = this.handleChange.bind(this);
+    };
+    handleChange(event){
+        this.setState({
+            input: event.target.value
+        });
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={this.handleStart}
+                onStop={this.handleStop}
+                cancel="button, span, p, textarea"
+                bounds="parent">
+                <div id="translator-box"
+                    className="widget">
+                    <div id="animation-translator-box"
+                        className="widgetAnimation">
+                        <span className="draggable"
+                            id="draggable-translator-box">
+                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <div id="translator-textarea-outer">
+                            <div id="translator-textarea-inner">
+                                <textarea id="translator-textarea"
+                                    onChange={this.handleChange}></textarea>
+                            </div>
+                        </div>
+                        <div id="translator-preview-outer">
+                            <div id="translator-preview-inner">
+                                <p id="translator-preview">
+                                    {this.state.input}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    }
+}
+
 export default function App(){
     return(
         <div id="App">
             <div id="Widget-container">
                 <SettingWidget/>
                 <QuoteWidget/>
+                <TranslatorWidget/>
             </div>
         </div>
     );

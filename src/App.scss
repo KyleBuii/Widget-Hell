@@ -122,6 +122,52 @@
     }
 }
 
+#translator-box{
+    top: 330px;
+    left: 20px;
+    font-size: 18px;
+    #draggable-translator-box{
+        visibility: hidden;
+    }
+    #animation-translator-box{
+        background-color: white;
+    }
+    #translator-textarea-outer{
+        overflow: hidden;
+        border: 2px solid var(--randColor);
+        border-radius: 15px;
+    }
+    #translator-textarea-inner{
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    #translator-textarea{
+        width: 423px;
+        height: 80px;
+        font-size: 13px;
+        border: none;
+        resize: none;
+        outline: none;
+        text-align: center;
+    }
+    #translator-preview-outer{
+        overflow: hidden;
+        border: 2px solid var(--randColor);
+        border-radius: 15px;
+        margin-top: 15px;
+    }
+    #translator-preview-inner{
+        overflow-y: auto;
+    }
+    #translator-preview{
+        word-wrap: break-word;
+        width: 400px;
+        height: 150px;
+        margin: 0;
+        padding: 5px;
+    }
+}
+
 @keyframes fadeIn{
     0%   {opacity: 0;}
     100% {opacity: 1;}
