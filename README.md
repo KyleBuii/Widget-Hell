@@ -1,5 +1,5 @@
 # Widget Hell
-> Making life less serious, one widget at a time
+> Making life more simple, one widget at a time
 
 ## Features
 - Randomly generate quotes
