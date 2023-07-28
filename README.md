@@ -1,5 +1,5 @@
 # Widget Hell
-> Web application made using React. This project is mainly to practice my programming skills.
+> Making life more simple, one widget at a time
 
 ## Features
 - Randomly generate quotes
