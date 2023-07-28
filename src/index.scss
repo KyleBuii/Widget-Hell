@@ -3,6 +3,10 @@
     --randColorOpacity: ;
 }
 
+body{
+    margin: 0;
+}
+
 .widget{
     position: absolute;
     z-index: 2;
@@ -29,11 +33,27 @@
     color: white;
     background-color: var(--randColor);
     &:hover{
-        background-color: rgba(var(--randColorOpacity), 0.8);
         cursor: pointer;
+        background-color: rgba(var(--randColorOpacity), 0.8);
     }
     &:active{
         transform: scale(0.98);
+    }
+}
+
+.scrollbar-cut-corner{
+    overflow: hidden;
+    border: 2px solid var(--randColor);
+    border-radius: 15px; 
+}
+
+.select-match{
+    cursor: pointer;
+    color: var(--randColor);
+    border: 1px solid var(--randColor);
+    border-radius: 6px;
+    :checked{
+        background-color: rgba(var(--randColorOpacity), 0.3);
     }
 }
 
@@ -123,7 +143,7 @@
 }
 
 #translator-box{
-    top: 330px;
+    top: 370px;
     left: 20px;
     font-size: 18px;
     #draggable-translator-box{
@@ -132,39 +152,55 @@
     #animation-translator-box{
         background-color: white;
     }
-    #translator-textarea-outer{
-        overflow: hidden;
-        border: 2px solid var(--randColor);
-        border-radius: 15px;
-    }
-    #translator-textarea-inner{
-        overflow-y: auto;
-        overflow-x: hidden;
+    #translator-btn-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0px 0px 10px;
+        #translate-btn-switch{
+            border: none;
+            background-color: white;
+            color: var(--randColor);
+            &:hover{
+                cursor: pointer;
+                color: rgba(var(--randColorOpacity), 0.8);
+            }
+        }
     }
     #translator-textarea{
-        width: 423px;
+        width: 406px;
         height: 80px;
-        font-size: 13px;
+        font-size: 18px;
         border: none;
         resize: none;
         outline: none;
         text-align: center;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
-    #translator-preview-outer{
-        overflow: hidden;
-        border: 2px solid var(--randColor);
-        border-radius: 15px;
+    #translator-preview-cut-corner{
         margin-top: 15px;
+        #translator-preview{
+            word-wrap: break-word;
+            width: 400px;
+            height: 150px;
+            margin: 0;
+            padding: 5px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
     }
-    #translator-preview-inner{
-        overflow-y: auto;
+}
+
+#calculator-box{
+    top: 370px;
+    left: 505px;
+    font-size: 18px;
+    #draggable-calculator-box{
+        visibility: hidden;
     }
-    #translator-preview{
-        word-wrap: break-word;
-        width: 400px;
-        height: 150px;
-        margin: 0;
-        padding: 5px;
+    #animation-calculator-box{
+        background-color: white;
     }
 }
 

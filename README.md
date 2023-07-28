@@ -9,3 +9,4 @@
 - react
 - react-icons
 - react-draggable
+- jquery
