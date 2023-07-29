@@ -10,3 +10,4 @@
 - react-icons
 - react-draggable
 - jquery
+- mathjs

@@ -2,13 +2,15 @@ import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
-import { BsArrowLeftRight } from 'react-icons/bs';
+import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
+import { FiDelete } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import $ from 'jquery';
+import { evaluate, round } from 'mathjs';
 
 const widgetsArray = ["animation-quote-box", "animation-settings-box"
-    ,"animation-translator-box"];
+    , "animation-translator-box", "animation-calculator-box"];
 const animationsArray = ["spin", "flip", "hinge"];
 
 
@@ -187,10 +189,12 @@ class TranslatorWidget extends Component{
     handleStart(){
         document.getElementById("draggable-translator-box").style.visibility = "visible";
         document.getElementById("translator-box").style.opacity = "0.5";
+        document.getElementById("translator-box").style.zIndex = "3";
     };
     handleStop(){
         document.getElementById("draggable-translator-box").style.visibility = "hidden";
         document.getElementById("translator-box").style.opacity = "1";
+        document.getElementById("translator-box").style.zIndex = "2";
     };
     handleChange(event){
         this.setState({
@@ -373,12 +377,127 @@ class TranslatorWidget extends Component{
 }
 
 class CalculatorWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            question: "",
+            input: ""
+        };
+        this.handleClick = this.handleClick.bind(this);
+    };
+    handleStart(){
+        document.getElementById("draggable-calculator-box").style.visibility = "visible";
+        document.getElementById("calculator-box").style.opacity = "0.5";
+        document.getElementById("calculator-box").style.zIndex = "3";
+    };
+    handleStop(){
+        document.getElementById("draggable-calculator-box").style.visibility = "hidden";
+        document.getElementById("calculator-box").style.opacity = "1";
+        document.getElementById("calculator-box").style.zIndex = "2";
+    };
+    handleClick(event){
+        switch(event.target.value){
+            case "=":
+                if(this.state.input !== ""){
+                    var ans;
+                    try{
+                        ans = round(evaluate(this.state.input), 3);
+                    }catch(err){
+                        this.setState({
+                            question: this.state.input,
+                            input: "UNDEFINED"
+                        });
+                    };
+                    if(ans === undefined){
+                        this.setState({
+                            question: this.state.input,
+                            input: "UNDEFINED"
+                        });
+                    }else{
+                        this.setState({
+                            question: this.state.input,
+                            input: ans
+                        });
+                    };
+                };
+                break;
+            case "clear-entry":
+                if(this.state.question !== ""
+                    || this.state.input !== ""){
+                    this.setState({
+                        input: this.state.input
+                            .toString()
+                            .replace(/(\d+)(?!.*\d)/, "")
+                    });
+                };
+                break;
+            case "clear":
+                if(this.state.question !== ""
+                    || this.state.input !== ""){
+                    this.setState({
+                        question: "",
+                        input: ""
+                    });
+                };
+                break;
+            case "delete":
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: this.state.input
+                            .toString()
+                            .substring(0, this.state.input.length-1)
+                    });
+                }else{
+                    this.setState({
+                        input: ""
+                    });
+                };
+                break;
+            case "1/x":
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: "1/(" + this.state.input + ")"
+                    });
+                };
+                break;
+            case "x^2":
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: "square(" + this.state.input + ")"
+                    });
+                };
+                break;
+            case "sqrt(x)":
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: "sqrt(" + this.state.input + ")"
+                    });
+                };
+                break;
+            case "negate":
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: "unaryMinus(" + this.state.input + ")"
+                    });
+                };
+                break;
+            default:
+                this.setState(prevState => ({
+                    input: prevState.input += event.target.value
+                }));
+        };
+    };
     render(){
         return(
             <Draggable
                 onStart={this.handleStart}
                 onStop={this.handleStop}
-                cancel="button, span, p"
+                cancel="button, span, p, input, textarea"
                 bounds="parent">
                 <div id="calculator-box"
                     className="widget">
@@ -390,6 +509,116 @@ class CalculatorWidget extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <div id="calculator-display-container">
+                            <input id="calculator-input-display"
+                                type="text"
+                                value={this.state.question}
+                                readOnly>
+                            </input>
+                            <input id="calculator-input"
+                                type="text"
+                                value={this.state.input}
+                                readOnly>
+                            </input>
+                        </div>
+                        <div id="calculator-btn-container">
+                            <button id="calculator-btn-%"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="%">%</button>
+                            <button id="calculator-btn-clear-entry"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="clear-entry">CE</button>
+                            <button id="calculator-btn-clear"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="clear">C</button>
+                            <button id="calculator-btn-delete"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="delete"><FiDelete id="calculator-btn-delete-icon"/></button>
+                            <button id="calculator-btn-1-over-x"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="1/x">1/x</button>
+                            <button id="calculator-btn-x-squared"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="x^2">x&sup2;</button>
+                            <button id="calculator-btn-square-root"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="sqrt(x)">&#8730;x</button>
+                            <button id="calculator-btn-divide"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="/">&divide;</button>
+                            <button id="calculator-btn-7"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="7">7</button>
+                            <button id="calculator-btn-8"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="8">8</button>
+                            <button id="calculator-btn-9"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="9">9</button>
+                            <button id="calculator-btn-multiply"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="*">&times;</button>
+                            <button id="calculator-btn-4"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="4">4</button>
+                            <button id="calculator-btn-5"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="5">5</button>
+                            <button id="calculator-btn-6"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="6">6</button>
+                            <button id="calculator-btn-subtract"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="-">-</button>
+                            <button id="calculator-btn-1"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="1">1</button>
+                            <button id="calculator-btn-2"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="2">2</button>
+                            <button id="calculator-btn-3"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="3">3</button>
+                            <button id="calculator-btn-add"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="+">+</button>
+                            <button id="calculator-btn-negate"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="negate"><BsPlusSlashMinus id="calculator-btn-negate-icon"/></button>
+                            <button id="calculator-btn-0"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="0">0</button>
+                            <button id="calculator-btn-decimal"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value=".">.</button>
+                            <button id="calculator-btn-equal"
+                                className="btn-match"
+                                onClick={this.handleClick}
+                                value="=">=</button>
+                        </div>
                     </div>
                 </div>
             </Draggable>

@@ -120,21 +120,17 @@ body{
         margin-left: 25px;
         gap: 10px;
     }
-    
     #tweet-quote{
         display: inline-flex;
     }
-    
     #new-quote{
         margin-right: 25px;
     }
-    
     #btn-container{
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-    
     #text{
         display: flex;
         flex-direction: row;
@@ -196,11 +192,47 @@ body{
     top: 370px;
     left: 505px;
     font-size: 18px;
+    button{
+        width: 40px;
+        height: 30px;
+    }
     #draggable-calculator-box{
         visibility: hidden;
     }
     #animation-calculator-box{
         background-color: white;
+    }
+    #calculator-display-container{
+        display: flex;
+        flex-direction: column;
+        width: 170px;
+        margin: 10px 0px;
+        input{
+            text-align: right;
+            border: none;
+            padding: 0px;
+        }
+        #calculator-input-display{
+            margin: 0px 2px 5px 0px;
+            font-size: 12px;
+        }
+        #calculator-input{
+            font-size: 29px;
+            font-weight: bold;
+        }
+    }
+    #calculator-btn-container{
+        display: grid;
+        grid-template-columns: repeat(4, calc(30px + 1vh));
+        gap: 5px;
+        #calculator-btn-delete{
+            #calculator-btn-delete-icon{
+                pointer-events: none;
+            }
+            #calculator-btn-negate-icon{
+                pointer-events: none;
+            }
+        }
     }
 }
 
