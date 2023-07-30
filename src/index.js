@@ -2,6 +2,7 @@ import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
+import { FaRegTrashCan } from 'react-icons/fa6';
 import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
@@ -381,9 +382,11 @@ class CalculatorWidget extends Component{
         super(props);
         this.state = {
             question: "",
-            input: ""
+            input: "",
+            memory: []
         };
         this.handleClick = this.handleClick.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     };
     handleStart(){
         document.getElementById("draggable-calculator-box").style.visibility = "visible";
@@ -486,11 +489,55 @@ class CalculatorWidget extends Component{
                     });
                 };
                 break;
+            case "MC":
+                this.setState({
+                    memory: []
+                });
+                break;
+            case "MR":
+                this.setState({
+                    input: this.state.memory[0]
+                });
+                break;
+            case "M+":
+                const lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                const add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
+                this.setState({
+                    memory: [add, ...this.state.memory.slice(1)]
+                });
+                break;
+            case "M-":
+                const lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                const subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
+                this.setState({
+                    memory: [subtract, ...this.state.memory.slice(1)]
+                });
+                break;
+            case "MS":
+                const lastNumberMS = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                this.setState({
+                    memory: [lastNumberMS, ...this.state.memory]
+                });
+                break;
+            case "Mv":
+                document.getElementById("calculator-btn-memory-display").style.visibility = "visible";
+                break;
+            case "memory-close":
+                document.getElementById("calculator-btn-memory-display").style.visibility = "hidden";
+                break;
             default:
                 this.setState(prevState => ({
                     input: prevState.input += event.target.value
                 }));
         };
+    };
+    handleDelete(){
+        this.setState({
+            memory: []
+        });
+    };
+    componentDidUpdate(){
+        document.getElementById("calculator-btn-memory-container")
     };
     render(){
         return(
@@ -521,7 +568,45 @@ class CalculatorWidget extends Component{
                                 readOnly>
                             </input>
                         </div>
+                        <div id="calculator-memory-container">
+                            <button id="calculator-btn-MC"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="MC">MC</button>
+                            <button id="calculator-btn-MR"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="MR">MR</button>
+                            <button id="calculator-btn-M+"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="M+">M+</button>
+                            <button id="calculator-btn-M-"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="M-">M-</button>
+                            <button id="calculator-btn-MS"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="MS">MS</button>
+                            <button id="calculator-btn-Mv"
+                                className="btn-word-match"
+                                onClick={this.handleClick}
+                                value="Mv">M&#709;</button>
+                        </div>
                         <div id="calculator-btn-container">
+                            <div id="calculator-btn-memory-display">
+                                <div id="calculator-btn-memory-container">
+                                    {this.state.memory.map(curr => <p>{curr}</p>)}
+                                </div>
+                                <button id="calculator-btn-memory-display-close"
+                                    onClick={this.handleClick}
+                                    value="memory-close"></button>
+                                <button id="calculator-btn-trash"
+                                    className="btn-word-match"
+                                    onClick={this.handleDelete}
+                                    value="trash"><FaRegTrashCan id="calculator-btn-trash-icon"/></button>
+                            </div>
                             <button id="calculator-btn-%"
                                 className="btn-match"
                                 onClick={this.handleClick}

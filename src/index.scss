@@ -26,6 +26,12 @@ body{
     filter: brightness(70%);
 }
 
+.scrollbar-cut-corner{
+    overflow: hidden;
+    border: 2px solid var(--randColor);
+    border-radius: 15px; 
+}
+
 .btn-match{
     padding: 8px;
     border: none;
@@ -41,10 +47,17 @@ body{
     }
 }
 
-.scrollbar-cut-corner{
-    overflow: hidden;
-    border: 2px solid var(--randColor);
-    border-radius: 15px; 
+.btn-word-match{
+    border: none;
+    color: var(--randColor);
+    background-color: white;
+    &:hover{
+        cursor: pointer;
+        color: rgba(var(--randColorOpacity), 0.6);
+    }
+    &:active{
+        transform: scale(0.95);
+    }
 }
 
 .select-match{
@@ -215,16 +228,68 @@ body{
         #calculator-input-display{
             margin: 0px 2px 5px 0px;
             font-size: 12px;
+            color: var(--randColor);
         }
         #calculator-input{
             font-size: 29px;
             font-weight: bold;
         }
     }
+    #calculator-memory-container{
+        display: flex;
+        flex-direction: row;
+        padding: 0px 0px 5px 0px;
+        button{
+            font-size: 12px;
+            width: 100%;
+            height: 100%;
+        }
+    }
     #calculator-btn-container{
         display: grid;
         grid-template-columns: repeat(4, calc(30px + 1vh));
         gap: 5px;
+        #calculator-btn-memory-display{
+            visibility: hidden;
+            position: absolute;
+            top: 34%;
+            left: 0%;
+            width: 100%;
+            height: 66%;
+            background-color: white;
+            border-radius: 0px 0px 25px 25px;
+            #calculator-btn-memory-container{
+                display: flex;
+                flex-direction: column;
+                width: 90%;
+                height: 70%;
+                margin: 20px 5px 20px 15px;
+                overflow-y: scroll;
+                overflow-x: hidden;
+                p{
+                    margin: 0px 5px 10px;
+                    text-align: right;
+                    word-wrap: break-word;
+                }
+            }
+            #calculator-btn-memory-display-close{
+                position: absolute;
+                top: -52%;
+                left: 0%;
+                width: 100%;
+                height: 52%;
+                border: none;
+                border-radius: 25px 25px 0px 0px;
+                background-color: rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+            }
+            #calculator-btn-trash{
+                position: absolute;
+                bottom: 10px;
+                right: 5px;
+                background-color: transparent;
+            }
+        }
         #calculator-btn-delete{
             #calculator-btn-delete-icon{
                 pointer-events: none;
