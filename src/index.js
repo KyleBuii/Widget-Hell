@@ -374,7 +374,7 @@ class TranslatorWidget extends Component{
                 </div>
             </Draggable>
         );
-    }
+    };
 }
 
 class CalculatorWidget extends Component{
@@ -710,6 +710,46 @@ class CalculatorWidget extends Component{
         );
     };
 }
+
+///////////////////////
+/// Widget Template ///
+///////////////////////
+/*
+class []Widget extends Component{
+    handleStart(){
+        document.getElementById("draggable-[]-box").style.visibility = "visible";
+        document.getElementById("[]-box").style.opacity = "0.5";
+        document.getElementById("translator-box").style.zIndex = "3";
+    };
+    handleStop(){
+        document.getElementById("draggable-[]-box").style.visibility = "hidden";
+        document.getElementById("[]-box").style.opacity = "1";
+        document.getElementById("translator-box").style.zIndex = "2";
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={this.handleStart}
+                onStop={this.handleStop}
+                cancel="button, span, p"
+                bounds="parent">
+                <div id="[]-box"
+                    className="widget">
+                    <div id="animation-[]-box"
+                        className="widgetAnimation">
+                        <span className="draggable"
+                            id="draggable-[]-box">
+                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+}
+*/
 
 function Widgets(){
     return(

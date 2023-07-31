@@ -301,6 +301,20 @@ body{
     }
 }
 
+////////////////////////////
+/// Widget SCSS Template ///
+////////////////////////////
+/*
+#[]-box{
+    #draggable-[]-box{
+        visibility: hidden;
+    }
+    #animation-[]-box{
+        background-color: white;
+    }
+}
+*/
+
 @keyframes fadeIn{
     0%   {opacity: 0;}
     100% {opacity: 1;}
