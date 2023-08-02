@@ -2,7 +2,7 @@ import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan } from 'react-icons/fa6';
+import { FaRegTrashCan, FaRegCircleQuestion } from 'react-icons/fa6';
 import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
@@ -552,7 +552,7 @@ class CalculatorWidget extends Component{
                         className="widgetAnimation">
                         <span className="draggable"
                             id="draggable-calculator-box">
-                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -711,6 +711,177 @@ class CalculatorWidget extends Component{
     };
 }
 
+class WeatherWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            helpShow: false,
+            input: "auto:ip",
+            name: "",           /// Location
+            region: "",
+            country: "",
+            localTime: "",
+            lastUpdated: "",    /// Current
+            tempC: "",
+            tempF: "",
+            feelsLikeC: "",
+            feelsLikeF: "",
+            weatherCondition: "",
+            weatherIcon: "",
+            windMPH: "",
+            windKPH: ""
+        };
+        this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleHelp = this.handleHelp.bind(this);
+    };
+    handleStart(){
+        document.getElementById("draggable-weather-box").style.visibility = "visible";
+        document.getElementById("weather-box").style.opacity = "0.5";
+        document.getElementById("weather-box").style.zIndex = "3";
+    };
+    handleStop(){
+        document.getElementById("draggable-weather-box").style.visibility = "hidden";
+        document.getElementById("weather-box").style.opacity = "1";
+        document.getElementById("weather-box").style.zIndex = "2";
+    };
+    handleChange(event){
+        this.setState({
+            input: event.target.value
+        });
+    };
+    handleHelp(){
+        if(this.state.helpShow === false){
+            this.setState({
+                helpShow: true
+            });
+            document.getElementById("weather-search-help-container").style.visibility = "visible";
+        }else{
+            this.setState({
+                helpShow: false
+            });
+            document.getElementById("weather-search-help-container").style.visibility = "hidden";
+        };
+    };
+    /// API call
+    async handleUpdate(){
+        const url = "https://weatherapi-com.p.rapidapi.com/current.json?q=" + this.state.input;
+        const options = {
+            method: "GET",
+            headers: {
+                "X-RapidAPI-Key": process.env.REACT_APP_WEATHER_API_KEY,
+                "X-RapidAPI-Host": process.env.REACT_APP_WEATHER_API_HOST
+            }
+        };
+        try{
+            const response = await fetch(url, options);
+            const result = await response.json();
+            this.setState({
+                name: result.location.name,
+                region: result.location.region,
+                country: result.location.country,
+                localTime: result.location.localtime,
+                lastUpdated: result.current.last_updated,
+                tempC: result.current.temp_c,
+                tempF: result.current.temp_f,
+                feelsLikeC: result.current.feelslike_c,
+                feelsLikeF: result.current.feelslike_f,
+                weatherCondition: result.current.condition.text,
+                weatherIcon: result.current.condition.icon,
+                windMPH: result.current.wind_mph,
+                windKPH: result.current.wind_kph
+            });
+        }catch(err){
+            console.error(err);
+        };
+    };
+    componentDidMount(){
+        this.handleUpdate();
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={this.handleStart}
+                onStop={this.handleStop}
+                cancel="button, span, p, input"
+                bounds="parent">
+                <div id="weather-box"
+                    className="widget">
+                    <div id="animation-weather-box"
+                        className="widgetAnimation">
+                        <span className="draggable"
+                            id="draggable-weather-box">
+                            <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <div id="weather-search-container">
+                            <div id="weather-search-input-container">
+                                <input id="weather-search"
+                                    placeholder="Enter location"
+                                    onChange={this.handleChange}>
+                                </input>
+                                <button id="weather-search-help-button"
+                                    onClick={this.handleHelp}>
+                                    <IconContext.Provider value={{ size: "0.9em", className: "global-class-name" }}>
+                                        <FaRegCircleQuestion/>
+                                    </IconContext.Provider>
+                                </button>
+                            </div>
+                            <div id="weather-search-help-container">
+                                <ul>
+                                    <li>Latitude and Longitude <br/><span className="font-small-light-transparent">e.g: 48.8567,2.3508</span></li>
+                                    <li>City name <span className="font-small-light-transparent">e.g.: Paris</span></li>
+                                    <li>US zip <span className="font-small-light-transparent">e.g.: 10001</span></li>
+                                    <li>UK postcode <span className="font-small-light-transparent">e.g: SW1</span></li>
+                                    <li>Canada postal code <span className="font-small-light-transparent">e.g: G2J</span></li>
+                                    <li>Metar:&lt;metar code&gt; <span className="font-small-light-transparent">e.g: metar:EGLL</span></li>
+                                    <li>Iata:&lt;3 digit airport code&gt; <span className="font-small-light-transparent">e.g: iata:DXB</span></li>
+                                    <li>Auto IP lookup <span className="font-small-light-transparent">e.g: auto:ip</span></li>
+                                    <li>IP address (IPv4 and IPv6 supported) <br/><span className="font-small-light-transparent">e.g: 100.0.0.1</span></li>
+                                </ul>
+                            </div>
+                            <button id="weather-search-btn-update"
+                                className="btn-match"
+                                onClick={this.handleUpdate}>
+                                Update
+                            </button>
+                        </div>
+                        <p id="weather-info-container">
+                            <div id="weather-info-icon-temp">
+                                <img id="weather-info-icon"
+                                    src={this.state.weatherIcon}
+                                    alt="weather-icon"></img>
+                                <div id="weather-info-temp-c-container">
+                                    <span id="weather-info-temp-c">{this.state.tempC}&deg;C</span>
+                                    <span className="font-small-bold-transparent">{this.state.feelsLikeC}&deg;C</span>
+                                </div>
+                                <div id="weather-info-temp-f-container">
+                                    <span id="weather-info-temp-f">{this.state.tempF}&deg;F</span>
+                                    <span className="font-small-bold-transparent">{this.state.feelsLikeF}&deg;F</span>
+                                </div>
+                            </div>
+                            <div id="weather-info-cond-local-time">
+                                <span>{this.state.weatherCondition}</span>
+                                <span>{this.state.localTime}</span>
+                            </div>
+                            <div id="weather-info-wind">
+                                <span>Wind:</span>
+                                <span>{this.state.windMPH} MPH</span>
+                                <span>{this.state.windKPH} KPH</span>
+                            </div>
+                            <div id="weather-info-location">
+                                <span>{this.state.name}, {this.state.region}, {this.state.country}</span>
+                            </div>
+                        </p>
+                        <span id="weather-last-updated">Last updated: {this.state.lastUpdated}</span>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+}
+
 ///////////////////////
 /// Widget Template ///
 ///////////////////////
@@ -719,12 +890,12 @@ class []Widget extends Component{
     handleStart(){
         document.getElementById("draggable-[]-box").style.visibility = "visible";
         document.getElementById("[]-box").style.opacity = "0.5";
-        document.getElementById("translator-box").style.zIndex = "3";
+        document.getElementById("[]-box").style.zIndex = "3";
     };
     handleStop(){
         document.getElementById("draggable-[]-box").style.visibility = "hidden";
         document.getElementById("[]-box").style.opacity = "1";
-        document.getElementById("translator-box").style.zIndex = "2";
+        document.getElementById("[]-box").style.zIndex = "2";
     };
     render(){
         return(
@@ -758,6 +929,7 @@ function Widgets(){
             <QuoteWidget/>
             <TranslatorWidget/>
             <CalculatorWidget/>
+            <WeatherWidget/>
         </div>
     );
 }

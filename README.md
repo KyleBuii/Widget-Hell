@@ -1,9 +1,12 @@
 # Widget Hell
 > Making life more simple, one widget at a time
+> https://kylebuii.github.io/Widget-Hell/
 
 ## Features
 - Randomly generate quotes
 - Make your widgets do funny things with the "Do a trick!" button
+- Translate text (No "official" languages support at the moment. Only "other" languages)
+- Calculator
 
 ## Node Modules
 - react
@@ -11,4 +14,5 @@
 - react-draggable
 - jquery
 - mathjs
-- typescript
+- gh-pages
+- dotenv

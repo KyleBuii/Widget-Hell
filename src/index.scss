@@ -7,6 +7,20 @@ body{
     margin: 0;
 }
 
+/// Fonts
+.font-small-bold-transparent{
+    font-size: 12px;
+    font-weight: bold;
+    color: rgba(var(--randColorOpacity), 0.4);
+}
+
+.font-small-light-transparent{
+    font-size: 12px;
+    font-weight: light;
+    color: rgba(var(--randColorOpacity), 0.4);
+}
+
+/// Design
 .widget{
     position: absolute;
     z-index: 2;
@@ -297,6 +311,111 @@ body{
             #calculator-btn-negate-icon{
                 pointer-events: none;
             }
+        }
+    }
+}
+
+#weather-box{
+    #draggable-weather-box{
+        visibility: hidden;
+    }
+    #animation-weather-box{
+        background-color: white;
+        #weather-search-container{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            height: 35px;
+            width: 300px;
+            margin-bottom: 5px;
+            #weather-search-input-container{
+                display: inline-flex;
+                #weather-search{
+                    height: 25px;
+                    width: 210px;
+                    border: 2px solid var(--randColor);
+                    border-right: none;
+                    border-radius: 6px 0px 0px 6px;
+                    &:focus{
+                        outline: none;
+                    }
+                }
+                #weather-search-help-button{
+                    height: 31px;
+                    background-color: white;
+                    border: 2px solid var(--randColor);
+                    border-left: none;
+                    border-radius: 0px 6px 6px 0px;
+                    cursor: pointer;
+                }
+            }
+            #weather-search-help-container{
+                visibility: hidden;
+                position: absolute;
+                height: 180px;
+                width: 285px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                font-size: 12px;
+                text-align: left;
+                border-radius: 20px;
+                box-shadow: 0px 0px 10px 1px var(--randColor);
+            }
+            #weather-search-btn-update{
+                height: 31px;
+            }
+        }
+        #weather-info-container{
+            display: flex;
+            flex-direction: column;
+            height: 200px;
+            width: 300px;
+            border: 2px solid var(--randColor);
+            border-radius: 8px;
+            font-size: 18px;
+            margin: 15px 0px 0px;
+            #weather-info-icon-temp{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                font-size: 30px;
+                font-weight: bold;
+                #weather-info-temp-c-container{
+                    display: flex;
+                    flex-direction: column;
+                    margin-right: 30px;
+                }
+                #weather-info-temp-f-container{
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+            #weather-info-cond-local-time{
+                display: flex;
+                flex-direction: row;
+                gap: 29px;
+                margin: 0px 12px;
+            }
+            #weather-info-wind{
+                display: flex;
+                flex-direction: row;
+                gap: 40px;
+                margin: 10px 12px 0px;
+            }
+            #weather-info-location{
+                position: absolute;
+                bottom: 30px;
+                right: 30px;
+                font-size: 14px;
+            }
+        }
+        #weather-last-updated{
+            position: absolute;
+            bottom: 8px;
+            left: 30px;
+            font-size: 14px;
         }
     }
 }
