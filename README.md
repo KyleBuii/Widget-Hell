@@ -7,6 +7,7 @@
 - Make your widgets do funny things with the "Do a trick!" button
 - Translate text (No "official" languages support at the moment. Only "other" languages)
 - Calculator
+- Weather
 
 ## Node Modules
 - react
