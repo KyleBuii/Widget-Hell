@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Widget-Hell/static/css/main.c85d30ac.css",
+    "main.css": "/Widget-Hell/static/css/main.5ec1c032.css",
     "main.js": "/Widget-Hell/static/js/main.66317e26.js",
     "index.html": "/Widget-Hell/index.html",
-    "main.c85d30ac.css.map": "/Widget-Hell/static/css/main.c85d30ac.css.map",
+    "main.5ec1c032.css.map": "/Widget-Hell/static/css/main.5ec1c032.css.map",
     "main.66317e26.js.map": "/Widget-Hell/static/js/main.66317e26.js.map"
   },
   "entrypoints": [
-    "static/css/main.c85d30ac.css",
+    "static/css/main.5ec1c032.css",
     "static/js/main.66317e26.js"
   ]
 }
