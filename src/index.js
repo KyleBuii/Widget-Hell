@@ -10,9 +10,11 @@ import Draggable from 'react-draggable';
 import $ from 'jquery';
 import { evaluate, round } from 'mathjs';
 
-const widgetsArray = ["animation-quote-box", "animation-settings-box"
-    , "animation-translator-box", "animation-calculator-box"];
+const widgetsArray = ["quote-box-animation", "settings-box-animation"
+    , "translator-box-animation", "animation-calculator-box"
+    , "animation-weather-box"];
 const animationsArray = ["spin", "flip", "hinge"];
+const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 
 
 class SettingWidget extends Component{
@@ -26,11 +28,11 @@ class SettingWidget extends Component{
         });
     };
     handleStart(){
-        document.getElementById("draggable-settings-box").style.visibility = "visible";
+        document.getElementById("settings-box-draggable").style.visibility = "visible";
         document.getElementById("settings-box").style.opacity = "0.5";
     };
     handleStop(){
-        document.getElementById("draggable-settings-box").style.visibility = "hidden";
+        document.getElementById("settings-box-draggable").style.visibility = "hidden";
         document.getElementById("settings-box").style.opacity = "1";
     };
     render(){
@@ -42,16 +44,15 @@ class SettingWidget extends Component{
                 bounds="parent">
                 <div id="settings-box"
                     className="widget">
-                    <div id="animation-settings-box"
-                        className="widgetAnimation">
-                        <span className="draggable"
-                            id="draggable-settings-box">
+                    <div id="settings-box-animation"
+                        className="widget-animation grid-3-column">
+                        <span id="settings-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <button id="button-trick"
-                            className="btn-match"
+                        <button className="btn-match"
                             onClick={this.handleTrick}>Do a trick!</button>
                     </div>
                 </div>
@@ -109,19 +110,19 @@ class QuoteWidget extends Component{
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
-        const quoteText = document.getElementById("text");
+        const quoteText = document.getElementById("quote");
         quoteText.style.animation = "none";
         window.requestAnimationFrame(function(){
             quoteText.style.animation = "fadeIn 2s";
         });
     };
     handleStart(){
-        document.getElementById("draggable-quote-box").style.visibility = "visible";
+        document.getElementById("quote-box-draggable").style.visibility = "visible";
         document.getElementById("quote-box").style.opacity = "0.5";
         document.getElementById("quote-box").style.zIndex = "3";
     };
     handleStop(){
-        document.getElementById("draggable-quote-box").style.visibility = "hidden";
+        document.getElementById("quote-box-draggable").style.visibility = "hidden";
         document.getElementById("quote-box").style.opacity = "1";
         document.getElementById("quote-box").style.zIndex = "2";
     };
@@ -134,35 +135,32 @@ class QuoteWidget extends Component{
                 bounds="parent">
                 <div id="quote-box"
                     className="widget">
-                    <div id="animation-quote-box"
-                        className="widgetAnimation">
-                        <span className="draggable"
-                            id="draggable-quote-box">
+                    <div id="quote-box-animation"
+                        className="widget-animation">
+                        <span id="quote-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div id="text">
-                            <span id="large-quote">"</span>
-                            <span id="rand-quote">{this.state.currentQuote}</span>
-                            <span id="large-quote">"</span>
+                        <div id="quote">
+                            <span className="large-quote">"</span>
+                            <span id="quote-text">{this.state.currentQuote}</span>
+                            <span className="large-quote">"</span>
                         </div>
-                        <p id="author">- {this.state.currentAuthor}</p>
-                        <div id="btn-container">
-                            <span id="btn-left">
-                                <a id="tweet-quote"
-                                    href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
-                                    target="_blank"
-                                    rel="noreferrer">
-                                    <button className="btn-match">
-                                        <IconContext.Provider value={{ color: "white", className: "global-class-name" }}>
-                                            <FaTwitter/>
-                                        </IconContext.Provider>
-                                    </button>
-                                </a>
-                            </span>
-                            <button id="new-quote"
-                                className="btn-match"
+                        <p className="author">- {this.state.currentAuthor}</p>
+                        <div className="btn-ends">
+                            <a className="link"
+                                href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
+                                target="_blank"
+                                rel="noreferrer">
+                                <button className="btn-match">
+                                    <IconContext.Provider value={{ color: "white", className: "global-class-name" }}>
+                                        <FaTwitter/>
+                                    </IconContext.Provider>
+                                </button>
+                            </a>
+                            <button className="btn-match"
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
                     </div>
@@ -179,8 +177,8 @@ class TranslatorWidget extends Component{
             input: "",
             convert: "",
             converted: "",
-            from: "english",
-            to: "english"
+            from: "",
+            to: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
@@ -188,12 +186,12 @@ class TranslatorWidget extends Component{
         this.handleSwap = this.handleSwap.bind(this);
     };
     handleStart(){
-        document.getElementById("draggable-translator-box").style.visibility = "visible";
+        document.getElementById("translator-box-draggable").style.visibility = "visible";
         document.getElementById("translator-box").style.opacity = "0.5";
         document.getElementById("translator-box").style.zIndex = "3";
     };
     handleStop(){
-        document.getElementById("draggable-translator-box").style.visibility = "hidden";
+        document.getElementById("translator-box-draggable").style.visibility = "hidden";
         document.getElementById("translator-box").style.opacity = "1";
         document.getElementById("translator-box").style.zIndex = "2";
     };
@@ -202,78 +200,69 @@ class TranslatorWidget extends Component{
             input: event.target.value
         });
         this.convertFromText();
+        const translatedText = document.getElementById("translator-translated-text");
+        if(translatedText.scrollHeight > translatedText.clientHeight){
+            translatedText.scrollTop = translatedText.scrollHeight;
+        }
     };
     /// Convert the "from" language to english
     convertFromText(){
-        if(this.state.from === this.state.to){
-            this.setState(prevState => ({
-                convert: prevState.input 
-            }));
-            this.convertToText();
-        }else{
-            switch(this.state.from){
-                /// Other languages
-                case "pig-latin":
-                    this.setState(prevState => ({
-                        convert: prevState.input
-                            .split(" ")
-                            .map(curr => curr
-                                .replace(/(way)$/i, "")
-                                .replace(/(\w*)([^aioue]*)(ay)$/i, "$1"))
-                            .join(" ")
-                    }));
-                    this.convertToText();
-                    break;
-                case "pekofy":
-                    this.setState(prevState => ({
-                        convert: prevState.input
-                            .replace(/\s(peko)/ig, "")
-                    }));
-                    this.convertToText();
-                    break;
-                default:
-                    this.setState(prevState => ({
-                        convert: prevState.input
-                    }));
-                    this.convertToText();
-                    break;
-            };
+        switch(this.state.from){
+            /// Other languages
+            case "pig-latin":
+                this.setState(prevState => ({
+                    convert: prevState.input
+                        .split(" ")
+                        .map(curr => curr
+                            .replace(/(way)$/i, "")
+                            .replace(/(\w*)([^aioue]*)(ay)$/i, "$1"))
+                        .join(" ")
+                }));
+                this.convertToText();
+                break;
+            case "pekofy":
+                this.setState(prevState => ({
+                    convert: prevState.input
+                        .replace(/\s(peko)/ig, "")
+                }));
+                this.convertToText();
+                break;
+            default:
+                this.setState(prevState => ({
+                    convert: prevState.input
+                }));
+                this.convertToText();
+                break;
         };
     };
     /// Convert english to the "to" language
     convertToText(){
-        if(this.state.from === this.state.to){
-            this.setState(prevState => ({
-                converted: prevState.input
-            }));
-        }else{
-            switch(this.state.to){
-                /// Other languages
-                case "pig-latin":
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .split(" ")
-                            .map(curr => curr
-                                .replace(/^[aioue]\w*/i, "$&way")
-                                .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
-                            .join(" ")
-                    }));
-                    break;
-                case "pekofy":
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .replace(/[^.!?]$/i, "$& peko")
-                            .replace(/[.]/ig, " peko.")
-                            .replace(/[!]/ig, " peko!")
-                            .replace(/[?]/ig, " peko?")
-                    }));
-                    break;
-                default:
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                    }));
-                    break;
-            };
+        switch(this.state.to){
+            /// Other languages
+            case "pig-latin":
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                        .split(" ")
+                        .map(curr => curr
+                            .replace(/^[aioue]\w*/i, "$&way")
+                            .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
+                        .join(" ")
+                }));
+                break;
+            case "pekofy":
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                        .replace(/[^.!?]$/i, "$& peko")
+                        .replace(/[.]/ig, " peko.")
+                        .replace(/[!]/ig, " peko!")
+                        .replace(/[?]/ig, " peko?")
+                }));
+                break;
+            default:
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                }));
+                break;
         };
     };
     /// Handles the "from" language select
@@ -305,13 +294,13 @@ class TranslatorWidget extends Component{
         }), () => {
             this.convertFromText();
         });
-        const v1 = $("#translate-from").val();
-        const v2 = $("#translate-to").val();
-        $("#translate-from").val(v2);
-        $("#translate-to").val(v1);
+        const v1 = $("#translator-translate-from").val();
+        const v2 = $("#translator-translate-to").val();
+        $("#translator-translate-from").val(v2);
+        $("#translator-translate-to").val(v1);
     };
     componentDidMount(){
-        $('#translate-from optgroup').clone().appendTo('#translate-to');
+        $('#translator-translate-from optgroup').clone().appendTo('#translator-translate-to');
     };
     render(){
         return(
@@ -322,53 +311,203 @@ class TranslatorWidget extends Component{
                 bounds="parent">
                 <div id="translator-box"
                     className="widget">
-                    <div id="animation-translator-box"
-                        className="widgetAnimation">
-                        <span className="draggable"
-                            id="draggable-translator-box">
+                    <div id="translator-box-animation"
+                        className="widget-animation">
+                        <span id="translator-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "5em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div id="translator-btn-container">
-                            <div id="translate-container">
-                                <select id="translate-from"
-                                    className="select-match"
-                                    defaultValue={"english"}
-                                    onChange={this.handleFrom}>
-                                    <optgroup label="Languages">
-                                        <option value="english">English</option>
-                                    </optgroup>
-                                    <optgroup label="Other Languages">
-                                        {/* <option value="pig-latin">Pig latin</option> */}
-                                        <option value="pekofy">Pekofy</option>
-                                    </optgroup>
-                                    <optgroup label="Encryption">
+                        <div className="select-center">
+                            <select id="translator-translate-from"
+                                className="select-match"
+                                defaultValue={"en"}
+                                onChange={this.handleFrom}>
+                                <optgroup label="Languages">
+                                    <option value="en">English</option>
+                                </optgroup>
+                                <optgroup label="Other Languages">
+                                    {/* <option value="pig-latin">Pig latin</option> */}
+                                    <option value="pekofy">Pekofy</option>
+                                </optgroup>
+                                <optgroup label="Encryption">
 
-                                    </optgroup>
-                                </select>
-                                <button id="translate-btn-switch"
-                                    onClick={this.handleSwap}>
-                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
-                                        <BsArrowLeftRight/>
-                                    </IconContext.Provider>
-                                </button>
-                                <select id="translate-to"
-                                    className="select-match"
-                                    defaultValue={"english"}
-                                    onChange={this.handleTo}></select>
-                            </div>
+                                </optgroup>
+                            </select>
+                            <button className="btn-match-inverse"
+                                onClick={this.handleSwap}>
+                                <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                    <BsArrowLeftRight/>
+                                </IconContext.Provider>
+                            </button>
+                            <select id="translator-translate-to"
+                                className="select-match"
+                                defaultValue={"english"}
+                                onChange={this.handleTo}></select>
                         </div>
-                        <div id="translator-textarea-cut-corner"
-                            className="scrollbar-cut-corner">
-                            <textarea id="translator-textarea"
+                        <div className="scrollbar-cut-corner">
+                            <textarea className="scrollbar-cut-corner-textarea"
                                 onChange={this.handleChange}></textarea>
                         </div>
                         <div id="translator-preview-cut-corner"
                             className="scrollbar-cut-corner">
-                            <p id="translator-preview">
-                                {this.state.converted}
-                            </p>
+                            <p id="translator-translated-text"
+                                className="scrollbar-cut-corner-p">{this.state.converted}</p>
+                        </div>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+}
+
+class GoogleTranslatorWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            input: "",
+            converted: "",
+            from: "",
+            to: ""
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleFrom = this.handleFrom.bind(this);
+        this.handleTo = this.handleTo.bind(this);
+        this.handleSwap = this.handleSwap.bind(this);
+        this.handleTranslate = this.handleTranslate.bind(this);
+    };
+    handleStart(){
+        document.getElementById("google-translator-box-draggable").style.visibility = "visible";
+        document.getElementById("google-translator-box").style.opacity = "0.5";
+        document.getElementById("google-translator-box").style.zIndex = "3";
+    };
+    handleStop(){
+        document.getElementById("google-translator-box-draggable").style.visibility = "hidden";
+        document.getElementById("google-translator-box").style.opacity = "1";
+        document.getElementById("google-translator-box").style.zIndex = "2";
+    };
+    handleChange(event){
+        this.setState({
+            input: event.target.value
+        });
+    };
+    async handleTranslate(){
+        const url = "https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=" + this.state.to + "&api-version=3.0&from=" + this.state.from + "&profanityAction=NoAction&textType=plain";
+        const options = {
+            method: 'POST',
+            headers: {
+                'content-type': process.env.REACT_APP_TRANSLATOR_API_CONTENT_TYPE,
+                'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
+                'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
+            },
+            body: [
+                {
+                    Text: this.state.input
+                }
+            ]
+        };
+        try{
+            const response = await fetch(url, options);
+            const result = await response.text();
+            this.setState({
+                converted: result
+            });
+        }catch(err){
+            console.error(err);
+        };
+    };
+    /// Handles the "from" language select
+    handleFrom(event){
+        this.setState({
+            from: event.target.value
+        }, () => {
+            if(this.state.input !== ""){
+                this.convertFromText();
+            }
+        });
+    };
+    /// Handles the "to" language select
+    handleTo(event){
+        this.setState({
+            to: event.target.value,
+        }, () => {
+            if(this.state.input !== ""){
+                this.convertToText();
+            }
+        });
+    };
+    /// Swaps "from" language and "to" language
+    handleSwap(){
+        const prev = this.state.from;
+        this.setState(prevState => ({
+            from: prevState.to,
+            to: prev
+        }), () => {
+            this.convertFromText();
+        });
+        const v1 = $("#google-translator-translate-from").val();
+        const v2 = $("#google-translator-translate-to").val();
+        $("#google-translator-translate-from").val(v2);
+        $("#google-translator-translate-to").val(v1);
+    };
+    componentDidMount(){
+        const select = document.getElementById("select-languages");
+        for(var curr = 0; curr < languages.length; curr+=2){
+            var optText = languages[curr];
+            var optValue = languages[curr+1];
+            var el = document.createElement("option");
+            el.textContent = optText;
+            el.value = optValue;
+            select.appendChild(el);
+        };
+        $('#translate-from optgroup').clone().appendTo('#translate-to');
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={this.handleStart}
+                onStop={this.handleStop}
+                cancel="button, span, p, textarea, select"
+                bounds="parent">
+                <div id="google-translator-box"
+                    className="widget">
+                    <div id="google-translator-animation"
+                        className="widget-animation">
+                        <span id="google-translator-draggable"
+                            className="draggable">
+                            <IconContext.Provider value={{ size: "5em", className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <div className="select-center">
+                            <select id="google-translator-translate-from"
+                                className="select-match"
+                                defaultValue={"en"}
+                                onChange={this.handleFrom}>
+                                <optgroup id="select-languages"
+                                    label="Languages"></optgroup>
+                            </select>
+                            <button className="btn-match-inverse"
+                                onClick={this.handleSwap}>
+                                <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                    <BsArrowLeftRight/>
+                                </IconContext.Provider>
+                            </button>
+                            <select id="google-translator-translate-to"
+                                className="select-match"
+                                defaultValue={"english"}
+                                onChange={this.handleTo}></select>
+                            <button className="btn-match"
+                                onClick={this.handleTranslate}>Translate</button>
+                        </div>
+                        <div className="scrollbar-cut-corner">
+                            <textarea className="scrollbar-cut-corner-textarea"
+                                onChange={this.handleChange}></textarea>
+                        </div>
+                        <div id="google-translator-preview-cut-corner"
+                            className="scrollbar-cut-corner">
+                            <p className="scrollbar-cut-corner-p">{this.state.converted}</p>
                         </div>
                     </div>
                 </div>
@@ -401,7 +540,8 @@ class CalculatorWidget extends Component{
     handleClick(event){
         switch(event.target.value){
             case "=":
-                if(this.state.input !== ""){
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
                     var ans;
                     try{
                         ans = round(evaluate(this.state.input), 3);
@@ -490,34 +630,49 @@ class CalculatorWidget extends Component{
                 };
                 break;
             case "MC":
-                this.setState({
-                    memory: []
-                });
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        memory: []
+                    });
+                }
                 break;
             case "MR":
-                this.setState({
-                    input: this.state.memory[0]
-                });
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    this.setState({
+                        input: this.state.memory[0]
+                    });
+                }
                 break;
             case "M+":
-                const lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
-                const add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
-                this.setState({
-                    memory: [add, ...this.state.memory.slice(1)]
-                });
+                if(this.state.input !== ""
+                && this.state.input !== "UNDEFINED"){
+                    const lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    const add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
+                    this.setState({
+                        memory: [add, ...this.state.memory.slice(1)]
+                    });
+                }
                 break;
             case "M-":
-                const lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
-                const subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
-                this.setState({
-                    memory: [subtract, ...this.state.memory.slice(1)]
-                });
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    const lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    const subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
+                    this.setState({
+                        memory: [subtract, ...this.state.memory.slice(1)]
+                    });
+                }
                 break;
             case "MS":
-                const lastNumberMS = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
-                this.setState({
-                    memory: [lastNumberMS, ...this.state.memory]
-                });
+                if(this.state.input !== ""
+                    && this.state.input !== "UNDEFINED"){
+                    const lastNumberMS = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    this.setState({
+                        memory: [lastNumberMS, ...this.state.memory]
+                    });
+                }
                 break;
             case "Mv":
                 document.getElementById("calculator-btn-memory-display").style.visibility = "visible";
@@ -527,7 +682,7 @@ class CalculatorWidget extends Component{
                 break;
             default:
                 this.setState(prevState => ({
-                    input: prevState.input += event.target.value
+                    input: prevState.input + event.target.value
                 }));
         };
     };
@@ -549,7 +704,7 @@ class CalculatorWidget extends Component{
                 <div id="calculator-box"
                     className="widget">
                     <div id="animation-calculator-box"
-                        className="widgetAnimation">
+                        className="widget-animation">
                         <span className="draggable"
                             id="draggable-calculator-box">
                             <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
@@ -570,27 +725,27 @@ class CalculatorWidget extends Component{
                         </div>
                         <div id="calculator-memory-container">
                             <button id="calculator-btn-MC"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
                                 value="MC">MC</button>
                             <button id="calculator-btn-MR"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
                                 value="MR">MR</button>
                             <button id="calculator-btn-M+"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
                                 value="M+">M+</button>
                             <button id="calculator-btn-M-"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
-                                value="M-">M-</button>
+                                value="M-">M&minus;</button>
                             <button id="calculator-btn-MS"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
                                 value="MS">MS</button>
                             <button id="calculator-btn-Mv"
-                                className="btn-word-match"
+                                className="btn-match-inverse"
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
@@ -603,104 +758,80 @@ class CalculatorWidget extends Component{
                                     onClick={this.handleClick}
                                     value="memory-close"></button>
                                 <button id="calculator-btn-trash"
-                                    className="btn-word-match"
+                                    className="btn-match-inverse"
                                     onClick={this.handleDelete}
                                     value="trash"><FaRegTrashCan id="calculator-btn-trash-icon"/></button>
                             </div>
-                            <button id="calculator-btn-%"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="%">%</button>
-                            <button id="calculator-btn-clear-entry"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="clear-entry">CE</button>
-                            <button id="calculator-btn-clear"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="clear">C</button>
-                            <button id="calculator-btn-delete"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
-                                value="delete"><FiDelete id="calculator-btn-delete-icon"/></button>
-                            <button id="calculator-btn-1-over-x"
-                                className="btn-match"
+                                value="delete"><FiDelete className="pointer-events-none"/></button>
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="1/x">1/x</button>
-                            <button id="calculator-btn-x-squared"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="x^2">x&sup2;</button>
-                            <button id="calculator-btn-square-root"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="sqrt(x)">&#8730;x</button>
-                            <button id="calculator-btn-divide"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="/">&divide;</button>
-                            <button id="calculator-btn-7"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="7">7</button>
-                            <button id="calculator-btn-8"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="8">8</button>
-                            <button id="calculator-btn-9"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="9">9</button>
-                            <button id="calculator-btn-multiply"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="*">&times;</button>
-                            <button id="calculator-btn-4"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="4">4</button>
-                            <button id="calculator-btn-5"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="5">5</button>
-                            <button id="calculator-btn-6"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="6">6</button>
-                            <button id="calculator-btn-subtract"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
-                                value="-">-</button>
-                            <button id="calculator-btn-1"
-                                className="btn-match"
+                                value="-">&minus;</button>
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="1">1</button>
-                            <button id="calculator-btn-2"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="2">2</button>
-                            <button id="calculator-btn-3"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="3">3</button>
-                            <button id="calculator-btn-add"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="+">+</button>
-                            <button id="calculator-btn-negate"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
-                                value="negate"><BsPlusSlashMinus id="calculator-btn-negate-icon"/></button>
-                            <button id="calculator-btn-0"
-                                className="btn-match"
+                                value="negate"><BsPlusSlashMinus className="pointer-events-none"/></button>
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="0">0</button>
-                            <button id="calculator-btn-decimal"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value=".">.</button>
-                            <button id="calculator-btn-equal"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="=">=</button>
                         </div>
@@ -765,34 +896,36 @@ class WeatherWidget extends Component{
     };
     /// API call
     async handleUpdate(){
-        const url = "https://weatherapi-com.p.rapidapi.com/current.json?q=" + this.state.input;
-        const options = {
-            method: "GET",
-            headers: {
-                "X-RapidAPI-Key": process.env.REACT_APP_WEATHER_API_KEY,
-                "X-RapidAPI-Host": process.env.REACT_APP_WEATHER_API_HOST
-            }
-        };
-        try{
-            const response = await fetch(url, options);
-            const result = await response.json();
-            this.setState({
-                name: result.location.name,
-                region: result.location.region,
-                country: result.location.country,
-                localTime: result.location.localtime,
-                lastUpdated: result.current.last_updated,
-                tempC: result.current.temp_c,
-                tempF: result.current.temp_f,
-                feelsLikeC: result.current.feelslike_c,
-                feelsLikeF: result.current.feelslike_f,
-                weatherCondition: result.current.condition.text,
-                weatherIcon: result.current.condition.icon,
-                windMPH: result.current.wind_mph,
-                windKPH: result.current.wind_kph
-            });
-        }catch(err){
-            console.error(err);
+        if(this.state.input !== ""){
+            const url = "https://weatherapi-com.p.rapidapi.com/current.json?q=" + this.state.input;
+            const options = {
+                method: "GET",
+                headers: {
+                    "X-RapidAPI-Key": process.env.REACT_APP_WEATHER_API_KEY,
+                    "X-RapidAPI-Host": process.env.REACT_APP_WEATHER_API_HOST
+                }
+            };
+            try{
+                const response = await fetch(url, options);
+                const result = await response.json();
+                this.setState({
+                    name: result.location.name,
+                    region: result.location.region,
+                    country: result.location.country,
+                    localTime: result.location.localtime,
+                    lastUpdated: result.current.last_updated,
+                    tempC: result.current.temp_c,
+                    tempF: result.current.temp_f,
+                    feelsLikeC: result.current.feelslike_c,
+                    feelsLikeF: result.current.feelslike_f,
+                    weatherCondition: result.current.condition.text,
+                    weatherIcon: result.current.condition.icon,
+                    windMPH: result.current.wind_mph,
+                    windKPH: result.current.wind_kph
+                });
+            }catch(err){
+                console.error(err);
+            };
         };
     };
     componentDidMount(){
@@ -803,12 +936,12 @@ class WeatherWidget extends Component{
             <Draggable
                 onStart={this.handleStart}
                 onStop={this.handleStop}
-                cancel="button, span, p, input"
+                cancel="button, span, input, section"
                 bounds="parent">
                 <div id="weather-box"
                     className="widget">
                     <div id="animation-weather-box"
-                        className="widgetAnimation">
+                        className="widget-animation">
                         <span className="draggable"
                             id="draggable-weather-box">
                             <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
@@ -847,7 +980,7 @@ class WeatherWidget extends Component{
                                 Update
                             </button>
                         </div>
-                        <p id="weather-info-container">
+                        <section id="weather-info-container">
                             <div id="weather-info-icon-temp">
                                 <img id="weather-info-icon"
                                     src={this.state.weatherIcon}
@@ -867,13 +1000,13 @@ class WeatherWidget extends Component{
                             </div>
                             <div id="weather-info-wind">
                                 <span>Wind:</span>
-                                <span>{this.state.windMPH} MPH</span>
                                 <span>{this.state.windKPH} KPH</span>
+                                <span>{this.state.windMPH} MPH</span>
                             </div>
                             <div id="weather-info-location">
                                 <span>{this.state.name}, {this.state.region}, {this.state.country}</span>
                             </div>
-                        </p>
+                        </section>
                         <span id="weather-last-updated">Last updated: {this.state.lastUpdated}</span>
                     </div>
                 </div>
@@ -907,7 +1040,7 @@ class []Widget extends Component{
                 <div id="[]-box"
                     className="widget">
                     <div id="animation-[]-box"
-                        className="widgetAnimation">
+                        className="widget-animation">
                         <span className="draggable"
                             id="draggable-[]-box">
                             <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
