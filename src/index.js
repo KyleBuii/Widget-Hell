@@ -2,7 +2,7 @@ import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan, FaRegCircleQuestion } from 'react-icons/fa6';
+import { FaRegTrashCan, FaRegCircleQuestion, FaArrowRightFromBracket } from 'react-icons/fa6';
 import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
@@ -10,9 +10,11 @@ import Draggable from 'react-draggable';
 import $ from 'jquery';
 import { evaluate, round } from 'mathjs';
 
+const zIndexDefault = 2;
+const zIndexDrag = 5;
 const widgetsArray = ["quote-box-animation", "settings-box-animation"
-    , "translator-box-animation", "animation-calculator-box"
-    , "animation-weather-box"];
+    , "translator-box-animation", "google-translator-box-animation" 
+    , "animation-calculator-box", "animation-weather-box"];
 const animationsArray = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 
@@ -119,12 +121,12 @@ class QuoteWidget extends Component{
     handleStart(){
         document.getElementById("quote-box-draggable").style.visibility = "visible";
         document.getElementById("quote-box").style.opacity = "0.5";
-        document.getElementById("quote-box").style.zIndex = "3";
+        document.getElementById("quote-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("quote-box-draggable").style.visibility = "hidden";
         document.getElementById("quote-box").style.opacity = "1";
-        document.getElementById("quote-box").style.zIndex = "2";
+        document.getElementById("quote-box").style.zIndex = zIndexDefault;
     };
     render(){
         return(
@@ -188,12 +190,12 @@ class TranslatorWidget extends Component{
     handleStart(){
         document.getElementById("translator-box-draggable").style.visibility = "visible";
         document.getElementById("translator-box").style.opacity = "0.5";
-        document.getElementById("translator-box").style.zIndex = "3";
+        document.getElementById("translator-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("translator-box-draggable").style.visibility = "hidden";
         document.getElementById("translator-box").style.opacity = "1";
-        document.getElementById("translator-box").style.zIndex = "2";
+        document.getElementById("translator-box").style.zIndex = zIndexDefault;
     };
     handleChange(event){
         this.setState({
@@ -380,12 +382,12 @@ class GoogleTranslatorWidget extends Component{
     handleStart(){
         document.getElementById("google-translator-box-draggable").style.visibility = "visible";
         document.getElementById("google-translator-box").style.opacity = "0.5";
-        document.getElementById("google-translator-box").style.zIndex = "3";
+        document.getElementById("google-translator-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("google-translator-box-draggable").style.visibility = "hidden";
         document.getElementById("google-translator-box").style.opacity = "1";
-        document.getElementById("google-translator-box").style.zIndex = "2";
+        document.getElementById("google-translator-box").style.zIndex = zIndexDefault;
     };
     handleChange(event){
         this.setState({
@@ -393,48 +395,43 @@ class GoogleTranslatorWidget extends Component{
         });
     };
     async handleTranslate(){
-        const url = "https://microsoft-translator-text.p.rapidapi.com/translate?to%5B0%5D=" + this.state.to + "&api-version=3.0&from=" + this.state.from + "&profanityAction=NoAction&textType=plain";
-        const options = {
-            method: 'POST',
-            headers: {
-                'content-type': process.env.REACT_APP_TRANSLATOR_API_CONTENT_TYPE,
-                'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
-                'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
-            },
-            body: [
-                {
-                    Text: this.state.input
-                }
-            ]
-        };
-        try{
-            const response = await fetch(url, options);
-            const result = await response.text();
-            this.setState({
-                converted: result
-            });
-        }catch(err){
-            console.error(err);
+        if(this.state.input !== ""){
+            const url = "https://opentranslator.p.rapidapi.com/translate";
+            const options = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
+                    'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
+                },
+                body: [
+                    {
+                        text: this.state.input,
+                        target: this.state.to
+                    }
+                ]
+            };
+            try{
+                const response = await fetch(url, options);
+                const result = await response.text();
+                this.setState({
+                    converted: result
+                });
+            }catch(err){
+                console.error(err);
+            };
         };
     };
     /// Handles the "from" language select
     handleFrom(event){
         this.setState({
             from: event.target.value
-        }, () => {
-            if(this.state.input !== ""){
-                this.convertFromText();
-            }
         });
     };
     /// Handles the "to" language select
     handleTo(event){
         this.setState({
             to: event.target.value,
-        }, () => {
-            if(this.state.input !== ""){
-                this.convertToText();
-            }
         });
     };
     /// Swaps "from" language and "to" language
@@ -443,9 +440,7 @@ class GoogleTranslatorWidget extends Component{
         this.setState(prevState => ({
             from: prevState.to,
             to: prev
-        }), () => {
-            this.convertFromText();
-        });
+        }));
         const v1 = $("#google-translator-translate-from").val();
         const v2 = $("#google-translator-translate-to").val();
         $("#google-translator-translate-from").val(v2);
@@ -461,7 +456,7 @@ class GoogleTranslatorWidget extends Component{
             el.value = optValue;
             select.appendChild(el);
         };
-        $('#translate-from optgroup').clone().appendTo('#translate-to');
+        $('#google-translator-translate-from optgroup').clone().appendTo('#google-translator-translate-to');
     };
     render(){
         return(
@@ -472,9 +467,9 @@ class GoogleTranslatorWidget extends Component{
                 bounds="parent">
                 <div id="google-translator-box"
                     className="widget">
-                    <div id="google-translator-animation"
+                    <div id="google-translator-box-animation"
                         className="widget-animation">
-                        <span id="google-translator-draggable"
+                        <span id="google-translator-box-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: "5em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
@@ -496,10 +491,14 @@ class GoogleTranslatorWidget extends Component{
                             </button>
                             <select id="google-translator-translate-to"
                                 className="select-match"
-                                defaultValue={"english"}
+                                defaultValue={"en"}
                                 onChange={this.handleTo}></select>
-                            <button className="btn-match"
-                                onClick={this.handleTranslate}>Translate</button>
+                            <button className="btn-match-inverse"
+                                onClick={this.handleTranslate}>
+                                <IconContext.Provider value={{ size: "0.9em", className: "global-class-name" }}>
+                                    <FaArrowRightFromBracket/>
+                                </IconContext.Provider>
+                            </button>
                         </div>
                         <div className="scrollbar-cut-corner">
                             <textarea className="scrollbar-cut-corner-textarea"
@@ -530,12 +529,12 @@ class CalculatorWidget extends Component{
     handleStart(){
         document.getElementById("draggable-calculator-box").style.visibility = "visible";
         document.getElementById("calculator-box").style.opacity = "0.5";
-        document.getElementById("calculator-box").style.zIndex = "3";
+        document.getElementById("calculator-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("draggable-calculator-box").style.visibility = "hidden";
         document.getElementById("calculator-box").style.opacity = "1";
-        document.getElementById("calculator-box").style.zIndex = "2";
+        document.getElementById("calculator-box").style.zIndex = zIndexDefault;
     };
     handleClick(event){
         switch(event.target.value){
@@ -690,9 +689,6 @@ class CalculatorWidget extends Component{
         this.setState({
             memory: []
         });
-    };
-    componentDidUpdate(){
-        document.getElementById("calculator-btn-memory-container")
     };
     render(){
         return(
@@ -869,12 +865,12 @@ class WeatherWidget extends Component{
     handleStart(){
         document.getElementById("draggable-weather-box").style.visibility = "visible";
         document.getElementById("weather-box").style.opacity = "0.5";
-        document.getElementById("weather-box").style.zIndex = "3";
+        document.getElementById("weather-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("draggable-weather-box").style.visibility = "hidden";
         document.getElementById("weather-box").style.opacity = "1";
-        document.getElementById("weather-box").style.zIndex = "2";
+        document.getElementById("weather-box").style.zIndex = zIndexDefault;
     };
     handleChange(event){
         this.setState({
@@ -961,19 +957,25 @@ class WeatherWidget extends Component{
                                     </IconContext.Provider>
                                 </button>
                             </div>
-                            <div id="weather-search-help-container">
-                                <ul>
-                                    <li>Latitude and Longitude <br/><span className="font-small-light-transparent">e.g: 48.8567,2.3508</span></li>
-                                    <li>City name <span className="font-small-light-transparent">e.g.: Paris</span></li>
-                                    <li>US zip <span className="font-small-light-transparent">e.g.: 10001</span></li>
-                                    <li>UK postcode <span className="font-small-light-transparent">e.g: SW1</span></li>
-                                    <li>Canada postal code <span className="font-small-light-transparent">e.g: G2J</span></li>
-                                    <li>Metar:&lt;metar code&gt; <span className="font-small-light-transparent">e.g: metar:EGLL</span></li>
-                                    <li>Iata:&lt;3 digit airport code&gt; <span className="font-small-light-transparent">e.g: iata:DXB</span></li>
-                                    <li>Auto IP lookup <span className="font-small-light-transparent">e.g: auto:ip</span></li>
-                                    <li>IP address (IPv4 and IPv6 supported) <br/><span className="font-small-light-transparent">e.g: 100.0.0.1</span></li>
-                                </ul>
-                            </div>
+                            <Draggable
+                                cancel="li"
+                                defaultPosition={{x: 10, y: 45}}
+                                bounds={{top: -125, left: -280, right: 300, bottom: 250}}>
+                                <section id="weather-search-help-container"
+                                    className="help">
+                                    <ul>
+                                        <li>Latitude and Longitude <br/><span className="font-small-light-transparent">e.g: 48.8567,2.3508</span></li>
+                                        <li>City name <span className="font-small-light-transparent">e.g.: Paris</span></li>
+                                        <li>US zip <span className="font-small-light-transparent">e.g.: 10001</span></li>
+                                        <li>UK postcode <span className="font-small-light-transparent">e.g: SW1</span></li>
+                                        <li>Canada postal code <span className="font-small-light-transparent">e.g: G2J</span></li>
+                                        <li>Metar:&lt;metar code&gt; <span className="font-small-light-transparent">e.g: metar:EGLL</span></li>
+                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font-small-light-transparent">e.g: iata:DXB</span></li>
+                                        <li>Auto IP lookup <span className="font-small-light-transparent">e.g: auto:ip</span></li>
+                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font-small-light-transparent">e.g: 100.0.0.1</span></li>
+                                    </ul>
+                                </section>
+                            </Draggable>
                             <button id="weather-search-btn-update"
                                 className="btn-match"
                                 onClick={this.handleUpdate}>
@@ -1023,12 +1025,12 @@ class []Widget extends Component{
     handleStart(){
         document.getElementById("draggable-[]-box").style.visibility = "visible";
         document.getElementById("[]-box").style.opacity = "0.5";
-        document.getElementById("[]-box").style.zIndex = "3";
+        document.getElementById("[]-box").style.zIndex = zIndexDrag;
     };
     handleStop(){
         document.getElementById("draggable-[]-box").style.visibility = "hidden";
         document.getElementById("[]-box").style.opacity = "1";
-        document.getElementById("[]-box").style.zIndex = "2";
+        document.getElementById("[]-box").style.zIndex = zIndexDefault;
     };
     render(){
         return(
@@ -1061,6 +1063,7 @@ function Widgets(){
             <SettingWidget/>
             <QuoteWidget/>
             <TranslatorWidget/>
+            {/* <GoogleTranslatorWidget/> */}
             <CalculatorWidget/>
             <WeatherWidget/>
         </div>
