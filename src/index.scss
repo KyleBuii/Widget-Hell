@@ -3,7 +3,7 @@ z-index guide
 0: 
 1: 
 2: DEFAULT
-3: Help container
+3: Popout
 4: Setting Widget
 5: Widget when dragging
 6: Drag icon
@@ -39,21 +39,15 @@ body{
 
 /// Design
 .widget{
-    position: absolute;
     z-index: 2;
+    position: absolute;
 }
 
 .widget-animation{
+    background-color: white;
     padding: 25px;
     border-radius: 25px;
     border: 2px solid var(--randColor);
-}
-
-.grid-3-column{
-    background-color: white;
-    display: grid;
-    grid-template-columns: auto auto auto;
-    gap: 5px;
 }
 
 .draggable{
@@ -122,6 +116,31 @@ body{
     }
 }
 
+.btn-match-option{
+    padding: 3px 7px;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    background-color: var(--randColor);
+    font-size: 12px;
+    &:hover{
+        cursor: pointer;
+        background-color: rgba(var(--randColorOpacity), 0.8);
+    }
+    &:active{
+        transform: scale(0.98);
+    }
+    &.long{
+        width: 235px;
+    }
+    &.medium{
+        width: 115px;
+    }
+    &.small{
+        width: 75px;
+    }
+}
+
 .select-match{
     cursor: pointer;
     color: var(--randColor);
@@ -152,10 +171,11 @@ body{
 .select-center{
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
 }
 
-.help{
+.popout{
     z-index: 3;
     visibility: hidden;
     position: absolute;
@@ -164,6 +184,66 @@ body{
     text-align: left;
     border-radius: 20px;
     box-shadow: 0px 0px 10px 1px var(--randColor);
+}
+
+.pointer-events-none{
+    pointer-events: none;
+}
+
+.input-typable{
+    border: 2px solid var(--randColor);
+    border-radius: 6px;
+    margin: 4px;
+    &:focus{
+        outline: none;
+    }
+}
+
+.input-typable-with-help{
+    border: 2px solid var(--randColor);
+    border-right: none;
+    border-radius: 6px 0px 0px 6px;
+    &:focus{
+        outline: none;
+    }
+}
+
+.help-with-input-typable{
+    background-color: white;
+    border: 2px solid var(--randColor);
+    border-left: none;
+    border-radius: 0px 6px 6px 0px;
+    cursor: pointer;
+}
+
+.option{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    gap: 5px;
+}
+
+.option-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+}
+
+.space-nicely-top{
+    margin: 15px 0px 5px;
+}
+
+.space-nicely-all{
+    margin: 10px;
+}
+
+.disabled-option{
+    opacity: 0.5;
 }
 
 /// IDs
@@ -176,33 +256,34 @@ body{
     overflow: hidden;
 }
 
-#Widget-container{
-    text-align: center;
+#widget-container{
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
 #settings-box{
     z-index: 4;
-    top: 20px;
-    right: 20px;
     #settings-box-draggable{
         visibility: hidden;
+    }
+    #settings-box-animation{
+        height: 45px;
+        width: 220px;
+        #show-hide-widgets-popout{
+            padding: 10px;
+        }
     }
 }
 
 #quote-box{
     max-width: 800px;
-    top: 20px;
-    left: 20px;
+    text-align: center;
     #quote-box-draggable{
         visibility: hidden;
     }
     #quote-box-animation{
-        background-color: white;
         padding: 5px 30px 25px;
     }
     #quote{
@@ -216,14 +297,28 @@ body{
 }
 
 #translator-box{
-    top: 370px;
-    left: 20px;
     font-size: 18px;
     #translator-box-draggable{
         visibility: hidden;
     }
     #translator-box-animation{
-        background-color: white;
+        #replace-popout{
+            visibility: hidden;
+            height: 120px;
+            width: 280px;
+            input{
+                height: 18px;
+                width: 100px;
+            }
+        }
+        #reverse-popout{
+            visibility: hidden;
+            height: 80px;
+            width: 280px;
+        }
+        #case-transform-popout{
+            visibility: hidden;
+        }
     }
     #translator-preview-cut-corner{
         margin-top: 15px;
@@ -231,14 +326,9 @@ body{
 }
 
 #google-translator-box{
-    top: 370px;
-    left: 20px;
     font-size: 18px;
     #google-translator-box-draggable{
         visibility: hidden;
-    }
-    #google-translator-box-animation{
-        background-color: white;
     }
     #google-translator-preview-cut-corner{
         margin-top: 15px;
@@ -246,18 +336,13 @@ body{
 }
 
 #calculator-box{
-    top: 370px;
-    left: 505px;
     font-size: 18px;
     button{
         width: 40px;
         height: 30px;
     }
-    #draggable-calculator-box{
+    #calculator-box-draggable{
         visibility: hidden;
-    }
-    #animation-calculator-box{
-        background-color: white;
     }
     #calculator-display-container{
         display: flex;
@@ -337,18 +422,11 @@ body{
     }
 }
 
-.pointer-events-none{
-    pointer-events: none;
-}
-
 #weather-box{
-    top: 20px;
-    left: 850px;
-    #draggable-weather-box{
+    #weather-box-draggable{
         visibility: hidden;
     }
-    #animation-weather-box{
-        background-color: white;
+    #weather-box-animation{
         #weather-search-container{
             display: flex;
             flex-direction: row;
@@ -361,20 +439,9 @@ body{
                 #weather-search{
                     height: 25px;
                     width: 210px;
-                    border: 2px solid var(--randColor);
-                    border-right: none;
-                    border-radius: 6px 0px 0px 6px;
-                    &:focus{
-                        outline: none;
-                    }
                 }
                 #weather-search-help-button{
                     height: 31px;
-                    background-color: white;
-                    border: 2px solid var(--randColor);
-                    border-left: none;
-                    border-radius: 0px 6px 6px 0px;
-                    cursor: pointer;
                 }
             }
             #weather-search-help-container{

@@ -2,60 +2,260 @@ import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
 import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan, FaRegCircleQuestion, FaArrowRightFromBracket } from 'react-icons/fa6';
+import { FaRegTrashCan, FaRegCircleQuestion, FaArrowRightFromBracket
+    ,FaArrowRightLong } from 'react-icons/fa6';
 import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import $ from 'jquery';
 import { evaluate, round } from 'mathjs';
+// import { CookiesProvider, useCookies } from 'react-cookie';
 
+/// Variables
 const zIndexDefault = 2;
 const zIndexDrag = 5;
-const widgetsArray = ["quote-box-animation", "settings-box-animation"
-    , "translator-box-animation", "google-translator-box-animation" 
-    , "animation-calculator-box", "animation-weather-box"];
+const widgetsArray = ["settings-box-animation"];
 const animationsArray = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 
+/// Functions
+function randColor(){
+    const r = document.querySelector(":root");
+    const randColorOpacity = Math.floor(Math.random() * 255)
+        + "," + Math.floor(Math.random() * 255) 
+        + "," + Math.floor(Math.random() * 255);
+    const randColor = "rgb(" + randColorOpacity + ")";
+    r.style.setProperty("--randColor", randColor);
+    r.style.setProperty("--randColorOpacity", randColorOpacity);
+};
 
+function dragStart(what){
+    switch(what){
+        case "settings":
+            document.getElementById(what + "-box-draggable").style.visibility = "visible";
+            document.getElementById(what + "-box").style.opacity = "0.5";
+            break;
+        default:
+            document.getElementById(what + "-box-draggable").style.visibility = "visible";
+            document.getElementById(what + "-box").style.opacity = "0.5";
+            document.getElementById(what + "-box").style.zIndex = zIndexDrag;
+            break;
+    }
+};
+function dragStop(what){
+    switch(what){
+        case "settings":
+            document.getElementById(what + "-box-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-box").style.opacity = "1";
+            break;
+        default:
+            document.getElementById(what + "-box-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-box").style.opacity = "1";
+            document.getElementById(what + "-box").style.zIndex = zIndexDefault;
+            break;
+    }
+};
+
+/// Components
 class SettingWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            showHideWidgets: false,
+            quote: false,
+            translator: false,
+            googleTranslator: false,
+            calculator: false,
+            weather: false
+        };
+        this.handlePressableBtn = this.handlePressableBtn.bind(this);
+    };
     handleTrick(){
-        const randWidget = Math.floor(Math.random() * widgetsArray.length);
-        const randAnimation = Math.floor(Math.random() * animationsArray.length);
-        const e = document.getElementById(widgetsArray[randWidget]);
-        e.style.animation = "none";
-        window.requestAnimationFrame(function(){
-            e.style.animation = animationsArray[randAnimation] + " 2s";
-        });
+        if(widgetsArray.length !== 0){
+            const randWidget = Math.floor(Math.random() * widgetsArray.length);
+            const randAnimation = Math.floor(Math.random() * animationsArray.length);
+            const e = document.getElementById(widgetsArray[randWidget]);
+            e.style.animation = "none";
+            window.requestAnimationFrame(function(){
+                e.style.animation = animationsArray[randAnimation] + " 2s";
+            });
+        };
     };
-    handleStart(){
-        document.getElementById("settings-box-draggable").style.visibility = "visible";
-        document.getElementById("settings-box").style.opacity = "0.5";
+    /// Remove element at index "i" where order doesn't matter
+    unorderedRemove(arr, i){
+        if(i <= 0 || i >= arr.length){
+            return;
+        };
+        if(i < arr.length-1){
+            arr[i] = arr[arr.length-1];
+        };
+        arr.length -= 1;
     };
-    handleStop(){
-        document.getElementById("settings-box-draggable").style.visibility = "hidden";
-        document.getElementById("settings-box").style.opacity = "1";
+    /// Handles all buttons that are pressable (opacity: 0.5 on click)
+    handlePressableBtn(what){
+        const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
+        switch(what){
+            case "showHideWidgets":
+                const btnShowHideWidgets = document.getElementById("settings-show-hide-widgets-btn");
+                const showHideWidgetsPopout = document.getElementById("show-hide-widgets-popout");
+                if(this.state.showHideWidgets === false){
+                    this.setState({
+                        showHideWidgets: true
+                    });
+                    btnShowHideWidgets.style.opacity = "1";
+                    showHideWidgetsPopout.style.visibility = "visible";
+                }else{
+                    this.setState({
+                        showHideWidgets: false
+                    });
+                    btnShowHideWidgets.style.opacity = "0.5";
+                    showHideWidgetsPopout.style.visibility = "hidden";
+                };
+                break;
+            case "advanced":
+                break;
+            case "quote":
+                this.props.showHide("quote");
+                if(this.state.quote === false){
+                    this.setState({
+                        quote: true
+                    });
+                    btn.style.opacity = "1";
+                    widgetsArray.push("quote-box-animation");
+                }else{
+                    this.setState({
+                        quote: false
+                    });
+                    btn.style.opacity = "0.5";
+                    const indexQuote = widgetsArray.indexOf("quote-box-animation");
+                    this.unorderedRemove(widgetsArray, indexQuote);
+                };
+                break;
+            case "translator":
+                this.props.showHide("translator");
+                if(this.state.translator === false){
+                    this.setState({
+                        translator: true
+                    });
+                    btn.style.opacity = "1";
+                    widgetsArray.push("translator-box-animation");
+                }else{
+                    this.setState({
+                        translator: false
+                    });
+                    btn.style.opacity = "0.5";
+                    const indexTranslator = widgetsArray.indexOf("translator-box-animation");
+                    this.unorderedRemove(widgetsArray, indexTranslator);
+                };
+                break;
+            case "google-translator":
+                this.props.showHide("googleTranslator");
+                if(this.state.googleTranslator === false){
+                    this.setState({
+                        googleTranslator: true
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        googleTranslator: false
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break;
+            case "calculator":
+                this.props.showHide("calculator");
+                if(this.state.calculator === false){
+                    this.setState({
+                        calculator: true
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        calculator: false
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break;
+            case "weather":
+                this.props.showHide("weather");
+                if(this.state.weather === false){
+                    this.setState({
+                        weather: true
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        weather: false
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break;
+            default:
+                break;
+        };
     };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
-                cancel="button, span, p"
+                onStart={() => dragStart("settings")}
+                onStop={() => dragStop("settings")}
+                cancel="button, span, p, section"
                 bounds="parent">
                 <div id="settings-box"
                     className="widget">
                     <div id="settings-box-animation"
-                        className="widget-animation grid-3-column">
+                        className="widget-animation">
                         <span id="settings-box-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <button className="btn-match"
-                            onClick={this.handleTrick}>Do a trick!</button>
+                        <section className="option">
+                            <button id="settings-show-hide-widgets-btn"
+                                className="option-item btn-match-option long disabled-option"
+                                onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
+                            <section className="option-item">
+                                <button className="btn-match-option medium"
+                                    onClick={this.handleTrick}>Do a trick!</button>
+                            </section>
+                        </section>
+                        {/* Show/Hide Widgets Popout */}
+                        <Draggable
+                            cancel="input, button"
+                            defaultPosition={{x: -25, y: -20}}
+                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                            <section id="show-hide-widgets-popout"
+                                className="popout">
+                                <section className="option space-nicely-all">
+                                    <button id="show-hide-widgets-popout-btn-advanced"
+                                        className="option-item btn-match-option long disabled-option"
+                                        onClick={() => this.handlePressableBtn("advanced")}>Advanced</button>
+                                    <section className="option-item">
+                                        <button id="show-hide-widgets-popout-btn-quote"
+                                            className="btn-match-option medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("quote")}>Quote</button>
+                                        <button id="show-hide-widgets-popout-btn-translator"
+                                            className="btn-match-option medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("translator")}>Translator</button>
+                                    </section>
+                                    <section className="option-item">
+                                        <button id="show-hide-widgets-popout-btn-google-translator"
+                                            className="btn-match-option medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("google-translator")}>Google Translator</button>
+                                        <button id="show-hide-widgets-popout-btn-calculator"
+                                            className="btn-match-option medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("calculator")}>Calculator</button>
+                                    </section>
+                                    <section className="option-item">
+                                        <button id="show-hide-widgets-popout-btn-weather"
+                                            className="btn-match-option medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("weather")}>Weather</button>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
                     </div>
                 </div>
             </Draggable>
@@ -98,15 +298,9 @@ class QuoteWidget extends Component{
         this.handleNewQuote();
     };
     handleNewQuote(){
-        const r = document.querySelector(":root");
+        randColor();
         const randQuote = Math.floor(Math.random() * this.state.quotes.length);
         const randQuoteAuthor = (this.state.authors[randQuote] === "") ? "Anon" : this.state.authors[randQuote];
-        const randColorOpacity = Math.floor(Math.random() * 255)
-            + "," + Math.floor(Math.random() * 255) 
-            + "," + Math.floor(Math.random() * 255);
-        const randColor = "rgb(" + randColorOpacity + ")";
-        r.style.setProperty("--randColor", randColor);
-        r.style.setProperty("--randColorOpacity", randColorOpacity);
         this.setState({
             currentQuote: this.state.quotes[randQuote],
             currentAuthor: randQuoteAuthor
@@ -118,21 +312,11 @@ class QuoteWidget extends Component{
             quoteText.style.animation = "fadeIn 2s";
         });
     };
-    handleStart(){
-        document.getElementById("quote-box-draggable").style.visibility = "visible";
-        document.getElementById("quote-box").style.opacity = "0.5";
-        document.getElementById("quote-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("quote-box-draggable").style.visibility = "hidden";
-        document.getElementById("quote-box").style.opacity = "1";
-        document.getElementById("quote-box").style.zIndex = zIndexDefault;
-    };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
+                onStart={() => dragStart("quote")}
+                onStop={() => dragStop("quote")}
                 cancel="button, span, p"
                 bounds="parent">
                 <div id="quote-box"
@@ -180,22 +364,21 @@ class TranslatorWidget extends Component{
             convert: "",
             converted: "",
             from: "",
-            to: ""
+            to: "",
+            replaceFrom: "",
+            replaceTo: "",
+            replaceCaseSensitive: true,
+            reverseWord: false,
+            reverseSentence: false,
+            reverseEverything: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
         this.handleTo = this.handleTo.bind(this);
         this.handleSwap = this.handleSwap.bind(this);
-    };
-    handleStart(){
-        document.getElementById("translator-box-draggable").style.visibility = "visible";
-        document.getElementById("translator-box").style.opacity = "0.5";
-        document.getElementById("translator-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("translator-box-draggable").style.visibility = "hidden";
-        document.getElementById("translator-box").style.opacity = "1";
-        document.getElementById("translator-box").style.zIndex = zIndexDefault;
+        this.handleSave = this.handleSave.bind(this);
+        this.handleReplaceFrom = this.handleReplaceFrom.bind(this);
+        this.handleReplaceTo = this.handleReplaceTo.bind(this);
     };
     handleChange(event){
         this.setState({
@@ -211,31 +394,25 @@ class TranslatorWidget extends Component{
     convertFromText(){
         switch(this.state.from){
             /// Other languages
-            case "pig-latin":
-                this.setState(prevState => ({
-                    convert: prevState.input
-                        .split(" ")
-                        .map(curr => curr
-                            .replace(/(way)$/i, "")
-                            .replace(/(\w*)([^aioue]*)(ay)$/i, "$1"))
-                        .join(" ")
-                }));
-                this.convertToText();
-                break;
             case "pekofy":
                 this.setState(prevState => ({
                     convert: prevState.input
                         .replace(/\s(peko)/ig, "")
                 }));
-                this.convertToText();
+                break;
+            /// Encryption
+            case "base64":
+                this.setState(prevState => ({
+                    convert: atob(prevState.input)
+                }));
                 break;
             default:
                 this.setState(prevState => ({
                     convert: prevState.input
                 }));
-                this.convertToText();
                 break;
         };
+        this.convertToText();   
     };
     /// Convert english to the "to" language
     convertToText(){
@@ -244,6 +421,8 @@ class TranslatorWidget extends Component{
             case "pig-latin":
                 this.setState(prevState => ({
                     converted: prevState.convert
+                        .toString()
+                        .toLowerCase()
                         .split(" ")
                         .map(curr => curr
                             .replace(/^[aioue]\w*/i, "$&way")
@@ -259,6 +438,133 @@ class TranslatorWidget extends Component{
                         .replace(/[!]/ig, " peko!")
                         .replace(/[?]/ig, " peko?")
                 }));
+                break;
+            /// Encryption
+            case "base64":
+                this.setState(prevState => ({
+                    converted: btoa(prevState.convert)
+                }));
+                break;
+            /// Modify
+            case "replace":
+                var reReplace;
+                if(this.state.replaceCaseSensitive === true){
+                    reReplace = new RegExp("(\\b" + this.state.replaceFrom + "\\b)", "g");
+                }else{
+                    reReplace = new RegExp("(\\b" + this.state.replaceFrom + "\\b)", "ig");
+                };
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                        .replace(reReplace, prevState.replaceTo)
+                }));
+                break;
+            case "reverse":
+                if(this.state.reverseWord === true && this.state.reverseSentence === true && this.state.reverseEverything === true){
+                /// Reverse Word + Sentence + Everything
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/(?<=[.?!])\s*/)
+                            .reverse()
+                            .join(" ")
+                            .split(/([.?!])\s*/)
+                            .map(sentence => sentence
+                                .split(" ")
+                                .map(word => word
+                                    .split("")
+                                    .reverse()
+                                    .join(""))
+                                .reverse()
+                                .join(" ")
+                            )
+                            .join(" ")
+                    }));
+                }else if(this.state.reverseWord === true && this.state.reverseSentence === true){
+                /// Reverse Word + Sentence
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/([.?!])\s*/)
+                            .map(sentence => sentence
+                                .split(" ")
+                                .map(word => word
+                                    .split("")
+                                    .reverse()
+                                    .join(""))
+                                .reverse()
+                                .join(" ")
+                            )
+                            .join(" ")
+                    }));
+                }else if(this.state.reverseWord === true && this.state.reverseEverything === true){
+                /// Reverse Word + Everything
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/(?<=[.?!])\s*/)
+                            .reverse()
+                            .join(" ")
+                            .split(/(\s|[^\w'])/g)
+                            .map(function(word){
+                                return word
+                                    .split("")
+                                    .reverse()
+                                    .join("");
+                            })
+                            .join("")
+                    }));
+                }else if(this.state.reverseSentence === true && this.state.reverseEverything === true){
+                /// Reverse Sentence + Everything
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/(?<=[.?!])\s*/)
+                            .reverse()
+                            .join(" ")
+                            .split(/([.?!])\s*/)
+                            .map(function(sentence){
+                                return sentence
+                                    .split(" ")
+                                    .reverse()
+                                    .join(" ")
+                            })
+                            .join(" ")
+                    }));
+                }else if(this.state.reverseWord === true){
+                /// Reverse Word
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/(\s|[^\w'])/g)
+                            .map(function(word){
+                                return word
+                                    .split("")
+                                    .reverse()
+                                    .join("");
+                            })
+                            .join("")
+                    }));
+                }else if(this.state.reverseSentence === true){
+                /// Reverse Sentence
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/([.?!])\s*/)
+                            .map(function(sentence){
+                                return sentence
+                                    .split(" ")
+                                    .reverse()
+                                    .join(" ")
+                            })
+                            .join(" ")
+                    }));
+                }else if(this.state.reverseEverything === true){
+                /// Reverse Everything
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .split(/(?<=[.?!])\s*/)
+                            .reverse()
+                            .join(" ")
+                    }));
+                }else{
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                    }));   
+                };
                 break;
             default:
                 this.setState(prevState => ({
@@ -286,30 +592,155 @@ class TranslatorWidget extends Component{
                 this.convertToText();
             }
         });
+        document.getElementById("replace-popout").style.visibility = (event.target.value === "replace") ? "visible" : "hidden";
+        document.getElementById("reverse-popout").style.visibility = (event.target.value === "reverse") ? "visible" : "hidden";
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
-        const prev = this.state.from;
+        if(this.state.from !== this.state.to){
+            randColor();
+            const prev = this.state.from;
+            this.setState(prevState => ({
+                from: prevState.to,
+                to: prev
+            }), () => {
+                this.convertFromText();
+            });
+            const v1 = $("#translator-translate-from").val();
+            const v2 = $("#translator-translate-to").val();
+            $("#translator-translate-from").val(v2);
+            $("#translator-translate-to").val(v1);
+        };
+    };
+    /// Saves "converted" text into "input" field
+    handleSave(){
         this.setState(prevState => ({
-            from: prevState.to,
-            to: prev
+            input: prevState.converted,
+            convert: prevState.converted
         }), () => {
-            this.convertFromText();
+            this.convertToText();
         });
-        const v1 = $("#translator-translate-from").val();
-        const v2 = $("#translator-translate-to").val();
-        $("#translator-translate-from").val(v2);
-        $("#translator-translate-to").val(v1);
+    };
+    /// Handles "replace" from "translator-translate-to"
+    handleReplaceFrom(event){
+        this.setState({
+            replaceFrom: event.target.value
+        }, () => {
+            if(this.state.converted !== ""){
+                this.convertToText();
+            };
+        });
+    };
+    handleReplaceTo(event){
+        this.setState({
+            replaceTo: event.target.value
+        }, () => {
+            if(this.state.converted !== ""){
+                this.convertToText();
+            };
+        });
+    };
+    /// Handles all buttons that are pressable (opacity: 0.5 on click)
+    handlePressableBtn(what, popout){
+        let btn;
+        if(popout === "replace"){
+            btn = document.getElementById("replace-popout-btn-" + what);
+        }else if(popout === "reverse"){
+            btn = document.getElementById("reverse-popout-btn-" + what);
+        };
+        switch(what){
+            case "replace-case-sensitive":
+                if(this.state.replaceCaseSensitive === false){
+                    this.setState({
+                        replaceCaseSensitive: true
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        replaceCaseSensitive: false
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break;
+            case "reverse-word":
+                if(this.state.reverseWord === false){
+                    this.setState({
+                        reverseWord: true
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        reverseWord: false
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break; 
+            case "reverse-sentence":
+                if(this.state.reverseSentence === false){
+                    this.setState({
+                        reverseSentence: true
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        reverseSentence: false
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break; 
+            case "reverse-everything":
+                if(this.state.reverseEverything === false){
+                    this.setState({
+                        reverseEverything: true
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "1";
+                }else{
+                    this.setState({
+                        reverseEverything: false
+                    }, () => {
+                        this.convertToText();
+                    });
+                    btn.style.opacity = "0.5";
+                };
+                break;
+            default:
+                break;
+        };
     };
     componentDidMount(){
-        $('#translator-translate-from optgroup').clone().appendTo('#translator-translate-to');
+        randColor();
+        /// Default values
+        this.setState({
+            from: "en",
+            to: "en"
+        });
+        $("#translator-translate-from").val("en");
+        $("#translator-translate-to").val("en");
+        /// Duplicate selects from "translate-from" to "translate-to"
+        $('#translator-translate-from #translate-from-languages option').clone().prependTo('#translate-to-languages');
+        $('#translator-translate-from #translate-from-other-languages option').clone().prependTo('#translate-to-other-languages');
+        $('#translator-translate-from #translate-from-encryption option').clone().prependTo('#translate-to-encryption');
     };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
-                cancel="button, span, p, textarea, select"
+                onStart={() => dragStart("translator")}
+                onStop={() => dragStop("translator")}
+                cancel="button, span, p, textarea, select, section"
                 bounds="parent">
                 <div id="translator-box"
                     className="widget">
@@ -326,15 +757,17 @@ class TranslatorWidget extends Component{
                                 className="select-match"
                                 defaultValue={"en"}
                                 onChange={this.handleFrom}>
-                                <optgroup label="Languages">
+                                <optgroup label="Languages"
+                                    id="translate-from-languages">
                                     <option value="en">English</option>
                                 </optgroup>
-                                <optgroup label="Other Languages">
-                                    {/* <option value="pig-latin">Pig latin</option> */}
+                                <optgroup label="Other Languages"
+                                    id="translate-from-other-languages">
                                     <option value="pekofy">Pekofy</option>
                                 </optgroup>
-                                <optgroup label="Encryption">
-
+                                <optgroup label="Encryption"
+                                    id="translate-from-encryption">
+                                    <option value="base64">Base64</option>
                                 </optgroup>
                             </select>
                             <button className="btn-match-inverse"
@@ -346,11 +779,111 @@ class TranslatorWidget extends Component{
                             <select id="translator-translate-to"
                                 className="select-match"
                                 defaultValue={"english"}
-                                onChange={this.handleTo}></select>
+                                onChange={this.handleTo}>
+                                <optgroup label="Languages"
+                                    id="translate-to-languages"></optgroup>
+                                <optgroup label="Other Languages"
+                                    id="translate-to-other-languages">
+                                    <option value="pig-latin">Pig latin</option>
+                                </optgroup>
+                                <optgroup label="Encryption"
+                                    id="translate-to-encryption"></optgroup>
+                                <optgroup label="Modify">
+                                    <option value="replace">Replace</option>
+                                    <option value="reverse">Reverse</option>
+                                    <option value="case-transform">Case Transform</option>
+                                </optgroup>
+                            </select>
                         </div>
+                        {/* Replace Popout */}
+                        <Draggable
+                            cancel="input, button"
+                            defaultPosition={{x: 125, y: 0}}
+                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            <section id="replace-popout"
+                                className="popout">
+                                <section className="select-center space-nicely-top">
+                                    <input className="input-typable"
+                                        type="text"
+                                        onChange={this.handleReplaceFrom}></input>
+                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                        <FaArrowRightLong/>
+                                    </IconContext.Provider> 
+                                    <input className="input-typable"
+                                        type="text"
+                                        onChange={this.handleReplaceTo}></input>
+                                </section>
+                                <section className="option">
+                                    <button className="option-item btn-match-option long"
+                                        onClick={this.handleSave}>Save</button>
+                                    <section className="option-item">
+                                        <button id="replace-popout-btn-replace-case-sensitive"
+                                            className="btn-match-option medium"
+                                            onClick={() => this.handlePressableBtn("replace-case-sensitive", "replace")}>Case Sensitive</button>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
+                        {/* Reverse Popout */}
+                        <Draggable
+                            cancel="input, button"
+                            defaultPosition={{x: 125, y: 0}}
+                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            <section id="reverse-popout"
+                                className="popout">
+                                <section className="option space-nicely-top">
+                                    <button className="option-item btn-match-option long"
+                                        onClick={this.handleSave}>Save</button>
+                                    <section className="option-item">
+                                        <button id="reverse-popout-btn-reverse-word"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={() => this.handlePressableBtn("reverse-word", "reverse")}>Word</button>
+                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={() => this.handlePressableBtn("reverse-sentence", "reverse")}>Sentence</button>
+                                        <button id="reverse-popout-btn-reverse-everything"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={() => this.handlePressableBtn("reverse-everything", "reverse")}>Everything</button>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
+                        {/* Case Transform Popout */}
+                        <Draggable
+                            cancel="input, button"
+                            defaultPosition={{x: 125, y: 0}}
+                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            <section id="case-transform-popout"
+                                className="popout">
+                                <section className="option space-nicely-top">
+                                    <button className="option-item btn-match-option long"
+                                        onClick={this.handleSave}>Save</button>
+                                    <section className="option-item">
+                                        <button id="case-transform-popout-btn-lower"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={this.handleReverseWord}>Lower</button>
+                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={this.handleReverseSentence}>Upper</button>
+                                        <button id="reverse-popout-btn-reverse-everything"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={this.handleReverseEverything}>Capitalize</button>
+                                    </section>
+                                    <section className="option-item">
+                                        <button id="reverse-popout-btn-reverse-word"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={this.handleReverseWord}>Alternate</button>
+                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            className="btn-match-option small disabled-option"
+                                            onClick={this.handleReverseSentence}>Inverse</button>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
                         <div className="scrollbar-cut-corner">
                             <textarea className="scrollbar-cut-corner-textarea"
-                                onChange={this.handleChange}></textarea>
+                                onChange={this.handleChange}
+                                value={this.state.input}></textarea>
                         </div>
                         <div id="translator-preview-cut-corner"
                             className="scrollbar-cut-corner">
@@ -379,16 +912,6 @@ class GoogleTranslatorWidget extends Component{
         this.handleSwap = this.handleSwap.bind(this);
         this.handleTranslate = this.handleTranslate.bind(this);
     };
-    handleStart(){
-        document.getElementById("google-translator-box-draggable").style.visibility = "visible";
-        document.getElementById("google-translator-box").style.opacity = "0.5";
-        document.getElementById("google-translator-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("google-translator-box-draggable").style.visibility = "hidden";
-        document.getElementById("google-translator-box").style.opacity = "1";
-        document.getElementById("google-translator-box").style.zIndex = zIndexDefault;
-    };
     handleChange(event){
         this.setState({
             input: event.target.value
@@ -396,29 +919,24 @@ class GoogleTranslatorWidget extends Component{
     };
     async handleTranslate(){
         if(this.state.input !== ""){
-            const url = "https://opentranslator.p.rapidapi.com/translate";
+            const url = 'https://translated-mymemory---translation-memory.p.rapidapi.com/get?langpair=' + this.state.from + '%7C' + this.state.to + '&q=' + this.state.input + '&mt=1&onlyprivate=0&de=a%40b.c';
             const options = {
-                method: 'POST',
+                method: 'GET',
                 headers: {
-                    'content-type': 'application/json',
                     'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
                     'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
-                },
-                body: [
-                    {
-                        text: this.state.input,
-                        target: this.state.to
-                    }
-                ]
+                }
             };
             try{
                 const response = await fetch(url, options);
-                const result = await response.text();
+                const result = await response.json();
                 this.setState({
-                    converted: result
+                    converted: result.responseData.translatedText
                 });
             }catch(err){
-                console.error(err);
+                this.setState({
+                    converted: err
+                });
             };
         };
     };
@@ -436,17 +954,21 @@ class GoogleTranslatorWidget extends Component{
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
-        const prev = this.state.from;
-        this.setState(prevState => ({
-            from: prevState.to,
-            to: prev
-        }));
-        const v1 = $("#google-translator-translate-from").val();
-        const v2 = $("#google-translator-translate-to").val();
-        $("#google-translator-translate-from").val(v2);
-        $("#google-translator-translate-to").val(v1);
+        if(this.state.from !== this.state.to){
+            randColor();
+            const prev = this.state.from;
+            this.setState(prevState => ({
+                from: prevState.to,
+                to: prev
+            }));
+            const v1 = $("#google-translator-translate-from").val();
+            const v2 = $("#google-translator-translate-to").val();
+            $("#google-translator-translate-from").val(v2);
+            $("#google-translator-translate-to").val(v1);
+        };
     };
     componentDidMount(){
+        randColor();
         const select = document.getElementById("select-languages");
         for(var curr = 0; curr < languages.length; curr+=2){
             var optText = languages[curr];
@@ -457,12 +979,18 @@ class GoogleTranslatorWidget extends Component{
             select.appendChild(el);
         };
         $('#google-translator-translate-from optgroup').clone().appendTo('#google-translator-translate-to');
+        this.setState({
+            from: "en",
+            to: "ja"
+        });
+        $("#google-translator-translate-from").val("en");
+        $("#google-translator-translate-to").val("ja");
     };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
+                onStart={() => dragStart("google-translator")}
+                onStop={() => dragStop("google-translator")}
                 cancel="button, span, p, textarea, select"
                 bounds="parent">
                 <div id="google-translator-box"
@@ -478,7 +1006,6 @@ class GoogleTranslatorWidget extends Component{
                         <div className="select-center">
                             <select id="google-translator-translate-from"
                                 className="select-match"
-                                defaultValue={"en"}
                                 onChange={this.handleFrom}>
                                 <optgroup id="select-languages"
                                     label="Languages"></optgroup>
@@ -491,7 +1018,6 @@ class GoogleTranslatorWidget extends Component{
                             </button>
                             <select id="google-translator-translate-to"
                                 className="select-match"
-                                defaultValue={"en"}
                                 onChange={this.handleTo}></select>
                             <button className="btn-match-inverse"
                                 onClick={this.handleTranslate}>
@@ -525,16 +1051,6 @@ class CalculatorWidget extends Component{
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-    };
-    handleStart(){
-        document.getElementById("draggable-calculator-box").style.visibility = "visible";
-        document.getElementById("calculator-box").style.opacity = "0.5";
-        document.getElementById("calculator-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("draggable-calculator-box").style.visibility = "hidden";
-        document.getElementById("calculator-box").style.opacity = "1";
-        document.getElementById("calculator-box").style.zIndex = zIndexDefault;
     };
     handleClick(event){
         switch(event.target.value){
@@ -690,19 +1206,22 @@ class CalculatorWidget extends Component{
             memory: []
         });
     };
+    componentDidMount(){
+        randColor();
+    };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
-                cancel="button, span, p, input, textarea"
+                onStart={() => dragStart("calculator")}
+                onStop={() => dragStop("calculator")}
+                cancel="button, span, p, input, textarea, section"
                 bounds="parent">
                 <div id="calculator-box"
                     className="widget">
-                    <div id="animation-calculator-box"
+                    <div id="calculator-box-animation"
                         className="widget-animation">
-                        <span className="draggable"
-                            id="draggable-calculator-box">
+                        <span id="calculator-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
@@ -745,7 +1264,7 @@ class CalculatorWidget extends Component{
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
-                        <div id="calculator-btn-container">
+                        <section id="calculator-btn-container">
                             <div id="calculator-btn-memory-display">
                                 <div id="calculator-btn-memory-container">
                                     {this.state.memory.map(curr => <p>{curr}</p>)}
@@ -830,7 +1349,7 @@ class CalculatorWidget extends Component{
                             <button className="btn-match"
                                 onClick={this.handleClick}
                                 value="=">=</button>
-                        </div>
+                        </section>
                     </div>
                 </div>
             </Draggable>
@@ -861,16 +1380,6 @@ class WeatherWidget extends Component{
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleHelp = this.handleHelp.bind(this);
-    };
-    handleStart(){
-        document.getElementById("draggable-weather-box").style.visibility = "visible";
-        document.getElementById("weather-box").style.opacity = "0.5";
-        document.getElementById("weather-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("draggable-weather-box").style.visibility = "hidden";
-        document.getElementById("weather-box").style.opacity = "1";
-        document.getElementById("weather-box").style.zIndex = zIndexDefault;
     };
     handleChange(event){
         this.setState({
@@ -925,21 +1434,22 @@ class WeatherWidget extends Component{
         };
     };
     componentDidMount(){
+        randColor();
         this.handleUpdate();
     };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
+                onStart={() => dragStart("weather")}
+                onStop={() => dragStop("weather")}
                 cancel="button, span, input, section"
                 bounds="parent">
                 <div id="weather-box"
                     className="widget">
-                    <div id="animation-weather-box"
+                    <div id="weather-box-animation"
                         className="widget-animation">
-                        <span className="draggable"
-                            id="draggable-weather-box">
+                        <span id="weather-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
@@ -947,10 +1457,12 @@ class WeatherWidget extends Component{
                         <div id="weather-search-container">
                             <div id="weather-search-input-container">
                                 <input id="weather-search"
+                                    className="input-typable-with-help"
                                     placeholder="Enter location"
                                     onChange={this.handleChange}>
                                 </input>
                                 <button id="weather-search-help-button"
+                                    className="help-with-input-typable"
                                     onClick={this.handleHelp}>
                                     <IconContext.Provider value={{ size: "0.9em", className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
@@ -962,7 +1474,7 @@ class WeatherWidget extends Component{
                                 defaultPosition={{x: 10, y: 45}}
                                 bounds={{top: -125, left: -280, right: 300, bottom: 250}}>
                                 <section id="weather-search-help-container"
-                                    className="help">
+                                    className="popout">
                                     <ul>
                                         <li>Latitude and Longitude <br/><span className="font-small-light-transparent">e.g: 48.8567,2.3508</span></li>
                                         <li>City name <span className="font-small-light-transparent">e.g.: Paris</span></li>
@@ -1022,29 +1534,19 @@ class WeatherWidget extends Component{
 ///////////////////////
 /*
 class []Widget extends Component{
-    handleStart(){
-        document.getElementById("draggable-[]-box").style.visibility = "visible";
-        document.getElementById("[]-box").style.opacity = "0.5";
-        document.getElementById("[]-box").style.zIndex = zIndexDrag;
-    };
-    handleStop(){
-        document.getElementById("draggable-[]-box").style.visibility = "hidden";
-        document.getElementById("[]-box").style.opacity = "1";
-        document.getElementById("[]-box").style.zIndex = zIndexDefault;
-    };
     render(){
         return(
             <Draggable
-                onStart={this.handleStart}
-                onStop={this.handleStop}
-                cancel="button, span, p"
+                onStart={() => dragStart("[]")}
+                onStop={() => dragStop("[]")}
+                cancel="button, section"
                 bounds="parent">
                 <div id="[]-box"
                     className="widget">
-                    <div id="animation-[]-box"
+                    <div id="[]-box-animation"
                         className="widget-animation">
-                        <span className="draggable"
-                            id="draggable-[]-box">
+                        <span id="[]-box-draggable"
+                            className="draggable">
                             <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
@@ -1057,18 +1559,65 @@ class []Widget extends Component{
 }
 */
 
-function Widgets(){
-    return(
-        <div id="Widget-container">
-            <SettingWidget/>
-            <QuoteWidget/>
-            <TranslatorWidget/>
-            {/* <GoogleTranslatorWidget/> */}
-            <CalculatorWidget/>
-            <WeatherWidget/>
-        </div>
-    );
-}
+class Widgets extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            quote: false,
+            translator: false,
+            googleTranslator: false,
+            calculator: false,
+            weather: false
+        };
+        this.handleCallBack = this.handleCallBack.bind(this);
+    };
+    handleCallBack(what){
+        switch(what){
+            case "quote":
+                this.setState({
+                    quote: !this.state.quote
+                });
+                break;
+            case "translator":
+                this.setState({
+                    translator: !this.state.translator
+                });
+                break;
+            case "googleTranslator":
+                this.setState({
+                    googleTranslator: !this.state.googleTranslator
+                });
+                break;
+            case "calculator":
+                this.setState({
+                    calculator: !this.state.calculator
+                });
+                break;
+            case "weather":
+                this.setState({
+                    weather: !this.state.weather
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    componentDidMount(){
+        randColor();
+    };
+    render(){
+        return(
+            <div id="widget-container">
+                <SettingWidget showHide={this.handleCallBack}/>
+                {this.state.quote === true ? <QuoteWidget/> : <></>}
+                {this.state.translator === true ? <TranslatorWidget/> : <></>}
+                {this.state.googleTranslator === true ? <GoogleTranslatorWidget/> : <></>}
+                {this.state.calculator === true ? <CalculatorWidget/> : <></>}
+                {this.state.weather === true ? <WeatherWidget/> : <></>}
+            </div>
+        );
+    }
+};
 
 /// Render to page
 const container = document.getElementById('root');

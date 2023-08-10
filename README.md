@@ -18,3 +18,4 @@
 - mathjs
 - gh-pages
 - dotenv
+- react-cookie
