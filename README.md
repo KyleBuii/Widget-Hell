@@ -4,9 +4,9 @@
 
 ## Features
 - Draggable widgets
+- Display what widgets you want
 - Randomly generate quotes
-- Make your widgets do funny things with the "Do a trick!" button
-- Translate text (No "official" languages support at the moment. Only "other" languages)
+- Translate or modify text
 - Calculator
 - Weather
 

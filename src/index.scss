@@ -18,26 +18,55 @@ body{
     margin: 0;
 }
 
-/// Fonts
-.font-small-bold-transparent{
-    font-size: 12px;
+/// Class: fonts
+.font{
+    color: var(--randColor);
+    &.large{
+        font-size: 3vmin;
+    }
+    &.medium{
+        font-size: 2vmin;
+    }
+    &.small{
+        font-size: 1.4vmin;
+    }
+    &.smaller{
+        font-size: 1.3vmin;
+    }
+    &.normal{
+        font-weight: normal;
+    }
+    &.bold{
+        font-weight: bold;
+    }
+    &.normal-transparent{
+        font-weight: normal;
+        color: rgba(var(--randColorOpacity), 0.4);    
+    }
+    &.bold-transparent{
+        font-weight: bold;
+        color: rgba(var(--randColorOpacity), 0.4);
+    }
+}
+
+.quote{
+    margin: 0vmin 1vmin;
     font-weight: bold;
-    color: rgba(var(--randColorOpacity), 0.4);
+    color: var(--randColor);
+    &.large{
+        font-size: 6vmin;
+    }
 }
 
-.font-small-light-transparent{
-    font-size: 12px;
-    font-weight: light;
-    color: rgba(var(--randColorOpacity), 0.4);
+.author{
+    font-size: 1.5vmin;
+    text-align: right;
+    font-style: italic;
+    margin: 1vmin 3.2vmin 1.6vmin 0vmin;
+    color: var(--randColor);
 }
 
-.large-quote{
-    font-size: calc(30px + 2vmin);
-    font-weight: bold;
-    margin: 0px 10px;
-}
-
-/// Design
+/// Class: design
 .widget{
     z-index: 2;
     position: absolute;
@@ -45,9 +74,9 @@ body{
 
 .widget-animation{
     background-color: white;
-    padding: 25px;
-    border-radius: 25px;
-    border: 2px solid var(--randColor);
+    padding: 2.7vmin;
+    border-radius: 2.7vmin;
+    border: 0.2vmin solid var(--randColor);
 }
 
 .draggable{
@@ -60,40 +89,48 @@ body{
     filter: brightness(70%);
 }
 
-.scrollbar-cut-corner{
+.cut-scrollbar-corner-part-1{
+    width: 44vmin;
     overflow: hidden;
-    border: 2px solid var(--randColor);
-    border-radius: 15px; 
+    border: 0.2vmin solid var(--randColor);
+    border-radius: 1.6vmin;
+    &.textarea{
+        height: 9vmin;
+    }
+    &.p{
+        height: 16vmin;
+    }
 }
 
-.scrollbar-cut-corner-textarea{
-    width: 406px;
-    height: 80px;
-    font-size: 18px;
-    border: none;
-    resize: none;
-    outline: none;
+.cut-scrollbar-corner-part-2{
+    width: 44vmin;
+    padding: 0vmin;
+    margin: 0vmin;
     text-align: center;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
-.scrollbar-cut-corner-p{
-    word-wrap: break-word;
-    width: 400px;
-    height: 150px;
-    margin: 0;
-    padding: 5px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    font-size: 1.9vmin;
+    &.textarea{
+        height: 9vmin;
+        border: none;
+        resize: none;
+        outline: none;
+    }
+    &.p{
+        height: 16vmin;
+        word-wrap: break-word;
+    }
 }
 
 .btn-match{
-    padding: 8px;
+    max-height: 7vh;
+    max-width: 8.2vh;
+    padding: 0.8vmin;
     border: none;
-    border-radius: 10px;
+    border-radius: 1vmin;
     color: white;
     background-color: var(--randColor);
+    font-size: 1.4vmin;
     &:hover{
         cursor: pointer;
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -107,6 +144,8 @@ body{
     border: none;
     background-color: white;
     color: var(--randColor);
+    font-size: 1.4vmin;
+    padding: 0vmin 0.6vmin;
     &:hover{
         cursor: pointer;
         color: rgba(var(--randColorOpacity), 0.8);
@@ -114,15 +153,18 @@ body{
     &:active{
         transform: scale(0.95);
     }
+    &.small{
+        font-size: 1.3vmin;
+    }
 }
 
 .btn-match-option{
-    padding: 3px 7px;
+    padding: 0.3vmin 0.7vmin;
     border: none;
-    border-radius: 7px;
+    border-radius: 0.7vmin;
     color: white;
     background-color: var(--randColor);
-    font-size: 12px;
+    font-size: 1.3vmin;
     &:hover{
         cursor: pointer;
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -131,48 +173,52 @@ body{
         transform: scale(0.98);
     }
     &.long{
-        width: 235px;
+        width: 24.9vmin;
     }
     &.medium{
-        width: 115px;
+        width: 12.2vmin;
     }
     &.small{
-        width: 75px;
+        width: 7.97vmin;
     }
 }
 
 .select-match{
     cursor: pointer;
     color: var(--randColor);
-    border: 1px solid var(--randColor);
-    border-radius: 6px;
+    border: 0.1vmin solid var(--randColor);
+    border-radius: 0.6vmin;
+    font-size: 1.4vmin;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0.1vmin 1.9vmin 0.1vmin 0.5vmin;
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
 }
 
-.author{
-    font-size: calc(8px + 1vmin);
-    text-align: right;
-    font-style: italic;
-    margin-right: 30px;
-}
-
 .btn-ends{
     display: flex;
     justify-content: space-between;
-    margin: 0px 25px;
+    margin: 0vmin 2.6vmin;
 }
 
-.link{
+.when-elements-are-not-straight{
     display: inline-flex;
 }
 
-.select-center{
+.center-flex{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 1vmin;
+    &.only-justify-content{
+        align-items: unset;
+    }
+    &.only-align-items{
+        justify-content: unset;
+    }
 }
 
 .popout{
@@ -180,10 +226,10 @@ body{
     visibility: hidden;
     position: absolute;
     background-color: white;
-    font-size: 12px;
+    font-size: 1.3vmin;
     text-align: left;
-    border-radius: 20px;
-    box-shadow: 0px 0px 10px 1px var(--randColor);
+    border-radius: 2.1vmin;
+    box-shadow: 0vmin 0vmin 1vmin 0.1vmin var(--randColor);
 }
 
 .pointer-events-none{
@@ -191,29 +237,43 @@ body{
 }
 
 .input-typable{
-    border: 2px solid var(--randColor);
-    border-radius: 6px;
-    margin: 4px;
+    border: 0.2vmin solid var(--randColor);
+    font-size: 1.4vmin;
     &:focus{
         outline: none;
     }
-}
-
-.input-typable-with-help{
-    border: 2px solid var(--randColor);
-    border-right: none;
-    border-radius: 6px 0px 0px 6px;
-    &:focus{
-        outline: none;
+    &.all-side{
+        border-radius: 0.6vmin;
+        margin: 0.4vmin;
+        &.input-button-input{
+            height: 1.9vmin;
+            width: 10.6vmin;
+            margin: 0vmin 0.3vmin 0.5vmin;
+            padding: 0.1vmin 0.2vmin;
+        }
+    }
+    &.right-side{
+        padding: 0.1vmin 0.2vmin;
+        border-right: none;
+        border-radius: 0.6vmin 0vmin 0vmin 0.6vmin;
+        &.with-help-btn{
+            height: 2.6vmin;
+            width: 22.3vmin;
+        }
     }
 }
 
-.help-with-input-typable{
+.help-btn{
+    height: 3vmin;
+    width: 3vmin;
+    padding: 0.6vmin;
     background-color: white;
-    border: 2px solid var(--randColor);
-    border-left: none;
-    border-radius: 0px 6px 6px 0px;
+    border: 0.2vmin solid var(--randColor);
     cursor: pointer;
+    &.left-side{
+        border-left: none;
+        border-radius: 0vmin 0.6vmin 0.6vmin 0vmin;    
+    }
 }
 
 .option{
@@ -221,8 +281,8 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
-    gap: 5px;
+    font-size: 1.7vmin;
+    gap: 0.5vmin;
 }
 
 .option-item{
@@ -230,20 +290,31 @@ body{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    font-size: 12px;
+    gap: 0.5vmin;
+    font-size: 1.3vmin;
 }
 
 .space-nicely-top{
-    margin: 15px 0px 5px;
+    margin: 1.6vmin 0vmin 0.5vmin;
 }
 
 .space-nicely-all{
-    margin: 10px;
+    margin: 1vmin;
 }
 
 .disabled-option{
     opacity: 0.5;
+}
+
+.doesnt-work{
+    background-color: rgb(255, 0, 0);
+    &:hover{
+        cursor: not-allowed;
+        background-color: rgb(255, 0, 0);
+    }
+    &:active{
+        transform: none;
+    }
 }
 
 /// IDs
@@ -251,8 +322,6 @@ body{
     position: relative;
     font-family: 'Tahoma', sans-serif;
     background-color: var(--randColor);
-    font-size: calc(10px + 2vmin);
-    color: var(--randColor);
     overflow: hidden;
 }
 
@@ -269,153 +338,143 @@ body{
         visibility: hidden;
     }
     #settings-box-animation{
-        height: 45px;
-        width: 220px;
+        height: 4.8vmin;
+        width: 23.4vmin;
         #show-hide-widgets-popout{
-            padding: 10px;
+            padding: 1vmin;
         }
     }
 }
 
 #quote-box{
-    max-width: 800px;
+    max-width: 85vmin;
+    max-height: 45vmin;
     text-align: center;
     #quote-box-draggable{
         visibility: hidden;
     }
     #quote-box-animation{
-        padding: 5px 30px 25px;
+        padding: 0.5vmin 3.2vmin 2.7vmin;
     }
     #quote{
         display: flex;
         flex-direction: row;
-        margin-top: 20px;
+        margin-top: 2.1vmin;
         #quote-text{
-            padding-top: 10px;
+            padding-top: 1vmin;
         }
     }
 }
 
 #translator-box{
-    font-size: 18px;
+    font-size: 1.9vmin;
     #translator-box-draggable{
         visibility: hidden;
     }
     #translator-box-animation{
         #replace-popout{
             visibility: hidden;
-            height: 120px;
-            width: 280px;
-            input{
-                height: 18px;
-                width: 100px;
-            }
+            height: 11.5vmin;
+            width: 29.7vmin;
         }
         #reverse-popout{
             visibility: hidden;
-            height: 80px;
-            width: 280px;
+            height: 8.5vmin;
+            width: 29.7vmin;
         }
         #case-transform-popout{
             visibility: hidden;
         }
     }
     #translator-preview-cut-corner{
-        margin-top: 15px;
+        margin-top: 1.6vmin;
     }
 }
 
 #google-translator-box{
-    font-size: 18px;
+    font-size: 1.9vmin;
     #google-translator-box-draggable{
         visibility: hidden;
     }
     #google-translator-preview-cut-corner{
-        margin-top: 15px;
+        margin-top: 1.6vmin;
     }
 }
 
 #calculator-box{
-    font-size: 18px;
-    button{
-        width: 40px;
-        height: 30px;
-    }
+    font-size: 1.9vmin;
     #calculator-box-draggable{
         visibility: hidden;
     }
     #calculator-display-container{
         display: flex;
         flex-direction: column;
-        width: 170px;
-        margin: 10px 0px;
+        width: 18vmin;
+        margin: 0vmin 0vmin 0.5vmin;
         input{
             text-align: right;
             border: none;
-            padding: 0px;
+            padding: 0vmin;
         }
         #calculator-input-display{
-            margin: 0px 2px 5px 0px;
-            font-size: 12px;
+            margin: 0vmin 0.2vmin 0.5vmin 0vmin;
+            font-size: 1.3vmin;
             color: var(--randColor);
         }
         #calculator-input{
-            font-size: 29px;
+            font-size: 3.1vmin;
             font-weight: bold;
         }
     }
     #calculator-memory-container{
         display: flex;
         flex-direction: row;
-        padding: 0px 0px 5px 0px;
         button{
-            font-size: 12px;
-            width: 100%;
-            height: 100%;
+            padding: 0vmin 0.6vmin 0.5vmin;
         }
     }
     #calculator-btn-container{
         display: grid;
-        grid-template-columns: repeat(4, calc(30px + 1vh));
-        gap: 5px;
+        grid-template-columns: repeat(4, 4.2vmin);
+        gap: 0.5vmin;
         #calculator-btn-memory-display{
             visibility: hidden;
             position: absolute;
             top: 34%;
             left: 1%;
-            width: 223px;
-            height: 230px;
+            width: 23.7vmin;
+            height: 24vmin;
             background-color: white;
-            border-radius: 0px 0px 25px 25px;
+            border-radius: 0vmin 0vmin 2.6vmin 2.6vmin;
             #calculator-btn-memory-container{
                 display: flex;
                 flex-direction: column;
                 width: 90%;
                 height: 70%;
-                margin: 20px 5px 20px 15px;
+                margin: 2.1vmin 0.5vmin 2.1vmin 1.6vmin;
                 overflow-y: scroll;
                 overflow-x: hidden;
                 p{
-                    margin: 0px 5px 10px;
+                    margin: 0vmin 0.5vmin 1vmin;
                     text-align: right;
                     word-wrap: break-word;
                 }
             }
             #calculator-btn-memory-display-close{
                 position: absolute;
-                top: -52%;
-                left: 0%;
-                width: 100%;
-                height: 52%;
+                top: -51%;
+                left: -1%;
+                width: 23.9vmin;
+                height: 51%;
                 border: none;
-                border-radius: 25px 25px 0px 0px;
+                border-radius: 2.6vmin 2.6vmin 0vmin 0vmin;
                 background-color: rgba(0, 0, 0, 0.2);
                 cursor: pointer;
             }
             #calculator-btn-trash{
                 position: absolute;
-                bottom: 10px;
-                right: 5px;
+                bottom: 1vmin;
+                right: 0.5vmin;
                 background-color: transparent;
             }
         }
@@ -428,49 +487,43 @@ body{
     }
     #weather-box-animation{
         #weather-search-container{
-            display: flex;
-            flex-direction: row;
-            gap: 5px;
-            height: 35px;
-            width: 300px;
-            margin-bottom: 5px;
-            #weather-search-input-container{
-                display: inline-flex;
-                #weather-search{
-                    height: 25px;
-                    width: 210px;
-                }
-                #weather-search-help-button{
-                    height: 31px;
-                }
-            }
+            gap: 0.5vmin;
+            height: 3.7vmin;
+            width: 31.9vmin;
             #weather-search-help-container{
-                height: 180px;
-                width: 285px;            
+                height: 21.5vmin;
+                width: 31vmin;
+                ul{
+                    height: 21.5vmin;
+                    width: 25vmin;    
+                    margin: 1.2vmin 4vmin;
+                    padding: 0vmin;
+                }
             }
             #weather-search-btn-update{
-                height: 31px;
+                height: 3.3vmin;
             }
         }
         #weather-info-container{
             display: flex;
             flex-direction: column;
-            height: 200px;
-            width: 300px;
-            border: 2px solid var(--randColor);
-            border-radius: 8px;
-            font-size: 18px;
-            margin: 15px 0px 0px;
+            height: 21.2vmin;
+            width: 31.9vmin;
+            border: 0.2vmin solid var(--randColor);
+            border-radius: 0.8vmin;
+            margin: 1.6vmin 0vmin 0vmin;
             #weather-info-icon-temp{
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                font-size: 30px;
-                font-weight: bold;
+                #weather-info-icon{
+                    height: 6.8vmin;
+                    width: 6.8vmin;
+                }
                 #weather-info-temp-c-container{
                     display: flex;
                     flex-direction: column;
-                    margin-right: 30px;
+                    margin-right: 3.2vmin;
                 }
                 #weather-info-temp-f-container{
                     display: flex;
@@ -480,27 +533,25 @@ body{
             #weather-info-cond-local-time{
                 display: flex;
                 flex-direction: row;
-                gap: 29px;
-                margin: 0px 12px;
+                gap: 3.1vmin;
+                margin: 0vmin 1.3vmin;
             }
             #weather-info-wind{
                 display: flex;
                 flex-direction: row;
-                gap: 40px;
-                margin: 10px 12px 0px;
+                gap: 4.3vmin;
+                margin: 1vmin 1.3vmin 0vmin;
             }
             #weather-info-location{
                 position: absolute;
-                bottom: 30px;
-                right: 30px;
-                font-size: 14px;
+                bottom: 3.2vmin;
+                right: 3.2vmin;
             }
         }
         #weather-last-updated{
             position: absolute;
-            bottom: 8px;
-            left: 30px;
-            font-size: 14px;
+            bottom: 1vmin;
+            left: 3.2vmin;
         }
     }
 }
@@ -519,6 +570,7 @@ body{
 }
 */
 
+/// Animations
 @keyframes fadeIn{
     0%   {opacity: 0;}
     100% {opacity: 1;}
@@ -558,4 +610,12 @@ body{
     40%  {transform: rotate(60deg); transform-origin: top left; animation-timing-function: ease-in-out;} 
     80%  {transform: rotate(60deg) translateY(0); opacity: 1; transform-origin: top left; animation-timing-function: ease-in-out;} 
     100% {transform: translateY(700px); opacity: 0; }
+}
+
+/// Webkits
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 1.5vmin white inset;
 }

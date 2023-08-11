@@ -208,7 +208,7 @@ class SettingWidget extends Component{
                         className="widget-animation">
                         <span id="settings-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "5.1vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -217,6 +217,8 @@ class SettingWidget extends Component{
                                 className="option-item btn-match-option long disabled-option"
                                 onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
                             <section className="option-item">
+                                <button className="btn-match-option medium"
+                                    onClick={this.handleTrick}>Do a trick!</button>
                                 <button className="btn-match-option medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
                             </section>
@@ -230,7 +232,7 @@ class SettingWidget extends Component{
                                 className="popout">
                                 <section className="option space-nicely-all">
                                     <button id="show-hide-widgets-popout-btn-advanced"
-                                        className="option-item btn-match-option long disabled-option"
+                                        className="doesnt-work option-item btn-match-option long disabled-option"
                                         onClick={() => this.handlePressableBtn("advanced")}>Advanced</button>
                                     <section className="option-item">
                                         <button id="show-hide-widgets-popout-btn-quote"
@@ -307,9 +309,12 @@ class QuoteWidget extends Component{
         });
         /// Restart animations
         const quoteText = document.getElementById("quote");
+        const quoteAuthor = document.getElementById("author");
         quoteText.style.animation = "none";
+        quoteAuthor.style.animation = "none";
         window.requestAnimationFrame(function(){
             quoteText.style.animation = "fadeIn 2s";
+            quoteAuthor.style.animation = "fadeIn 2s";
         });
     };
     render(){
@@ -325,18 +330,20 @@ class QuoteWidget extends Component{
                         className="widget-animation">
                         <span id="quote-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         <div id="quote">
-                            <span className="large-quote">"</span>
-                            <span id="quote-text">{this.state.currentQuote}</span>
-                            <span className="large-quote">"</span>
+                            <span className="quote large">"</span>
+                            <span id="quote-text"
+                                className="font large normal">{this.state.currentQuote}</span>
+                            <span className="quote large">"</span>
                         </div>
-                        <p className="author">- {this.state.currentAuthor}</p>
+                        <p id="author"
+                            className="author">- {this.state.currentAuthor}</p>
                         <div className="btn-ends">
-                            <a className="link"
+                            <a className="when-elements-are-not-straight"
                                 href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
                                 target="_blank"
                                 rel="noreferrer">
@@ -748,11 +755,11 @@ class TranslatorWidget extends Component{
                         className="widget-animation">
                         <span id="translator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "5em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="select-center">
+                        <div className="center-flex">
                             <select id="translator-translate-from"
                                 className="select-match"
                                 defaultValue={"en"}
@@ -772,7 +779,7 @@ class TranslatorWidget extends Component{
                             </select>
                             <button className="btn-match-inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -791,7 +798,7 @@ class TranslatorWidget extends Component{
                                 <optgroup label="Modify">
                                     <option value="replace">Replace</option>
                                     <option value="reverse">Reverse</option>
-                                    <option value="case-transform">Case Transform</option>
+                                    {/* <option value="case-transform">Case Transform</option> */}
                                 </optgroup>
                             </select>
                         </div>
@@ -802,14 +809,14 @@ class TranslatorWidget extends Component{
                             bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
                             <section id="replace-popout"
                                 className="popout">
-                                <section className="select-center space-nicely-top">
-                                    <input className="input-typable"
+                                <section className="center-flex space-nicely-top">
+                                    <input className="input-typable all-side input-button-input"
                                         type="text"
                                         onChange={this.handleReplaceFrom}></input>
-                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
                                         <FaArrowRightLong/>
                                     </IconContext.Provider> 
-                                    <input className="input-typable"
+                                    <input className="input-typable all-side input-button-input"
                                         type="text"
                                         onChange={this.handleReplaceTo}></input>
                                 </section>
@@ -880,15 +887,15 @@ class TranslatorWidget extends Component{
                                 </section>
                             </section>
                         </Draggable>
-                        <div className="scrollbar-cut-corner">
-                            <textarea className="scrollbar-cut-corner-textarea"
+                        <div className="cut-scrollbar-corner-part-1 textarea">
+                            <textarea className="cut-scrollbar-corner-part-2 textarea"
                                 onChange={this.handleChange}
                                 value={this.state.input}></textarea>
                         </div>
                         <div id="translator-preview-cut-corner"
-                            className="scrollbar-cut-corner">
+                            className="cut-scrollbar-corner-part-1 p">
                             <p id="translator-translated-text"
-                                className="scrollbar-cut-corner-p">{this.state.converted}</p>
+                                className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
                         </div>
                     </div>
                 </div>
@@ -999,11 +1006,11 @@ class GoogleTranslatorWidget extends Component{
                         className="widget-animation">
                         <span id="google-translator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "5em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="select-center">
+                        <div className="center-flex">
                             <select id="google-translator-translate-from"
                                 className="select-match"
                                 onChange={this.handleFrom}>
@@ -1012,7 +1019,7 @@ class GoogleTranslatorWidget extends Component{
                             </select>
                             <button className="btn-match-inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -1021,18 +1028,18 @@ class GoogleTranslatorWidget extends Component{
                                 onChange={this.handleTo}></select>
                             <button className="btn-match-inverse"
                                 onClick={this.handleTranslate}>
-                                <IconContext.Provider value={{ size: "0.9em", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
                                 </IconContext.Provider>
                             </button>
                         </div>
-                        <div className="scrollbar-cut-corner">
-                            <textarea className="scrollbar-cut-corner-textarea"
+                        <div className="cut-scrollbar-corner-part-1 textarea">
+                            <textarea className="cut-scrollbar-corner-part-2 textarea"
                                 onChange={this.handleChange}></textarea>
                         </div>
                         <div id="google-translator-preview-cut-corner"
-                            className="scrollbar-cut-corner">
-                            <p className="scrollbar-cut-corner-p">{this.state.converted}</p>
+                            className="cut-scrollbar-corner-part-1">
+                            <p className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
                         </div>
                     </div>
                 </div>
@@ -1222,7 +1229,7 @@ class CalculatorWidget extends Component{
                         className="widget-animation">
                         <span id="calculator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "6.8vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -1238,29 +1245,30 @@ class CalculatorWidget extends Component{
                                 readOnly>
                             </input>
                         </div>
-                        <div id="calculator-memory-container">
+                        <div id="calculator-memory-container"
+                            className="font smaller">
                             <button id="calculator-btn-MC"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="MC">MC</button>
                             <button id="calculator-btn-MR"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="MR">MR</button>
                             <button id="calculator-btn-M+"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="M+">M+</button>
                             <button id="calculator-btn-M-"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="M-">M&minus;</button>
                             <button id="calculator-btn-MS"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="MS">MS</button>
                             <button id="calculator-btn-Mv"
-                                className="btn-match-inverse"
+                                className="btn-match-inverse small"
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
@@ -1450,41 +1458,41 @@ class WeatherWidget extends Component{
                         className="widget-animation">
                         <span id="weather-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div id="weather-search-container">
-                            <div id="weather-search-input-container">
-                                <input id="weather-search"
-                                    className="input-typable-with-help"
+                        <div id="weather-search-container"
+                            className="center-flex">
+                            <div className="when-elements-are-not-straight">
+                                <input className="input-typable right-side with-help-btn"
                                     placeholder="Enter location"
                                     onChange={this.handleChange}>
                                 </input>
-                                <button id="weather-search-help-button"
-                                    className="help-with-input-typable"
+                                <button className="help-btn left-side when-elements-are-not-straight"
                                     onClick={this.handleHelp}>
-                                    <IconContext.Provider value={{ size: "0.9em", className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
                                 </button>
                             </div>
+                            {/* Search help popout */}
                             <Draggable
                                 cancel="li"
                                 defaultPosition={{x: 10, y: 45}}
                                 bounds={{top: -125, left: -280, right: 300, bottom: 250}}>
                                 <section id="weather-search-help-container"
                                     className="popout">
-                                    <ul>
-                                        <li>Latitude and Longitude <br/><span className="font-small-light-transparent">e.g: 48.8567,2.3508</span></li>
-                                        <li>City name <span className="font-small-light-transparent">e.g.: Paris</span></li>
-                                        <li>US zip <span className="font-small-light-transparent">e.g.: 10001</span></li>
-                                        <li>UK postcode <span className="font-small-light-transparent">e.g: SW1</span></li>
-                                        <li>Canada postal code <span className="font-small-light-transparent">e.g: G2J</span></li>
-                                        <li>Metar:&lt;metar code&gt; <span className="font-small-light-transparent">e.g: metar:EGLL</span></li>
-                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font-small-light-transparent">e.g: iata:DXB</span></li>
-                                        <li>Auto IP lookup <span className="font-small-light-transparent">e.g: auto:ip</span></li>
-                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font-small-light-transparent">e.g: 100.0.0.1</span></li>
+                                    <ul className="font small">
+                                        <li>Latitude and Longitude <br/><span className="font small normal-transparent">e.g: 48.8567,2.3508</span></li>
+                                        <li>City name <span className="font small normal-transparent">e.g.: Paris</span></li>
+                                        <li>US zip <span className="font small normal-transparent">e.g.: 10001</span></li>
+                                        <li>UK postcode <span className="font small normal-transparent">e.g: SW1</span></li>
+                                        <li>Canada postal code <span className="font small normal-transparent">e.g: G2J</span></li>
+                                        <li>Metar:&lt;metar code&gt; <span className="font small normal-transparent">e.g: metar:EGLL</span></li>
+                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font small normal-transparent">e.g: iata:DXB</span></li>
+                                        <li>Auto IP lookup <span className="font small normal-transparent">e.g: auto:ip</span></li>
+                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small normal-transparent">e.g: 100.0.0.1</span></li>
                                     </ul>
                                 </section>
                             </Draggable>
@@ -1500,28 +1508,34 @@ class WeatherWidget extends Component{
                                     src={this.state.weatherIcon}
                                     alt="weather-icon"></img>
                                 <div id="weather-info-temp-c-container">
-                                    <span id="weather-info-temp-c">{this.state.tempC}&deg;C</span>
-                                    <span className="font-small-bold-transparent">{this.state.feelsLikeC}&deg;C</span>
+                                    <span id="weather-info-temp-c"
+                                        className="font large bold">{this.state.tempC}&deg;C</span>
+                                    <span className="font small bold-transparent center-flex">{this.state.feelsLikeC}&deg;C</span>
                                 </div>
                                 <div id="weather-info-temp-f-container">
-                                    <span id="weather-info-temp-f">{this.state.tempF}&deg;F</span>
-                                    <span className="font-small-bold-transparent">{this.state.feelsLikeF}&deg;F</span>
+                                    <span id="weather-info-temp-f"
+                                        className="font large bold">{this.state.tempF}&deg;F</span>
+                                    <span className="font small bold-transparent center-flex">{this.state.feelsLikeF}&deg;F</span>
                                 </div>
                             </div>
-                            <div id="weather-info-cond-local-time">
+                            <div id="weather-info-cond-local-time"
+                                className="font medium normal">
                                 <span>{this.state.weatherCondition}</span>
                                 <span>{this.state.localTime}</span>
                             </div>
-                            <div id="weather-info-wind">
+                            <div id="weather-info-wind"
+                                className="font medium normal">
                                 <span>Wind:</span>
                                 <span>{this.state.windKPH} KPH</span>
                                 <span>{this.state.windMPH} MPH</span>
                             </div>
-                            <div id="weather-info-location">
+                            <div id="weather-info-location"
+                                className="font small normal">
                                 <span>{this.state.name}, {this.state.region}, {this.state.country}</span>
                             </div>
                         </section>
-                        <span id="weather-last-updated">Last updated: {this.state.lastUpdated}</span>
+                        <span id="weather-last-updated"
+                            className="font small normal">Last updated: {this.state.lastUpdated}</span>
                     </div>
                 </div>
             </Draggable>
@@ -1547,7 +1561,7 @@ class []Widget extends Component{
                         className="widget-animation">
                         <span id="[]-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
