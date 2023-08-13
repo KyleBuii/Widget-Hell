@@ -18,6 +18,17 @@ const zIndexDrag = 5;
 const widgetsArray = ["settings-box-animation"];
 const animationsArray = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
+const uwuDictionary = {
+    "this": ["dis"],
+    "the": ["da", "tha"],
+    "that": ["dat"],
+    "my": ["mwie"],
+    "have": ["habe", "habve"],
+    "epic": ["ebic"],
+    "worse": ["wose"]
+};
+const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
+    , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)"];
 
 /// Functions
 function randColor(){
@@ -55,6 +66,26 @@ function dragStop(what){
             document.getElementById(what + "-box").style.zIndex = zIndexDefault;
             break;
     }
+};
+
+function sortOptgroup(optgroup){
+    const optgroupOptions = $(optgroup + ' option');
+    const arrOptgroupOptions = optgroupOptions
+        .map(function(_, o){
+            return{
+                text: $(o).text(),
+                value: $(o).val()
+            };
+        }).get();
+    arrOptgroupOptions.sort(function(o1, o2){
+        return o1.text > o2.text ? 1
+            : o1.text < o2.text ? -1
+            : 0;
+    });
+    optgroupOptions.each(function(i, o){
+        $(o).val = arrOptgroupOptions.value;
+        $(o).text(arrOptgroupOptions[i].text);
+    });
 };
 
 /// Components
@@ -217,8 +248,6 @@ class SettingWidget extends Component{
                                 className="option-item btn-match-option long disabled-option"
                                 onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
                             <section className="option-item">
-                                <button className="btn-match-option medium"
-                                    onClick={this.handleTrick}>Do a trick!</button>
                                 <button className="btn-match-option medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
                             </section>
@@ -445,6 +474,48 @@ class TranslatorWidget extends Component{
                         .replace(/[!]/ig, " peko!")
                         .replace(/[?]/ig, " peko?")
                 }));
+                break;
+            case "uwu":
+                const reUwuDictionary = new RegExp(Object.keys(uwuDictionary)
+                    .map((key) => {
+                        return "\\b" + key + "\\b";
+                    })
+                    .join("|"), "i");
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                        .toString()
+                        .toLowerCase()
+                        .split(/(\w+)/)
+                        .map((word) => {
+                            return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
+                                : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
+                                : (reUwuDictionary.test(word)) ? word.replace(reUwuDictionary, uwuDictionary[word][Math.floor(Math.random() * uwuDictionary[word].length)])
+                                : (/(l)\1/.test(word.substring(1, word.length-1))) ? word.replace(/(l)\1/, "ww")
+                                : (/(r)\1/.test(word.substring(1, word.length-1))) ? word.replace(/(r)\1/, "ww")
+                                : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
+                                : (/[h]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([h])(\w*)/, "$1b$3")
+                                : (/[f]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([f])(\w*)/, "$1b$3")
+                                : word.replace(/(?=\w{3,})^(\w{1})(\w*)/, "$1w$2");
+                        })
+                }), () => {
+                    /// Insert emoticon at random position
+                    var randPosition;
+                    const randEmoticon = Math.floor(Math.random() * uwuEmoticons.length);
+                    if(this.state.converted.length > 4){
+                        randPosition = Math.floor(Math.random() * (this.state.converted.length - 2) + 2);
+                        this.setState(prevState => ({
+                            converted: [...prevState.converted.slice(0, randPosition)
+                                , uwuEmoticons[randEmoticon]
+                                , ...prevState.converted.slice(randPosition)]
+                                .join(" ")
+                        }));
+                    }else{
+                        this.setState(prevState => ({
+                            converted: prevState.converted
+                                .join(" ")
+                        }));
+                    };
+                });
                 break;
             /// Encryption
             case "base64":
@@ -741,6 +812,10 @@ class TranslatorWidget extends Component{
         $('#translator-translate-from #translate-from-languages option').clone().prependTo('#translate-to-languages');
         $('#translator-translate-from #translate-from-other-languages option').clone().prependTo('#translate-to-other-languages');
         $('#translator-translate-from #translate-from-encryption option').clone().prependTo('#translate-to-encryption');
+        /// Sort the "translate-to" optgroups options alphabetically
+        sortOptgroup('#translator-translate-to #translate-to-other-languages');
+        sortOptgroup('#translator-translate-to #translate-to-encryption');
+        sortOptgroup('#translator-translate-to #translate-to-modify');
     };
     render(){
         return(
@@ -792,6 +867,7 @@ class TranslatorWidget extends Component{
                                 <optgroup label="Other Languages"
                                     id="translate-to-other-languages">
                                     <option value="pig-latin">Pig latin</option>
+                                    <option value="uwu">UwU</option>
                                 </optgroup>
                                 <optgroup label="Encryption"
                                     id="translate-to-encryption"></optgroup>
@@ -1479,7 +1555,7 @@ class WeatherWidget extends Component{
                             {/* Search help popout */}
                             <Draggable
                                 cancel="li"
-                                defaultPosition={{x: 10, y: 45}}
+                                defaultPosition={{x: 10, y: 120}}
                                 bounds={{top: -125, left: -280, right: 300, bottom: 250}}>
                                 <section id="weather-search-help-container"
                                     className="popout">

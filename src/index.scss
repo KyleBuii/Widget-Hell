@@ -193,6 +193,10 @@ body{
     -webkit-appearance: none;
     appearance: none;
     padding: 0.1vmin 1.9vmin 0.1vmin 0.5vmin;
+    background-image: url("./imgs/downArrow.svg");
+    background-repeat: no-repeat;
+    background-position: right 0.2vmin top 0.2vmin;
+    background-size: 1.6vmin 1.5vmin;
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
