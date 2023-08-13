@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/Widget-Hell/static/css/main.7d3edf9e.css",
-    "main.js": "/Widget-Hell/static/js/main.811c2fb9.js",
+    "main.css": "/Widget-Hell/static/css/main.e31b2b0c.css",
+    "main.js": "/Widget-Hell/static/js/main.8ba52c21.js",
+    "static/media/downArrow.svg": "/Widget-Hell/static/media/downArrow.e63037b877cd3aed0c6e.svg",
     "index.html": "/Widget-Hell/index.html",
-    "main.7d3edf9e.css.map": "/Widget-Hell/static/css/main.7d3edf9e.css.map",
-    "main.811c2fb9.js.map": "/Widget-Hell/static/js/main.811c2fb9.js.map"
+    "main.e31b2b0c.css.map": "/Widget-Hell/static/css/main.e31b2b0c.css.map",
+    "main.8ba52c21.js.map": "/Widget-Hell/static/js/main.8ba52c21.js.map"
   },
   "entrypoints": [
-    "static/css/main.7d3edf9e.css",
-    "static/js/main.811c2fb9.js"
+    "static/css/main.e31b2b0c.css",
+    "static/js/main.8ba52c21.js"
   ]
 }
