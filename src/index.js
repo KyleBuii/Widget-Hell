@@ -15,9 +15,49 @@ import { evaluate, round } from 'mathjs';
 /// Variables
 const zIndexDefault = 2;
 const zIndexDrag = 5;
+const colorRange = 200;
 const widgetsArray = ["settings-box-animation"];
 const animationsArray = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
+const quotes = [
+    {
+        qte: "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you."
+        , au: "Some college professor"
+    },
+    {
+        qte: "Your direction is more important than your speed."
+        , au: "Richard L. Evans"
+    },
+    {
+        qte: "All things are difficult before they are easy."
+        , au: "Thomas Fuller"
+    },
+    {
+        qte: "Your first workout will be bad. Your first podcast will be bad. Your first speech will be bad. Your first video will be bad. Your first ANYTHING will be bad. But you can't make your 100th without making your first."
+        , au: ""
+    }, 
+    {
+        qte: "If you are depressed, you are living in the past. If you are anxious, you are living in the future. If you are at peace, you are living in the present."
+        , au: "Lao Tzu"
+    },
+    {
+        qte: "Accept both compliments and criticism. It takes both sun and rain for a flower to grow."
+        , au: ""
+    }
+];
+const sentences = [
+    "Curse you Perry the Platypus."
+    , "My mum (82F) told me (12M) to do the dishes (16) but I (12M) was too busy playing Fortnite (3 kills) so I (12M) grabbed my controller (DualShock 4) and threw it at her (138kph). She fucking died, and I (12M) went to prison (18 years). While in prison I (12M) incited several riots (3) and assumed leadership of a gang responsible for smuggling drugs (cocaine) into the country. I (12M) also ordered the assassination of several celebrities (Michael Jackson, Elvis Presley and Jeffrey Epstein) and planned a terrorist attack (9/11)."
+    , "So I (74M) was recently hit by a car (2014 Honda) and died. My wife (5F) organized me a funeral (cost $2747) without asking me (74M) at all. I (74M) was unable to make it because I (74M) was dead (17 days). At the funeral I heard my dad (15M) and other family members talking about how they wish I could be there and now I feel bad for not showing up."
+    , "I think fortnite should add a pregnant female skin. Every kill she gets she slowly gives birth. When in water blood comes out. At 10 kills she gives birth and the baby can be your pet."
+    , "PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT"    
+    , 'Twitch should ban the term "live-streaming." It’s offensive to dead people. My great grandparents are dead and I would like to show them some respect and have twitch ban the term “live-streaming”. It’s a slur used against dead people.'
+    , 'I, an atheist, accidentally said “oh my g*d” instead of “oh my science”'
+];
+const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
+    + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
+    + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
+const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
 const uwuDictionary = {
     "this": ["dis"],
     "the": ["da", "tha"],
@@ -25,7 +65,9 @@ const uwuDictionary = {
     "my": ["mwie"],
     "have": ["habe", "habve"],
     "epic": ["ebic"],
-    "worse": ["wose"]
+    "worse": ["wose"],
+    "you": ["uwu", "u"],
+    "of": ["ob"]
 };
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
     , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)"];
@@ -33,9 +75,9 @@ const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
 /// Functions
 function randColor(){
     const r = document.querySelector(":root");
-    const randColorOpacity = Math.floor(Math.random() * 255)
-        + "," + Math.floor(Math.random() * 255) 
-        + "," + Math.floor(Math.random() * 255);
+    const randColorOpacity = Math.floor(Math.random() * colorRange)
+        + "," + Math.floor(Math.random() * colorRange) 
+        + "," + Math.floor(Math.random() * colorRange);
     const randColor = "rgb(" + randColorOpacity + ")";
     r.style.setProperty("--randColor", randColor);
     r.style.setProperty("--randColorOpacity", randColorOpacity);
@@ -88,7 +130,41 @@ function sortOptgroup(optgroup){
     });
 };
 
-/// Components
+function mergePunctuation(arr){
+    if(arr.length <= 1){
+        return arr;
+    };
+    for(let i = 1; i < arr.length; i++){
+        if(/^[^\w("$]+/.test(arr[i])){
+            arr[i-1] += arr[i];
+            arr.splice(i, 1);
+        }else if(/^[($]+/.test(arr[i])){
+            arr[i] += arr[i+1];
+            arr.splice(i+1, 1);
+        };
+    };
+    return arr;
+};
+
+function grep(arr, filter){
+    var result = [];
+    if(arr.length <= 1){
+        return arr;
+    };
+    for(let i = 0; i < arr.length; i++){
+        const e = arr[i]||"";
+        if(filter ? filter(e) : e){
+            result.push(e);
+        };
+    };
+    return result;
+};
+
+function randSentence(){
+    return sentences[Math.floor(Math.random() * sentences.length)];
+};
+
+/// Widgets
 class SettingWidget extends Component{
     constructor(props){
         super(props);
@@ -187,11 +263,14 @@ class SettingWidget extends Component{
                         googleTranslator: true
                     });
                     btn.style.opacity = "1";
+                    widgetsArray.push("google-translator-box-animation");
                 }else{
                     this.setState({
                         googleTranslator: false
                     });
                     btn.style.opacity = "0.5";
+                    const indexGoogleTranslator = widgetsArray.indexOf("google-translator-box-animation");
+                    this.unorderedRemove(widgetsArray, indexGoogleTranslator);
                 };
                 break;
             case "calculator":
@@ -201,11 +280,14 @@ class SettingWidget extends Component{
                         calculator: true
                     });
                     btn.style.opacity = "1";
+                    widgetsArray.push("calculator-box-animation");
                 }else{
                     this.setState({
                         calculator: false
                     });
                     btn.style.opacity = "0.5";
+                    const indexCalculator = widgetsArray.indexOf("calculator-box-animation");
+                    this.unorderedRemove(widgetsArray, indexCalculator);
                 };
                 break;
             case "weather":
@@ -215,11 +297,14 @@ class SettingWidget extends Component{
                         weather: true
                     });
                     btn.style.opacity = "1";
+                    widgetsArray.push("weather-box-animation");
                 }else{
                     this.setState({
                         weather: false
                     });
                     btn.style.opacity = "0.5";
+                    const indexWeather = widgetsArray.indexOf("weather-box-animation");
+                    this.unorderedRemove(widgetsArray, indexWeather);
                 };
                 break;
             default:
@@ -245,10 +330,10 @@ class SettingWidget extends Component{
                         </span>
                         <section className="option">
                             <button id="settings-show-hide-widgets-btn"
-                                className="option-item btn-match-option long disabled-option"
+                                className="option-item btn-match option opt-long disabled-option"
                                 onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
                             <section className="option-item">
-                                <button className="btn-match-option medium"
+                                <button className="btn-match option opt-medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
                             </section>
                         </section>
@@ -261,27 +346,27 @@ class SettingWidget extends Component{
                                 className="popout">
                                 <section className="option space-nicely-all">
                                     <button id="show-hide-widgets-popout-btn-advanced"
-                                        className="doesnt-work option-item btn-match-option long disabled-option"
+                                        className="doesnt-work option-item btn-match option opt-long disabled-option"
                                         onClick={() => this.handlePressableBtn("advanced")}>Advanced</button>
                                     <section className="option-item">
                                         <button id="show-hide-widgets-popout-btn-quote"
-                                            className="btn-match-option medium disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("quote")}>Quote</button>
                                         <button id="show-hide-widgets-popout-btn-translator"
-                                            className="btn-match-option medium disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("translator")}>Translator</button>
                                     </section>
                                     <section className="option-item">
                                         <button id="show-hide-widgets-popout-btn-google-translator"
-                                            className="btn-match-option medium disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("google-translator")}>Google Translator</button>
                                         <button id="show-hide-widgets-popout-btn-calculator"
-                                            className="btn-match-option medium disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("calculator")}>Calculator</button>
                                     </section>
                                     <section className="option-item">
                                         <button id="show-hide-widgets-popout-btn-weather"
-                                            className="btn-match-option medium disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("weather")}>Weather</button>
                                     </section>
                                 </section>
@@ -298,28 +383,6 @@ class QuoteWidget extends Component{
     constructor(props){
         super(props);
         this.state = {
-            quotes: [
-                "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you.",
-                "Your direction is more important than your speed.",
-                "All things are difficult before they are easy.",
-                "Your first workout will be bad. Your first podcast will be bad. Your first speech will be bad. Your first video will be bad. Your first ANYTHING will be bad. But you can't make your 100th without making your first.",
-                "If you are depressed, you are living in the past. If you are anxious, you are living in the future. If you are at peace, you are living in the present.",
-                "Accept both compliments and criticism. It takes both sun and rain for a flower to grow.",
-            ],
-            authors: [
-                "Some college professor",
-                "Richard L. Evans",
-                "Thomas Fuller",
-                "",
-                "Lao Tzu",
-                "",
-            ],
-            quotesInappropiate: [
-
-            ],
-            authorsInappropiate: [
-
-            ],
             currentQuote: "",
             currentAuthor: ""
         };
@@ -330,10 +393,10 @@ class QuoteWidget extends Component{
     };
     handleNewQuote(){
         randColor();
-        const randQuote = Math.floor(Math.random() * this.state.quotes.length);
-        const randQuoteAuthor = (this.state.authors[randQuote] === "") ? "Anon" : this.state.authors[randQuote];
+        const randQuote = Math.floor(Math.random() * quotes.length);
+        const randQuoteAuthor = (quotes[randQuote]["au"] === "") ? "Anon" : quotes[randQuote]["au"];
         this.setState({
-            currentQuote: this.state.quotes[randQuote],
+            currentQuote: quotes[randQuote]["qte"],
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
@@ -415,6 +478,7 @@ class TranslatorWidget extends Component{
         this.handleSave = this.handleSave.bind(this);
         this.handleReplaceFrom = this.handleReplaceFrom.bind(this);
         this.handleReplaceTo = this.handleReplaceTo.bind(this);
+        this.handleRandSentence = this.handleRandSentence.bind(this);
     };
     handleChange(event){
         this.setState({
@@ -438,9 +502,11 @@ class TranslatorWidget extends Component{
                 break;
             /// Encryption
             case "base64":
-                this.setState(prevState => ({
-                    convert: atob(prevState.input)
-                }));
+                if(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(this.state.input)){
+                    this.setState(prevState => ({
+                        convert: decodeURIComponent(escape(window.atob(prevState.input)))
+                    }));
+                };
                 break;
             default:
                 this.setState(prevState => ({
@@ -480,24 +546,28 @@ class TranslatorWidget extends Component{
                     .map((key) => {
                         return "\\b" + key + "\\b";
                     })
-                    .join("|"), "i");
+                    .join("|"));
                 this.setState(prevState => ({
-                    converted: prevState.convert
+                    converted: grep(prevState.convert
                         .toString()
                         .toLowerCase()
-                        .split(/(\w+)/)
+                        .split(matchAll))
                         .map((word) => {
                             return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
                                 : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
                                 : (reUwuDictionary.test(word)) ? word.replace(reUwuDictionary, uwuDictionary[word][Math.floor(Math.random() * uwuDictionary[word].length)])
-                                : (/(l)\1/.test(word.substring(1, word.length-1))) ? word.replace(/(l)\1/, "ww")
-                                : (/(r)\1/.test(word.substring(1, word.length-1))) ? word.replace(/(r)\1/, "ww")
+                                : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, "ww")
+                                : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, "ww")
                                 : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
                                 : (/[h]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([h])(\w*)/, "$1b$3")
                                 : (/[f]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([f])(\w*)/, "$1b$3")
-                                : word.replace(/(?=\w{3,})^(\w{1})(\w*)/, "$1w$2");
+                                : (/^\d/.test(word)) ? word
+                                : word.replace(/(?=\w{3,})^([^\Ww])(\w*)/, "$1w$2");
                         })
                 }), () => {
+                    this.setState(prevState => ({
+                        converted: mergePunctuation(prevState.converted)
+                    }));
                     /// Insert emoticon at random position
                     var randPosition;
                     const randEmoticon = Math.floor(Math.random() * uwuEmoticons.length);
@@ -509,7 +579,8 @@ class TranslatorWidget extends Component{
                                 , ...prevState.converted.slice(randPosition)]
                                 .join(" ")
                         }));
-                    }else{
+                    }else if(this.state.converted.length <= 4
+                        && this.state.converted.length >= 2){
                         this.setState(prevState => ({
                             converted: prevState.converted
                                 .join(" ")
@@ -520,7 +591,7 @@ class TranslatorWidget extends Component{
             /// Encryption
             case "base64":
                 this.setState(prevState => ({
-                    converted: btoa(prevState.convert)
+                    converted: btoa(unescape(encodeURIComponent(prevState.convert)))
                 }));
                 break;
             /// Modify
@@ -799,6 +870,16 @@ class TranslatorWidget extends Component{
                 break;
         };
     };
+    /// Handles random sentence button
+    handleRandSentence(){
+        this.setState({
+            input: randSentence(),
+            from: "en"
+        }, () => {
+            this.convertFromText();
+            $("#translator-translate-from").val("en");
+        });
+    };
     componentDidMount(){
         randColor();
         /// Default values
@@ -852,9 +933,9 @@ class TranslatorWidget extends Component{
                                     <option value="base64">Base64</option>
                                 </optgroup>
                             </select>
-                            <button className="btn-match-inverse"
+                            <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -897,11 +978,11 @@ class TranslatorWidget extends Component{
                                         onChange={this.handleReplaceTo}></input>
                                 </section>
                                 <section className="option">
-                                    <button className="option-item btn-match-option long"
+                                    <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
                                         <button id="replace-popout-btn-replace-case-sensitive"
-                                            className="btn-match-option medium"
+                                            className="btn-match option opt-medium"
                                             onClick={() => this.handlePressableBtn("replace-case-sensitive", "replace")}>Case Sensitive</button>
                                     </section>
                                 </section>
@@ -915,17 +996,17 @@ class TranslatorWidget extends Component{
                             <section id="reverse-popout"
                                 className="popout">
                                 <section className="option space-nicely-top">
-                                    <button className="option-item btn-match-option long"
+                                    <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
                                         <button id="reverse-popout-btn-reverse-word"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={() => this.handlePressableBtn("reverse-word", "reverse")}>Word</button>
                                         <button id="reverse-popout-btn-reverse-sentence"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={() => this.handlePressableBtn("reverse-sentence", "reverse")}>Sentence</button>
                                         <button id="reverse-popout-btn-reverse-everything"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={() => this.handlePressableBtn("reverse-everything", "reverse")}>Everything</button>
                                     </section>
                                 </section>
@@ -939,25 +1020,25 @@ class TranslatorWidget extends Component{
                             <section id="case-transform-popout"
                                 className="popout">
                                 <section className="option space-nicely-top">
-                                    <button className="option-item btn-match-option long"
+                                    <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
                                         <button id="case-transform-popout-btn-lower"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={this.handleReverseWord}>Lower</button>
                                         <button id="reverse-popout-btn-reverse-sentence"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={this.handleReverseSentence}>Upper</button>
                                         <button id="reverse-popout-btn-reverse-everything"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={this.handleReverseEverything}>Capitalize</button>
                                     </section>
                                     <section className="option-item">
                                         <button id="reverse-popout-btn-reverse-word"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={this.handleReverseWord}>Alternate</button>
                                         <button id="reverse-popout-btn-reverse-sentence"
-                                            className="btn-match-option small disabled-option"
+                                            className="btn-match option opt-small disabled-option"
                                             onClick={this.handleReverseSentence}>Inverse</button>
                                     </section>
                                 </section>
@@ -972,6 +1053,9 @@ class TranslatorWidget extends Component{
                             className="cut-scrollbar-corner-part-1 p">
                             <p id="translator-translated-text"
                                 className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
+                            <button id="translator-btn-random-sentence"
+                                className="btn-match fadded no-select"
+                                onClick={this.handleRandSentence}>Random sentence</button>
                         </div>
                     </div>
                 </div>
@@ -1093,16 +1177,16 @@ class GoogleTranslatorWidget extends Component{
                                 <optgroup id="select-languages"
                                     label="Languages"></optgroup>
                             </select>
-                            <button className="btn-match-inverse"
+                            <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
                             <select id="google-translator-translate-to"
                                 className="select-match"
                                 onChange={this.handleTo}></select>
-                            <button className="btn-match-inverse"
+                            <button className="btn-match inverse"
                                 onClick={this.handleTranslate}>
                                 <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
@@ -1324,27 +1408,27 @@ class CalculatorWidget extends Component{
                         <div id="calculator-memory-container"
                             className="font smaller">
                             <button id="calculator-btn-MC"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MC">MC</button>
                             <button id="calculator-btn-MR"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MR">MR</button>
                             <button id="calculator-btn-M+"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="M+">M+</button>
                             <button id="calculator-btn-M-"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="M-">M&minus;</button>
                             <button id="calculator-btn-MS"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MS">MS</button>
                             <button id="calculator-btn-Mv"
-                                className="btn-match-inverse small"
+                                className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
@@ -1357,7 +1441,7 @@ class CalculatorWidget extends Component{
                                     onClick={this.handleClick}
                                     value="memory-close"></button>
                                 <button id="calculator-btn-trash"
-                                    className="btn-match-inverse"
+                                    className="btn-match inverse"
                                     onClick={this.handleDelete}
                                     value="trash"><FaRegTrashCan id="calculator-btn-trash-icon"/></button>
                             </div>
@@ -1449,7 +1533,6 @@ class WeatherWidget extends Component{
             input: "auto:ip",
             name: "",           /// Location
             region: "",
-            country: "",
             localTime: "",
             lastUpdated: "",    /// Current
             tempC: "",
@@ -1500,7 +1583,6 @@ class WeatherWidget extends Component{
                 this.setState({
                     name: result.location.name,
                     region: result.location.region,
-                    country: result.location.country,
                     localTime: result.location.localtime,
                     lastUpdated: result.current.last_updated,
                     tempC: result.current.temp_c,
@@ -1513,7 +1595,9 @@ class WeatherWidget extends Component{
                     windKPH: result.current.wind_kph
                 });
             }catch(err){
-                console.error(err);
+                this.setState({
+                    input: "N/A"
+                });
             };
         };
     };
@@ -1543,7 +1627,8 @@ class WeatherWidget extends Component{
                             <div className="when-elements-are-not-straight">
                                 <input className="input-typable right-side with-help-btn"
                                     placeholder="Enter location"
-                                    onChange={this.handleChange}>
+                                    onChange={this.handleChange}
+                                    value={this.state.input}>
                                 </input>
                                 <button className="help-btn left-side when-elements-are-not-straight"
                                     onClick={this.handleHelp}>
@@ -1607,7 +1692,7 @@ class WeatherWidget extends Component{
                             </div>
                             <div id="weather-info-location"
                                 className="font small normal">
-                                <span>{this.state.name}, {this.state.region}, {this.state.country}</span>
+                                <span>{this.state.name}, {this.state.region}</span>
                             </div>
                         </section>
                         <span id="weather-last-updated"
@@ -1699,11 +1784,11 @@ class Widgets extends Component{
         return(
             <div id="widget-container">
                 <SettingWidget showHide={this.handleCallBack}/>
-                {this.state.quote === true ? <QuoteWidget/> : <></>}
-                {this.state.translator === true ? <TranslatorWidget/> : <></>}
-                {this.state.googleTranslator === true ? <GoogleTranslatorWidget/> : <></>}
-                {this.state.calculator === true ? <CalculatorWidget/> : <></>}
-                {this.state.weather === true ? <WeatherWidget/> : <></>}
+                {this.state.quote === true ? <QuoteWidget showHide={this.handleCallBack}/> : <></>}
+                {this.state.translator === true ? <TranslatorWidget showHide={this.handleCallBack}/> : <></>}
+                {this.state.googleTranslator === true ? <GoogleTranslatorWidget showHide={this.handleCallBack}/> : <></>}
+                {this.state.calculator === true ? <CalculatorWidget showHide={this.handleCallBack}/> : <></>}
+                {this.state.weather === true ? <WeatherWidget showHide={this.handleCallBack}/> : <></>}
             </div>
         );
     }

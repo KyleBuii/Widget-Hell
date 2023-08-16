@@ -109,7 +109,7 @@ body{
     text-align: center;
     overflow-y: scroll;
     overflow-x: hidden;
-    font-size: 1.9vmin;
+    font-size: 1.8vmin;
     &.textarea{
         height: 9vmin;
         border: none;
@@ -123,8 +123,6 @@ body{
 }
 
 .btn-match{
-    max-height: 7vh;
-    max-width: 8.2vh;
     padding: 0.8vmin;
     border: none;
     border-radius: 1vmin;
@@ -138,48 +136,42 @@ body{
     &:active{
         transform: scale(0.98);
     }
-}
-
-.btn-match-inverse{
-    border: none;
-    background-color: white;
-    color: var(--randColor);
-    font-size: 1.4vmin;
-    padding: 0vmin 0.6vmin;
-    &:hover{
-        cursor: pointer;
-        color: rgba(var(--randColorOpacity), 0.8);
-    }
-    &:active{
-        transform: scale(0.95);
-    }
-    &.small{
+    &.option{
+        padding: 0.3vmin 0.7vmin;
+        border-radius: 0.7vmin;
         font-size: 1.3vmin;
+        &.opt-long{
+            width: 24.9vmin;
+        }
+        &.opt-medium{
+            width: 12.2vmin;
+        }
+        &.opt-small{
+            width: 7.97vmin;
+        }
     }
-}
-
-.btn-match-option{
-    padding: 0.3vmin 0.7vmin;
-    border: none;
-    border-radius: 0.7vmin;
-    color: white;
-    background-color: var(--randColor);
-    font-size: 1.3vmin;
-    &:hover{
-        cursor: pointer;
-        background-color: rgba(var(--randColorOpacity), 0.8);
+    &.inverse{
+        color: var(--randColor);
+        background-color: white;
+        padding: 0vmin 0.6vmin;
+        &:hover{
+            color: rgba(var(--randColorOpacity), 0.8);
+            background-color: unset;
+        }
+        &:active{
+            transform: scale(0.93);
+        }
+        &.inv-small{
+            font-size: 1.3vmin;
+        }
     }
-    &:active{
-        transform: scale(0.98);
-    }
-    &.long{
-        width: 24.9vmin;
-    }
-    &.medium{
-        width: 12.2vmin;
-    }
-    &.small{
-        width: 7.97vmin;
+    &.fadded{
+        color: rgba(var(--randColorOpacity), 0.08);
+        background-color: rgba(var(--randColorOpacity), 0.08);
+        &:hover{
+            color: white;
+            background-color: rgba(var(--randColorOpacity), 0.5);
+        }
     }
 }
 
@@ -321,6 +313,15 @@ body{
     }
 }
 
+.no-select{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /// IDs
 #App{
     position: relative;
@@ -392,6 +393,11 @@ body{
     }
     #translator-preview-cut-corner{
         margin-top: 1.6vmin;
+        #translator-btn-random-sentence{
+            position: absolute;
+            top: 29vmin;
+            right: 5.2vmin;
+        }
     }
 }
 
@@ -446,8 +452,8 @@ body{
             position: absolute;
             top: 34%;
             left: 1%;
-            width: 23.7vmin;
-            height: 24vmin;
+            width: 23.6vmin;
+            height: 23.88vmin;
             background-color: white;
             border-radius: 0vmin 0vmin 2.6vmin 2.6vmin;
             #calculator-btn-memory-container{
@@ -547,9 +553,12 @@ body{
                 margin: 1vmin 1.3vmin 0vmin;
             }
             #weather-info-location{
+                width: 31vmin;
                 position: absolute;
                 bottom: 3.2vmin;
                 right: 3.2vmin;
+                word-wrap: break-word;
+                text-align: right;
             }
         }
         #weather-last-updated{

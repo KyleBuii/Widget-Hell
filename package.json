@@ -1,7 +1,7 @@
 {
   "name": "Widget-Hell",
   "version": "0.1.0",
-  "homepage": "https://kylebuii.github.io/Widget-Hell/",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-icons": "^4.10.1",
+    "react-native": "^0.72.4",
     "react-scripts": "5.0.1",
     "sass": "^1.64.1",
     "web-vitals": "^2.1.4"

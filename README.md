@@ -19,3 +19,5 @@
 - gh-pages
 - dotenv
 - react-cookie
+- serve
+- react-native
