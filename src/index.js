@@ -13,6 +13,9 @@ import { evaluate, round } from 'mathjs';
 // import { CookiesProvider, useCookies } from 'react-cookie';
 
 /// Variables
+const smallIcon = "0.88em";
+const medIcon = "4em";
+const largeIcon = "5em";
 const zIndexDefault = 2;
 const zIndexDrag = 5;
 const colorRange = 200;
@@ -42,6 +45,26 @@ const quotes = [
     },
     {
         qte: "Accept both compliments and criticism. It takes both sun and rain for a flower to grow."
+        , au: ""
+    },
+    {
+        qte: "Every day is an opportunity to improve, even if it is only by 1%. It's not about being invincible, it's about being unstoppable."
+        , au: "改善 (Kaizen)"
+    },
+    {
+        qte: "Start where you are. Use what you have. Do what you can."
+        , au: "Arthur Ashe"
+    },
+    {
+        qte: "Some days, it's easier. Other days, it's harder. Be it easy or hard, the only way to get there... is to start."
+        , au: ""
+    },
+    {
+        qte: "Never be a prisoner of your past. It was a lesson, not a life sentence."
+        , au: ""
+    },
+    {
+        qte: "Just because it's taking time, doesn't mean it's not happening."
         , au: ""
     }
 ];
@@ -324,7 +347,7 @@ class SettingWidget extends Component{
                         className="widget-animation">
                         <span id="settings-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "5.1vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -340,7 +363,7 @@ class SettingWidget extends Component{
                         {/* Show/Hide Widgets Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: -25, y: -20}}
+                            defaultPosition={{x: 30, y: -25}}
                             bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
@@ -422,7 +445,7 @@ class QuoteWidget extends Component{
                         className="widget-animation">
                         <span id="quote-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -911,7 +934,7 @@ class TranslatorWidget extends Component{
                         className="widget-animation">
                         <span id="translator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -935,7 +958,7 @@ class TranslatorWidget extends Component{
                             </select>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -962,15 +985,15 @@ class TranslatorWidget extends Component{
                         {/* Replace Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: 125, y: 0}}
-                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            defaultPosition={{x: 75, y: 0}}
+                            bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="replace-popout"
                                 className="popout">
                                 <section className="center-flex space-nicely-top">
                                     <input className="input-typable all-side input-button-input"
                                         type="text"
                                         onChange={this.handleReplaceFrom}></input>
-                                    <IconContext.Provider value={{ size: "1.7vh", className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
                                         <FaArrowRightLong/>
                                     </IconContext.Provider> 
                                     <input className="input-typable all-side input-button-input"
@@ -991,8 +1014,8 @@ class TranslatorWidget extends Component{
                         {/* Reverse Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: 125, y: 0}}
-                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            defaultPosition={{x: 75, y: 0}}
+                            bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="reverse-popout"
                                 className="popout">
                                 <section className="option space-nicely-top">
@@ -1166,7 +1189,7 @@ class GoogleTranslatorWidget extends Component{
                         className="widget-animation">
                         <span id="google-translator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -1179,7 +1202,7 @@ class GoogleTranslatorWidget extends Component{
                             </select>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -1188,7 +1211,7 @@ class GoogleTranslatorWidget extends Component{
                                 onChange={this.handleTo}></select>
                             <button className="btn-match inverse"
                                 onClick={this.handleTranslate}>
-                                <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: smallIcon, className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
                                 </IconContext.Provider>
                             </button>
@@ -1198,7 +1221,7 @@ class GoogleTranslatorWidget extends Component{
                                 onChange={this.handleChange}></textarea>
                         </div>
                         <div id="google-translator-preview-cut-corner"
-                            className="cut-scrollbar-corner-part-1">
+                            className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
                         </div>
                     </div>
@@ -1389,7 +1412,7 @@ class CalculatorWidget extends Component{
                         className="widget-animation">
                         <span id="calculator-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "6.8vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: medIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -1618,7 +1641,7 @@ class WeatherWidget extends Component{
                         className="widget-animation">
                         <span id="weather-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -1632,7 +1655,7 @@ class WeatherWidget extends Component{
                                 </input>
                                 <button className="help-btn left-side when-elements-are-not-straight"
                                     onClick={this.handleHelp}>
-                                    <IconContext.Provider value={{ size: "1.5vh", className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: smallIcon, className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
                                 </button>
@@ -1640,11 +1663,11 @@ class WeatherWidget extends Component{
                             {/* Search help popout */}
                             <Draggable
                                 cancel="li"
-                                defaultPosition={{x: 10, y: 120}}
-                                bounds={{top: -125, left: -280, right: 300, bottom: 250}}>
+                                defaultPosition={{x: 0, y: 125}}
+                                bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
                                 <section id="weather-search-help-container"
                                     className="popout">
-                                    <ul className="font small">
+                                    <ul className="font medium">
                                         <li>Latitude and Longitude <br/><span className="font small normal-transparent">e.g: 48.8567,2.3508</span></li>
                                         <li>City name <span className="font small normal-transparent">e.g.: Paris</span></li>
                                         <li>US zip <span className="font small normal-transparent">e.g.: 10001</span></li>
@@ -1657,8 +1680,7 @@ class WeatherWidget extends Component{
                                     </ul>
                                 </section>
                             </Draggable>
-                            <button id="weather-search-btn-update"
-                                className="btn-match"
+                            <button className="btn-match"
                                 onClick={this.handleUpdate}>
                                 Update
                             </button>
@@ -1722,7 +1744,7 @@ class []Widget extends Component{
                         className="widget-animation">
                         <span id="[]-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: "8.5vh", className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
