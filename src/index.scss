@@ -15,23 +15,23 @@ z-index guide
 }
 
 body{
-    margin: 0;
+    margin: 0rem;
 }
 
 /// Class: fonts
 .font{
     color: var(--randColor);
     &.large{
-        font-size: 3vmin;
+        font-size: 1.75em;
     }
     &.medium{
-        font-size: 2vmin;
+        font-size: 1.17em;
     }
     &.small{
-        font-size: 1.4vmin;
+        font-size: 0.8em;
     }
     &.smaller{
-        font-size: 1.3vmin;
+        font-size: 0.7em;
     }
     &.normal{
         font-weight: normal;
@@ -50,19 +50,19 @@ body{
 }
 
 .quote{
-    margin: 0vmin 1vmin;
+    margin: 0rem 0.6rem;
     font-weight: bold;
     color: var(--randColor);
     &.large{
-        font-size: 6vmin;
+        font-size: 3.5em;
     }
 }
 
 .author{
-    font-size: 1.5vmin;
+    font-size: 0.9em;
     text-align: right;
     font-style: italic;
-    margin: 1vmin 3.2vmin 1.6vmin 0vmin;
+    margin: 0.6rem 1.85rem 0.94rem 0rem;
     color: var(--randColor);
 }
 
@@ -74,9 +74,9 @@ body{
 
 .widget-animation{
     background-color: white;
-    padding: 2.7vmin;
-    border-radius: 2.7vmin;
-    border: 0.2vmin solid var(--randColor);
+    padding: 1.6rem;
+    border-radius: 25.4px;
+    border: 1px solid var(--randColor);
 }
 
 .draggable{
@@ -90,45 +90,46 @@ body{
 }
 
 .cut-scrollbar-corner-part-1{
-    width: 44vmin;
+    max-width: 23.2em;
     overflow: hidden;
-    border: 0.2vmin solid var(--randColor);
-    border-radius: 1.6vmin;
+    border: 1px solid var(--randColor);
+    border-radius: 15px;
     &.textarea{
-        height: 9vmin;
+        height: 4.8em;
     }
     &.p{
-        height: 16vmin;
+        height: 8.4em;
     }
 }
 
 .cut-scrollbar-corner-part-2{
-    width: 44vmin;
-    padding: 0vmin;
-    margin: 0vmin;
+    max-width: 30.1em;
+    padding: 0rem;
+    margin: 0rem;
     text-align: center;
     overflow-y: scroll;
     overflow-x: hidden;
-    font-size: 1.8vmin;
+    font-size: 0.948em;
     &.textarea{
-        height: 9vmin;
+        height: 6.3em;
+        max-width: 30.1em;
+        width: calc(100vmin - 4.05em);
         border: none;
         resize: none;
         outline: none;
     }
     &.p{
-        height: 16vmin;
+        height: 9em;
         word-wrap: break-word;
     }
 }
 
 .btn-match{
-    padding: 0.8vmin;
+    padding: 0.47rem;
     border: none;
-    border-radius: 1vmin;
+    border-radius: 9px;
     color: white;
     background-color: var(--randColor);
-    font-size: 1.4vmin;
     &:hover{
         cursor: pointer;
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -137,23 +138,28 @@ body{
         transform: scale(0.98);
     }
     &.option{
-        padding: 0.3vmin 0.7vmin;
-        border-radius: 0.7vmin;
-        font-size: 1.3vmin;
+        padding: 0.2rem 0.4rem;
+        border-radius: 6.6px;
+        font-size: 0.76em;
         &.opt-long{
-            width: 24.9vmin;
+            max-width: 25em;
+            min-width: 5em;
+            width: calc(100vmin - 4em);
         }
         &.opt-medium{
-            width: 12.2vmin;
+            max-width: 12.3em;
+            min-width: 3.7em;
+            // width: calc(100vmin - 4em);
+            width: calc(100vmin - 14em);
         }
         &.opt-small{
-            width: 7.97vmin;
+            width: 8em;
         }
     }
     &.inverse{
         color: var(--randColor);
         background-color: white;
-        padding: 0vmin 0.6vmin;
+        padding: 0rem 0.35rem;
         &:hover{
             color: rgba(var(--randColorOpacity), 0.8);
             background-color: unset;
@@ -162,7 +168,7 @@ body{
             transform: scale(0.93);
         }
         &.inv-small{
-            font-size: 1.3vmin;
+            font-size: 0.95em;
         }
     }
     &.fadded{
@@ -178,17 +184,17 @@ body{
 .select-match{
     cursor: pointer;
     color: var(--randColor);
-    border: 0.1vmin solid var(--randColor);
-    border-radius: 0.6vmin;
-    font-size: 1.4vmin;
+    border: 1px solid var(--randColor);
+    border-radius: 5.6px;
+    font-size: 0.75em;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
-    padding: 0.1vmin 1.9vmin 0.1vmin 0.5vmin;
+    padding: 0.05rem 1.12rem 0.05rem 0.3rem;
     background-image: url("./imgs/downArrow.svg");
     background-repeat: no-repeat;
-    background-position: right 0.2vmin top 0.2vmin;
-    background-size: 1.6vmin 1.5vmin;
+    background-position: right 0.3em top 0.12em;
+    background-size: 1em 1.1em;
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
@@ -197,7 +203,7 @@ body{
 .btn-ends{
     display: flex;
     justify-content: space-between;
-    margin: 0vmin 2.6vmin;
+    margin: 0rem 1.5rem;
 }
 
 .when-elements-are-not-straight{
@@ -208,7 +214,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 1vmin;
+    margin-bottom: 0.58rem;
     &.only-justify-content{
         align-items: unset;
     }
@@ -222,10 +228,10 @@ body{
     visibility: hidden;
     position: absolute;
     background-color: white;
-    font-size: 1.3vmin;
+    font-size: 0.76em;
     text-align: left;
-    border-radius: 2.1vmin;
-    box-shadow: 0vmin 0vmin 1vmin 0.1vmin var(--randColor);
+    border-radius: 20px;
+    box-shadow: 0em 0em 0.6em 0.05em var(--randColor);
 }
 
 .pointer-events-none{
@@ -233,42 +239,42 @@ body{
 }
 
 .input-typable{
-    border: 0.2vmin solid var(--randColor);
-    font-size: 1.4vmin;
+    border: 1px solid var(--randColor);
     &:focus{
         outline: none;
     }
     &.all-side{
-        border-radius: 0.6vmin;
-        margin: 0.4vmin;
+        border-radius: 5.6px;
+        margin: 0.2em;
         &.input-button-input{
-            height: 1.9vmin;
-            width: 10.6vmin;
-            margin: 0vmin 0.3vmin 0.5vmin;
-            padding: 0.1vmin 0.2vmin;
+            font-size: 0.8em;
+            width: 13.8em;
+            margin: 0rem 0.3rem 0.2rem;
+            padding: 0.15rem 0.15rem;
         }
     }
     &.right-side{
-        padding: 0.1vmin 0.2vmin;
+        padding: 0.05rem 0.15rem;
         border-right: none;
-        border-radius: 0.6vmin 0vmin 0vmin 0.6vmin;
+        border-radius: 5.6px 0px 0px 5.6px;
         &.with-help-btn{
-            height: 2.6vmin;
-            width: 22.3vmin;
+            height: 2.05em;
+            width: 15.5em;
         }
     }
 }
 
 .help-btn{
-    height: 3vmin;
-    width: 3vmin;
-    padding: 0.6vmin;
+    height: 2.3em;
+    width: 2.1em;
+    padding: 0.35rem;
     background-color: white;
-    border: 0.2vmin solid var(--randColor);
+    border: 1px solid var(--randColor);
+    align-items: center;
     cursor: pointer;
     &.left-side{
         border-left: none;
-        border-radius: 0vmin 0.6vmin 0.6vmin 0vmin;    
+        border-radius: 0px 5.6px 5.6px 0px;    
     }
 }
 
@@ -277,8 +283,8 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 1.7vmin;
-    gap: 0.5vmin;
+    font-size: 1.31em;
+    gap: 0.3em;
 }
 
 .option-item{
@@ -286,16 +292,15 @@ body{
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.5vmin;
-    font-size: 1.3vmin;
+    gap: 0.3em;
 }
 
 .space-nicely-top{
-    margin: 1.6vmin 0vmin 0.5vmin;
+    margin: 0.9rem 0rem 0.3rem;
 }
 
 .space-nicely-all{
-    margin: 1vmin;
+    margin: 0.6rem;
 }
 
 .disabled-option{
@@ -334,105 +339,111 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 #settings-box{
     z-index: 4;
+    max-width: 100vmin;
+    max-height: 26.46em;
     #settings-box-draggable{
         visibility: hidden;
     }
     #settings-box-animation{
-        height: 4.8vmin;
-        width: 23.4vmin;
         #show-hide-widgets-popout{
-            padding: 1vmin;
+            padding: 0.6rem;
         }
     }
 }
 
 #quote-box{
-    max-width: 85vmin;
-    max-height: 45vmin;
+    max-width: 50em;
+    max-height: 26.46em;
     text-align: center;
     #quote-box-draggable{
         visibility: hidden;
     }
     #quote-box-animation{
-        padding: 0.5vmin 3.2vmin 2.7vmin;
+        padding: 0.3rem 1.9rem 1.58rem;
     }
     #quote{
         display: flex;
         flex-direction: row;
-        margin-top: 2.1vmin;
+        margin-top: 1rem;
         #quote-text{
-            padding-top: 1vmin;
+            padding-top: 0.6rem;
         }
     }
 }
 
 #translator-box{
-    font-size: 1.9vmin;
+    font-size: 1.11em;
+    max-width: 26.24em;
+    width: 100vmin;
     #translator-box-draggable{
         visibility: hidden;
     }
     #translator-box-animation{
         #replace-popout{
             visibility: hidden;
-            height: 11.5vmin;
-            width: 29.7vmin;
+            height: 7.8em;
+            width: 28em;
+            padding: 0.35rem 0rem;
         }
         #reverse-popout{
             visibility: hidden;
-            height: 8.5vmin;
-            width: 29.7vmin;
+            height: 6em;
+            width: 28em;
+            padding-top: 0.25rem;
         }
         #case-transform-popout{
             visibility: hidden;
         }
     }
     #translator-preview-cut-corner{
-        margin-top: 1.6vmin;
+        margin-top: 0.9rem;
         #translator-btn-random-sentence{
             position: absolute;
-            top: 29vmin;
-            right: 5.2vmin;
+            top: 20.2em;
+            right: 3.7em;
         }
     }
 }
 
 #google-translator-box{
-    font-size: 1.9vmin;
+    font-size: 1.11em;
+    max-width: 26.24em;
+    width: 100vmin;
     #google-translator-box-draggable{
         visibility: hidden;
     }
     #google-translator-preview-cut-corner{
-        margin-top: 1.6vmin;
+        margin-top: 0.9rem;
     }
 }
 
 #calculator-box{
-    font-size: 1.9vmin;
+    font-size: 1.11em;
     #calculator-box-draggable{
         visibility: hidden;
     }
     #calculator-display-container{
         display: flex;
         flex-direction: column;
-        width: 18vmin;
-        margin: 0vmin 0vmin 0.5vmin;
+        width: 9.5em;
+        margin: 0rem 0rem 0.3rem;
         input{
             text-align: right;
             border: none;
-            padding: 0vmin;
+            padding: 0rem;
         }
         #calculator-input-display{
-            margin: 0vmin 0.2vmin 0.5vmin 0vmin;
-            font-size: 1.3vmin;
+            margin: 0rem 0.15rem 0.3rem 0rem;
+            font-size: 0.76rem;
             color: var(--randColor);
         }
         #calculator-input{
-            font-size: 3.1vmin;
+            font-size: 1.8rem;
             font-weight: bold;
         }
     }
@@ -440,51 +451,51 @@ body{
         display: flex;
         flex-direction: row;
         button{
-            padding: 0vmin 0.6vmin 0.5vmin;
+            padding: 0rem 0.35rem 0.3rem;
         }
     }
     #calculator-btn-container{
         display: grid;
-        grid-template-columns: repeat(4, 4.2vmin);
-        gap: 0.5vmin;
+        grid-template-columns: repeat(4, 2.225em);
+        gap: 0.27em;
         #calculator-btn-memory-display{
             visibility: hidden;
             position: absolute;
             top: 34%;
             left: 1%;
-            width: 23.6vmin;
-            height: 23.88vmin;
+            width: 12.5em;
+            height: 12.7em;
             background-color: white;
-            border-radius: 0vmin 0vmin 2.6vmin 2.6vmin;
+            border-radius: 0px 0px 23px 23px;
             #calculator-btn-memory-container{
                 display: flex;
                 flex-direction: column;
                 width: 90%;
                 height: 70%;
-                margin: 2.1vmin 0.5vmin 2.1vmin 1.6vmin;
+                margin: 1.23rem 0.3rem 1.23rem 0.9rem;
                 overflow-y: scroll;
                 overflow-x: hidden;
                 p{
-                    margin: 0vmin 0.5vmin 1vmin;
+                    margin: 0rem 0.3rem 0.6rem;
                     text-align: right;
                     word-wrap: break-word;
                 }
             }
             #calculator-btn-memory-display-close{
                 position: absolute;
-                top: -51%;
+                top: -51.1%;
                 left: -1%;
-                width: 23.9vmin;
-                height: 51%;
+                width: 16.9em;
+                height: 51.1%;
                 border: none;
-                border-radius: 2.6vmin 2.6vmin 0vmin 0vmin;
+                border-radius: 23px 23px 0px 0px;
                 background-color: rgba(0, 0, 0, 0.2);
                 cursor: pointer;
             }
             #calculator-btn-trash{
                 position: absolute;
-                bottom: 1vmin;
-                right: 0.5vmin;
+                bottom: 0.7em;
+                right: 0.3em;
                 background-color: transparent;
             }
         }
@@ -492,48 +503,47 @@ body{
 }
 
 #weather-box{
+    max-width: 22.1em;
+    width: 100vh;
     #weather-box-draggable{
         visibility: hidden;
     }
     #weather-box-animation{
         #weather-search-container{
-            gap: 0.5vmin;
-            height: 3.7vmin;
-            width: 31.9vmin;
+            gap: 0.3em;
+            height: 2.17em;
+            width: 18.76em;
             #weather-search-help-container{
-                height: 21.5vmin;
-                width: 31vmin;
+                padding: 0.5em 0em 1em;
                 ul{
-                    height: 21.5vmin;
-                    width: 25vmin;    
-                    margin: 1.2vmin 4vmin;
-                    padding: 0vmin;
+                    height: 12.64em;
+                    width: 18em;    
+                    margin: .7rem 2.35rem;
+                    padding: 0rem;
                 }
-            }
-            #weather-search-btn-update{
-                height: 3.3vmin;
             }
         }
         #weather-info-container{
             display: flex;
             flex-direction: column;
-            height: 21.2vmin;
-            width: 31.9vmin;
-            border: 0.2vmin solid var(--randColor);
-            border-radius: 0.8vmin;
-            margin: 1.6vmin 0vmin 0vmin;
+            height: 12.47em;
+            max-width: 18.76em;
+            width: calc(100vh - 3.5em);
+            border: 1px solid var(--randColor);
+            border-radius: 7.5px;
+            margin: 0.9rem 0rem 0rem;
             #weather-info-icon-temp{
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 #weather-info-icon{
-                    height: 6.8vmin;
-                    width: 6.8vmin;
+                    height: 4em;
+                    width: 4em;
                 }
                 #weather-info-temp-c-container{
                     display: flex;
                     flex-direction: column;
-                    margin-right: 3.2vmin;
+                    margin-right: 1.9rem;
                 }
                 #weather-info-temp-f-container{
                     display: flex;
@@ -543,28 +553,28 @@ body{
             #weather-info-cond-local-time{
                 display: flex;
                 flex-direction: row;
-                gap: 3.1vmin;
-                margin: 0vmin 1.3vmin;
+                gap: 1.8em;
+                margin: 0rem 0.76rem;
             }
             #weather-info-wind{
                 display: flex;
                 flex-direction: row;
-                gap: 4.3vmin;
-                margin: 1vmin 1.3vmin 0vmin;
+                gap: 2em;
+                margin: 0.6rem 0.76rem 0rem;
             }
             #weather-info-location{
-                width: 31vmin;
+                width: 18.23em;
                 position: absolute;
-                bottom: 3.2vmin;
-                right: 3.2vmin;
+                bottom: 2.4em;
+                right: 2.4em;
                 word-wrap: break-word;
                 text-align: right;
             }
         }
         #weather-last-updated{
             position: absolute;
-            bottom: 1vmin;
-            left: 3.2vmin;
+            bottom: 0.7em;
+            left: 2.4em;
         }
     }
 }
@@ -630,5 +640,5 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 1.5vmin white inset;
+    -webkit-box-shadow: 0 0 0 0.88em white inset;
 }
