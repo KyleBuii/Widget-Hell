@@ -21,3 +21,4 @@
 - react-cookie
 - serve
 - react-native
+- sanitize-html

@@ -47,12 +47,21 @@ body{
         font-weight: bold;
         color: rgba(var(--randColorOpacity), 0.4);
     }
+    &.break-word{
+        word-break: break-all;
+    }
 }
 
 .quote{
     margin: 0rem 0.6rem;
     font-weight: bold;
     color: var(--randColor);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     &.large{
         font-size: 3.5em;
     }
@@ -121,6 +130,9 @@ body{
     &.p{
         height: 9em;
         word-wrap: break-word;
+        &.short{
+            height: 6.5em;
+        }
     }
 }
 
@@ -130,6 +142,12 @@ body{
     border-radius: 9px;
     color: white;
     background-color: var(--randColor);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     &:hover{
         cursor: pointer;
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -178,6 +196,14 @@ body{
             color: white;
             background-color: rgba(var(--randColorOpacity), 0.5);
         }
+        &.inverse{
+            color: rgba(var(--randColorOpacity), 0.2);
+            background-color: unset;
+            &:hover{
+                color: rgba(var(--randColorOpacity), 0.5);
+                background-color: unset;
+            }
+        }
     }
 }
 
@@ -195,6 +221,12 @@ body{
     background-repeat: no-repeat;
     background-position: right 0.3em top 0.12em;
     background-size: 1em 1.1em;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
@@ -214,7 +246,6 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 0.58rem;
     &.only-justify-content{
         align-items: unset;
     }
@@ -243,6 +274,11 @@ body{
     &:focus{
         outline: none;
     }
+    &.no-side{
+        border: none;
+        text-align: right;
+        padding: 0;
+    }
     &.all-side{
         border-radius: 5.6px;
         margin: 0.2em;
@@ -259,14 +295,16 @@ body{
         border-radius: 5.6px 0px 0px 5.6px;
         &.with-help-btn{
             height: 2.05em;
-            width: 15.5em;
+            max-width: 15.5em;
+            width: 100vmin;
         }
     }
 }
 
 .help-btn{
     height: 2.3em;
-    width: 2.1em;
+    max-width: 2.1em;
+    width: 100vmin;
     padding: 0.35rem;
     background-color: white;
     border: 1px solid var(--randColor);
@@ -295,12 +333,32 @@ body{
     gap: 0.3em;
 }
 
-.space-nicely-top{
-    margin: 0.9rem 0rem 0.3rem;
-}
-
-.space-nicely-all{
-    margin: 0.6rem;
+.space-nicely{
+    &.top{
+        margin: 0.9rem 0rem 0.3rem;
+    }
+    &.right{
+        &.short{
+            margin-right: 0.15rem;
+        }
+    }
+    &.bottom{
+        margin-bottom: 0.6rem;
+        &.short{
+            margin-bottom: 0.25rem;
+        }
+    }
+    &.left{
+        &.short{
+            margin-left: 0.15rem;
+        }
+    }
+    &.all{
+        margin: 0.6rem;
+        &.long{
+            margin: 1rem;
+        }
+    }
 }
 
 .disabled-option{
@@ -325,6 +383,18 @@ body{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.bottom-left{
+    position: absolute;
+    top: 21em;
+    left: 3em;
+}
+
+.bottom-right{
+    position: absolute;
+    top: 20.2em;
+    right: 3.7em;
 }
 
 /// IDs
@@ -386,7 +456,7 @@ body{
     #translator-box-animation{
         #replace-popout{
             visibility: hidden;
-            height: 7.8em;
+            height: 6em;
             width: 28em;
             padding: 0.35rem 0rem;
         }
@@ -402,11 +472,6 @@ body{
     }
     #translator-preview-cut-corner{
         margin-top: 0.9rem;
-        #translator-btn-random-sentence{
-            position: absolute;
-            top: 20.2em;
-            right: 3.7em;
-        }
     }
 }
 
@@ -432,27 +497,6 @@ body{
         flex-direction: column;
         width: 9.5em;
         margin: 0rem 0rem 0.3rem;
-        input{
-            text-align: right;
-            border: none;
-            padding: 0rem;
-        }
-        #calculator-input-display{
-            margin: 0rem 0.15rem 0.3rem 0rem;
-            font-size: 0.76rem;
-            color: var(--randColor);
-        }
-        #calculator-input{
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-    }
-    #calculator-memory-container{
-        display: flex;
-        flex-direction: row;
-        button{
-            padding: 0rem 0.35rem 0.3rem;
-        }
     }
     #calculator-btn-container{
         display: grid;
@@ -500,6 +544,10 @@ body{
             }
         }
     }
+    #calculator-input-expand-popout{
+        height: 10em;
+        width: 10em;
+    }
 }
 
 #weather-box{
@@ -532,14 +580,11 @@ body{
             border: 1px solid var(--randColor);
             border-radius: 7.5px;
             margin: 0.9rem 0rem 0rem;
+            word-break: break-all;
             #weather-info-icon-temp{
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                #weather-info-icon{
-                    height: 4em;
-                    width: 4em;
-                }
                 #weather-info-temp-c-container{
                     display: flex;
                     flex-direction: column;

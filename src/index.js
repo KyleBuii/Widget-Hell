@@ -1,16 +1,18 @@
 import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
-import { FaTwitter, FaGripHorizontal } from 'react-icons/fa';
+import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegTrashCan, FaRegCircleQuestion, FaArrowRightFromBracket
-    ,FaArrowRightLong } from 'react-icons/fa6';
+    , FaArrowRightLong, FaRegPaste } from 'react-icons/fa6';
 import { BsArrowLeftRight, BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
+import { BiExpand } from 'react-icons/bi';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import $ from 'jquery';
 import { evaluate, round } from 'mathjs';
 // import { CookiesProvider, useCookies } from 'react-cookie';
+import sanitizeHtml from 'sanitize-html';
 
 /// Variables
 const smallIcon = "0.88em";
@@ -66,6 +68,10 @@ const quotes = [
     {
         qte: "Just because it's taking time, doesn't mean it's not happening."
         , au: ""
+    },
+    {
+        qte: "If you aren't willing to look like a foolish beginner, you'll never become a graceful master. Embarrassment is the cost of entry."
+        , au: ""
     }
 ];
 const sentences = [
@@ -76,6 +82,12 @@ const sentences = [
     , "PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT"    
     , 'Twitch should ban the term "live-streaming." It’s offensive to dead people. My great grandparents are dead and I would like to show them some respect and have twitch ban the term “live-streaming”. It’s a slur used against dead people.'
     , 'I, an atheist, accidentally said “oh my g*d” instead of “oh my science”'
+    , "Darkness blacker than black and darker than dark, I beseech thee, combine with my deep crimson. The time of awakening cometh. Justice, fallen upon the infallible boundary, appear now as an intangible distortions! I desire for my torrent of power a destructive force: a destructive force without equal! Return all creation to cinders, and come frome the abyss! Explosion!"    
+    , "Oh, blackness shrouded in light, Frenzied blaze clad in night, In the name of the crimson demons, let the collapse of thine origin manifest. Summon before me the root of thy power hidden within the lands of the kingdom of demise! Explosion!"
+    , "Crimson-black blaze, king of myriad worlds, though I promulgate the laws of nature, I am the alias of destruction incarnate in accordance with the principles of all creation. Let the hammer of eternity descend unto me! Explosion!"    
+    , "O crucible which melts my soul, scream forth from the depths of the abyss and engulf my enemies in a crimson wave! Pierce trough, EXPLOSION!"    
+    , 'If you ask Rick Astley for a copy of the movie "UP", he cannot give you it as he can never give you up. But, by doing that, he is letting you down, and thus, is creating something known as the Astley Paradox.'
+    , "Reddit should rename 'share' to 'spreddit', 'delete' to 'shreddit' and 'karma' to 'creddit'. Yet they haven't. I don't geddit."
 ];
 const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
@@ -94,6 +106,157 @@ const uwuDictionary = {
 };
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
     , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)"];
+const brailleDictionary = {
+    ' ': '⠀',
+    '_': '⠸',
+    '-': '⠤',
+    ',': '⠠',
+    ';': '⠰',
+    ':': '⠱',
+    '!': '⠮',
+    '?': '⠹',
+    '.': '⠨',
+    '(': '⠷',
+    '[': '⠪',
+    '@': '⠈',
+    '*': '⠡',
+    '/': '⠌',
+    "'": '⠄',
+    '"': '⠐',
+    '\\': '⠳',
+    '&': '⠯',
+    '%': '⠩',
+    '^': '⠘',
+    '+': '⠬',
+    '<': '⠣',
+    '>': '⠜',
+    '$': '⠫',
+    '0': '⠴',
+    '1': '⠂',
+    '2': '⠆',
+    '3': '⠒',
+    '4': '⠲',
+    '5': '⠢',
+    '6': '⠖',
+    '7': '⠶',
+    '8': '⠦',
+    '9': '⠔',
+    'a': '⠁',
+    'b': '⠃',
+    'c': '⠉',
+    'd': '⠙',
+    'e': '⠑',
+    'f': '⠋',
+    'g': '⠛',
+    'h': '⠓',
+    'i': '⠊',
+    'j': '⠚',
+    'k': '⠅',
+    'l': '⠇',
+    'm': '⠍',
+    'n': '⠝',
+    'o': '⠕',
+    'p': '⠏',
+    'q': '⠟',
+    'r': '⠗',
+    's': '⠎',
+    't': '⠞',
+    'u': '⠥',
+    'v': '⠧',
+    'w': '⠺',
+    'x': '⠭',
+    'z': '⠵',
+    ']': '⠻',
+    '#': '⠼',
+    'y': '⠽',
+    ')': '⠾',
+    '=': '⠿'
+};
+const brailleFromDictionary = {
+    ' ': ' ', 
+    '⠀': ' ',
+    '⠸': '_',
+    '⠤': '-',
+    '⠠': ',',
+    '⠰': ';',
+    '⠱': ':',
+    '⠮': '!',
+    '⠹': '?',
+    '⠨': '.',
+    '⠷': '(',
+    '⠪': '[',
+    '⠈': '@',
+    '⠡': '*',
+    '⠌': '/',
+    '⠄': "'",
+    '⠐': '"',
+    '⠳': '\\',
+    '⠯': '&',
+    '⠩': '%',
+    '⠘': '^',
+    '⠬': '+',
+    '⠣': '<',
+    '⠜': '>',
+    '⠫': '$',
+    '⠴': '0',
+    '⠂': '1',
+    '⠆': '2',
+    '⠒': '3',
+    '⠲': '4',
+    '⠢': '5',
+    '⠖': '6',
+    '⠶': '7',
+    '⠦': '8',
+    '⠔': '9',
+    '⠁': 'a',
+    '⠃': 'b',
+    '⠉': 'c',
+    '⠙': 'd',
+    '⠑': 'e',
+    '⠋': 'f',
+    '⠛': 'g',
+    '⠓': 'h',
+    '⠊': 'i',
+    '⠚': 'j',
+    '⠅': 'k',
+    '⠇': 'l',
+    '⠍': 'm',
+    '⠝': 'n',
+    '⠕': 'o',
+    '⠏': 'p',
+    '⠟': 'q',
+    '⠗': 'r',
+    '⠎': 's',
+    '⠞': 't',
+    '⠥': 'u',
+    '⠧': 'v',
+    '⠺': 'w',
+    '⠭': 'x',
+    '⠵': 'z',
+    '⠻': ']',
+    '⠼': '#',
+    '⠽': 'y',
+    '⠾': ')',
+    '⠿': '='
+};
+const emojifyDictionary = {
+    "actually": ["&#x1F913;&#x261D;&#xFE0F;"],
+    "hey": ["&#x1F44B;"],
+        "hello": ["&#x1F44B;"],
+    "you": ["&#x1F448;"],
+        "your": ["&#x1F448;"],
+    "like": ["&#x1F44D;"],
+        "liked": ["&#x1F44D;"],
+    "money": ["&#x1F4B0;"],
+        "rich": ["&#x1F4B0;"],
+    "run": ["&#x1F3C3;"],
+        "running": ["&#x1F3C3;"],
+        "ran": ["&#x1F3C3;"],
+    "house": ["&#x1F3E0;", "&#x1F3E1;"],
+        "home": ["&#x1F3E0;", "&#x1F3E1;"],
+    "just": ["&#x261D;&#xFE0F;"],
+    "phone": ["&#x1F4F1;"],
+};
 
 /// Functions
 function randColor(){
@@ -148,8 +311,8 @@ function sortOptgroup(optgroup){
             : 0;
     });
     optgroupOptions.each(function(i, o){
-        $(o).val = arrOptgroupOptions.value;
         $(o).text(arrOptgroupOptions[i].text);
+        $(o).val(arrOptgroupOptions[i].value);
     });
 };
 
@@ -185,6 +348,12 @@ function grep(arr, filter){
 
 function randSentence(){
     return sentences[Math.floor(Math.random() * sentences.length)];
+};
+
+function copyToClipboard(what){
+    if(what !== ""){
+        navigator.clipboard.writeText(what);
+    };
 };
 
 /// Widgets
@@ -367,7 +536,7 @@ class SettingWidget extends Component{
                             bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
-                                <section className="option space-nicely-all">
+                                <section className="option space-nicely all">
                                     <button id="show-hide-widgets-popout-btn-advanced"
                                         className="doesnt-work option-item btn-match option opt-long disabled-option"
                                         onClick={() => this.handlePressableBtn("advanced")}>Advanced</button>
@@ -458,16 +627,12 @@ class QuoteWidget extends Component{
                         <p id="author"
                             className="author">- {this.state.currentAuthor}</p>
                         <div className="btn-ends">
-                            <a className="when-elements-are-not-straight"
-                                href={`https://twitter.com/intent/tweet?text="${this.state.currentQuote}" - ${this.state.currentAuthor}`}
-                                target="_blank"
-                                rel="noreferrer">
-                                <button className="btn-match">
-                                    <IconContext.Provider value={{ color: "white", className: "global-class-name" }}>
-                                        <FaTwitter/>
-                                    </IconContext.Provider>
-                                </button>
-                            </a>
+                            <button className="btn-match fadded inverse"
+                                onClick={() => copyToClipboard(this.state.currentQuote)}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <FaRegPaste/>
+                                </IconContext.Provider>
+                            </button>
                             <button className="btn-match"
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
@@ -489,7 +654,6 @@ class TranslatorWidget extends Component{
             to: "",
             replaceFrom: "",
             replaceTo: "",
-            replaceCaseSensitive: true,
             reverseWord: false,
             reverseSentence: false,
             reverseEverything: false
@@ -521,6 +685,15 @@ class TranslatorWidget extends Component{
                 this.setState(prevState => ({
                     convert: prevState.input
                         .replace(/\s(peko)/ig, "")
+                }));
+                break;
+            case "braille":
+                this.setState(prevState => ({
+                    convert: prevState.input
+                        .toString()
+                        .split("")
+                        .map(letter => brailleFromDictionary[letter])
+                        .join("")
                 }));
                 break;
             /// Encryption
@@ -611,6 +784,38 @@ class TranslatorWidget extends Component{
                     };
                 });
                 break;
+            case "braille":
+                this.setState(prevState => ({
+                    converted: prevState.convert
+                        .toString()
+                        .toLowerCase()
+                        .split("")
+                        .map(letter => brailleDictionary[letter])
+                        .join("")
+                }));
+                break;
+            case "emojify":
+                const reEmojifyDictionary = new RegExp(Object.keys(emojifyDictionary)
+                    .map((key) => {
+                        return "\\b" + key + "\\b";
+                    })
+                    .join("|"), "i");
+                this.setState(prevState => ({
+                    converted: mergePunctuation(grep(prevState.convert
+                        .split(matchAll)
+                        .map((word) => {
+                            return (reEmojifyDictionary.test(word)) ? word.replace(reEmojifyDictionary, word + " " + emojifyDictionary[word.toLowerCase()][Math.floor(Math.random() * emojifyDictionary[word.toLowerCase()].length)]) : word;
+                        })))
+                        .join(" ")
+                }), () => {
+                    const clean = sanitizeHtml(this.state.converted, {
+                        allowedTags: [],
+                        allowedAttributes: {},
+                        allowedIframeHostnames: []
+                    });
+                    document.getElementById("translator-translated-text").innerHTML = clean;
+                });
+                break;
             /// Encryption
             case "base64":
                 this.setState(prevState => ({
@@ -619,22 +824,16 @@ class TranslatorWidget extends Component{
                 break;
             /// Modify
             case "replace":
-                var reReplace;
-                if(this.state.replaceCaseSensitive === true){
-                    reReplace = new RegExp("(\\b" + this.state.replaceFrom + "\\b)", "g");
-                }else{
-                    reReplace = new RegExp("(\\b" + this.state.replaceFrom + "\\b)", "ig");
-                };
                 this.setState(prevState => ({
                     converted: prevState.convert
-                        .replace(reReplace, prevState.replaceTo)
+                        .replace(this.state.replaceFrom, prevState.replaceTo)
                 }));
                 break;
             case "reverse":
                 if(this.state.reverseWord === true && this.state.reverseSentence === true && this.state.reverseEverything === true){
                 /// Reverse Word + Sentence + Everything
                     this.setState(prevState => ({
-                        converted: prevState.convert
+                        converted: mergePunctuation(prevState.convert
                             .split(/(?<=[.?!])\s*/)
                             .reverse()
                             .join(" ")
@@ -647,13 +846,13 @@ class TranslatorWidget extends Component{
                                     .join(""))
                                 .reverse()
                                 .join(" ")
-                            )
+                            ))
                             .join(" ")
                     }));
                 }else if(this.state.reverseWord === true && this.state.reverseSentence === true){
                 /// Reverse Word + Sentence
                     this.setState(prevState => ({
-                        converted: prevState.convert
+                        converted: mergePunctuation(prevState.convert
                             .split(/([.?!])\s*/)
                             .map(sentence => sentence
                                 .split(" ")
@@ -663,7 +862,7 @@ class TranslatorWidget extends Component{
                                     .join(""))
                                 .reverse()
                                 .join(" ")
-                            )
+                            ))
                             .join(" ")
                     }));
                 }else if(this.state.reverseWord === true && this.state.reverseEverything === true){
@@ -685,7 +884,7 @@ class TranslatorWidget extends Component{
                 }else if(this.state.reverseSentence === true && this.state.reverseEverything === true){
                 /// Reverse Sentence + Everything
                     this.setState(prevState => ({
-                        converted: prevState.convert
+                        converted: mergePunctuation(prevState.convert
                             .split(/(?<=[.?!])\s*/)
                             .reverse()
                             .join(" ")
@@ -695,7 +894,7 @@ class TranslatorWidget extends Component{
                                     .split(" ")
                                     .reverse()
                                     .join(" ")
-                            })
+                            }))
                             .join(" ")
                     }));
                 }else if(this.state.reverseWord === true){
@@ -714,16 +913,18 @@ class TranslatorWidget extends Component{
                 }else if(this.state.reverseSentence === true){
                 /// Reverse Sentence
                     this.setState(prevState => ({
-                        converted: prevState.convert
-                            .split(/([.?!])\s*/)
+                        converted: mergePunctuation(prevState.convert
+                            .split(/([.!?"])\s*/)
                             .map(function(sentence){
                                 return sentence
                                     .split(" ")
                                     .reverse()
                                     .join(" ")
-                            })
+                            }))
                             .join(" ")
-                    }));
+                    }), () => {
+                        console.log(this.state.converted);   
+                    });
                 }else if(this.state.reverseEverything === true){
                 /// Reverse Everything
                     this.setState(prevState => ({
@@ -821,23 +1022,6 @@ class TranslatorWidget extends Component{
             btn = document.getElementById("reverse-popout-btn-" + what);
         };
         switch(what){
-            case "replace-case-sensitive":
-                if(this.state.replaceCaseSensitive === false){
-                    this.setState({
-                        replaceCaseSensitive: true
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "1";
-                }else{
-                    this.setState({
-                        replaceCaseSensitive: false
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "0.5";
-                };
-                break;
             case "reverse-word":
                 if(this.state.reverseWord === false){
                     this.setState({
@@ -938,7 +1122,7 @@ class TranslatorWidget extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="center-flex">
+                        <div className="center-flex space-nicely bottom">
                             <select id="translator-translate-from"
                                 className="select-match"
                                 defaultValue={"en"}
@@ -950,6 +1134,7 @@ class TranslatorWidget extends Component{
                                 <optgroup label="Other Languages"
                                     id="translate-from-other-languages">
                                     <option value="pekofy">Pekofy</option>
+                                    <option value="braille">Braille</option>
                                 </optgroup>
                                 <optgroup label="Encryption"
                                     id="translate-from-encryption">
@@ -972,6 +1157,7 @@ class TranslatorWidget extends Component{
                                     id="translate-to-other-languages">
                                     <option value="pig-latin">Pig latin</option>
                                     <option value="uwu">UwU</option>
+                                    <option value="emojify">Emojify</option>
                                 </optgroup>
                                 <optgroup label="Encryption"
                                     id="translate-to-encryption"></optgroup>
@@ -989,7 +1175,7 @@ class TranslatorWidget extends Component{
                             bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="replace-popout"
                                 className="popout">
-                                <section className="center-flex space-nicely-top">
+                                <section className="center-flex space-nicely top">
                                     <input className="input-typable all-side input-button-input"
                                         type="text"
                                         onChange={this.handleReplaceFrom}></input>
@@ -1003,11 +1189,6 @@ class TranslatorWidget extends Component{
                                 <section className="option">
                                     <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
-                                    <section className="option-item">
-                                        <button id="replace-popout-btn-replace-case-sensitive"
-                                            className="btn-match option opt-medium"
-                                            onClick={() => this.handlePressableBtn("replace-case-sensitive", "replace")}>Case Sensitive</button>
-                                    </section>
                                 </section>
                             </section>
                         </Draggable>
@@ -1018,7 +1199,7 @@ class TranslatorWidget extends Component{
                             bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="reverse-popout"
                                 className="popout">
-                                <section className="option space-nicely-top">
+                                <section className="option space-nicely top">
                                     <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
@@ -1042,7 +1223,7 @@ class TranslatorWidget extends Component{
                             bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
                             <section id="case-transform-popout"
                                 className="popout">
-                                <section className="option space-nicely-top">
+                                <section className="option space-nicely top">
                                     <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
@@ -1076,9 +1257,14 @@ class TranslatorWidget extends Component{
                             className="cut-scrollbar-corner-part-1 p">
                             <p id="translator-translated-text"
                                 className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
-                            <button id="translator-btn-random-sentence"
-                                className="btn-match fadded no-select"
+                            <button className="bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
+                            <button className="bottom-left btn-match fadded inverse"
+                                onClick={() => copyToClipboard(this.state.converted)}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <FaRegPaste/>
+                                </IconContext.Provider>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1101,6 +1287,7 @@ class GoogleTranslatorWidget extends Component{
         this.handleTo = this.handleTo.bind(this);
         this.handleSwap = this.handleSwap.bind(this);
         this.handleTranslate = this.handleTranslate.bind(this);
+        this.handleRandSentence = this.handleRandSentence.bind(this);
     };
     handleChange(event){
         this.setState({
@@ -1157,6 +1344,15 @@ class GoogleTranslatorWidget extends Component{
             $("#google-translator-translate-to").val(v1);
         };
     };
+    /// Handles random sentence button
+    handleRandSentence(){
+        this.setState({
+            input: randSentence(),
+            from: "en"
+        }, () => {
+            $("#translator-translate-from").val("en");
+        });
+    };
     componentDidMount(){
         randColor();
         const select = document.getElementById("select-languages");
@@ -1193,7 +1389,7 @@ class GoogleTranslatorWidget extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="center-flex">
+                        <div className="center-flex space-nicely bottom">
                             <select id="google-translator-translate-from"
                                 className="select-match"
                                 onChange={this.handleFrom}>
@@ -1218,11 +1414,20 @@ class GoogleTranslatorWidget extends Component{
                         </div>
                         <div className="cut-scrollbar-corner-part-1 textarea">
                             <textarea className="cut-scrollbar-corner-part-2 textarea"
-                                onChange={this.handleChange}></textarea>
+                                onChange={this.handleChange}
+                                value={this.state.input}></textarea>
                         </div>
                         <div id="google-translator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
+                            <button className="bottom-right btn-match fadded"
+                                onClick={this.handleRandSentence}>Random sentence</button>
+                            <button className="bottom-left btn-match fadded inverse"
+                                onClick={() => copyToClipboard(this.state.converted)}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <FaRegPaste/>
+                                </IconContext.Provider>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1237,10 +1442,12 @@ class CalculatorWidget extends Component{
         this.state = {
             question: "",
             input: "",
-            memory: []
+            memory: [],
+            expandInput: false
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handlePressableBtn = this.handlePressableBtn.bind(this);
     };
     handleClick(event){
         switch(event.target.value){
@@ -1390,11 +1597,40 @@ class CalculatorWidget extends Component{
                     input: prevState.input + event.target.value
                 }));
         };
+        /// Automatically scroll down in the "expand input" popout if the "input" gets too long
+        const expandInputPopout = document.getElementById("calculator-input-expand-text");
+        if(expandInputPopout.scrollHeight > expandInputPopout.clientHeight){
+            expandInputPopout.scrollTop = expandInputPopout.scrollHeight;
+        }
     };
     handleDelete(){
         this.setState({
             memory: []
         });
+    };
+    /// Handles all buttons that are pressable
+    handlePressableBtn(what){
+        const btn = document.getElementById("calculator-btn-input-expand");
+        const popout = document.getElementById("calculator-input-expand-popout");
+        switch(what){
+            case "expand-input":
+                if(this.state.expandInput === false){
+                    this.setState({
+                        expandInput: true
+                    });
+                    btn.style.color = "rgba(var(--randColorOpacity), 1)";
+                    popout.style.visibility = "visible";
+                }else{
+                    this.setState({
+                        expandInput: false
+                    });
+                    btn.style.color = "rgba(var(--randColorOpacity), 0.2)";
+                    popout.style.visibility = "hidden";
+                };
+                break;
+            default:
+                break;
+        };
     };
     componentDidMount(){
         randColor();
@@ -1417,19 +1653,33 @@ class CalculatorWidget extends Component{
                             </IconContext.Provider>
                         </span>
                         <div id="calculator-display-container">
-                            <input id="calculator-input-display"
+                            <input className="font small input-typable no-side space-nicely right short bottom short"
                                 type="text"
                                 value={this.state.question}
                                 readOnly>
                             </input>
-                            <input id="calculator-input"
+                            <input className="font large bold input-typable no-side"
                                 type="text"
                                 value={this.state.input}
                                 readOnly>
                             </input>
                         </div>
-                        <div id="calculator-memory-container"
-                            className="font smaller">
+                        <div className="font smaller center-flex space-nicely bottom short">
+                            <button className="btn-match fadded inverse"
+                                onClick={() => copyToClipboard(this.state.input)}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <FaRegPaste/>
+                                </IconContext.Provider>
+                            </button>
+                            <button id="calculator-btn-input-expand" 
+                                className="btn-match fadded inverse"
+                                onClick={() => this.handlePressableBtn("expand-input")}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <BiExpand/>
+                                </IconContext.Provider>
+                            </button>
+                        </div>
+                        <div className="font smaller center-flex space-nicely bottom short">
                             <button id="calculator-btn-MC"
                                 className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
@@ -1541,6 +1791,19 @@ class CalculatorWidget extends Component{
                                 onClick={this.handleClick}
                                 value="=">=</button>
                         </section>
+                        {/* Expand Input Popout */}
+                        <Draggable
+                            cancel="p"
+                            defaultPosition={{x: 180, y: -305}}
+                            bounds={{top: -455, left: -150, right: 190, bottom: 15}}>
+                            <section id="calculator-input-expand-popout"
+                                className="popout">
+                                <p id="calculator-input-expand-text"
+                                    className="cut-scrollbar-corner-part-2 p short font medium break-word space-nicely all long">
+                                    {this.state.input}
+                                </p>
+                            </section>
+                        </Draggable>
                     </div>
                 </div>
             </Draggable>
@@ -1687,9 +1950,10 @@ class WeatherWidget extends Component{
                         </div>
                         <section id="weather-info-container">
                             <div id="weather-info-icon-temp">
-                                <img id="weather-info-icon"
+                                <img className="no-select"
                                     src={this.state.weatherIcon}
-                                    alt="weather-icon"></img>
+                                    alt="weather-icon"
+                                    style={{height: medIcon, width: medIcon}}></img>
                                 <div id="weather-info-temp-c-container">
                                     <span id="weather-info-temp-c"
                                         className="font large bold">{this.state.tempC}&deg;C</span>
