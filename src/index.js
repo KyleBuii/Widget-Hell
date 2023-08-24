@@ -13,6 +13,9 @@ import $ from 'jquery';
 import { evaluate, round } from 'mathjs';
 // import { CookiesProvider, useCookies } from 'react-cookie';
 import sanitizeHtml from 'sanitize-html';
+import Switch from 'react-switch';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 /// Variables
 const smallIcon = "0.88em";
@@ -88,6 +91,7 @@ const sentences = [
     , "O crucible which melts my soul, scream forth from the depths of the abyss and engulf my enemies in a crimson wave! Pierce trough, EXPLOSION!"    
     , 'If you ask Rick Astley for a copy of the movie "UP", he cannot give you it as he can never give you up. But, by doing that, he is letting you down, and thus, is creating something known as the Astley Paradox.'
     , "Reddit should rename 'share' to 'spreddit', 'delete' to 'shreddit' and 'karma' to 'creddit'. Yet they haven't. I don't geddit."
+    , "The tower of rebellion creeps upon man’s world… The unspoken faith displayed before me… The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
 ];
 const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
@@ -361,14 +365,21 @@ class SettingWidget extends Component{
     constructor(props){
         super(props);
         this.state = {
-            showHideWidgets: false,
-            quote: false,
+            showHideWidgets: false,     /// Widgets
+            quote: false,               
             translator: false,
             googleTranslator: false,
             calculator: false,
-            weather: false
+            weather: false,
+            settings: false,            /// Settings
+            screenDimmer: false,
+            screenDimmerValue: "100",
+            customBorder: false,
+            customBorderValue: "diagonal"
         };
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
+        this.handleToggleableBtn = this.handleToggleableBtn.bind(this);
+        this.handleSlider = this.handleSlider.bind(this);
     };
     handleTrick(){
         if(widgetsArray.length !== 0){
@@ -391,12 +402,12 @@ class SettingWidget extends Component{
         };
         arr.length -= 1;
     };
-    /// Handles all buttons that are pressable (opacity: 0.5 on click)
+    /// Handles all pressable buttons (opacity: 0.5 on click)
     handlePressableBtn(what){
         const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
         switch(what){
             case "showHideWidgets":
-                const btnShowHideWidgets = document.getElementById("settings-show-hide-widgets-btn");
+                const btnShowHideWidgets = document.getElementById("settings-btn-show-hide-widgets");
                 const showHideWidgetsPopout = document.getElementById("show-hide-widgets-popout");
                 if(this.state.showHideWidgets === false){
                     this.setState({
@@ -410,6 +421,23 @@ class SettingWidget extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "0.5";
                     showHideWidgetsPopout.style.visibility = "hidden";
+                };
+                break;
+            case "settings":
+                const btnSettings = document.getElementById("settings-btn-settings");
+                const settingsPopout = document.getElementById("settings-popout");
+                if(this.state.settings === false){
+                    this.setState({
+                        settings: true
+                    });
+                    btnSettings.style.opacity = "1";
+                    settingsPopout.style.visibility = "visible";
+                }else{
+                    this.setState({
+                        settings: false
+                    });
+                    btnSettings.style.opacity = "0.5";
+                    settingsPopout.style.visibility = "hidden";
                 };
                 break;
             case "advanced":
@@ -503,6 +531,83 @@ class SettingWidget extends Component{
                 break;
         };
     };
+    /// Handles all toggleable buttons (switch)
+    handleToggleableBtn(value, what){
+        switch(what){
+            case "btn-screen-dimmer":
+                const bg = document.getElementById("App");
+                this.setState({
+                    screenDimmer: value
+                }, () => {
+                    if(this.state.screenDimmer === true){
+                        bg.style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                    }else{
+                        bg.style.filter = "brightness(100%)";
+                    };
+                });
+                break;
+            case "btn-custom-border":
+                this.setState({
+                    customBorder: value
+                }, () => {
+                    this.handleCustomBorder();
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    /// Handles all sliders
+    handleSlider(value, what){
+        switch(what){
+            case "slider-screen-dimmer":
+                const bg = document.getElementById("App");
+                this.setState({
+                    screenDimmerValue: value
+                }, () => {
+                    if(this.state.screenDimmer === true){
+                        bg.style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                    };
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    /// Handles all selects
+    handleSelect(event, what){
+        switch(what){
+            case "custom-border":
+                this.setState({
+                    customBorderValue: event.target.value
+                }, () => {
+                    this.handleCustomBorder();   
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    handleCustomBorder(){
+        const widgets = document.querySelectorAll(".widget-animation");
+        if(this.state.customBorder === true){
+            switch(this.state.customBorderValue){
+                case "diagonal":
+                    for(const element of widgets){
+                        element.style.border = "10px solid var(--randColor)";
+                        element.style.borderImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, var(--randColor) 6px, var(--randColor) 15px, transparent 16px, transparent 20px) 20/1rem";
+                    };
+                    break;
+                default:
+                    break;
+            };
+        }else{
+            for(const element of widgets){
+                element.style.border = "1px solid var(--randColor)";
+                element.style.borderImage = "none"
+            };
+        };
+    };
     render(){
         return(
             <Draggable
@@ -521,9 +626,12 @@ class SettingWidget extends Component{
                             </IconContext.Provider>
                         </span>
                         <section className="option">
-                            <button id="settings-show-hide-widgets-btn"
+                            <button id="settings-btn-show-hide-widgets"
                                 className="option-item btn-match option opt-long disabled-option"
                                 onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
+                            <button id="settings-btn-settings"
+                                className="option-item btn-match option opt-long disabled-option"
+                                onClick={() => this.handlePressableBtn("settings")}>Settings</button>
                             <section className="option-item">
                                 <button className="btn-match option opt-medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
@@ -531,8 +639,8 @@ class SettingWidget extends Component{
                         </section>
                         {/* Show/Hide Widgets Popout */}
                         <Draggable
-                            cancel="input, button"
-                            defaultPosition={{x: 30, y: -25}}
+                            cancel="button"
+                            defaultPosition={{x: 30, y: -55}}
                             bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
@@ -560,6 +668,75 @@ class SettingWidget extends Component{
                                         <button id="show-hide-widgets-popout-btn-weather"
                                             className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("weather")}>Weather</button>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
+                        {/* Settings Popout */}
+                        <Draggable
+                            cancel="span, .toggleable, .slider, select"
+                            defaultPosition={{x: 120, y: -25}}
+                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                            <section id="settings-popout"
+                                className="popout">
+                                <section className="option space-nicely all">
+                                    {/* Display Settings */}
+                                    <section className="section-group">
+                                        <span className="font small bold when-elements-are-not-straight space-nicely bottom short">
+                                            Display
+                                        </span>
+                                        <section className="option-item">
+                                            <span className="font small">
+                                                Screen Dimmer
+                                            </span>
+                                            <Switch className="toggleable"
+                                                checked={this.state.screenDimmer}
+                                                onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
+                                                onColor="#86d3ff"
+                                                onHandleColor="#2693e6"
+                                                handleDiameter={15}
+                                                uncheckedIcon={false}
+                                                checkedIcon={false}
+                                                boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
+                                                activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                                                height={15}
+                                                width={30}/>
+                                        </section>
+                                        <Slider className="slider space-nicely top medium"
+                                            onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
+                                            min={5}
+                                            max={130}
+                                            defaultValue={100}
+                                            disabled={!this.state.screenDimmer}/>
+                                    </section>
+                                    {/* Design Settings */}
+                                    <section className="section-group">
+                                        <span className="font small bold when-elements-are-not-straight space-nicely bottom short">
+                                            Design
+                                        </span>
+                                        <section className="option-item">
+                                            <span className="font small">
+                                                Custom Border
+                                            </span>
+                                            <Switch className="toggleable"
+                                                checked={this.state.customBorder}
+                                                onChange={(value) => this.handleToggleableBtn(value, "btn-custom-border")}
+                                                onColor="#86d3ff"
+                                                onHandleColor="#2693e6"
+                                                handleDiameter={15}
+                                                uncheckedIcon={false}
+                                                checkedIcon={false}
+                                                boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
+                                                activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                                                height={15}
+                                                width={30}/>
+                                        </section>
+                                        <select className="select-match space-nicely top medium"
+                                            onChange={(event) => this.handleSelect(event, "custom-border")}
+                                            disabled={!this.state.customBorder}
+                                            defaultValue={"diagonal"}>
+                                            <option value="diagonal">Diagonal</option>
+                                        </select>
                                     </section>
                                 </section>
                             </section>
@@ -946,6 +1123,19 @@ class TranslatorWidget extends Component{
                 break;
         };
     };
+    /// Handles "word-break" for unbreakable strings
+    handleWordBreak(){
+        const translatedText = document.getElementById("translator-translated-text");
+        switch(this.state.to){
+            case "braille":
+            case "base64":
+                translatedText.style.wordBreak = "break-all";
+                break;
+            default:
+                translatedText.style.wordBreak = "normal";
+                break;
+        };
+    };
     /// Handles the "from" language select
     handleFrom(event){
         this.setState({
@@ -961,6 +1151,7 @@ class TranslatorWidget extends Component{
         this.setState({
             to: event.target.value,
         }, () => {
+            this.handleWordBreak();
             if(this.state.input !== ""){
                 this.convertToText();
             }
@@ -1445,9 +1636,15 @@ class CalculatorWidget extends Component{
             memory: [],
             expandInput: false
         };
+        this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
+    };
+    handleChange(event){
+        this.setState({
+            input: event.target.value
+        });
     };
     handleClick(event){
         switch(event.target.value){
@@ -1632,8 +1829,22 @@ class CalculatorWidget extends Component{
                 break;
         };
     };
+    /// Handles keyboard shortcuts
+    handleKeypress(event){
+        const btnEqual = document.getElementById("calculator-btn-equal");
+        if(event.key === "Enter"){
+            event.preventDefault();
+            btnEqual.click();
+        };
+    };
     componentDidMount(){
         randColor();
+        const inputField = document.getElementById("calculator-input-field");
+        inputField.addEventListener("keypress", this.handleKeypress);
+    };
+    componentWillUnmount(){
+        const inputField = document.getElementById("calculator-input-field");
+        inputField.removeEventListener("keypress", this.handleKeypress);
     };
     render(){
         return(
@@ -1658,10 +1869,11 @@ class CalculatorWidget extends Component{
                                 value={this.state.question}
                                 readOnly>
                             </input>
-                            <input className="font large bold input-typable no-side"
+                            <input id="calculator-input-field"
+                                className="font large bold input-typable no-side"
                                 type="text"
                                 value={this.state.input}
-                                readOnly>
+                                onChange={this.handleChange}>
                             </input>
                         </div>
                         <div className="font smaller center-flex space-nicely bottom short">
@@ -1787,7 +1999,8 @@ class CalculatorWidget extends Component{
                             <button className="btn-match"
                                 onClick={this.handleClick}
                                 value=".">.</button>
-                            <button className="btn-match"
+                            <button id="calculator-btn-equal"
+                                className="btn-match"
                                 onClick={this.handleClick}
                                 value="=">=</button>
                         </section>

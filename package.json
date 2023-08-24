@@ -14,6 +14,7 @@
     "dotenv": "^16.3.1",
     "jquery": "^3.7.0",
     "mathjs": "^11.9.1",
+    "rc-slider": "^10.2.1",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
@@ -21,6 +22,7 @@
     "react-icons": "^4.10.1",
     "react-native": "^0.72.4",
     "react-scripts": "5.0.1",
+    "react-switch": "^7.0.0",
     "sanitize-html": "^2.11.0",
     "sass": "^1.64.1",
     "web-vitals": "^2.1.4"

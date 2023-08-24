@@ -98,6 +98,14 @@ body{
     filter: brightness(70%);
 }
 
+.toggleable{
+    vertical-align: middle;
+}
+
+.slider{
+    vertical-align: middle;
+}
+
 .cut-scrollbar-corner-part-1{
     max-width: 23.2em;
     overflow: hidden;
@@ -230,6 +238,9 @@ body{
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
+    &:disabled{
+        opacity: 0.3;
+    }
 }
 
 .btn-ends{
@@ -336,6 +347,9 @@ body{
 .space-nicely{
     &.top{
         margin: 0.9rem 0rem 0.3rem;
+        &.medium{
+            margin-top: 0.5rem;
+        }
     }
     &.right{
         &.short{
@@ -385,6 +399,12 @@ body{
     user-select: none;
 }
 
+.section-group{
+    background-color: rgba(var(--randColorOpacity), 0.15);
+    border-radius: 20px;
+    padding: 1rem;
+}
+
 .bottom-left{
     position: absolute;
     top: 21em;
@@ -422,6 +442,12 @@ body{
     #settings-box-animation{
         #show-hide-widgets-popout{
             padding: 0.6rem;
+        }
+        #settings-popout{
+            padding: 0.4rem;
+            select{
+                width: 10em;
+            }
         }
     }
 }

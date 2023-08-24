@@ -22,3 +22,5 @@
 - serve
 - react-native
 - sanitize-html
+- react-switch
+- rc-slider
