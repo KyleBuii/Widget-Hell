@@ -16,8 +16,10 @@ import sanitizeHtml from 'sanitize-html';
 import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+/// Snake
+import SnakeGame from './Games/Snake.js';
 
-/// Variables
+//////////////////// Variables ////////////////////
 const smallIcon = "0.88em";
 const medIcon = "4em";
 const largeIcon = "5em";
@@ -25,7 +27,7 @@ const zIndexDefault = 2;
 const zIndexDrag = 5;
 const colorRange = 200;
 const widgetsArray = ["settings-box-animation"];
-const animationsArray = ["spin", "flip", "hinge"];
+const animations = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
     {
@@ -75,6 +77,18 @@ const quotes = [
     {
         qte: "If you aren't willing to look like a foolish beginner, you'll never become a graceful master. Embarrassment is the cost of entry."
         , au: ""
+    },
+    {
+        qte: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time."
+        , au: "Thomas Edison"
+    },
+    {
+        qte: "Was it a bad day? Or was it a bad five minutes that you milked all day?"
+        , au: ""
+    },
+    {
+        qte: "Sometimes it takes ten years to get that one year that changes your life."
+        , au: ""
     }
 ];
 const sentences = [
@@ -92,6 +106,8 @@ const sentences = [
     , 'If you ask Rick Astley for a copy of the movie "UP", he cannot give you it as he can never give you up. But, by doing that, he is letting you down, and thus, is creating something known as the Astley Paradox.'
     , "Reddit should rename 'share' to 'spreddit', 'delete' to 'shreddit' and 'karma' to 'creddit'. Yet they haven't. I don't geddit."
     , "The tower of rebellion creeps upon man’s world… The unspoken faith displayed before me… The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
+    , "Glasses are really versatile. First, you can have glasses-wearing girls take them off and suddenly become beautiful, or have girls wearing glasses flashing those cute grins, or have girls stealing the protagonist's glasses and putting them on like, \"Haha, got your glasses!\" That's just way too cute! Also, boys with glasses! I really like when their glasses have that suspicious looking gleam, and it's amazing how it can look really cool or just be a joke. I really like how it can fulfill all those abstract needs. Being able to switch up the styles and colors of glasses based on your mood is a lot of fun too! It's actually so much fun! You have those half rim glasses, or the thick frame glasses, everything! It's like you're enjoying all these kinds of glasses at a buffet. I really want Luna to try some on or Marine to try some on to replace her eyepatch. We really need glasses to become a thing in hololive and start selling them for HoloComi. Don't. You. Think. We. Really. Need. To. Officially. Give. Everyone. Glasses?"
+    , "Eggs, Bacon, Grist, Sausage. The cockroaches in your bedroom held you hostage."
 ];
 const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
@@ -262,7 +278,7 @@ const emojifyDictionary = {
     "phone": ["&#x1F4F1;"],
 };
 
-/// Functions
+//////////////////// Functions ////////////////////
 function randColor(){
     const r = document.querySelector(":root");
     const randColorOpacity = Math.floor(Math.random() * colorRange)
@@ -300,23 +316,23 @@ function dragStop(what){
     }
 };
 
-function sortOptgroup(optgroup){
-    const optgroupOptions = $(optgroup + ' option');
-    const arrOptgroupOptions = optgroupOptions
+function sortSelect(what){
+    const options = $(what + ' option');
+    const arrOptions = options
         .map(function(_, o){
             return{
                 text: $(o).text(),
                 value: $(o).val()
             };
         }).get();
-    arrOptgroupOptions.sort(function(o1, o2){
-        return o1.text > o2.text ? 1
-            : o1.text < o2.text ? -1
-            : 0;
+        arrOptions.sort(function(o1, o2){
+            return o1.text > o2.text ? 1
+                : o1.text < o2.text ? -1
+                : 0;
     });
-    optgroupOptions.each(function(i, o){
-        $(o).text(arrOptgroupOptions[i].text);
-        $(o).val(arrOptgroupOptions[i].value);
+    options.each(function(i, o){
+        $(o).text(arrOptions[i].text);
+        $(o).val(arrOptions[i].value);
     });
 };
 
@@ -360,7 +376,7 @@ function copyToClipboard(what){
     };
 };
 
-/// Widgets
+//////////////////// Widgets ////////////////////
 class SettingWidget extends Component{
     constructor(props){
         super(props);
@@ -371,11 +387,12 @@ class SettingWidget extends Component{
             googleTranslator: false,
             calculator: false,
             weather: false,
+            snake: false,
             settings: false,            /// Settings
             screenDimmer: false,
-            screenDimmerValue: "100",
+            screenDimmerValue: "",
             customBorder: false,
-            customBorderValue: "diagonal"
+            customBorderValue: ""
         };
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
         this.handleToggleableBtn = this.handleToggleableBtn.bind(this);
@@ -384,11 +401,11 @@ class SettingWidget extends Component{
     handleTrick(){
         if(widgetsArray.length !== 0){
             const randWidget = Math.floor(Math.random() * widgetsArray.length);
-            const randAnimation = Math.floor(Math.random() * animationsArray.length);
+            const randAnimation = Math.floor(Math.random() * animations.length);
             const e = document.getElementById(widgetsArray[randWidget]);
             e.style.animation = "none";
             window.requestAnimationFrame(function(){
-                e.style.animation = animationsArray[randAnimation] + " 2s";
+                e.style.animation = animations[randAnimation] + " 2s";
             });
         };
     };
@@ -447,6 +464,8 @@ class SettingWidget extends Component{
                 if(this.state.quote === false){
                     this.setState({
                         quote: true
+                    }, () => {
+                        this.handleCustomBorder("quote");   
                     });
                     btn.style.opacity = "1";
                     widgetsArray.push("quote-box-animation");
@@ -464,6 +483,8 @@ class SettingWidget extends Component{
                 if(this.state.translator === false){
                     this.setState({
                         translator: true
+                    }, () => {
+                        this.handleCustomBorder("translator");
                     });
                     btn.style.opacity = "1";
                     widgetsArray.push("translator-box-animation");
@@ -481,6 +502,8 @@ class SettingWidget extends Component{
                 if(this.state.googleTranslator === false){
                     this.setState({
                         googleTranslator: true
+                    }, () => {
+                        this.handleCustomBorder("google-translator");
                     });
                     btn.style.opacity = "1";
                     widgetsArray.push("google-translator-box-animation");
@@ -498,6 +521,8 @@ class SettingWidget extends Component{
                 if(this.state.calculator === false){
                     this.setState({
                         calculator: true
+                    }, () => {
+                        this.handleCustomBorder("calculator");
                     });
                     btn.style.opacity = "1";
                     widgetsArray.push("calculator-box-animation");
@@ -515,6 +540,8 @@ class SettingWidget extends Component{
                 if(this.state.weather === false){
                     this.setState({
                         weather: true
+                    }, () => {
+                        this.handleCustomBorder("weather");
                     });
                     btn.style.opacity = "1";
                     widgetsArray.push("weather-box-animation");
@@ -527,6 +554,25 @@ class SettingWidget extends Component{
                     this.unorderedRemove(widgetsArray, indexWeather);
                 };
                 break;
+            case "snake":
+                this.props.showHide("snake");
+                if(this.state.snake === false){
+                    this.setState({
+                        snake: true
+                    }, () => {
+                        this.handleCustomBorder("snake");
+                    });
+                    btn.style.opacity = "1";
+                    widgetsArray.push("snake-box-animation");
+                }else{
+                    this.setState({
+                        snake: false
+                    });
+                    btn.style.opacity = "0.5";
+                    const indexSnake = widgetsArray.indexOf("snake-box-animation");
+                    this.unorderedRemove(widgetsArray, indexSnake);
+                };
+                break;    
             default:
                 break;
         };
@@ -588,25 +634,46 @@ class SettingWidget extends Component{
                 break;
         };
     };
-    handleCustomBorder(){
-        const widgets = document.querySelectorAll(".widget-animation");
+    handleCustomBorder(what){
+        var widget, popout, combine;
+        if(what !== undefined){
+            widget = document.getElementById(what + "-box-animation");
+            popout = widget.querySelectorAll(".popout");
+            combine = [widget, ...popout];
+        }else{
+            widget = document.querySelectorAll(".widget-animation");
+            popout = document.querySelectorAll(".popout");
+            combine = [...widget, ...popout];
+        };
         if(this.state.customBorder === true){
             switch(this.state.customBorderValue){
                 case "diagonal":
-                    for(const element of widgets){
+                    for(const element of combine){
                         element.style.border = "10px solid var(--randColor)";
                         element.style.borderImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, var(--randColor) 6px, var(--randColor) 15px, transparent 16px, transparent 20px) 20/1rem";
+                    };
+                    break;
+                case "dashed":
+                    for(const element of combine){
+                        element.style.border = "5px dashed var(--randColor)";
                     };
                     break;
                 default:
                     break;
             };
         }else{
-            for(const element of widgets){
+            for(const element of combine){
                 element.style.border = "1px solid var(--randColor)";
                 element.style.borderImage = "none"
             };
         };
+    };
+    componentDidMount(){
+        sortSelect("#settings-popout-design-custom-border-select");
+        this.setState({
+            customBorderValue: "dashed"
+        });
+        $("#settings-popout-design-custom-border-select").val("dashed");
     };
     render(){
         return(
@@ -668,6 +735,9 @@ class SettingWidget extends Component{
                                         <button id="show-hide-widgets-popout-btn-weather"
                                             className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("weather")}>Weather</button>
+                                        <button id="show-hide-widgets-popout-btn-snake"
+                                            className="btn-match option opt-medium disabled-option"
+                                            onClick={() => this.handlePressableBtn("snake")}>Snake</button>
                                     </section>
                                 </section>
                             </section>
@@ -682,8 +752,8 @@ class SettingWidget extends Component{
                                 <section className="option space-nicely all">
                                     {/* Display Settings */}
                                     <section className="section-group">
-                                        <span className="font small bold when-elements-are-not-straight space-nicely bottom short">
-                                            Display
+                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <b>Display</b>
                                         </span>
                                         <section className="option-item">
                                             <span className="font small">
@@ -711,8 +781,8 @@ class SettingWidget extends Component{
                                     </section>
                                     {/* Design Settings */}
                                     <section className="section-group">
-                                        <span className="font small bold when-elements-are-not-straight space-nicely bottom short">
-                                            Design
+                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <b>Design</b>
                                         </span>
                                         <section className="option-item">
                                             <span className="font small">
@@ -731,11 +801,13 @@ class SettingWidget extends Component{
                                                 height={15}
                                                 width={30}/>
                                         </section>
-                                        <select className="select-match space-nicely top medium"
+                                        <select id="settings-popout-design-custom-border-select"
+                                            className="select-match space-nicely top medium"
                                             onChange={(event) => this.handleSelect(event, "custom-border")}
                                             disabled={!this.state.customBorder}
-                                            defaultValue={"diagonal"}>
+                                            defaultValue={"dashed"}>
                                             <option value="diagonal">Diagonal</option>
+                                            <option value="dashed">Dashed</option>
                                         </select>
                                     </section>
                                 </section>
@@ -1280,6 +1352,10 @@ class TranslatorWidget extends Component{
     };
     componentDidMount(){
         randColor();
+        /// Sort the "translate-to" optgroups options alphabetically
+        sortSelect('#translator-translate-to #translate-to-other-languages');
+        sortSelect('#translator-translate-to #translate-to-encryption');
+        sortSelect('#translator-translate-to #translate-to-modify');
         /// Default values
         this.setState({
             from: "en",
@@ -1291,10 +1367,6 @@ class TranslatorWidget extends Component{
         $('#translator-translate-from #translate-from-languages option').clone().prependTo('#translate-to-languages');
         $('#translator-translate-from #translate-from-other-languages option').clone().prependTo('#translate-to-other-languages');
         $('#translator-translate-from #translate-from-encryption option').clone().prependTo('#translate-to-encryption');
-        /// Sort the "translate-to" optgroups options alphabetically
-        sortOptgroup('#translator-translate-to #translate-to-other-languages');
-        sortOptgroup('#translator-translate-to #translate-to-encryption');
-        sortOptgroup('#translator-translate-to #translate-to-modify');
     };
     render(){
         return(
@@ -1313,7 +1385,7 @@ class TranslatorWidget extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="center-flex space-nicely bottom">
+                        <div className="flex-center space-nicely bottom">
                             <select id="translator-translate-from"
                                 className="select-match"
                                 defaultValue={"en"}
@@ -1366,7 +1438,7 @@ class TranslatorWidget extends Component{
                             bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="replace-popout"
                                 className="popout">
-                                <section className="center-flex space-nicely top">
+                                <section className="flex-center space-nicely top">
                                     <input className="input-typable all-side input-button-input"
                                         type="text"
                                         onChange={this.handleReplaceFrom}></input>
@@ -1447,7 +1519,7 @@ class TranslatorWidget extends Component{
                         <div id="translator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p id="translator-translated-text"
-                                className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
+                                className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             <button className="bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                             <button className="bottom-left btn-match fadded inverse"
@@ -1580,7 +1652,7 @@ class GoogleTranslatorWidget extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div className="center-flex space-nicely bottom">
+                        <div className="flex-center space-nicely bottom">
                             <select id="google-translator-translate-from"
                                 className="select-match"
                                 onChange={this.handleFrom}>
@@ -1610,7 +1682,7 @@ class GoogleTranslatorWidget extends Component{
                         </div>
                         <div id="google-translator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
-                            <p className="cut-scrollbar-corner-part-2 p center-flex only-justify-content">{this.state.converted}</p>
+                            <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             <button className="bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                             <button className="bottom-left btn-match fadded inverse"
@@ -1876,7 +1948,7 @@ class CalculatorWidget extends Component{
                                 onChange={this.handleChange}>
                             </input>
                         </div>
-                        <div className="font smaller center-flex space-nicely bottom short">
+                        <div className="font smaller flex-center space-nicely bottom short">
                             <button className="btn-match fadded inverse"
                                 onClick={() => copyToClipboard(this.state.input)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
@@ -1891,7 +1963,7 @@ class CalculatorWidget extends Component{
                                 </IconContext.Provider>
                             </button>
                         </div>
-                        <div className="font smaller center-flex space-nicely bottom short">
+                        <div className="font smaller flex-center space-nicely bottom short">
                             <button id="calculator-btn-MC"
                                 className="btn-match inverse inv-small"
                                 onClick={this.handleClick}
@@ -1917,7 +1989,8 @@ class CalculatorWidget extends Component{
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
-                        <section id="calculator-btn-container">
+                        <section className="grid"
+                            id="calculator-btn-container">
                             <div id="calculator-btn-memory-display">
                                 <div id="calculator-btn-memory-container">
                                     {this.state.memory.map(curr => <p>{curr}</p>)}
@@ -2122,7 +2195,7 @@ class WeatherWidget extends Component{
                             </IconContext.Provider>
                         </span>
                         <div id="weather-search-container"
-                            className="center-flex">
+                            className="flex-center">
                             <div className="when-elements-are-not-straight">
                                 <input className="input-typable right-side with-help-btn"
                                     placeholder="Enter location"
@@ -2169,13 +2242,17 @@ class WeatherWidget extends Component{
                                     style={{height: medIcon, width: medIcon}}></img>
                                 <div id="weather-info-temp-c-container">
                                     <span id="weather-info-temp-c"
-                                        className="font large bold">{this.state.tempC}&deg;C</span>
-                                    <span className="font small bold-transparent center-flex">{this.state.feelsLikeC}&deg;C</span>
+                                        className="font large">
+                                        <b>{this.state.tempC}&deg;C</b>
+                                    </span>
+                                    <span className="font small bold-transparent flex-center">{this.state.feelsLikeC}&deg;C</span>
                                 </div>
                                 <div id="weather-info-temp-f-container">
                                     <span id="weather-info-temp-f"
-                                        className="font large bold">{this.state.tempF}&deg;F</span>
-                                    <span className="font small bold-transparent center-flex">{this.state.feelsLikeF}&deg;F</span>
+                                        className="font large">
+                                        <b>{this.state.tempF}&deg;F</b>
+                                    </span>
+                                    <span className="font small bold-transparent flex-center">{this.state.feelsLikeF}&deg;F</span>
                                 </div>
                             </div>
                             <div id="weather-info-cond-local-time"
@@ -2203,9 +2280,61 @@ class WeatherWidget extends Component{
     };
 }
 
-///////////////////////
-/// Widget Template ///
-///////////////////////
+//////////////////// Widgets: Games ////////////////////
+
+class SnakeWidget extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            size: 24
+        };
+        this.resizer = this.resizer.bind(this);
+    };
+    resizer(){
+        if(window.innerWidth < 450){
+            this.setState({
+                size: (window.innerWidth / 16) - 4
+            });
+        }else{
+            this.setState({
+                size: 24
+            });
+        };
+    };
+    componentDidMount(){
+        window.addEventListener("resize", this.resizer);
+    };
+    componentWillUnmount(){
+        window.removeEventListener("resize", this.resizer);
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={() => dragStart("snake")}
+                onStop={() => dragStop("snake")}
+                cancel="button, section"
+                bounds="parent">
+                <div id="snake-box"
+                    className="widget">
+                    <div id="snake-box-animation"
+                        className="widget-animation">
+                        <span id="snake-box-draggable"
+                            className="draggable">
+                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <section>
+                            <SnakeGame size={this.state.size}/>
+                        </section>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+}
+
+//////////////////// Widget Template///////////////////////
 /*
 class []Widget extends Component{
     render(){
@@ -2241,7 +2370,8 @@ class Widgets extends Component{
             translator: false,
             googleTranslator: false,
             calculator: false,
-            weather: false
+            weather: false,
+            snake: false
         };
         this.handleCallBack = this.handleCallBack.bind(this);
     };
@@ -2272,6 +2402,11 @@ class Widgets extends Component{
                     weather: !this.state.weather
                 });
                 break;
+            case "snake":
+                this.setState({
+                    snake: !this.state.snake
+                });
+                break;
             default:
                 break;
         };
@@ -2288,12 +2423,13 @@ class Widgets extends Component{
                 {this.state.googleTranslator === true ? <GoogleTranslatorWidget showHide={this.handleCallBack}/> : <></>}
                 {this.state.calculator === true ? <CalculatorWidget showHide={this.handleCallBack}/> : <></>}
                 {this.state.weather === true ? <WeatherWidget showHide={this.handleCallBack}/> : <></>}
+                {this.state.snake === true ? <SnakeWidget showHide={this.handleCallBack}/> : <></>}
             </div>
         );
     }
 };
 
-/// Render to page
+//////////////////// Render to page ////////////////////
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 root.render(
