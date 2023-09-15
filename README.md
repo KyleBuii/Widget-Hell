@@ -9,6 +9,7 @@
 - Translate or modify text
 - Calculator
 - Weather
+- Games
 
 ## Node Modules
 - react
@@ -24,3 +25,4 @@
 - sanitize-html
 - react-switch
 - rc-slider
+- react-tabs

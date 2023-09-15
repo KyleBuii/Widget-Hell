@@ -16,7 +16,8 @@ import sanitizeHtml from 'sanitize-html';
 import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-/// Snake
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+/// Games
 import SnakeGame from './Games/Snake.js';
 
 //////////////////// Variables ////////////////////
@@ -706,40 +707,53 @@ class SettingWidget extends Component{
                         </section>
                         {/* Show/Hide Widgets Popout */}
                         <Draggable
-                            cancel="button"
+                            cancel="button, Tabs, TabList, Tab, TabPanel"
                             defaultPosition={{x: 30, y: -55}}
                             bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
-                                <section className="option space-nicely all">
-                                    <button id="show-hide-widgets-popout-btn-advanced"
-                                        className="doesnt-work option-item btn-match option opt-long disabled-option"
-                                        onClick={() => this.handlePressableBtn("advanced")}>Advanced</button>
-                                    <section className="option-item">
-                                        <button id="show-hide-widgets-popout-btn-quote"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("quote")}>Quote</button>
-                                        <button id="show-hide-widgets-popout-btn-translator"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("translator")}>Translator</button>
-                                    </section>
-                                    <section className="option-item">
-                                        <button id="show-hide-widgets-popout-btn-google-translator"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("google-translator")}>Google Translator</button>
-                                        <button id="show-hide-widgets-popout-btn-calculator"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("calculator")}>Calculator</button>
-                                    </section>
-                                    <section className="option-item">
-                                        <button id="show-hide-widgets-popout-btn-weather"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("weather")}>Weather</button>
-                                        <button id="show-hide-widgets-popout-btn-snake"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("snake")}>Snake</button>
-                                    </section>
-                                </section>
+                                <Tabs defaultIndex={0}>
+                                    <TabList>
+                                        <Tab>Utility</Tab>
+                                        <Tab>Games</Tab>
+                                    </TabList>
+                                    {/* Utility */}
+                                    <TabPanel>
+                                        <section className="option space-nicely all">
+                                            <section className="option-item">
+                                                <button id="show-hide-widgets-popout-btn-quote"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("quote")}>Quote</button>
+                                                <button id="show-hide-widgets-popout-btn-translator"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("translator")}>Translator</button>
+                                            </section>
+                                            <section className="option-item">
+                                                <button id="show-hide-widgets-popout-btn-google-translator"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("google-translator")}>Google Translator</button>
+                                                <button id="show-hide-widgets-popout-btn-calculator"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("calculator")}>Calculator</button>
+                                            </section>
+                                            <section className="option-item">
+                                                <button id="show-hide-widgets-popout-btn-weather"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("weather")}>Weather</button>
+                                            </section>
+                                        </section>
+                                    </TabPanel>
+                                    {/* Games */}
+                                    <TabPanel>
+                                        <section className="option space-nicely all">
+                                            <section className="option-item">
+                                                <button id="show-hide-widgets-popout-btn-snake"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("snake")}>Snake</button>
+                                            </section>
+                                        </section>
+                                    </TabPanel>
+                                </Tabs>
                             </section>
                         </Draggable>
                         {/* Settings Popout */}
