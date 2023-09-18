@@ -1,6 +1,5 @@
-# Widget Hell
+# [Widget Hell](https://kylebuii.github.io/Widget-Hell/)
 > Making life more simple, one widget at a time
-> https://kylebuii.github.io/Widget-Hell/
 
 ## Features
 - Draggable widgets
