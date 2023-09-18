@@ -27,7 +27,8 @@ const largeIcon = "5em";
 const zIndexDefault = 2;
 const zIndexDrag = 5;
 const colorRange = 200;
-const widgetsArray = ["settings-box-animation"];
+const widgetsUtilityActive = [];
+const widgetsGamesActive = [];
 const animations = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
@@ -389,6 +390,8 @@ class SettingWidget extends Component{
             calculator: false,
             weather: false,
             snake: false,
+            utilityTab: false,          /// Tabs
+            gamesTab: false,
             settings: false,            /// Settings
             screenDimmer: false,
             screenDimmerValue: "",
@@ -398,27 +401,30 @@ class SettingWidget extends Component{
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
         this.handleToggleableBtn = this.handleToggleableBtn.bind(this);
         this.handleSlider = this.handleSlider.bind(this);
+        this.handleTabSwitch = this.handleTabSwitch.bind(this);
     };
     handleTrick(){
-        if(widgetsArray.length !== 0){
-            const randWidget = Math.floor(Math.random() * widgetsArray.length);
-            const randAnimation = Math.floor(Math.random() * animations.length);
-            const e = document.getElementById(widgetsArray[randWidget]);
+        const combinedWidgets = [...widgetsUtilityActive, ...widgetsGamesActive];
+        if(combinedWidgets.length !== 0){
+            const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
+            const randIndexAnimation = Math.floor(Math.random() * animations.length);
+            const e = document.getElementById(combinedWidgets[randIndexWidget] + "-box-animation");
             e.style.animation = "none";
             window.requestAnimationFrame(function(){
-                e.style.animation = animations[randAnimation] + " 2s";
+                e.style.animation = animations[randIndexAnimation] + " 2s";
             });
         };
     };
     /// Remove element at index "i" where order doesn't matter
     unorderedRemove(arr, i){
-        if(i <= 0 || i >= arr.length){
+        if(i < 0 || i >= arr.length){
             return;
         };
         if(i < arr.length-1){
             arr[i] = arr[arr.length-1];
         };
         arr.length -= 1;
+        return arr;
     };
     /// Handles all pressable buttons (opacity: 0.5 on click)
     handlePressableBtn(what){
@@ -458,8 +464,6 @@ class SettingWidget extends Component{
                     settingsPopout.style.visibility = "hidden";
                 };
                 break;
-            case "advanced":
-                break;
             case "quote":
                 this.props.showHide("quote");
                 if(this.state.quote === false){
@@ -469,14 +473,14 @@ class SettingWidget extends Component{
                         this.handleCustomBorder("quote");   
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("quote-box-animation");
+                    widgetsUtilityActive.push("quote");
                 }else{
                     this.setState({
                         quote: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexQuote = widgetsArray.indexOf("quote-box-animation");
-                    this.unorderedRemove(widgetsArray, indexQuote);
+                    const indexQuote = widgetsUtilityActive.indexOf("quote");
+                    this.unorderedRemove(widgetsUtilityActive, indexQuote);
                 };
                 break;
             case "translator":
@@ -488,33 +492,33 @@ class SettingWidget extends Component{
                         this.handleCustomBorder("translator");
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("translator-box-animation");
+                    widgetsUtilityActive.push("translator");
                 }else{
                     this.setState({
                         translator: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexTranslator = widgetsArray.indexOf("translator-box-animation");
-                    this.unorderedRemove(widgetsArray, indexTranslator);
+                    const indexTranslator = widgetsUtilityActive.indexOf("translator");
+                    this.unorderedRemove(widgetsUtilityActive, indexTranslator);
                 };
                 break;
-            case "google-translator":
+            case "googleTranslator":
                 this.props.showHide("googleTranslator");
                 if(this.state.googleTranslator === false){
                     this.setState({
                         googleTranslator: true
                     }, () => {
-                        this.handleCustomBorder("google-translator");
+                        this.handleCustomBorder("googleTranslator");
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("google-translator-box-animation");
+                    widgetsUtilityActive.push("googleTranslator");
                 }else{
                     this.setState({
                         googleTranslator: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexGoogleTranslator = widgetsArray.indexOf("google-translator-box-animation");
-                    this.unorderedRemove(widgetsArray, indexGoogleTranslator);
+                    const indexGoogleTranslator = widgetsUtilityActive.indexOf("googleTranslator");
+                    this.unorderedRemove(widgetsUtilityActive, indexGoogleTranslator);
                 };
                 break;
             case "calculator":
@@ -526,14 +530,14 @@ class SettingWidget extends Component{
                         this.handleCustomBorder("calculator");
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("calculator-box-animation");
+                    widgetsUtilityActive.push("calculator");
                 }else{
                     this.setState({
                         calculator: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexCalculator = widgetsArray.indexOf("calculator-box-animation");
-                    this.unorderedRemove(widgetsArray, indexCalculator);
+                    const indexCalculator = widgetsUtilityActive.indexOf("calculator");
+                    this.unorderedRemove(widgetsUtilityActive, indexCalculator);
                 };
                 break;
             case "weather":
@@ -545,14 +549,14 @@ class SettingWidget extends Component{
                         this.handleCustomBorder("weather");
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("weather-box-animation");
+                    widgetsUtilityActive.push("weather");
                 }else{
                     this.setState({
                         weather: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexWeather = widgetsArray.indexOf("weather-box-animation");
-                    this.unorderedRemove(widgetsArray, indexWeather);
+                    const indexWeather = widgetsUtilityActive.indexOf("weather");
+                    this.unorderedRemove(widgetsUtilityActive, indexWeather);
                 };
                 break;
             case "snake":
@@ -564,14 +568,14 @@ class SettingWidget extends Component{
                         this.handleCustomBorder("snake");
                     });
                     btn.style.opacity = "1";
-                    widgetsArray.push("snake-box-animation");
+                    widgetsGamesActive.push("snake");
                 }else{
                     this.setState({
                         snake: false
                     });
                     btn.style.opacity = "0.5";
-                    const indexSnake = widgetsArray.indexOf("snake-box-animation");
-                    this.unorderedRemove(widgetsArray, indexSnake);
+                    const indexSnake = widgetsGamesActive.indexOf("snake");
+                    this.unorderedRemove(widgetsGamesActive, indexSnake);
                 };
                 break;    
             default:
@@ -669,9 +673,50 @@ class SettingWidget extends Component{
             };
         };
     };
+    handleTabSwitch(what){
+        switch(what){
+            case "utility":
+                this.setState({
+                    utilityTab: true,
+                    gamesTab: false
+                }, () => {
+                    this.updateTab("utility");
+                });
+                break;
+            case "games":
+                this.setState({
+                    utilityTab: false,
+                    gamesTab: true
+                }, () => {
+                    this.updateTab("games");
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    updateTab(what){
+        switch(what){
+            case "utility":
+                for(var currUtilityWidget in widgetsUtilityActive){
+                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + widgetsUtilityActive[currUtilityWidget]);
+                    btn.style.opacity = "1";
+                };
+                break;
+            case "games":
+                for(var currGamesWidget in widgetsGamesActive){
+                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + widgetsGamesActive[currGamesWidget]);
+                    btn.style.opacity = "1";
+                };
+                break;
+            default:
+                break;
+        };
+    };
     componentDidMount(){
         sortSelect("#settings-popout-design-custom-border-select");
         this.setState({
+            utilityTab: true,
             customBorderValue: "dashed"
         });
         $("#settings-popout-design-custom-border-select").val("dashed");
@@ -707,15 +752,15 @@ class SettingWidget extends Component{
                         </section>
                         {/* Show/Hide Widgets Popout */}
                         <Draggable
-                            cancel="button, Tabs, TabList, Tab, TabPanel"
+                            cancel="button, #show-hide-widgets-popout-tabs"
                             defaultPosition={{x: 30, y: -55}}
                             bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
                                 <Tabs defaultIndex={0}>
-                                    <TabList>
-                                        <Tab>Utility</Tab>
-                                        <Tab>Games</Tab>
+                                    <TabList id="show-hide-widgets-popout-tabs">
+                                        <Tab onClick={() => this.handleTabSwitch("utility")}>Utility</Tab>
+                                        <Tab onClick={() => this.handleTabSwitch("games")}>Games</Tab>
                                     </TabList>
                                     {/* Utility */}
                                     <TabPanel>
@@ -729,9 +774,9 @@ class SettingWidget extends Component{
                                                     onClick={() => this.handlePressableBtn("translator")}>Translator</button>
                                             </section>
                                             <section className="option-item">
-                                                <button id="show-hide-widgets-popout-btn-google-translator"
+                                                <button id="show-hide-widgets-popout-btn-googleTranslator"
                                                     className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("google-translator")}>Google Translator</button>
+                                                    onClick={() => this.handlePressableBtn("googleTranslator")}>Google Translator</button>
                                                 <button id="show-hide-widgets-popout-btn-calculator"
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("calculator")}>Calculator</button>
@@ -1615,10 +1660,10 @@ class GoogleTranslatorWidget extends Component{
                 from: prevState.to,
                 to: prev
             }));
-            const v1 = $("#google-translator-translate-from").val();
-            const v2 = $("#google-translator-translate-to").val();
-            $("#google-translator-translate-from").val(v2);
-            $("#google-translator-translate-to").val(v1);
+            const v1 = $("#googleTranslator-translate-from").val();
+            const v2 = $("#googleTranslator-translate-to").val();
+            $("#googleTranslator-translate-from").val(v2);
+            $("#googleTranslator-translate-to").val(v1);
         };
     };
     /// Handles random sentence button
@@ -1641,33 +1686,33 @@ class GoogleTranslatorWidget extends Component{
             el.value = optValue;
             select.appendChild(el);
         };
-        $('#google-translator-translate-from optgroup').clone().appendTo('#google-translator-translate-to');
+        $('#googleTranslator-translate-from optgroup').clone().appendTo('#googleTranslator-translate-to');
         this.setState({
             from: "en",
             to: "ja"
         });
-        $("#google-translator-translate-from").val("en");
-        $("#google-translator-translate-to").val("ja");
+        $("#googleTranslator-translate-from").val("en");
+        $("#googleTranslator-translate-to").val("ja");
     };
     render(){
         return(
             <Draggable
-                onStart={() => dragStart("google-translator")}
-                onStop={() => dragStop("google-translator")}
+                onStart={() => dragStart("googleTranslator")}
+                onStop={() => dragStop("googleTranslator")}
                 cancel="button, span, p, textarea, select"
                 bounds="parent">
-                <div id="google-translator-box"
+                <div id="googleTranslator-box"
                     className="widget">
-                    <div id="google-translator-box-animation"
+                    <div id="googleTranslator-box-animation"
                         className="widget-animation">
-                        <span id="google-translator-box-draggable"
+                        <span id="googleTranslator-box-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         <div className="flex-center space-nicely bottom">
-                            <select id="google-translator-translate-from"
+                            <select id="googleTranslator-translate-from"
                                 className="select-match"
                                 onChange={this.handleFrom}>
                                 <optgroup id="select-languages"
@@ -1679,7 +1724,7 @@ class GoogleTranslatorWidget extends Component{
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
-                            <select id="google-translator-translate-to"
+                            <select id="googleTranslator-translate-to"
                                 className="select-match"
                                 onChange={this.handleTo}></select>
                             <button className="btn-match inverse"
@@ -1694,7 +1739,7 @@ class GoogleTranslatorWidget extends Component{
                                 onChange={this.handleChange}
                                 value={this.state.input}></textarea>
                         </div>
-                        <div id="google-translator-preview-cut-corner"
+                        <div id="googleTranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             <button className="bottom-right btn-match fadded"
@@ -2250,7 +2295,7 @@ class WeatherWidget extends Component{
                         </div>
                         <section id="weather-info-container">
                             <div id="weather-info-icon-temp">
-                                <img className="no-select"
+                                <img className="no-highlight"
                                     src={this.state.weatherIcon}
                                     alt="weather-icon"
                                     style={{height: medIcon, width: medIcon}}></img>

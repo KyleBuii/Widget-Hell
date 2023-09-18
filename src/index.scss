@@ -397,7 +397,7 @@ body{
     }
 }
 
-.no-select{
+.no-highlight{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -432,7 +432,7 @@ body{
 }
 
 .react-tabs{
-    padding-top: 5px;
+    @extend .no-highlight;
     &__tab-list{
         border-bottom: 1px solid var(--randColor);
         margin: 0 0 10px;
@@ -471,11 +471,10 @@ body{
             background: #fff;
         }
     }
-    &__tab-panel {
+    &__tab-panel{
         display: none;
-
-        &--selected {
-        display: block;
+        &--selected{
+            display: block;
         }
     }
 }
