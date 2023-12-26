@@ -24,6 +24,9 @@ body{
     &.large{
         font-size: 1.75em;
     }
+    &.large-medium{
+        font-size: 1.31em;
+    }
     &.medium{
         font-size: 1.17em;
     }
@@ -46,6 +49,9 @@ body{
     &.bold-transparent{
         font-weight: bold;
         color: rgba(var(--randColorOpacity), 0.4);
+    }
+    &.no-color{
+        color: white;
     }
     &.break-word{
         word-break: break-all;
@@ -176,7 +182,6 @@ body{
         &.opt-medium{
             max-width: 12.3em;
             min-width: 3.7em;
-            // width: calc(100vmin - 4em);
             width: calc(100vmin - 14em);
         }
         &.opt-small{
@@ -185,7 +190,7 @@ body{
     }
     &.inverse{
         color: var(--randColor);
-        background-color: white;
+        background-color: transparent;
         padding: 0rem 0.35rem;
         &:hover{
             color: rgba(var(--randColorOpacity), 0.8);
@@ -226,7 +231,7 @@ body{
     -webkit-appearance: none;
     appearance: none;
     padding: 0.05rem 1.12rem 0.05rem 0.3rem;
-    background-image: url("./imgs/downArrow.svg");
+    background-image: url("../public/images/downArrow.svg");
     background-repeat: no-repeat;
     background-position: right 0.3em top 0.12em;
     background-size: 1em 1.1em;
@@ -270,6 +275,9 @@ body{
     &.column{
         flex-direction: column;
     }
+    &.gap{
+        gap: 0.3em;
+    }
 }
 
 .popout{
@@ -291,6 +299,9 @@ body{
     border: 1px solid var(--randColor);
     &:focus{
         outline: none;
+    }
+    &::placeholder{
+        color: var(--randColor);
     }
     &.no-side{
         border: none;
@@ -334,21 +345,23 @@ body{
     }
 }
 
-.option{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.31em;
+.grid{
+    display: grid;
     gap: 0.3em;
-}
-
-.option-item{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 0.3em;
+    &.col-2{
+        &.spread-short{
+            grid-template-columns: repeat(2, 2.225em);
+        }
+        &.spread-long{
+            grid-template-columns: repeat(2, 9.38em);
+        }
+    }
+    &.col-3{
+        grid-template-columns: repeat(3, 2.225em);
+    }
+    &.col-4{
+        grid-template-columns: repeat(4, 2.225em);
+    }
 }
 
 .space-nicely{
@@ -513,6 +526,11 @@ body{
     #settings-box-animation{
         #show-hide-widgets-popout{
             padding: 0.6rem;
+            #show-hide-widgets-popout-search{
+                width: 8em;
+                margin: 0.2rem 0.6rem 0rem;
+                float: right;
+            }
         }
         #settings-popout{
             padding: 0.4rem;
@@ -566,11 +584,11 @@ body{
     }
 }
 
-#google-translator-box{
+#googleTranslator-box{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
-    #google-translator-preview-cut-corner{
+    #googleTranslator-preview-cut-corner{
         margin-top: 0.9rem;
     }
 }
@@ -583,50 +601,45 @@ body{
         width: 9.5em;
         margin: 0rem 0rem 0.3rem;
     }
-    #calculator-btn-container{
-        display: grid;
-        grid-template-columns: repeat(4, 2.225em);
-        gap: 0.27em;
-        #calculator-btn-memory-display{
-            visibility: hidden;
+    #calculator-btn-memory-display{
+        visibility: hidden;
+        position: absolute;
+        top: 34%;
+        left: 1%;
+        width: 12.5em;
+        height: 12.7em;
+        background-color: white;
+        border-radius: 0px 0px 23px 23px;
+        #calculator-btn-memory-container{
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            height: 70%;
+            margin: 1.23rem 0.3rem 1.23rem 0.9rem;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            p{
+                margin: 0rem 0.3rem 0.6rem;
+                text-align: right;
+                word-wrap: break-word;
+            }
+        }
+        #calculator-btn-memory-display-close{
             position: absolute;
-            top: 34%;
-            left: 1%;
-            width: 12.5em;
-            height: 12.7em;
-            background-color: white;
-            border-radius: 0px 0px 23px 23px;
-            #calculator-btn-memory-container{
-                display: flex;
-                flex-direction: column;
-                width: 90%;
-                height: 70%;
-                margin: 1.23rem 0.3rem 1.23rem 0.9rem;
-                overflow-y: scroll;
-                overflow-x: hidden;
-                p{
-                    margin: 0rem 0.3rem 0.6rem;
-                    text-align: right;
-                    word-wrap: break-word;
-                }
-            }
-            #calculator-btn-memory-display-close{
-                position: absolute;
-                top: -54.4%;
-                left: -0.5%;
-                width: 16.74em;
-                height: 55%;
-                border: none;
-                border-radius: 23px 23px 0px 0px;
-                background-color: rgba(0, 0, 0, 0.2);
-                cursor: pointer;
-            }
-            #calculator-btn-trash{
-                position: absolute;
-                bottom: 0.7em;
-                right: 0.3em;
-                background-color: transparent;
-            }
+            top: -54.4%;
+            left: -0.5%;
+            width: 16.74em;
+            height: 55%;
+            border: none;
+            border-radius: 23px 23px 0px 0px;
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+        #calculator-btn-trash{
+            position: absolute;
+            bottom: 0.7em;
+            right: 0.3em;
+            background-color: transparent;
         }
     }
     #calculator-input-expand-popout{
@@ -725,9 +738,9 @@ body{
             }
             #snake-overlay{
                 margin: 0.25rem;
-                #snake-overlay-slider-speed{
-                    width: calc(100% - 10em);
-                }
+            }
+            #snake-popout-settings{
+                padding: 0.4rem;
             }
         }
     }

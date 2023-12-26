@@ -1,5 +1,10 @@
 import { React, Component } from 'react';
 import Slider from 'rc-slider';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { AiOutlineSetting } from 'react-icons/ai';
+import { BsArrowCounterclockwise } from 'react-icons/bs';
 
 //////////////////// Functions ////////////////////
 function shallowEquals(arr1, arr2) {
@@ -40,6 +45,7 @@ class SnakeGame extends Component{
     constructor(props){
         super(props);
         this.state = {
+            settings: false,
             startMoving: false,
             snake: [],
             food: [],
@@ -56,6 +62,7 @@ class SnakeGame extends Component{
         this.setDirection = this.setDirection.bind(this);
         this.removeTimers = this.removeTimers.bind(this);
         this.changeSpeed = this.changeSpeed.bind(this);
+        this.resetSpeed = this.resetSpeed.bind(this);
     };
     /// Randomly place snake food
     moveFood(){
@@ -179,6 +186,13 @@ class SnakeGame extends Component{
         );
     };
     startGame(){
+        if(this.state.settings === true){
+            this.setState({
+                settings: false
+            });
+            document.getElementById("snake-btn-settings").style.opacity = "0.5";
+            document.getElementById("snake-popout-settings").style.visibility = "hidden";
+        };
         const cells = Math.floor((this.props.size / 0.9375)/2);
         this.removeTimers();
         this.moveFood(); 
@@ -204,6 +218,35 @@ class SnakeGame extends Component{
         this.setState({
             speed: value
         });
+    };
+    resetSpeed(){
+        this.setState({
+            speed: 130
+        });
+    };
+    /// Handles all pressable buttons (opacity: 0.5 on click)
+    handlePressableBtn(what){
+        switch(what){
+            case "settings":
+                const btnSettings = document.getElementById("snake-btn-settings");
+                const popoutSettings = document.getElementById("snake-popout-settings");
+                if(this.state.settings === false){
+                    this.setState({
+                        settings: true
+                    });
+                    btnSettings.style.opacity = "1";
+                    popoutSettings.style.visibility = "visible";
+                }else{
+                    this.setState({
+                        settings: false
+                    });
+                    btnSettings.style.opacity = "0.5";
+                    popoutSettings.style.visibility = "hidden";
+                };
+                break;
+            default:
+                break;
+        };
     };
     componentDidUpdate(){
         const overlay = document.getElementById("snake-overlay");
@@ -261,18 +304,104 @@ class SnakeGame extends Component{
                     <button id="snake-btn-start-game"
                         className="btn-match"
                         onClick={this.startGame}>Start game</button>
-                    <div id="snake-overlay-slider-speed">
-                        <Slider className="slider space-nicely top medium"
-                            onChange={this.changeSpeed}
-                            min={50}
-                            max={130}
-                            defaultValue={130}
-                            reverse/>
-                    </div>
+                    <button id="snake-btn-settings"
+                        className="btn-match inverse disabled-option space-nicely top medium"
+                        onClick={() => this.handlePressableBtn("settings")}>
+                        <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
+                            <AiOutlineSetting/>
+                        </IconContext.Provider>
+                    </button>
                 </div>
+                {/* Settings Popout */}
+                <Draggable
+                    cancel="span, .slider, button"
+                    defaultPosition={{x: 120, y: -25}}
+                    bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                    <section id="snake-popout-settings"
+                        className="popout">
+                        <section className="font large-medium flex-center column gap space-nicely all">
+                            {/* Gameplay Settings */}
+                            <section className="section-group">
+                                <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                    <b>Gameplay</b>
+                                </span>
+                                <section className="flex-center row gap">
+                                    <span className="font small">
+                                        Speed
+                                    </span>
+                                    <button className="btn-match inverse when-elements-are-not-straight"
+                                        onClick={this.resetSpeed}>
+                                        <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                            <BsArrowCounterclockwise/>
+                                        </IconContext.Provider>
+                                    </button>
+                                </section>
+                                <Slider className="slider space-nicely top medium"
+                                    onChange={this.changeSpeed}
+                                    value={this.state.speed}
+                                    min={50}
+                                    max={130}
+                                    defaultValue={130}
+                                    reverse/>
+                            </section>
+                        </section>
+                    </section>
+                </Draggable>
             </div>
         );
     };
 };
 
-export default SnakeGame;
+class WidgetSnake extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            size: 24
+        };
+        this.resizer = this.resizer.bind(this);
+    };
+    resizer(){
+        if(window.innerWidth < 450){
+            this.setState({
+                size: (window.innerWidth / 16) - 4
+            });
+        }else{
+            this.setState({
+                size: 24
+            });
+        };
+    };
+    componentDidMount(){
+        window.addEventListener("resize", this.resizer);
+    };
+    componentWillUnmount(){
+        window.removeEventListener("resize", this.resizer);
+    };
+    render(){
+        return(
+            <Draggable
+                onStart={() => this.props.funcDragStart("snake")}
+                onStop={() => this.props.funcDragStop("snake")}
+                cancel="button, section"
+                bounds="parent">
+                <div id="snake-box"
+                    className="widget">
+                    <div id="snake-box-animation"
+                        className="widget-animation">
+                        <span id="snake-box-draggable"
+                            className="draggable">
+                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        <section>
+                            <SnakeGame size={this.state.size}/>
+                        </section>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+};
+
+export default WidgetSnake;
