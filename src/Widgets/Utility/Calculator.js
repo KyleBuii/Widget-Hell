@@ -16,12 +16,14 @@ class WidgetCalculator extends Component{
             question: "",
             input: "",
             memory: [],
-            expandInput: false
+            expandInput: false,
+            lastComputation: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
+        this.handleKeypress = this.handleKeypress.bind(this);
     };
     handleChange(event){
         this.setState({
@@ -32,26 +34,53 @@ class WidgetCalculator extends Component{
         switch(event.target.value){
             case "=":
                 if(this.state.input !== ""
-                    && this.state.input !== "UNDEFINED"){
+                    && this.state.input !== "UNDEF"){
                     var ans;
-                    try{
-                        ans = round(evaluate(this.state.input), 3);
-                    }catch(err){
-                        this.setState({
-                            question: this.state.input,
-                            input: "UNDEFINED"
-                        });
-                    };
-                    if(ans === undefined){
-                        this.setState({
-                            question: this.state.input,
-                            input: "UNDEFINED"
-                        });
+                    const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.varOperation}])`);
+                    if(this.state.lastComputation !== ""
+                        && !reCheckOperationExist.test(this.state.input)){
+                        try{
+                            ans = round(evaluate(this.state.input + this.state.lastComputation), 3);
+                        }catch(err){
+                            this.setState({
+                                question: this.state.input + this.state.lastComputation,
+                                input: "UNDEF"
+                            });
+                        };
+                        if(ans === undefined){
+                            this.setState({
+                                question: this.state.input + this.state.lastComputation,
+                                input: "UNDEF"
+                            });
+                        }else{
+                            this.setState({
+                                question: this.state.input + this.state.lastComputation,
+                                input: ans
+                            });
+                        };    
                     }else{
-                        this.setState({
-                            question: this.state.input,
-                            input: ans
-                        });
+                        try{
+                            ans = round(evaluate(this.state.input), 3);
+                        }catch(err){
+                            this.setState({
+                                question: this.state.input,
+                                input: "UNDEF"
+                            });
+                        };
+                        if(ans === undefined){
+                            this.setState({
+                                question: this.state.input,
+                                input: "UNDEF"
+                            });
+                        }else{
+                            const reLastComputation = new RegExp(`(?!^-)(?:[${this.props.varOperation}]-?)(?=\\d*\\.?\\d+$)(?:\\d*\\.?\\d+)`);
+                            this.setState({
+                                question: this.state.input,
+                                input: ans,
+                                lastComputation: this.state.input
+                                    .match(reLastComputation)
+                            });
+                        };
                     };
                 };
                 break;
@@ -60,7 +89,6 @@ class WidgetCalculator extends Component{
                     || this.state.input !== ""){
                     this.setState({
                         input: this.state.input
-                            .toString()
                             .replace(/(\d+)(?!.*\d)/, "")
                     });
                 };
@@ -70,7 +98,8 @@ class WidgetCalculator extends Component{
                     || this.state.input !== ""){
                     this.setState({
                         question: "",
-                        input: ""
+                        input: "",
+                        lastComputation: ""
                     });
                 };
                 break;
@@ -214,15 +243,33 @@ class WidgetCalculator extends Component{
     /// Handles keyboard shortcuts
     handleKeypress(event){
         const btnEqual = document.getElementById("calculator-btn-equal");
-        if(event.key === "Enter"){
-            event.preventDefault();
-            btnEqual.click();
+        const reWords = new RegExp("\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b");
+        switch(event.key){
+            case "Enter":
+                if(reWords.test(this.state.input)){
+                    this.setState({
+                        input: ""
+                    });
+                }else{
+                    event.preventDefault();
+                    btnEqual.click();
+                };
+                break;
+            case "Backspace":
+                if(reWords.test(this.state.input)){
+                    this.setState({
+                        input: ""
+                    });
+                };
+                break;
+            default:
+                break;
         };
     };
     componentDidMount(){
         this.props.funcRandColor();
         const inputField = document.getElementById("calculator-input-field");
-        inputField.addEventListener("keypress", this.handleKeypress);
+        inputField.addEventListener("keydown", this.handleKeypress);
     };
     componentWillUnmount(){
         const inputField = document.getElementById("calculator-input-field");

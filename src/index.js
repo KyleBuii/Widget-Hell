@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import $ from 'jquery';
 /// Games
 import WidgetSnake from './Widgets/Games/Snake.js';
+import WidgetTextRPG from './Widgets/Games/TextRPG.js';
 /// Utility
 import WidgetSetting from './Widgets/Utility/Setting.js';
 import WidgetQuote from './Widgets/Utility/Quote.js';
@@ -14,15 +15,13 @@ import WidgetWeather from './Widgets/Utility/Weather.js';
 
 
 //////////////////// Variables ////////////////////
+/// Mutable
 const smallIcon = "0.88em";
 const medIcon = "4em";
 const largeIcon = "5em";
 const zIndexDefault = 2;
 const zIndexDrag = 5;
 const colorRange = 200;
-const widgetsUtilityActive = [];
-const widgetsGamesActive = [];
-const widgetsFunActive = [];
 const animations = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
@@ -105,10 +104,6 @@ const sentences = [
     , "Glasses are really versatile. First, you can have glasses-wearing girls take them off and suddenly become beautiful, or have girls wearing glasses flashing those cute grins, or have girls stealing the protagonist's glasses and putting them on like, \"Haha, got your glasses!\" That's just way too cute! Also, boys with glasses! I really like when their glasses have that suspicious looking gleam, and it's amazing how it can look really cool or just be a joke. I really like how it can fulfill all those abstract needs. Being able to switch up the styles and colors of glasses based on your mood is a lot of fun too! It's actually so much fun! You have those half rim glasses, or the thick frame glasses, everything! It's like you're enjoying all these kinds of glasses at a buffet. I really want Luna to try some on or Marine to try some on to replace her eyepatch. We really need glasses to become a thing in hololive and start selling them for HoloComi. Don't. You. Think. We. Really. Need. To. Officially. Give. Everyone. Glasses?"
     , "Eggs, Bacon, Grist, Sausage. The cockroaches in your bedroom held you hostage."
 ];
-const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
-    + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
-    + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
-const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
 const uwuDictionary = {
     "this": ["dis"],
     "the": ["da", "tha"],
@@ -273,16 +268,28 @@ const emojifyDictionary = {
     "just": ["&#x261D;&#xFE0F;"],
     "phone": ["&#x1F4F1;"],
 };
+/// Non-mutable
+const widgetsUtilityActive = [];
+const widgetsGamesActive = [];
+const widgetsFunActive = [];
+const operation = '-+/*%';
+const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
+    + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
+    + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
+const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
 
 
 //////////////////// Functions ////////////////////
 function randColor(){
     const r = document.querySelector(":root");
-    const randColorOpacity = Math.floor(Math.random() * colorRange)
-        + "," + Math.floor(Math.random() * colorRange) 
-        + "," + Math.floor(Math.random() * colorRange);
-    const randColor = "rgb(" + randColorOpacity + ")";
+    const colorR = Math.floor(Math.random() * colorRange);
+    const colorG = Math.floor(Math.random() * colorRange);
+    const colorB = Math.floor(Math.random() * colorRange);
+    const randColorOpacity = `${colorR},${colorG},${colorB}`;
+    const randColor = `rgb(${randColorOpacity})`;
+    const randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
     r.style.setProperty("--randColor", randColor);
+    r.style.setProperty("--randColorLight", randColorLight);
     r.style.setProperty("--randColorOpacity", randColorOpacity);
 };
 
@@ -381,11 +388,11 @@ class Widgets extends Component{
         this.state = {
             quote: false,
             translator: false,
-            googleTranslator: false,
+            googletranslator: false,
             calculator: false,
             weather: false,
             snake: false,
-            iceberg: false
+            textrpg: false
         };
         this.handleCallBack = this.handleCallBack.bind(this);
     };
@@ -424,81 +431,82 @@ class Widgets extends Component{
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
                     varWidgetsFunActive={widgetsFunActive}
-                    varAnimations={animations}
-                />
+                    varAnimations={animations}/>
                 {this.state.quote === true
                     ? <WidgetQuote 
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            funcRandColor={randColor}
-                            funcCopyToClipboard={copyToClipboard}
-                            varQuotes={quotes}
-                            varLargeIcon={largeIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        funcRandColor={randColor}
+                        funcCopyToClipboard={copyToClipboard}
+                        varQuotes={quotes}
+                        varLargeIcon={largeIcon}/>
                     : <></>}
                 {this.state.translator === true
                     ? <WidgetTranslator
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            funcRandColor={randColor}
-                            funcCopyToClipboard={copyToClipboard}
-                            funcGrep={grep}
-                            funcMergePunctuation={mergePunctuation}
-                            funcRandSentence={randSentence}
-                            funcSortSelect={sortSelect}
-                            varBrailleDictionary={brailleDictionary}
-                            varBrailleFromDictionary={brailleFromDictionary}
-                            varUwuDictionary={uwuDictionary}
-                            varUwuEmoticons={uwuEmoticons}
-                            varEmojifyDictionary={emojifyDictionary}
-                            varMatchAll={matchAll}
-                            varSmallIcon={smallIcon}
-                            varLargeIcon={largeIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        funcRandColor={randColor}
+                        funcCopyToClipboard={copyToClipboard}
+                        funcGrep={grep}
+                        funcMergePunctuation={mergePunctuation}
+                        funcRandSentence={randSentence}
+                        funcSortSelect={sortSelect}
+                        varBrailleDictionary={brailleDictionary}
+                        varBrailleFromDictionary={brailleFromDictionary}
+                        varUwuDictionary={uwuDictionary}
+                        varUwuEmoticons={uwuEmoticons}
+                        varEmojifyDictionary={emojifyDictionary}
+                        varMatchAll={matchAll}
+                        varSmallIcon={smallIcon}
+                        varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.googleTranslator === true
+                {this.state.googletranslator === true
                     ? <WidgetGoogleTranslator 
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            funcRandColor={randColor}
-                            funcCopyToClipboard={copyToClipboard}
-                            funcRandSentence={randSentence}
-                            varLanguages={languages}
-                            varSmallIcon={smallIcon}
-                            varLargeIcon={largeIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        funcRandColor={randColor}
+                        funcCopyToClipboard={copyToClipboard}
+                        funcRandSentence={randSentence}
+                        varLanguages={languages}
+                        varSmallIcon={smallIcon}
+                        varLargeIcon={largeIcon}/>
                     : <></>}
                 {this.state.calculator === true
                     ? <WidgetCalculator
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            funcRandColor={randColor}
-                            funcCopyToClipboard={copyToClipboard}
-                            varMedIcon={medIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        funcRandColor={randColor}
+                        funcCopyToClipboard={copyToClipboard}
+                        varMedIcon={medIcon}
+                        varOperation={operation}/>
                     : <></>}
                 {this.state.weather === true
                     ? <WidgetWeather 
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            funcRandColor={randColor}
-                            varSmallIcon={smallIcon}
-                            varMedIcon={medIcon}
-                            varLargeIcon={largeIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        funcRandColor={randColor}
+                        varSmallIcon={smallIcon}
+                        varMedIcon={medIcon}
+                        varLargeIcon={largeIcon}/>
                     : <></>}
                 {this.state.snake === true
                     ? <WidgetSnake 
-                            showHide={this.handleCallBack}
-                            funcDragStart={dragStart}
-                            funcDragStop={dragStop}
-                            varLargeIcon={largeIcon}
-                        />
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        varLargeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.textrpg === true
+                    ? <WidgetTextRPG
+                        showHide={this.handleCallBack}
+                        funcDragStart={dragStart}
+                        funcDragStop={dragStop}
+                        varLargeIcon={largeIcon}/>
                     : <></>}
             </div>
         );
@@ -509,9 +517,8 @@ class Widgets extends Component{
 class []Widget extends Component{
     render(){
         return(
-            <Draggable
-                onStart={() => dragStart("[]")}
-                onStop={() => dragStop("[]")}
+            <Draggable onStart={() => this.props.funcDragStart("[]")}
+                onStop={() => this.props.funcDragStop("[]")}
                 cancel="button, section"
                 bounds="parent">
                 <div id="[]-box"
@@ -520,7 +527,7 @@ class []Widget extends Component{
                         className="widget-animation">
                         <span id="[]-box-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: largeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>

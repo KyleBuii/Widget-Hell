@@ -21,10 +21,11 @@ class WidgetSetting extends Component{
                     translatorBtn: true,
                     googleTranslatorBtn: true,
                     calculatorBtn: true,
-                    weatherBtn: true,    
+                    weatherBtn: true
                 },
                 widgetsBtnGames: {
-                    snakeBtn: true
+                    snakeBtn: true,
+                    textRPGBtn: true
                 },
                 widgetsBtnFun: {
                 }
@@ -33,12 +34,13 @@ class WidgetSetting extends Component{
                 widgetsUtility: {
                     quote: false,
                     translator: false,
-                    googleTranslator: false,
+                    googletranslator: false,
                     calculator: false,
-                    weather: false,
+                    weather: false
                 },
                 widgetsGames: {
-                    snake: false
+                    snake: false,
+                    textrpg: false
                 },
                 widgetsFun: {
                 }
@@ -216,6 +218,24 @@ class WidgetSetting extends Component{
     /// Handles all selects
     handleSelect(event, what){
         switch(what){
+            case "background":
+                const e = document.getElementById("App");
+                switch(event.target.value){
+                    case "default":
+                        e.style.backgroundColor = "var(--randColor)";
+                        e.style.backgroundImage = "none";
+                        break;
+                    case "white":
+                        e.style.backgroundColor = "white";
+                        e.style.backgroundImage = "none";
+                        break;
+                    case "linear-gradient":
+                        e.style.backgroundImage = "linear-gradient(var(--randColor), var(--randColorLight))";
+                        break;
+                    default:
+                        break;
+                };
+                break;
             case "custom-border":
                 this.setState({
                     customBorderValue: event.target.value
@@ -420,9 +440,9 @@ class WidgetSetting extends Component{
                                                     onClick={() => this.handlePressableBtn("translator", "utility")}>Translator</button>
                                                 : <></>}
                                             {(this.state.widgetsBtn.widgetsBtnUtility["googleTranslatorBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-googleTranslator"
+                                                ? <button id="show-hide-widgets-popout-btn-googletranslator"
                                                     className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("googleTranslator", "utility")}>Google Translator</button>
+                                                    onClick={() => this.handlePressableBtn("googletranslator", "utility")}>Google Translator</button>
                                                 : <></>}
                                             {(this.state.widgetsBtn.widgetsBtnUtility["calculatorBtn"] === true)
                                                 ? <button id="show-hide-widgets-popout-btn-calculator"
@@ -444,6 +464,11 @@ class WidgetSetting extends Component{
                                                 ? <button id="show-hide-widgets-popout-btn-snake"
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
+                                                : <></>}
+                                            {(this.state.widgetsBtn.widgetsBtnGames["textRPGBtn"] === true)
+                                                ? <button id="show-hide-widgets-popout-btn-textrpg"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("textrpg", "games")}>TextRPG</button>
                                                 : <></>}
                                         </section>
                                     </TabPanel>
@@ -498,31 +523,50 @@ class WidgetSetting extends Component{
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Design</b>
                                         </span>
-                                        <section className="flex-center row gap">
-                                            <span className="font small">
-                                                Custom Border
-                                            </span>
-                                            <Switch className="toggleable"
-                                                checked={this.state.customBorder}
-                                                onChange={(value) => this.handleToggleableBtn(value, "btn-custom-border")}
-                                                onColor="#86d3ff"
-                                                onHandleColor="#2693e6"
-                                                handleDiameter={15}
-                                                uncheckedIcon={false}
-                                                checkedIcon={false}
-                                                boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
-                                                activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
-                                                height={15}
-                                                width={30}/>
+                                        {/* Background */}
+                                        <section className="space-nicely bottom">
+                                            <section>
+                                                <span className="font small">
+                                                    Background
+                                                </span>
+                                            </section>
+                                            <select id="settings-popout-design-background-select"
+                                                className="select-match space-nicely top medium"
+                                                onChange={(event) => this.handleSelect(event, "background")}
+                                                defaultValue={"default"}>
+                                                <option value="default">Default</option>
+                                                <option value="white">White</option>
+                                                <option value="linear-gradient">Linear-gradient</option>
+                                            </select>
                                         </section>
-                                        <select id="settings-popout-design-custom-border-select"
-                                            className="select-match space-nicely top medium"
-                                            onChange={(event) => this.handleSelect(event, "custom-border")}
-                                            disabled={!this.state.customBorder}
-                                            defaultValue={"dashed"}>
-                                            <option value="diagonal">Diagonal</option>
-                                            <option value="dashed">Dashed</option>
-                                        </select>
+                                        {/* Custom Border */}
+                                        <section>
+                                            <section className="flex-center row gap">
+                                                <span className="font small">
+                                                    Custom Border
+                                                </span>
+                                                <Switch className="toggleable"
+                                                    checked={this.state.customBorder}
+                                                    onChange={(value) => this.handleToggleableBtn(value, "btn-custom-border")}
+                                                    onColor="#86d3ff"
+                                                    onHandleColor="#2693e6"
+                                                    handleDiameter={15}
+                                                    uncheckedIcon={false}
+                                                    checkedIcon={false}
+                                                    boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
+                                                    activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                                                    height={15}
+                                                    width={30}/>
+                                            </section>
+                                            <select id="settings-popout-design-custom-border-select"
+                                                className="select-match space-nicely top medium"
+                                                onChange={(event) => this.handleSelect(event, "custom-border")}
+                                                disabled={!this.state.customBorder}
+                                                defaultValue={"dashed"}>
+                                                <option value="diagonal">Diagonal</option>
+                                                <option value="dashed">Dashed</option>
+                                            </select>
+                                        </section>
                                     </section>
                                 </section>
                             </section>

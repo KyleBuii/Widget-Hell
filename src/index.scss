@@ -11,12 +11,14 @@ z-index guide
 
 :root{
     --randColor: ;
+    --randColorLight: ;
     --randColorOpacity: ;
 }
 
 body{
     margin: 0rem;
 }
+
 
 //////////////////// Class: Fonts ////////////////////
 .font{
@@ -80,6 +82,7 @@ body{
     margin: 0.6rem 1.85rem 0.94rem 0rem;
     color: var(--randColor);
 }
+
 
 //////////////////// Class: Design ////////////////////
 .widget{
@@ -504,6 +507,7 @@ body{
     right: 3.7em;
 }
 
+
 //////////////////// IDs ////////////////////
 #App{
     position: relative;
@@ -519,6 +523,43 @@ body{
     height: 100vh;
 }
 
+
+//////////////////// IDs: Widget Games ////////////////////
+#snake-box{
+    max-width: 100%;
+    #snake-box-animation{
+        padding: 1.6rem 2rem 2rem 1.6rem;
+        #snake-display{
+            max-width: 100%;
+            position: relative;
+            &:focus{
+                outline: none;
+            }
+            #snake-display-grid{
+                max-width: 100%;
+                box-sizing: content-box;
+                border: 4px solid var(--randColor);
+                display: flex;
+                flex-wrap: wrap;
+            }
+            #snake-overlay{
+                margin: 0.25rem;
+            }
+            #snake-popout-settings{
+                padding: 0.4rem;
+            }
+        }
+    }
+}
+
+#text-rpg-box{
+    font-size: 1.11em;
+    max-width: 26.24em;
+    width: 100vmin;
+}
+
+
+//////////////////// IDs: Widget Utility ////////////////////
 #settings-box{
     z-index: 4;
     max-width: 100vmin;
@@ -584,11 +625,11 @@ body{
     }
 }
 
-#googleTranslator-box{
+#google-translator-box{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
-    #googleTranslator-preview-cut-corner{
+    #google-translator-preview-cut-corner{
         margin-top: 0.9rem;
     }
 }
@@ -718,33 +759,6 @@ body{
     }
 }
 
-//////////////////// Snake ////////////////////
-#snake-box{
-    max-width: 100%;
-    #snake-box-animation{
-        padding: 1.6rem 2rem 2rem 1.6rem;
-        #snake-display{
-            max-width: 100%;
-            position: relative;
-            &:focus{
-                outline: none;
-            }
-            #snake-display-grid{
-                max-width: 100%;
-                box-sizing: content-box;
-                border: 4px solid var(--randColor);
-                display: flex;
-                flex-wrap: wrap;
-            }
-            #snake-overlay{
-                margin: 0.25rem;
-            }
-            #snake-popout-settings{
-                padding: 0.4rem;
-            }
-        }
-    }
-}
 
 /// Animations
 @keyframes fadeIn{
