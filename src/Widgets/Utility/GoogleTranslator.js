@@ -72,10 +72,10 @@ class WidgetGoogleTranslator extends Component{
                 from: prevState.to,
                 to: prev
             }));
-            const v1 = $("#google-translator-translate-from").val();
-            const v2 = $("#google-translator-translate-to").val();
-            $("#google-translator-translate-from").val(v2);
-            $("#google-translator-translate-to").val(v1);
+            const v1 = $("#googletranslator-translate-from").val();
+            const v2 = $("#googletranslator-translate-to").val();
+            $("#googletranslator-translate-from").val(v2);
+            $("#googletranslator-translate-to").val(v1);
         };
     };
     /// Handles random sentence button
@@ -98,34 +98,34 @@ class WidgetGoogleTranslator extends Component{
             el.value = optValue;
             select.appendChild(el);
         };
-        $('#google-translator-translate-from optgroup').clone().appendTo('#google-translator-translate-to');
+        $('#googletranslator-translate-from optgroup').clone().appendTo('#googletranslator-translate-to');
         this.setState({
             from: "en",
             to: "ja"
         });
-        $("#google-translator-translate-from").val("en");
-        $("#google-translator-translate-to").val("ja");
+        $("#googletranslator-translate-from").val("en");
+        $("#googletranslator-translate-to").val("ja");
     };
     render(){
         return(
             <Draggable
-                onStart={() => this.props.funcDragStart("google-translator")}
-                onStop={() => this.props.funcDragStop("google-translator")}
+                onStart={() => this.props.funcDragStart("googletranslator")}
+                onStop={() => this.props.funcDragStop("googletranslator")}
                 cancel="button, span, p, textarea, select"
                 bounds="parent">
-                <div id="google-translator-box"
+                <div id="googletranslator-box"
                     className="widget">
-                    <div id="google-translator-box-animation"
+                    <div id="googletranslator-box-animation"
                         className="widget-animation">
-                        <span id="google-translator-box-draggable"
+                        <span id="googletranslator-box-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         <div className="flex-center space-nicely bottom">
-                            <select id="google-translator-translate-from"
-                                className="select-match"
+                            <select id="googletranslator-translate-from"
+                                className="select-match dropdown-arrow"
                                 onChange={this.handleFrom}>
                                 <optgroup id="select-languages"
                                     label="Languages"></optgroup>
@@ -136,8 +136,8 @@ class WidgetGoogleTranslator extends Component{
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
-                            <select id="google-translator-translate-to"
-                                className="select-match"
+                            <select id="googletranslator-translate-to"
+                                className="select-match dropdown-arrow"
                                 onChange={this.handleTo}></select>
                             <button className="btn-match inverse"
                                 onClick={this.handleTranslate}>
@@ -151,7 +151,7 @@ class WidgetGoogleTranslator extends Component{
                                 onChange={this.handleChange}
                                 value={this.state.input}></textarea>
                         </div>
-                        <div id="google-translator-preview-cut-corner"
+                        <div id="googletranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             <button className="bottom-right btn-match fadded"

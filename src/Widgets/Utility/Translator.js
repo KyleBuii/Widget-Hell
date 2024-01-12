@@ -20,8 +20,7 @@ class WidgetTranslator extends Component{
             replaceFrom: "",
             replaceTo: "",
             reverseWord: false,
-            reverseSentence: false,
-            reverseEverything: false
+            reverseSentence: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
@@ -195,26 +194,7 @@ class WidgetTranslator extends Component{
                 }));
                 break;
             case "reverse":
-                if(this.state.reverseWord === true && this.state.reverseSentence === true && this.state.reverseEverything === true){
-                /// Reverse Word + Sentence + Everything
-                    this.setState(prevState => ({
-                        converted: this.props.funcMergePunctuation(prevState.convert
-                            .split(/(?<=[.?!])\s*/)
-                            .reverse()
-                            .join(" ")
-                            .split(/([.?!])\s*/)
-                            .map(sentence => sentence
-                                .split(" ")
-                                .map(word => word
-                                    .split("")
-                                    .reverse()
-                                    .join(""))
-                                .reverse()
-                                .join(" ")
-                            ))
-                            .join(" ")
-                    }));
-                }else if(this.state.reverseWord === true && this.state.reverseSentence === true){
+                if(this.state.reverseWord === true && this.state.reverseSentence === true){
                 /// Reverse Word + Sentence
                     this.setState(prevState => ({
                         converted: this.props.funcMergePunctuation(prevState.convert
@@ -228,38 +208,6 @@ class WidgetTranslator extends Component{
                                 .reverse()
                                 .join(" ")
                             ))
-                            .join(" ")
-                    }));
-                }else if(this.state.reverseWord === true && this.state.reverseEverything === true){
-                /// Reverse Word + Everything
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .split(/(?<=[.?!])\s*/)
-                            .reverse()
-                            .join(" ")
-                            .split(/(\s|[^\w'])/g)
-                            .map(function(word){
-                                return word
-                                    .split("")
-                                    .reverse()
-                                    .join("");
-                            })
-                            .join("")
-                    }));
-                }else if(this.state.reverseSentence === true && this.state.reverseEverything === true){
-                /// Reverse Sentence + Everything
-                    this.setState(prevState => ({
-                        converted: this.props.funcMergePunctuation(prevState.convert
-                            .split(/(?<=[.?!])\s*/)
-                            .reverse()
-                            .join(" ")
-                            .split(/([.?!])\s*/)
-                            .map(function(sentence){
-                                return sentence
-                                    .split(" ")
-                                    .reverse()
-                                    .join(" ")
-                            }))
                             .join(" ")
                     }));
                 }else if(this.state.reverseWord === true){
@@ -286,16 +234,6 @@ class WidgetTranslator extends Component{
                                     .reverse()
                                     .join(" ")
                             }))
-                            .join(" ")
-                    }), () => {
-                        console.log(this.state.converted);   
-                    });
-                }else if(this.state.reverseEverything === true){
-                /// Reverse Everything
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .split(/(?<=[.?!])\s*/)
-                            .reverse()
                             .join(" ")
                     }));
                 }else{
@@ -503,7 +441,7 @@ class WidgetTranslator extends Component{
                         </span>
                         <div className="flex-center space-nicely bottom">
                             <select id="translator-translate-from"
-                                className="select-match"
+                                className="select-match dropdown-arrow"
                                 defaultValue={"en"}
                                 onChange={this.handleFrom}>
                                 <optgroup label="Languages"
@@ -527,7 +465,7 @@ class WidgetTranslator extends Component{
                                 </IconContext.Provider>
                             </button>
                             <select id="translator-translate-to"
-                                className="select-match"
+                                className="select-match dropdown-arrow"
                                 defaultValue={"english"}
                                 onChange={this.handleTo}>
                                 <optgroup label="Languages"
@@ -554,20 +492,22 @@ class WidgetTranslator extends Component{
                             bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="replace-popout"
                                 className="popout">
-                                <section className="flex-center space-nicely top">
-                                    <input className="input-typable all-side input-button-input"
-                                        type="text"
-                                        onChange={this.handleReplaceFrom}></input>
-                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
-                                        <FaArrowRightLong/>
-                                    </IconContext.Provider> 
-                                    <input className="input-typable all-side input-button-input"
-                                        type="text"
-                                        onChange={this.handleReplaceTo}></input>
-                                </section>
-                                <section className="option">
-                                    <button className="option-item btn-match option opt-long"
-                                        onClick={this.handleSave}>Save</button>
+                                <section className="flex-center column space-nicely all long">
+                                    <section className="flex-center">
+                                        <input className="input-typable all-side input-button-input"
+                                            type="text"
+                                            onChange={this.handleReplaceFrom}></input>
+                                        <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                            <FaArrowRightLong/>
+                                        </IconContext.Provider>
+                                        <input className="input-typable all-side input-button-input"
+                                            type="text"
+                                            onChange={this.handleReplaceTo}></input>
+                                    </section>
+                                    <section className="space-nicely top medium">
+                                        <button className="btn-match option opt-long"
+                                            onClick={this.handleSave}>Save</button>
+                                    </section>
                                 </section>
                             </section>
                         </Draggable>
@@ -578,19 +518,16 @@ class WidgetTranslator extends Component{
                             bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
                             <section id="reverse-popout"
                                 className="popout">
-                                <section className="option space-nicely top">
+                                <section className="grid space-nicely all long">
                                     <button className="option-item btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
                                     <section className="option-item">
                                         <button id="reverse-popout-btn-reverse-word"
-                                            className="btn-match option opt-small disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("reverse-word", "reverse")}>Word</button>
                                         <button id="reverse-popout-btn-reverse-sentence"
-                                            className="btn-match option opt-small disabled-option"
+                                            className="btn-match option opt-medium disabled-option"
                                             onClick={() => this.handlePressableBtn("reverse-sentence", "reverse")}>Sentence</button>
-                                        <button id="reverse-popout-btn-reverse-everything"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("reverse-everything", "reverse")}>Everything</button>
                                     </section>
                                 </section>
                             </section>

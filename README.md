@@ -1,4 +1,4 @@
-# [Widget Hell](https://kylebuii.github.io/Widget-Hell/)
+# [Widget Hell](https://widget-hell.vercel.app/)
 > Navigate the Chaos, Customize the Experience.
 
 ## Features

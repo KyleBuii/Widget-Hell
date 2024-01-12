@@ -437,7 +437,7 @@ class WidgetCalculator extends Component{
                         <Draggable
                             cancel="p"
                             defaultPosition={{x: 180, y: -305}}
-                            bounds={{top: -455, left: -150, right: 190, bottom: 15}}>
+                            bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">
                                 <p id="calculator-input-expand-text"

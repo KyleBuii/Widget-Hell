@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 import $ from 'jquery';
 /// Games
 import WidgetSnake from './Widgets/Games/Snake.js';
-import WidgetTextRPG from './Widgets/Games/TextRPG.js';
 /// Utility
 import WidgetSetting from './Widgets/Utility/Setting.js';
 import WidgetQuote from './Widgets/Utility/Quote.js';
@@ -16,13 +15,17 @@ import WidgetWeather from './Widgets/Utility/Weather.js';
 
 //////////////////// Variables ////////////////////
 /// Mutable
+const microIcon = "0.6em";
 const smallIcon = "0.88em";
 const medIcon = "4em";
 const largeIcon = "5em";
 const zIndexDefault = 2;
 const zIndexDrag = 5;
 const colorRange = 200;
-const animations = ["spin", "flip", "hinge"];
+const animations = ["fade"];
+const backgrounds = ["white", "linear-gradient"];
+const customBorders = ["diagonal", "dashed"];
+const tricks = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
     {
@@ -386,19 +389,132 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            quote: false,
-            translator: false,
-            googletranslator: false,
-            calculator: false,
-            weather: false,
-            snake: false,
-            textrpg: false
+            animationValue: "default",
+            customBorderValue: "default",
+            widgets: {
+                utility: {
+                    quote: false,
+                    translator: false,
+                    googletranslator: false,
+                    calculator: false,
+                    weather: false
+                },
+                games: {
+                    snake: false,
+                    textrpg: false
+                },
+                fun: {
+                }
+            }
         };
         this.handleCallBack = this.handleCallBack.bind(this);
+        this.updateCustomBorder = this.updateCustomBorder.bind(this);
+        this.updateValue = this.updateValue.bind(this);
     };
-    handleCallBack(what){
+    handleCallBack(what, where){
+        if(this.state.widgets[where][what] === false){
+            this.setState(prevState => ({
+                widgets: {
+                    ...prevState.widgets,
+                    [where]: {
+                        ...prevState.widgets[where],
+                        [what]: true
+                    }
+                }
+            }), () => {
+                const e = document.getElementById(`${what}-box`);
+                if(this.state.animationValue !== "default"){
+                    e.style.animation = "none";
+                    window.requestAnimationFrame(() => {
+                        e.style.animation = this.state.animationValue + "In 2s";
+                    });
+                };
+                if(this.state.customBorderValue !== "default"){
+                    this.updateCustomBorder(what);
+                };
+            });
+        }else{
+            const e = document.getElementById(`${what}-box`);
+            e.style.visibility = "hidden";
+            if(this.state.animationValue !== "default"){
+                e.style.animation = "none";
+                window.requestAnimationFrame(() => {
+                    e.style.animation = this.state.animationValue + "Out 2s";
+                });
+                e.addEventListener("animationend", (event) => {
+                    if(event.animationName.slice(event.animationName.length-3) === "Out"){
+                        this.setState(prevState => ({
+                            widgets: {
+                                ...prevState.widgets,
+                                [where]: {
+                                    ...prevState.widgets[where],
+                                    [what]: false
+                                }
+                            }
+                        }));
+                    };
+                });
+            }else{
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [what]: false
+                        }
+                    }
+                }));
+            };
+        };
+    };
+    updateCustomBorder(what){
+        var widget, popout, combine;
+        if(what !== undefined){
+            widget = document.getElementById(what + "-box-animation");
+            popout = widget.querySelectorAll(".popout");
+            combine = [widget, ...popout];
+        }else{
+            widget = document.querySelectorAll(".widget-animation");
+            popout = document.querySelectorAll(".popout");
+            combine = [...widget, ...popout];
+        };
+        switch(this.state.customBorderValue){
+            case "diagonal":
+                for(const element of combine){
+                    element.style.border = "10px solid var(--randColor)";
+                    element.style.borderImage = `
+                        repeating-linear-gradient(45deg,
+                            transparent,
+                            transparent 5px,
+                            var(--randColor) 6px,
+                            var(--randColor) 15px,
+                            transparent 16px,
+                            transparent 20px
+                        ) 20/1rem`;
+                };
+                break;
+            case "dashed":
+                for(const element of combine){
+                    element.style.border = "5px dashed var(--randColor)";
+                };
+                break;
+            case "default":
+                for(const element of combine){
+                    element.style.border = "1px solid var(--randColor)";
+                    element.style.borderImage = "none"
+                };
+                break;
+            default:
+                break;
+        };
+    };
+    updateValue(what, where){
         this.setState({
-            [what]: !this.state[what]
+            [where + "Value"]: what
+        }, () => {
+            if(where === "customBorder"){
+                this.updateCustomBorder();
+            };
         });
     };
     updateWidgetsActive(what, where){
@@ -422,18 +538,33 @@ class Widgets extends Component{
     render(){
         return(
             <div id="widget-container">
-                <WidgetSetting 
+                <WidgetSetting
+                    widgets={{
+                        quote: this.state.widgets.utility.quote,
+                        translator: this.state.widgets.utility.translator,
+                        googletranslator: this.state.widgets.utility.googletranslator,
+                        calculator: this.state.widgets.utility.calculator,
+                        weather: this.state.widgets.utility.weather,
+                        snake: this.state.widgets.games.snake,
+                        textrpg: this.state.widgets.games.textrpg
+                    }}
                     showHide={this.handleCallBack}
                     funcDragStart={dragStart}
                     funcDragStop={dragStop}
                     funcSortSelect={sortSelect}
                     funcUpdateWidgetsActive={this.updateWidgetsActive}
+                    funcUpdateValue={this.updateValue}
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
                     varWidgetsFunActive={widgetsFunActive}
-                    varAnimations={animations}/>
-                {this.state.quote === true
-                    ? <WidgetQuote 
+                    varTricks={tricks}
+                    varAnimations={animations}
+                    varBackgrounds={backgrounds}
+                    varCustomBorders={customBorders}
+                    varAnimationValue={this.state.animationValue}
+                    varMicroIcon={microIcon}/>
+                {this.state.widgets.utility.quote === true
+                    ? <WidgetQuote
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
@@ -442,7 +573,7 @@ class Widgets extends Component{
                         varQuotes={quotes}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.translator === true
+                {this.state.widgets.utility.translator === true
                     ? <WidgetTranslator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
@@ -462,8 +593,8 @@ class Widgets extends Component{
                         varSmallIcon={smallIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.googletranslator === true
-                    ? <WidgetGoogleTranslator 
+                {this.state.widgets.utility.googletranslator === true
+                    ? <WidgetGoogleTranslator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
@@ -474,7 +605,7 @@ class Widgets extends Component{
                         varSmallIcon={smallIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.calculator === true
+                {this.state.widgets.utility.calculator === true
                     ? <WidgetCalculator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
@@ -484,8 +615,8 @@ class Widgets extends Component{
                         varMedIcon={medIcon}
                         varOperation={operation}/>
                     : <></>}
-                {this.state.weather === true
-                    ? <WidgetWeather 
+                {this.state.widgets.utility.weather === true
+                    ? <WidgetWeather
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
@@ -494,15 +625,8 @@ class Widgets extends Component{
                         varMedIcon={medIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.snake === true
-                    ? <WidgetSnake 
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        varLargeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.textrpg === true
-                    ? <WidgetTextRPG
+                {this.state.widgets.games.snake === true
+                    ? <WidgetSnake
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}

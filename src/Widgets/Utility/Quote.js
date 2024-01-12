@@ -30,7 +30,7 @@ class WidgetQuote extends Component{
         const quoteAuthor = document.getElementById("author");
         quoteText.style.animation = "none";
         quoteAuthor.style.animation = "none";
-        window.requestAnimationFrame(function(){
+        window.requestAnimationFrame(() => {
             quoteText.style.animation = "fadeIn 2s";
             quoteAuthor.style.animation = "fadeIn 2s";
         });
@@ -60,7 +60,7 @@ class WidgetQuote extends Component{
                         </div>
                         <p id="author"
                             className="author">- {this.state.currentAuthor}</p>
-                        <div className="btn-ends">
+                        <div className="element-ends space-nicely left">
                             <button className="btn-match fadded inverse"
                                 onClick={() => this.props.funcCopyToClipboard(this.state.currentQuote)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>

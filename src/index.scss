@@ -154,6 +154,7 @@ body{
     }
 }
 
+/// Matches the color to the corresponding element
 .btn-match{
     padding: 0.47rem;
     border: none;
@@ -230,32 +231,36 @@ body{
     border: 1px solid var(--randColor);
     border-radius: 5.6px;
     font-size: 0.75em;
-    -moz-appearance: none;
     -webkit-appearance: none;
-    appearance: none;
+       -moz-appearance: none;
+            appearance: none;
     padding: 0.05rem 1.12rem 0.05rem 0.3rem;
-    background-image: url("../public/images/downArrow.svg");
-    background-repeat: no-repeat;
-    background-position: right 0.3em top 0.12em;
-    background-size: 1em 1.1em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
     :checked{
         background-color: rgba(var(--randColorOpacity), 0.3);
     }
     &:disabled{
         opacity: 0.3;
     }
+    &.dropdown-arrow{
+        background-image: url("../public/images/downArrow.svg");
+        background-repeat: no-repeat;
+        background-position: right 0.3em top 0.12em;
+        background-size: 1em 1.1em;
+        fill: red;
+    }
 }
 
-.btn-ends{
+/// Space between 2 elements | []-----[]
+.element-ends{
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin: 0rem 1.5rem;
 }
 
 .when-elements-are-not-straight{
@@ -292,6 +297,7 @@ body{
     text-align: left;
     border-radius: 20px;
     box-shadow: 0em 0em 0.6em 0.05em var(--randColor);
+    max-width: 100vmin;
 }
 
 .pointer-events-none{
@@ -317,7 +323,6 @@ body{
         &.input-button-input{
             font-size: 0.8em;
             width: 13.8em;
-            margin: 0rem 0.3rem 0.2rem;
             padding: 0.15rem 0.15rem;
         }
     }
@@ -386,6 +391,7 @@ body{
         }
     }
     &.left{
+        margin-left: 1.5rem;
         &.short{
             margin-left: 0.15rem;
         }
@@ -423,6 +429,8 @@ body{
 }
 
 .section-group{
+    max-width: 8em;
+    width: 100vmin;
     background-color: rgba(var(--randColorOpacity), 0.15);
     border-radius: 20px;
     padding: 1rem;
@@ -552,12 +560,6 @@ body{
     }
 }
 
-#text-rpg-box{
-    font-size: 1.11em;
-    max-width: 26.24em;
-    width: 100vmin;
-}
-
 
 //////////////////// IDs: Widget Utility ////////////////////
 #settings-box{
@@ -603,33 +605,16 @@ body{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
-    #translator-box-animation{
-        #replace-popout{
-            visibility: hidden;
-            height: 6em;
-            width: 28em;
-            padding: 0.35rem 0rem;
-        }
-        #reverse-popout{
-            visibility: hidden;
-            height: 6em;
-            width: 28em;
-            padding-top: 0.25rem;
-        }
-        #case-transform-popout{
-            visibility: hidden;
-        }
-    }
     #translator-preview-cut-corner{
         margin-top: 0.9rem;
     }
 }
 
-#google-translator-box{
+#googletranslator-box{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
-    #google-translator-preview-cut-corner{
+    #googletranslator-preview-cut-corner{
         margin-top: 0.9rem;
     }
 }
@@ -760,47 +745,57 @@ body{
 }
 
 
-/// Animations
+//////////////////// Animations: Widgets ////////////////////
 @keyframes fadeIn{
-    0%   {opacity: 0;}
-    100% {opacity: 1;}
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
 }
 
+@keyframes fadeOut{
+    0%   { opacity: 1;
+           visibility: visible; }
+    100% { opacity: 0; }
+}
+
+
+//////////////////// Animations: Do a trick! ////////////////////
 @keyframes spin{
-    0%   {transform: rotate(0deg);}
-    100% {transform: rotate(720deg);}
+    0%   { transform: rotate(0deg);   }
+    100% { transform: rotate(720deg); }
 }
 
 @keyframes flip{
-	0%{
-		transform: perspective(400px) rotateY(0);
-		animation-timing-function: ease-out;
-	}
-	40%{
-		transform: perspective(400px) translateZ(150px) rotateY(170deg);
-		animation-timing-function: ease-out;
-	}
-	50%{
-		transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
-		animation-timing-function: ease-in;
-	}
-	80%{
-		transform: perspective(400px) rotateY(360deg) scale(.95);
-		animation-timing-function: ease-in;
-	}
-	100%{
-		transform: perspective(400px) scale(1);
-		animation-timing-function: ease-in;
-	}
+	0%   { transform: perspective(400px) rotateY(0);
+		   animation-timing-function: ease-out; }
+	40%  { transform: perspective(400px) translateZ(150px) rotateY(170deg);
+		   animation-timing-function: ease-out; }
+	50%  { transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
+		   animation-timing-function: ease-in;  }
+	80%  { transform: perspective(400px) rotateY(360deg) scale(.95);
+		   animation-timing-function: ease-in;  }
+	100% { transform: perspective(400px) scale(1);
+		   animation-timing-function: ease-in;  }
 }
 
 @keyframes hinge{
-    0%   {transform: rotate(0); transform-origin: top left; animation-timing-function: ease-in-out;}  
-    20%, 60% {transform: rotate(80deg); transform-origin: top left; animation-timing-function: ease-in-out;}  
-    40%  {transform: rotate(60deg); transform-origin: top left; animation-timing-function: ease-in-out;} 
-    80%  {transform: rotate(60deg) translateY(0); opacity: 1; transform-origin: top left; animation-timing-function: ease-in-out;} 
-    100% {transform: translateY(700px); opacity: 0; }
+    0%   { transform: rotate(0);
+           transform-origin: top left;
+           animation-timing-function: ease-in-out; }  
+    20%,
+    60%  { transform: rotate(80deg);
+           transform-origin: top left;
+           animation-timing-function: ease-in-out; }  
+    40%  { transform: rotate(60deg);
+           transform-origin: top left;
+           animation-timing-function: ease-in-out; } 
+    80%  { transform: rotate(60deg) translateY(0);
+           opacity: 1;
+           transform-origin: top left;
+           animation-timing-function: ease-in-out; } 
+    100% { transform: translateY(700px);
+           opacity: 0; }
 }
+
 
 //////////////////// Webkits ////////////////////
 input:-webkit-autofill,

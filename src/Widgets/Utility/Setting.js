@@ -1,12 +1,12 @@
 import { React, Component } from 'react';
 import Draggable from 'react-draggable';
-import $ from 'jquery';
-import { FaGripHorizontal } from 'react-icons/fa';
+import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import $ from 'jquery';
 
 
 class WidgetSetting extends Component{
@@ -30,48 +30,19 @@ class WidgetSetting extends Component{
                 widgetsBtnFun: {
                 }
             },
-            widgets: {                      /// Widgets
-                widgetsUtility: {
-                    quote: false,
-                    translator: false,
-                    googletranslator: false,
-                    calculator: false,
-                    weather: false
-                },
-                widgetsGames: {
-                    snake: false,
-                    textrpg: false
-                },
-                widgetsFun: {
-                }
-            },
             utilityTab: true,               /// Tabs
             gamesTab: false,
             funTab: false,
             settings: false,                /// Settings
             screenDimmer: false,
-            screenDimmerValue: "",
-            customBorder: false,
-            customBorderValue: "dashed"
+            screenDimmerValue: ""
         };
+        this.handleTrick = this.handleTrick.bind(this);
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
         this.handleToggleableBtn = this.handleToggleableBtn.bind(this);
         this.handleSlider = this.handleSlider.bind(this);
         this.handleTabSwitch = this.handleTabSwitch.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
-    };
-    handleTrick(){
-        console.log(this.props.widgetUtilityIndex)
-        const combinedWidgets = [...this.props.varWidgetsUtilityActive, ...this.props.varWidgetsGamesActive];
-        if(combinedWidgets.length !== 0){
-            const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
-            const randIndexAnimation = Math.floor(Math.random() * this.props.varAnimations.length);
-            const e = document.getElementById(combinedWidgets[randIndexWidget] + "-box-animation");
-            e.style.animation = "none";
-            window.requestAnimationFrame(() => {
-                e.style.animation = this.props.varAnimations[randIndexAnimation] + " 2s";
-            });
-        };
     };
     /// Remove element at index "i" where order doesn't matter
     unorderedRemove(arr, i){
@@ -83,6 +54,42 @@ class WidgetSetting extends Component{
         };
         arr.length -= 1;
         return arr;
+    };
+    /// Choose random option in select
+    randomOption(select){
+        let rand;
+        switch(select){
+            case "animation":
+                rand = this.props.varAnimations[Math.floor(Math.random() * this.props.varAnimations.length)];
+                $("#settings-popout-design-select-animation").val(rand);
+                this.handleSelect(rand, "animation");
+                break;
+            case "background":
+                rand = this.props.varBackgrounds[Math.floor(Math.random() * this.props.varBackgrounds.length)];
+                $("#settings-popout-design-select-background").val(rand);
+                this.handleSelect(rand, "background");
+                break;
+            case "custom-border":
+                rand = this.props.varCustomBorders[Math.floor(Math.random() * this.props.varCustomBorders.length)];
+                $("#settings-popout-design-select-custom-border").val(rand);
+                this.handleSelect(rand, "custom-border");
+                break;
+            default:
+                break;
+        };
+
+    };
+    handleTrick(){
+        const combinedWidgets = [...this.props.varWidgetsUtilityActive, ...this.props.varWidgetsGamesActive];
+        if(combinedWidgets.length !== 0){
+            const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
+            const randIndexAnimation = Math.floor(Math.random() * this.props.varTricks.length);
+            const e = document.getElementById(combinedWidgets[randIndexWidget] + "-box-animation");
+            e.style.animation = "none";
+            window.requestAnimationFrame(() => {
+                e.style.animation = this.props.varTricks[randIndexAnimation] + " 2s";
+            });
+        };
     };
     /// Handles all pressable buttons (opacity: 0.5 on click)
     handlePressableBtn(what, where){
@@ -96,12 +103,24 @@ class WidgetSetting extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "1";
                     showHideWidgetsPopout.style.visibility = "visible";
+                    if(this.props.varAnimationValue !== "default"){
+                        showHideWidgetsPopout.style.animation = "none";
+                        window.requestAnimationFrame(() => {
+                            showHideWidgetsPopout.style.animation = this.props.varAnimationValue + "In 2s";
+                        });
+                    };
                 }else{
                     this.setState({
                         showHideWidgets: false
                     });
                     btnShowHideWidgets.style.opacity = "0.5";
                     showHideWidgetsPopout.style.visibility = "hidden";
+                    if(this.props.varAnimationValue !== "default"){
+                        showHideWidgetsPopout.style.animation = "none";
+                        window.requestAnimationFrame(() => {
+                            showHideWidgetsPopout.style.animation = this.props.varAnimationValue + "Out 2s";
+                        });
+                    };
                 };    
                 break;
             case "settings":
@@ -113,44 +132,33 @@ class WidgetSetting extends Component{
                     });
                     btnSettings.style.opacity = "1";
                     settingsPopout.style.visibility = "visible";
+                    if(this.props.varAnimationValue !== "default"){
+                        settingsPopout.style.animation = "none";
+                        window.requestAnimationFrame(() => {
+                            settingsPopout.style.animation = this.props.varAnimationValue + "In 2s";
+                        });
+                    };
                 }else{
                     this.setState({
                         settings: false
                     });
                     btnSettings.style.opacity = "0.5";
                     settingsPopout.style.visibility = "hidden";
+                    if(this.props.varAnimationValue !== "default"){
+                        settingsPopout.style.animation = "none";
+                        window.requestAnimationFrame(() => {
+                            settingsPopout.style.animation = this.props.varAnimationValue + "Out 2s";
+                        });
+                    };
                 };
                 break;
             default:
                 const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
-                const widgetWhere = "widgets" + where[0].toUpperCase() + where.slice(1);
-                this.props.showHide(what);
-                if(this.state.widgets[widgetWhere][what] === false){
-                    this.setState(prevState => ({
-                        widgets: {
-                            ...prevState.widgets,
-                            [widgetWhere]: {
-                                ...prevState.widgets[widgetWhere],
-                                [what]: true
-                            }
-                        }
-                    }), () => {
-                        if(this.state.customBorder === true){
-                            this.handleCustomBorder(what);
-                        };
-                    });
+                this.props.showHide(what, where);
+                if(this.props.widgets[what] === false){
                     btn.style.opacity = "1";
                     this.props.funcUpdateWidgetsActive(what, where);
                 }else{
-                    this.setState(prevState => ({
-                        widgets: {
-                            ...prevState.widgets,
-                            ["widgets" + where[0].toUpperCase() + where.slice(1)]: {
-                                ...prevState.widgets[widgetWhere],
-                                [what]: false
-                            }
-                        }
-                    }));
                     btn.style.opacity = "0.5";
                     switch(where){
                         case "utility":
@@ -187,13 +195,6 @@ class WidgetSetting extends Component{
                     };
                 });
                 break;
-            case "btn-custom-border":
-                this.setState({
-                    customBorder: value
-                }, () => {
-                    this.handleCustomBorder();
-                });
-                break;
             default:
                 break;
         };
@@ -216,11 +217,14 @@ class WidgetSetting extends Component{
         };
     };
     /// Handles all selects
-    handleSelect(event, what){
-        switch(what){
+    handleSelect(what, where){
+        switch(where){
+            case "animation":
+                this.props.funcUpdateValue(what, "animation");
+                break;
             case "background":
                 const e = document.getElementById("App");
-                switch(event.target.value){
+                switch(what){
                     case "default":
                         e.style.backgroundColor = "var(--randColor)";
                         e.style.backgroundImage = "none";
@@ -237,48 +241,10 @@ class WidgetSetting extends Component{
                 };
                 break;
             case "custom-border":
-                this.setState({
-                    customBorderValue: event.target.value
-                }, () => {
-                    this.handleCustomBorder();   
-                });
+                this.props.funcUpdateValue(what, "customBorder");
                 break;
             default:
                 break;
-        };
-    };
-    handleCustomBorder(what){
-        var widget, popout, combine;
-        if(what !== undefined){
-            widget = document.getElementById(what + "-box-animation");
-            popout = widget.querySelectorAll(".popout");
-            combine = [widget, ...popout];
-        }else{
-            widget = document.querySelectorAll(".widget-animation");
-            popout = document.querySelectorAll(".popout");
-            combine = [...widget, ...popout];
-        };
-        if(this.state.customBorder === true){
-            switch(this.state.customBorderValue){
-                case "diagonal":
-                    for(const element of combine){
-                        element.style.border = "10px solid var(--randColor)";
-                        element.style.borderImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, var(--randColor) 6px, var(--randColor) 15px, transparent 16px, transparent 20px) 20/1rem";
-                    };
-                    break;
-                case "dashed":
-                    for(const element of combine){
-                        element.style.border = "5px dashed var(--randColor)";
-                    };
-                    break;
-                default:
-                    break;
-            };
-        }else{
-            for(const element of combine){
-                element.style.border = "1px solid var(--randColor)";
-                element.style.borderImage = "none"
-            };
         };
     };
     handleTabSwitch(what){
@@ -373,10 +339,6 @@ class WidgetSetting extends Component{
             };
         });
     };
-    componentDidMount(){
-        this.props.funcSortSelect("#settings-popout-design-custom-border-select");
-        $("#settings-popout-design-custom-border-select").val("dashed");
-    };
     render(){
         return(
             <Draggable
@@ -410,7 +372,7 @@ class WidgetSetting extends Component{
                         <Draggable
                             cancel="button, #show-hide-widgets-popout-tabs"
                             defaultPosition={{x: 30, y: -55}}
-                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                            bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
                                 <Tabs defaultIndex={0}>
@@ -465,11 +427,6 @@ class WidgetSetting extends Component{
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
                                                 : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnGames["textRPGBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-textrpg"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("textrpg", "games")}>TextRPG</button>
-                                                : <></>}
                                         </section>
                                     </TabPanel>
                                     {/* Fun */}
@@ -484,8 +441,8 @@ class WidgetSetting extends Component{
                         {/* Settings Popout */}
                         <Draggable
                             cancel="span, .toggleable, .slider, select"
-                            defaultPosition={{x: 120, y: -25}}
-                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                            defaultPosition={{x: 105, y: -25}}
+                            bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
                             <section id="settings-popout"
                                 className="popout">
                                 <section className="font large-medium flex-center column gap space-nicely all">
@@ -494,7 +451,8 @@ class WidgetSetting extends Component{
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Display</b>
                                         </span>
-                                        <section className="flex-center row gap">
+                                        {/* Screen Dimmer */}
+                                        <section className="flex-center row gap only-align-items">
                                             <span className="font small">
                                                 Screen Dimmer
                                             </span>
@@ -523,16 +481,43 @@ class WidgetSetting extends Component{
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Design</b>
                                         </span>
+                                        {/* Animation */}
+                                        <section>
+                                            <section className="element-ends">
+                                                <span className="font small">
+                                                    Animation
+                                                </span>
+                                                <button className="btn-match inverse"
+                                                    onClick={() => this.randomOption("animation")}>
+                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                        <FaRandom/>
+                                                    </IconContext.Provider>
+                                                </button>
+                                            </section>
+                                            <select id="settings-popout-design-select-animation"
+                                                className="select-match dropdown-arrow space-nicely top medium"
+                                                onChange={(event) => this.handleSelect(event.target.value, "animation")}
+                                                defaultValue={"default"}>
+                                                <option value="default">Default</option>
+                                                <option value="fade">Fade</option>
+                                            </select>
+                                        </section>
                                         {/* Background */}
-                                        <section className="space-nicely bottom">
-                                            <section>
+                                        <section>
+                                            <section className="element-ends">
                                                 <span className="font small">
                                                     Background
                                                 </span>
+                                                <button className="btn-match inverse"
+                                                    onClick={() => this.randomOption("background")}>
+                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                        <FaRandom/>
+                                                    </IconContext.Provider>
+                                                </button>
                                             </section>
-                                            <select id="settings-popout-design-background-select"
-                                                className="select-match space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event, "background")}
+                                            <select id="settings-popout-design-select-background"
+                                                className="select-match dropdown-arrow space-nicely top medium"
+                                                onChange={(event) => this.handleSelect(event.target.value, "background")}
                                                 defaultValue={"default"}>
                                                 <option value="default">Default</option>
                                                 <option value="white">White</option>
@@ -541,31 +526,38 @@ class WidgetSetting extends Component{
                                         </section>
                                         {/* Custom Border */}
                                         <section>
-                                            <section className="flex-center row gap">
+                                            <section className="element-ends">
                                                 <span className="font small">
                                                     Custom Border
                                                 </span>
-                                                <Switch className="toggleable"
-                                                    checked={this.state.customBorder}
-                                                    onChange={(value) => this.handleToggleableBtn(value, "btn-custom-border")}
-                                                    onColor="#86d3ff"
-                                                    onHandleColor="#2693e6"
-                                                    handleDiameter={15}
-                                                    uncheckedIcon={false}
-                                                    checkedIcon={false}
-                                                    boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
-                                                    activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
-                                                    height={15}
-                                                    width={30}/>
+                                                <button className="btn-match inverse"
+                                                    onClick={() => this.randomOption("custom-border")}>
+                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                        <FaRandom/>
+                                                    </IconContext.Provider>
+                                                </button>
                                             </section>
-                                            <select id="settings-popout-design-custom-border-select"
-                                                className="select-match space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event, "custom-border")}
-                                                disabled={!this.state.customBorder}
-                                                defaultValue={"dashed"}>
+                                            <select id="settings-popout-design-select-custom-border"
+                                                className="select-match dropdown-arrow space-nicely top medium"
+                                                onChange={(event) => this.handleSelect(event.target.value, "custom-border")}
+                                                defaultValue={"default"}>
+                                                <option value="default">Default</option>
                                                 <option value="diagonal">Diagonal</option>
                                                 <option value="dashed">Dashed</option>
                                             </select>
+                                        </section>
+                                    </section>
+                                    {/* Feature Settings */}
+                                    <section className="section-group">
+                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <b>Feature</b>
+                                        </span>
+                                        {/* Fullscreen */}
+                                        <section className="element-ends">
+                                            <span className="font small">
+                                                Fullscreen
+                                            </span>
+                                            <input type="checkbox"/>
                                         </section>
                                     </section>
                                 </section>
