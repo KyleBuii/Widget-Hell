@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegPaste } from 'react-icons/fa6';
+import { FaRegPaste, FaExpand } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -26,8 +26,8 @@ class WidgetQuote extends Component{
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
-        const quoteText = document.getElementById("quote");
-        const quoteAuthor = document.getElementById("author");
+        const quoteText = document.getElementById("quote-container");
+        const quoteAuthor = document.getElementById("author-container");
         quoteText.style.animation = "none";
         quoteAuthor.style.animation = "none";
         window.requestAnimationFrame(() => {
@@ -35,31 +35,49 @@ class WidgetQuote extends Component{
             quoteAuthor.style.animation = "fadeIn 2s";
         });
     };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("quote", what, "utility");
+    };
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("quote")}
                 onStop={() => this.props.funcDragStop("quote")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("quote", "utility", data.x, data.y)}
                 cancel="button, span, p"
                 bounds="parent">
-                <div id="quote-box"
+                <div id="quote-widget" 
                     className="widget">
-                    <div id="quote-box-animation"
+                    <div id="quote-widget-animation"
                         className="widget-animation">
-                        <span id="quote-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="quote-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div id="quote">
-                            <span className="quote large">"</span>
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
+                        <div id="quote-container">
+                            <span className="font-quote large">"</span>
                             <span id="quote-text"
                                 className="font large normal">{this.state.currentQuote}</span>
-                            <span className="quote large">"</span>
+                            <span className="font-quote large">"</span>
                         </div>
-                        <p id="author"
-                            className="author">- {this.state.currentAuthor}</p>
+                        <p id="author-container"
+                            className="font-author">- {this.state.currentAuthor}</p>
                         <div className="element-ends space-nicely left">
                             <button className="btn-match fadded inverse"
                                 onClick={() => this.props.funcCopyToClipboard(this.state.currentQuote)}>

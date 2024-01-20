@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegCircleQuestion } from 'react-icons/fa6';
+import { FaRegCircleQuestion, FaExpand } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -81,6 +81,9 @@ class WidgetWeather extends Component{
             };
         };
     };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("weather", what, "utility");
+    };
     componentDidMount(){
         this.props.funcRandColor();
         this.handleUpdate();
@@ -88,22 +91,38 @@ class WidgetWeather extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("weather")}
                 onStop={() => this.props.funcDragStop("weather")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("weather", "utility", data.x, data.y)}
                 cancel="button, span, input, section"
                 bounds="parent">
-                <div id="weather-box"
+                <div id="weather-widget"
                     className="widget">
-                    <div id="weather-box-animation"
+                    <div id="weather-widget-animation"
                         className="widget-animation">
-                        <span id="weather-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="weather-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
+                        {/* Search bar */}
                         <div id="weather-search-container"
-                            className="flex-center">
+                            className="flex-center gap">
                             <div className="when-elements-are-not-straight">
                                 <input className="input-typable right-side with-help-btn"
                                     placeholder="Enter location"
@@ -142,7 +161,9 @@ class WidgetWeather extends Component{
                                 Update
                             </button>
                         </div>
-                        <section id="weather-info-container">
+                        {/* Information box */}
+                        <section id="weather-info-container"
+                            className="flex-center column only-flex">
                             <div id="weather-info-icon-temp">
                                 <img className="no-highlight"
                                     src={this.state.weatherIcon}

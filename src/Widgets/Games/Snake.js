@@ -3,6 +3,7 @@ import Slider from 'rc-slider';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
+import { FaExpand } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 
@@ -371,6 +372,9 @@ class WidgetSnake extends Component{
             });
         };
     };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("snake", what, "games");
+    };
     componentDidMount(){
         window.addEventListener("resize", this.resizer);
     };
@@ -380,20 +384,35 @@ class WidgetSnake extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("snake")}
                 onStop={() => this.props.funcDragStop("snake")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("snake", "games", data.x, data.y)}
                 cancel="button, section"
                 bounds="parent">
-                <div id="snake-box"
+                <div id="snake-widget"
                     className="widget">
-                    <div id="snake-box-animation"
+                    <div id="snake-widget-animation"
                         className="widget-animation">
-                        <span id="snake-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="snake-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
                         <section>
                             <SnakeGame size={this.state.size}/>
                         </section>

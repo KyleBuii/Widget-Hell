@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan, FaRegPaste } from 'react-icons/fa6';
+import { FaRegTrashCan, FaRegPaste, FaExpand } from 'react-icons/fa6';
 import { BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { BiExpand } from 'react-icons/bi';
@@ -266,6 +266,9 @@ class WidgetCalculator extends Component{
                 break;
         };
     };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("calculator", what, "utility");
+    };
     componentDidMount(){
         this.props.funcRandColor();
         const inputField = document.getElementById("calculator-input-field");
@@ -278,21 +281,38 @@ class WidgetCalculator extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("calculator")}
                 onStop={() => this.props.funcDragStop("calculator")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("calculator", "utility", data.x, data.y)}
                 cancel="button, span, p, input, textarea, section"
                 bounds="parent">
-                <div id="calculator-box"
+                <div id="calculator-widget"
                     className="widget">
-                    <div id="calculator-box-animation"
+                    <div id="calculator-widget-animation"
                         className="widget-animation">
-                        <span id="calculator-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="calculator-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varMedIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <div id="calculator-display-container">
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
+                        {/* Display */}
+                        <div id="calculator-display-container"
+                            className="flex-center column">
                             <input className="font small input-typable no-side space-nicely right short bottom short"
                                 type="text"
                                 value={this.state.question}
@@ -305,6 +325,7 @@ class WidgetCalculator extends Component{
                                 onChange={this.handleChange}>
                             </input>
                         </div>
+                        {/* Utility Bar */}
                         <div className="font smaller flex-center space-nicely bottom short">
                             <button className="btn-match fadded inverse"
                                 onClick={() => this.props.funcCopyToClipboard(this.state.input)}>
@@ -320,6 +341,7 @@ class WidgetCalculator extends Component{
                                 </IconContext.Provider>
                             </button>
                         </div>
+                        {/* Memory Bar */}
                         <div className="font smaller flex-center space-nicely bottom short">
                             <button id="calculator-btn-MC"
                                 className="btn-match inverse inv-small"
@@ -346,7 +368,9 @@ class WidgetCalculator extends Component{
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
+                        {/* Buttons */}
                         <section className="grid col-4">
+                            {/* Memory Display */}
                             <div id="calculator-btn-memory-display">
                                 <div id="calculator-btn-memory-container">
                                     {this.state.memory.map(curr => <p>{curr}</p>)}

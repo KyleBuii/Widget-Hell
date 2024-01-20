@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightLong, FaRegPaste } from 'react-icons/fa6';
+import { FaArrowRightLong, FaRegPaste, FaExpand } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
@@ -20,7 +20,12 @@ class WidgetTranslator extends Component{
             replaceFrom: "",
             replaceTo: "",
             reverseWord: false,
-            reverseSentence: false
+            reverseSentence: false,
+            caseTransformLower: false,
+            caseTransformUpper: false,
+            caseTransformCapitalize: false,
+            caseTransformAlternate: false,
+            caseTransformInverse: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
@@ -194,7 +199,7 @@ class WidgetTranslator extends Component{
                 }));
                 break;
             case "reverse":
-                if(this.state.reverseWord === true && this.state.reverseSentence === true){
+                if(this.state.reverseWord && this.state.reverseSentence){
                 /// Reverse Word + Sentence
                     this.setState(prevState => ({
                         converted: this.props.funcMergePunctuation(prevState.convert
@@ -210,7 +215,7 @@ class WidgetTranslator extends Component{
                             ))
                             .join(" ")
                     }));
-                }else if(this.state.reverseWord === true){
+                }else if(this.state.reverseWord){
                 /// Reverse Word
                     this.setState(prevState => ({
                         converted: prevState.convert
@@ -223,7 +228,7 @@ class WidgetTranslator extends Component{
                             })
                             .join("")
                     }));
-                }else if(this.state.reverseSentence === true){
+                }else if(this.state.reverseSentence){
                 /// Reverse Sentence
                     this.setState(prevState => ({
                         converted: this.props.funcMergePunctuation(prevState.convert
@@ -240,6 +245,52 @@ class WidgetTranslator extends Component{
                     this.setState(prevState => ({
                         converted: prevState.convert
                     }));   
+                };
+                break;
+            case "case-transform":
+                if(this.state.caseTransformUpper){
+                    /// Case Transform Upper
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .toUpperCase()
+                    }));
+                }else if(this.state.caseTransformLower){
+                    /// Case Transform Lower
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .toLowerCase()
+                    }));
+                }else if(this.state.caseTransformCapitalize){
+                    /// Case Transform Capitalize
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .replace(/\b\w/g, (char) => {
+                                return char.toUpperCase()
+                            })
+                    }));
+                }else if(this.state.caseTransformAlternate){
+                    /// Case Transform Alternate
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .toLowerCase()
+                            .split("")
+                            .map((val, i) => {
+                                return (i % 2 === 0) ? val.toUpperCase() : val;
+                            })
+                            .join("")
+                    }));
+                }else if(this.state.caseTransformInverse){
+                    /// Case Transform Inverse
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                            .replace(/[a-z]/gi, (char) => {
+                                return (char === char.toUpperCase()) ? char.toLowerCase() : char.toUpperCase();
+                            })
+                    }));
+                }else{
+                    this.setState(prevState => ({
+                        converted: prevState.convert
+                    }));
                 };
                 break;
             default:
@@ -284,6 +335,7 @@ class WidgetTranslator extends Component{
         });
         document.getElementById("replace-popout").style.visibility = (event.target.value === "replace") ? "visible" : "hidden";
         document.getElementById("reverse-popout").style.visibility = (event.target.value === "reverse") ? "visible" : "hidden";
+        document.getElementById("case-transform-popout").style.visibility = (event.target.value === "case-transform") ? "visible" : "hidden";
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
@@ -332,66 +384,21 @@ class WidgetTranslator extends Component{
     };
     /// Handles all buttons that are pressable (opacity: 0.5 on click)
     handlePressableBtn(what, popout){
-        let btn;
-        if(popout === "replace"){
-            btn = document.getElementById("replace-popout-btn-" + what);
-        }else if(popout === "reverse"){
-            btn = document.getElementById("reverse-popout-btn-" + what);
-        };
-        switch(what){
-            case "reverse-word":
-                if(this.state.reverseWord === false){
-                    this.setState({
-                        reverseWord: true
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "1";
-                }else{
-                    this.setState({
-                        reverseWord: false
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "0.5";
-                };
-                break; 
-            case "reverse-sentence":
-                if(this.state.reverseSentence === false){
-                    this.setState({
-                        reverseSentence: true
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "1";
-                }else{
-                    this.setState({
-                        reverseSentence: false
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "0.5";
-                };
-                break; 
-            case "reverse-everything":
-                if(this.state.reverseEverything === false){
-                    this.setState({
-                        reverseEverything: true
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "1";
-                }else{
-                    this.setState({
-                        reverseEverything: false
-                    }, () => {
-                        this.convertToText();
-                    });
-                    btn.style.opacity = "0.5";
-                };
-                break;
-            default:
-                break;
+        const btn = document.getElementById(`${popout}-popout-btn-${what}`);
+        if(this.state[what] === false){
+            this.setState({
+                [what]: true
+            }, () => {
+                this.convertToText();
+            });
+            btn.style.opacity = "1";
+        }else{
+            this.setState({
+                [what]: false
+            }, () => {
+                this.convertToText();
+            });
+            btn.style.opacity = "0.5";
         };
     };
     /// Handles random sentence button
@@ -403,6 +410,9 @@ class WidgetTranslator extends Component{
             this.convertFromText();
             $("#translator-translate-from").val("en");
         });
+    };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("translator", what, "utility");
     };
     componentDidMount(){
         this.props.funcRandColor();
@@ -425,21 +435,38 @@ class WidgetTranslator extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("translator")}
                 onStop={() => this.props.funcDragStop("translator")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("translator", "utility", data.x, data.y)}
                 cancel="button, span, p, textarea, select, section"
                 bounds="parent">
-                <div id="translator-box"
+                <div id="translator-widget"
                     className="widget">
-                    <div id="translator-box-animation"
+                    <div id="translator-widget-animation"
                         className="widget-animation">
-                        <span id="translator-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="translator-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
+                        {/* Select */}
                         <div className="flex-center space-nicely bottom">
+                            {/* Select From */}
                             <select id="translator-translate-from"
                                 className="select-match dropdown-arrow"
                                 defaultValue={"en"}
@@ -464,6 +491,7 @@ class WidgetTranslator extends Component{
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
+                            {/* Select To */}
                             <select id="translator-translate-to"
                                 className="select-match dropdown-arrow"
                                 defaultValue={"english"}
@@ -481,15 +509,38 @@ class WidgetTranslator extends Component{
                                 <optgroup label="Modify">
                                     <option value="replace">Replace</option>
                                     <option value="reverse">Reverse</option>
-                                    {/* <option value="case-transform">Case Transform</option> */}
+                                    <option value="case-transform">Case Transform</option>
                                 </optgroup>
                             </select>
+                        </div>
+                        {/* Display */}
+                        <div className="flex-center column">
+                            <div className="cut-scrollbar-corner-part-1 textarea">
+                                <textarea className="cut-scrollbar-corner-part-2 textarea"
+                                    onChange={this.handleChange}
+                                    value={this.state.input}></textarea>
+                            </div>
+                            <div id="translator-preview-cut-corner"
+                                className="cut-scrollbar-corner-part-1 p">
+                                <p id="translator-translated-text"
+                                    className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <button className="bottom-left btn-match fadded inverse"
+                                onClick={() => this.props.funcCopyToClipboard(this.state.converted)}>
+                                <IconContext.Provider value={{ className: "global-class-name" }}>
+                                    <FaRegPaste/>
+                                </IconContext.Provider>
+                            </button>
+                            <button className="bottom-right btn-match fadded"
+                                onClick={this.handleRandSentence}>Random sentence</button>
                         </div>
                         {/* Replace Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: 75, y: 0}}
-                            bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
+                            defaultPosition={{x: 20, y: 0}}
+                            bounds={{top: -135, left: -375, right: 425, bottom: 270}}>
                             <section id="replace-popout"
                                 className="popout">
                                 <section className="flex-center column space-nicely all long">
@@ -514,20 +565,20 @@ class WidgetTranslator extends Component{
                         {/* Reverse Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: 75, y: 0}}
-                            bounds={{top: -126, left: -390, right: 425, bottom: 265}}>
+                            defaultPosition={{x: 60, y: 0}}
+                            bounds={{top: -120, left: -300, right: 425, bottom: 270}}>
                             <section id="reverse-popout"
                                 className="popout">
                                 <section className="grid space-nicely all long">
-                                    <button className="option-item btn-match option opt-long"
+                                    <button className="btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
-                                    <section className="option-item">
-                                        <button id="reverse-popout-btn-reverse-word"
+                                    <section className="flex-center row gap">
+                                        <button id="reverse-popout-btn-reverseWord"
                                             className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("reverse-word", "reverse")}>Word</button>
-                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            onClick={() => this.handlePressableBtn("reverseWord", "reverse")}>Word</button>
+                                        <button id="reverse-popout-btn-reverseSentence"
                                             className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("reverse-sentence", "reverse")}>Sentence</button>
+                                            onClick={() => this.handlePressableBtn("reverseSentence", "reverse")}>Sentence</button>
                                     </section>
                                 </section>
                             </section>
@@ -535,53 +586,35 @@ class WidgetTranslator extends Component{
                         {/* Case Transform Popout */}
                         <Draggable
                             cancel="input, button"
-                            defaultPosition={{x: 125, y: 0}}
-                            bounds={{top: -105, left: -290, right: 425, bottom: 285}}>
+                            defaultPosition={{x: 60, y: 0}}
+                            bounds={{top: -145, left: -300, right: 425, bottom: 270}}>
                             <section id="case-transform-popout"
                                 className="popout">
-                                <section className="option space-nicely top">
-                                    <button className="option-item btn-match option opt-long"
+                                <section className="grid space-nicely all long">
+                                    <button className="btn-match option opt-long"
                                         onClick={this.handleSave}>Save</button>
-                                    <section className="option-item">
-                                        <button id="case-transform-popout-btn-lower"
+                                    <section className="flex-center row gap">
+                                        <button id="case-transform-popout-btn-caseTransformLower"
                                             className="btn-match option opt-small disabled-option"
-                                            onClick={this.handleReverseWord}>Lower</button>
-                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            onClick={() => this.handlePressableBtn("caseTransformLower", "case-transform")}>Lower</button>
+                                        <button id="case-transform-popout-btn-caseTransformUpper"
                                             className="btn-match option opt-small disabled-option"
-                                            onClick={this.handleReverseSentence}>Upper</button>
-                                        <button id="reverse-popout-btn-reverse-everything"
+                                            onClick={() => this.handlePressableBtn("caseTransformUpper", "case-transform")}>Upper</button>
+                                        <button id="case-transform-popout-btn-caseTransformCapitalize"
                                             className="btn-match option opt-small disabled-option"
-                                            onClick={this.handleReverseEverything}>Capitalize</button>
+                                            onClick={() => this.handlePressableBtn("caseTransformCapitalize", "case-transform")}>Capitalize</button>
                                     </section>
-                                    <section className="option-item">
-                                        <button id="reverse-popout-btn-reverse-word"
+                                    <section className="flex-center row gap">
+                                        <button id="case-transform-popout-btn-caseTransformAlternate"
                                             className="btn-match option opt-small disabled-option"
-                                            onClick={this.handleReverseWord}>Alternate</button>
-                                        <button id="reverse-popout-btn-reverse-sentence"
+                                            onClick={() => this.handlePressableBtn("caseTransformAlternate", "case-transform")}>Alternate</button>
+                                        <button id="case-transform-popout-btn-caseTransformInverse"
                                             className="btn-match option opt-small disabled-option"
-                                            onClick={this.handleReverseSentence}>Inverse</button>
+                                            onClick={() => this.handlePressableBtn("caseTransformInverse", "case-transform")}>Inverse</button>
                                     </section>
                                 </section>
                             </section>
                         </Draggable>
-                        <div className="cut-scrollbar-corner-part-1 textarea">
-                            <textarea className="cut-scrollbar-corner-part-2 textarea"
-                                onChange={this.handleChange}
-                                value={this.state.input}></textarea>
-                        </div>
-                        <div id="translator-preview-cut-corner"
-                            className="cut-scrollbar-corner-part-1 p">
-                            <p id="translator-translated-text"
-                                className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
-                            <button className="bottom-right btn-match fadded"
-                                onClick={this.handleRandSentence}>Random sentence</button>
-                            <button className="bottom-left btn-match fadded inverse"
-                                onClick={() => this.props.funcCopyToClipboard(this.state.converted)}>
-                                <IconContext.Provider value={{ className: "global-class-name" }}>
-                                    <FaRegPaste/>
-                                </IconContext.Provider>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </Draggable>

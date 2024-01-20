@@ -60,7 +60,7 @@ body{
     }
 }
 
-.quote{
+.font-quote{
     margin: 0rem 0.6rem;
     font-weight: bold;
     color: var(--randColor);
@@ -75,7 +75,7 @@ body{
     }
 }
 
-.author{
+.font-author{
     font-size: 0.9em;
     text-align: right;
     font-style: italic;
@@ -147,6 +147,8 @@ body{
     }
     &.p{
         height: 9em;
+        max-width: 24.5em;
+        width: calc(100vmin - 4.05em);
         word-wrap: break-word;
         &.short{
             height: 6.5em;
@@ -271,11 +273,15 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    &.only-align-items{
+        justify-content: unset;
+    }
     &.only-justify-content{
         align-items: unset;
     }
-    &.only-align-items{
+    &.only-flex{
         justify-content: unset;
+        align-items: unset;
     }
     &.row{
         flex-direction: row;
@@ -305,6 +311,7 @@ body{
 }
 
 .input-typable{
+    width: 10rem;
     border: 1px solid var(--randColor);
     &:focus{
         outline: none;
@@ -355,6 +362,8 @@ body{
 
 .grid{
     display: grid;
+    align-items: center;
+    justify-content: center;
     gap: 0.3em;
     &.col-2{
         &.spread-short{
@@ -503,6 +512,7 @@ body{
     }
 }
 
+/// Floating positions for elements
 .bottom-left{
     position: absolute;
     top: 21em;
@@ -513,6 +523,35 @@ body{
     position: absolute;
     top: 20.2em;
     right: 3.7em;
+}
+
+/// Bar on top of widget
+.hotbar{
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    top: -1.2em;
+    right: 1.2em;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 6px 6px 0px 0px;
+    height: 1.2em;
+}
+
+/// Maximize widget with a little of leeway
+.fullscreen{
+    top: 1.4em;
+    left: 0.8em;
+    min-height: calc(100vh - 2.2em);
+    max-height: calc(100vh - 2.2em);
+    min-width: calc(100vw - 1.3em);
+    max-width: calc(100vw - 1.3em);
+}
+
+.fullscreen-animation{
+    min-height: calc(100vh - 5.2em);
+    max-height: calc(100vh - 5.2em);
 }
 
 
@@ -533,9 +572,9 @@ body{
 
 
 //////////////////// IDs: Widget Games ////////////////////
-#snake-box{
+#snake-widget{
     max-width: 100%;
-    #snake-box-animation{
+    #snake-widget-animation{
         padding: 1.6rem 2rem 2rem 1.6rem;
         #snake-display{
             max-width: 100%;
@@ -562,11 +601,11 @@ body{
 
 
 //////////////////// IDs: Widget Utility ////////////////////
-#settings-box{
+#settings-widget{
     z-index: 4;
     max-width: 100vmin;
     max-height: 26.46em;
-    #settings-box-animation{
+    #settings-widget-animation{
         #show-hide-widgets-popout{
             padding: 0.6rem;
             #show-hide-widgets-popout-search{
@@ -584,14 +623,14 @@ body{
     }
 }
 
-#quote-box{
+#quote-widget{
     max-width: 50em;
     max-height: 26.46em;
-    text-align: center;
-    #quote-box-animation{
+    #quote-widget-animation{
         padding: 0.3rem 1.9rem 1.58rem;
+        text-align: center;
     }
-    #quote{
+    #quote-container{
         display: flex;
         flex-direction: row;
         margin-top: 1rem;
@@ -601,7 +640,7 @@ body{
     }
 }
 
-#translator-box{
+#translator-widget{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
@@ -610,7 +649,7 @@ body{
     }
 }
 
-#googletranslator-box{
+#googletranslator-widget{
     font-size: 1.11em;
     max-width: 26.24em;
     width: 100vmin;
@@ -619,12 +658,9 @@ body{
     }
 }
 
-#calculator-box{
+#calculator-widget{
     font-size: 1.11em;
     #calculator-display-container{
-        display: flex;
-        flex-direction: column;
-        width: 9.5em;
         margin: 0rem 0rem 0.3rem;
     }
     #calculator-btn-memory-display{
@@ -674,73 +710,63 @@ body{
     }
 }
 
-#weather-box{
+#weather-widget{
     max-width: 22.1em;
     width: 100vh;
-    #weather-box-animation{
-        #weather-search-container{
-            gap: 0.3em;
-            height: 2.17em;
-            width: 18.76em;
-            #weather-search-help-container{
-                padding: 0.5em 0em 1em;
-                ul{
-                    height: 12.64em;
-                    width: 18em;    
-                    margin: .7rem 2.35rem;
-                    padding: 0rem;
-                }
-            }
+    #weather-search-help-container{
+        padding: 0.5em 0em 1em;
+        ul{
+            height: 12.64em;
+            width: 18em;    
+            margin: .7rem 2.35rem;
+            padding: 0rem;
         }
-        #weather-info-container{
+    }
+    #weather-info-container{
+        max-height: 12.47em;
+        height: 100vmin;
+        border: 1px solid var(--randColor);
+        border-radius: 7.5px;
+        margin: 0.9rem 0rem 0rem;
+        #weather-info-icon-temp{
             display: flex;
-            flex-direction: column;
-            height: 12.47em;
-            max-width: 18.76em;
-            width: calc(100vh - 3.5em);
-            border: 1px solid var(--randColor);
-            border-radius: 7.5px;
-            margin: 0.9rem 0rem 0rem;
-            #weather-info-icon-temp{
+            flex-direction: row;
+            align-items: center;
+            #weather-info-temp-c-container{
                 display: flex;
-                flex-direction: row;
-                align-items: center;
-                #weather-info-temp-c-container{
-                    display: flex;
-                    flex-direction: column;
-                    margin-right: 1.9rem;
-                }
-                #weather-info-temp-f-container{
-                    display: flex;
-                    flex-direction: column;
-                }
+                flex-direction: column;
+                margin-right: 1.9rem;
             }
-            #weather-info-cond-local-time{
+            #weather-info-temp-f-container{
                 display: flex;
-                flex-direction: row;
-                gap: 1.8em;
-                margin: 0rem 0.76rem;
-            }
-            #weather-info-wind{
-                display: flex;
-                flex-direction: row;
-                gap: 2em;
-                margin: 0.6rem 0.76rem 0rem;
-            }
-            #weather-info-location{
-                width: 18.23em;
-                position: absolute;
-                bottom: 2.4em;
-                right: 2.4em;
-                word-wrap: break-word;
-                text-align: right;
+                flex-direction: column;
             }
         }
-        #weather-last-updated{
+        #weather-info-cond-local-time{
+            display: flex;
+            flex-direction: row;
+            gap: 1.8em;
+            margin: 0rem 0.76rem;
+        }
+        #weather-info-wind{
+            display: flex;
+            flex-direction: row;
+            gap: 2em;
+            margin: 0.6rem 0.76rem 0rem;
+        }
+        #weather-info-location{
+            width: 18.23em;
             position: absolute;
-            bottom: 0.7em;
-            left: 2.4em;
+            bottom: 2.4em;
+            right: 2.4em;
+            word-wrap: break-word;
+            text-align: right;
         }
+    }
+    #weather-last-updated{
+        position: absolute;
+        bottom: 0.7em;
+        left: 2.4em;
     }
 }
 

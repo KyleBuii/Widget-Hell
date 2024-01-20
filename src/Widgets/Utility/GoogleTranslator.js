@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightFromBracket, FaRegPaste } from 'react-icons/fa6';
+import { FaArrowRightFromBracket, FaRegPaste, FaExpand } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
@@ -87,6 +87,9 @@ class WidgetGoogleTranslator extends Component{
             $("#translator-translate-from").val("en");
         });
     };
+    handleHotbarBtn(what){
+        this.props.funcHandleHotbar("googletranslator", what, "utility");
+    };
     componentDidMount(){
         this.props.funcRandColor();
         const select = document.getElementById("select-languages");
@@ -109,20 +112,35 @@ class WidgetGoogleTranslator extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
+                disabled={this.props.varDragDisabled}
                 onStart={() => this.props.funcDragStart("googletranslator")}
                 onStop={() => this.props.funcDragStop("googletranslator")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("googletranslator", "utility", data.x, data.y)}
                 cancel="button, span, p, textarea, select"
                 bounds="parent">
-                <div id="googletranslator-box"
+                <div id="googletranslator-widget"
                     className="widget">
-                    <div id="googletranslator-box-animation"
+                    <div id="googletranslator-widget-animation"
                         className="widget-animation">
-                        <span id="googletranslator-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="googletranslator-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar */}
+                        {(this.props.varFullscreenFeature) 
+                            ? <section className="hotbar">
+                                <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    <FaExpand/>
+                                </button>
+                            </section>
+                            : <></>}
                         <div className="flex-center space-nicely bottom">
                             <select id="googletranslator-translate-from"
                                 className="select-match dropdown-arrow"

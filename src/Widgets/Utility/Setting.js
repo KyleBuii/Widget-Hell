@@ -84,7 +84,7 @@ class WidgetSetting extends Component{
         if(combinedWidgets.length !== 0){
             const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
             const randIndexAnimation = Math.floor(Math.random() * this.props.varTricks.length);
-            const e = document.getElementById(combinedWidgets[randIndexWidget] + "-box-animation");
+            const e = document.getElementById(combinedWidgets[randIndexWidget] + "-widget-animation");
             e.style.animation = "none";
             window.requestAnimationFrame(() => {
                 e.style.animation = this.props.varTricks[randIndexAnimation] + " 2s";
@@ -154,7 +154,7 @@ class WidgetSetting extends Component{
                 break;
             default:
                 const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
-                this.props.showHide(what, where);
+                this.props.funcShowHide(what, where);
                 if(this.props.widgets[what] === false){
                     btn.style.opacity = "1";
                     this.props.funcUpdateWidgetsActive(what, where);
@@ -220,7 +220,7 @@ class WidgetSetting extends Component{
     handleSelect(what, where){
         switch(where){
             case "animation":
-                this.props.funcUpdateValue(what, "animation");
+                this.props.funcUpdateValue(what, where);
                 break;
             case "background":
                 const e = document.getElementById("App");
@@ -246,6 +246,10 @@ class WidgetSetting extends Component{
             default:
                 break;
         };
+    };
+    /// Handles all checkboxes
+    handleCheckbox(what, where){
+        this.props.funcUpdateFeature(what, where);
     };
     handleTabSwitch(what){
         const allTabs = ["utility", "games", "fun"];
@@ -346,11 +350,12 @@ class WidgetSetting extends Component{
                 onStop={() => this.props.funcDragStop("settings")}
                 cancel="button, span, p, section"
                 bounds="parent">
-                <div id="settings-box"
+                <div id="settings-widget"
                     className="widget">
-                    <div id="settings-box-animation"
+                    <div id="settings-widget-animation"
                         className="widget-animation">
-                        <span id="settings-box-draggable"
+                        {/* Drag Handle */}
+                        <span id="settings-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: "3em", className: "global-class-name" }}>
                                 <FaGripHorizontal/>
@@ -554,10 +559,13 @@ class WidgetSetting extends Component{
                                         </span>
                                         {/* Fullscreen */}
                                         <section className="element-ends">
-                                            <span className="font small">
+                                            <label className="font small"
+                                                htmlFor="settings-popout-feature-fullscreen">
                                                 Fullscreen
-                                            </span>
-                                            <input type="checkbox"/>
+                                            </label>
+                                            <input id="settings-popout-feature-fullscreen"
+                                                type="checkbox"
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen")}/>
                                         </section>
                                     </section>
                                 </section>

@@ -299,28 +299,28 @@ function randColor(){
 function dragStart(what){
     switch(what){
         case "settings":
-            document.getElementById(what + "-box-draggable").style.visibility = "visible";
-            document.getElementById(what + "-box").style.opacity = "0.5";
+            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
+            document.getElementById(what + "-widget").style.opacity = "0.5";
             break;
         default:
-            document.getElementById(what + "-box-draggable").style.visibility = "visible";
-            document.getElementById(what + "-box").style.opacity = "0.5";
-            document.getElementById(what + "-box").style.zIndex = zIndexDrag;
+            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
+            document.getElementById(what + "-widget").style.opacity = "0.5";
+            document.getElementById(what + "-widget").style.zIndex = zIndexDrag;
             break;
-    }
+    };
 };
 function dragStop(what){
     switch(what){
         case "settings":
-            document.getElementById(what + "-box-draggable").style.visibility = "hidden";
-            document.getElementById(what + "-box").style.opacity = "1";
+            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-widget").style.opacity = "1";
             break;
         default:
-            document.getElementById(what + "-box-draggable").style.visibility = "hidden";
-            document.getElementById(what + "-box").style.opacity = "1";
-            document.getElementById(what + "-box").style.zIndex = zIndexDefault;
+            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-widget").style.opacity = "1";
+            document.getElementById(what + "-widget").style.zIndex = zIndexDefault;
             break;
-    }
+    };
 };
 
 function sortSelect(what){
@@ -391,38 +391,105 @@ class Widgets extends Component{
         this.state = {
             animationValue: "default",
             customBorderValue: "default",
+            fullscreenFeature: false,
+            prevPosition: {
+                prevX: 0,
+                prevY: 0
+            },
             widgets: {
                 utility: {
-                    quote: false,
-                    translator: false,
-                    googletranslator: false,
-                    calculator: false,
-                    weather: false
+                    quote: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    translator: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }   
+                    },
+                    googletranslator: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }   
+                    },
+                    calculator: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }   
+                    },
+                    weather: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    }
                 },
                 games: {
-                    snake: false,
-                    textrpg: false
+                    snake: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    }
                 },
                 fun: {
                 }
             }
         };
-        this.handleCallBack = this.handleCallBack.bind(this);
+        this.handleShowHide = this.handleShowHide.bind(this);
+        this.handleHotbar = this.handleHotbar.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
+        this.updateFeature = this.updateFeature.bind(this);
+        this.updatePosition = this.updatePosition.bind(this);
     };
-    handleCallBack(what, where){
-        if(this.state.widgets[where][what] === false){
+    handleShowHide(what, where){
+        if(this.state.widgets[where][what].active === false){
             this.setState(prevState => ({
                 widgets: {
                     ...prevState.widgets,
                     [where]: {
                         ...prevState.widgets[where],
-                        [what]: true
+                        [what]: {
+                            ...prevState.widgets[where][what],
+                            active: true,
+                            drag: {
+                                disabled: false
+                            }
+                        }
                     }
                 }
             }), () => {
-                const e = document.getElementById(`${what}-box`);
+                let e = document.getElementById(`${what}-widget`);
                 if(this.state.animationValue !== "default"){
                     e.style.animation = "none";
                     window.requestAnimationFrame(() => {
@@ -434,7 +501,7 @@ class Widgets extends Component{
                 };
             });
         }else{
-            const e = document.getElementById(`${what}-box`);
+            let e = document.getElementById(`${what}-widget`);
             e.style.visibility = "hidden";
             if(this.state.animationValue !== "default"){
                 e.style.animation = "none";
@@ -448,7 +515,10 @@ class Widgets extends Component{
                                 ...prevState.widgets,
                                 [where]: {
                                     ...prevState.widgets[where],
-                                    [what]: false
+                                    [what]: {
+                                        ...prevState.widgets[where][what],
+                                        active: false
+                                    }
                                 }
                             }
                         }));
@@ -460,17 +530,62 @@ class Widgets extends Component{
                         ...prevState.widgets,
                         [where]: {
                             ...prevState.widgets[where],
-                            [what]: false
+                            [what]: {
+                                ...prevState.widgets[where][what],
+                                active: false
+                            }
                         }
                     }
                 }));
             };
         };
     };
+    handleHotbar(element, what, where){
+        switch(what){
+            case "fullscreen":
+                let e = document.getElementById(element + "-widget");
+                let eAnimation = document.getElementById(element + "-widget-animation");
+                if(e.classList.contains(what)){
+                    e.classList.remove(what);
+                    this.updatePosition(element, where, this.state.prevPosition.prevX, this.state.prevPosition.prevY);
+                }else{
+                    e.classList.add(what);
+                    this.setState({
+                        prevPosition: {
+                            prevX: this.state.widgets[where][element].position.x,
+                            prevY: this.state.widgets[where][element].position.y
+                        }
+                    });
+                    this.updatePosition(element, where, 0, 0);
+                };
+                if(eAnimation.classList.contains(what + "-animation")){
+                    eAnimation.classList.remove(what + "-animation");
+                }else{
+                    eAnimation.classList.add(what + "-animation");
+                };
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [element]: {
+                                ...prevState.widgets[where][element],
+                                drag: {
+                                    disabled: !prevState.widgets[where][element].drag.disabled
+                                }
+                            }
+                        }
+                    }
+                }));
+                break;
+            default:
+                break;
+        };
+    };        
     updateCustomBorder(what){
         var widget, popout, combine;
         if(what !== undefined){
-            widget = document.getElementById(what + "-box-animation");
+            widget = document.getElementById(what + "-widget-animation");
             popout = widget.querySelectorAll(".popout");
             combine = [widget, ...popout];
         }else{
@@ -517,6 +632,11 @@ class Widgets extends Component{
             };
         });
     };
+    updateFeature(what, where){
+        this.setState({
+            [where + "Feature"]: what
+        });
+    };
     updateWidgetsActive(what, where){
         switch(where){
             case "utility":
@@ -532,6 +652,23 @@ class Widgets extends Component{
                 break;
         };
     };
+    updatePosition(what, where, xNew, yNew){
+        this.setState(prevState => ({
+            widgets: {
+                ...prevState.widgets,
+                [where]: {
+                    ...prevState.widgets[where],
+                    [what]: {
+                        ...prevState.widgets[where][what],
+                        position: {
+                            x: xNew,
+                            y: yNew
+                        }
+                    }
+                }
+            }
+        }));
+    };
     componentDidMount(){
         randColor();
     };
@@ -540,20 +677,20 @@ class Widgets extends Component{
             <div id="widget-container">
                 <WidgetSetting
                     widgets={{
-                        quote: this.state.widgets.utility.quote,
-                        translator: this.state.widgets.utility.translator,
-                        googletranslator: this.state.widgets.utility.googletranslator,
-                        calculator: this.state.widgets.utility.calculator,
-                        weather: this.state.widgets.utility.weather,
-                        snake: this.state.widgets.games.snake,
-                        textrpg: this.state.widgets.games.textrpg
+                        quote: this.state.widgets.utility.quote.active,
+                        translator: this.state.widgets.utility.translator.active,
+                        googletranslator: this.state.widgets.utility.googletranslator.active,
+                        calculator: this.state.widgets.utility.calculator.active,
+                        weather: this.state.widgets.utility.weather.active,
+                        snake: this.state.widgets.games.snake.active
                     }}
-                    showHide={this.handleCallBack}
+                    funcShowHide={this.handleShowHide}
                     funcDragStart={dragStart}
                     funcDragStop={dragStop}
                     funcSortSelect={sortSelect}
                     funcUpdateWidgetsActive={this.updateWidgetsActive}
                     funcUpdateValue={this.updateValue}
+                    funcUpdateFeature={this.updateFeature}
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
                     varWidgetsFunActive={widgetsFunActive}
@@ -563,17 +700,25 @@ class Widgets extends Component{
                     varCustomBorders={customBorders}
                     varAnimationValue={this.state.animationValue}
                     varMicroIcon={microIcon}/>
-                {this.state.widgets.utility.quote === true
+                {this.state.widgets.utility.quote.active === true
                     ? <WidgetQuote
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
                         funcRandColor={randColor}
                         funcCopyToClipboard={copyToClipboard}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
                         varQuotes={quotes}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.utility.quote.position.x,
+                            y: this.state.widgets.utility.quote.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.utility.quote.drag.disabled}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.utility.translator === true
+                {this.state.widgets.utility.translator.active === true
                     ? <WidgetTranslator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
@@ -584,6 +729,14 @@ class Widgets extends Component{
                         funcMergePunctuation={mergePunctuation}
                         funcRandSentence={randSentence}
                         funcSortSelect={sortSelect}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.utility.translator.position.x,
+                            y: this.state.widgets.utility.translator.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.utility.translator.drag.disabled}
                         varBrailleDictionary={brailleDictionary}
                         varBrailleFromDictionary={brailleFromDictionary}
                         varUwuDictionary={uwuDictionary}
@@ -593,7 +746,7 @@ class Widgets extends Component{
                         varSmallIcon={smallIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.utility.googletranslator === true
+                {this.state.widgets.utility.googletranslator.active === true
                     ? <WidgetGoogleTranslator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
@@ -601,35 +754,67 @@ class Widgets extends Component{
                         funcRandColor={randColor}
                         funcCopyToClipboard={copyToClipboard}
                         funcRandSentence={randSentence}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.utility.googletranslator.position.x,
+                            y: this.state.widgets.utility.googletranslator.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
                         varLanguages={languages}
                         varSmallIcon={smallIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.utility.calculator === true
+                {this.state.widgets.utility.calculator.active === true
                     ? <WidgetCalculator
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
                         funcRandColor={randColor}
                         funcCopyToClipboard={copyToClipboard}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.utility.calculator.position.x,
+                            y: this.state.widgets.utility.calculator.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.utility.calculator.drag.disabled}
                         varMedIcon={medIcon}
                         varOperation={operation}/>
                     : <></>}
-                {this.state.widgets.utility.weather === true
+                {this.state.widgets.utility.weather.active === true
                     ? <WidgetWeather
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
                         funcRandColor={randColor}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.utility.weather.position.x,
+                            y: this.state.widgets.utility.weather.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.utility.weather.drag.disabled}
                         varSmallIcon={smallIcon}
                         varMedIcon={medIcon}
                         varLargeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.games.snake === true
+                {this.state.widgets.games.snake.active === true
                     ? <WidgetSnake
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
+                        funcHandleHotbar={this.handleHotbar}
+                        funcUpdatePosition={this.updatePosition}
+                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varPosition={{
+                            x: this.state.widgets.games.snake.position.x,
+                            y: this.state.widgets.games.snake.position.y
+                        }}
+                        varDragDisabled={this.state.widgets.games.snake.drag.disabled}
                         varLargeIcon={largeIcon}/>
                     : <></>}
             </div>
@@ -645,11 +830,11 @@ class []Widget extends Component{
                 onStop={() => this.props.funcDragStop("[]")}
                 cancel="button, section"
                 bounds="parent">
-                <div id="[]-box"
+                <div id="[]-widget"
                     className="widget">
-                    <div id="[]-box-animation"
+                    <div id="[]-widget-animation"
                         className="widget-animation">
-                        <span id="[]-box-draggable"
+                        <span id="[]-widget-draggable"
                             className="draggable">
                             <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
