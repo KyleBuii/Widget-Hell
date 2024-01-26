@@ -398,6 +398,12 @@ class Widgets extends Component{
             },
             widgets: {
                 utility: {
+                    setting: {
+                        position: {
+                            x: 0,
+                            y: 0
+                        }
+                    },
                     quote: {
                         active: false,
                         position: {
@@ -474,6 +480,7 @@ class Widgets extends Component{
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
+            randColor();
             this.setState(prevState => ({
                 widgets: {
                     ...prevState.widgets,
@@ -671,6 +678,76 @@ class Widgets extends Component{
     };
     componentDidMount(){
         randColor();
+        /// Load widget's positions from local storage
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            for(let i in this.state.widgets.utility){
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        utility: {
+                            ...prevState.widgets.utility,
+                            [i]: {
+                                ...prevState.widgets.utility[i],
+                                ...dataLocalStorage.utility[i]
+                            }
+                        }
+                    }
+                }));
+            };
+            for(let i in this.state.widgets.games){
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        games: {
+                            ...prevState.widgets.games,
+                            [i]: {
+                                ...prevState.widgets.games[i],
+                                ...dataLocalStorage.games[i]
+                            }
+                        }
+                    }
+                }));
+            };
+            for(let i in this.state.widgets.fun){
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        fun: {
+                            ...prevState.widgets.fun,
+                            [i]: {
+                                ...prevState.widgets.fun[i],
+                                ...dataLocalStorage.fun[i]
+                            }
+                        }
+                    }
+                }));
+            };
+        };
+        /// Store widget's positions in local storage when the website closes/refreshes
+        window.addEventListener("beforeunload", () => {
+            let data = {
+                utility: {},
+                games: {},
+                fun: {}
+            };
+            for(let i in this.state.widgets.utility){
+                data.utility[i] = {
+                    position: this.state.widgets.utility[i].position
+                };
+            };
+            for(let i in this.state.widgets.games){
+                data.games[i] = {
+                    position: this.state.widgets.games[i].position
+                };
+            };
+            for(let i in this.state.widgets.fun){
+                data.fun[i] = {
+                    position: this.state.widgets.fun[i].position
+                };
+            };
+            localStorage.setItem("widgets", JSON.stringify(data));          
+        });
     };
     render(){
         return(
@@ -691,6 +768,7 @@ class Widgets extends Component{
                     funcUpdateWidgetsActive={this.updateWidgetsActive}
                     funcUpdateValue={this.updateValue}
                     funcUpdateFeature={this.updateFeature}
+                    funcUpdatePosition={this.updatePosition}
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
                     varWidgetsFunActive={widgetsFunActive}
@@ -699,13 +777,16 @@ class Widgets extends Component{
                     varBackgrounds={backgrounds}
                     varCustomBorders={customBorders}
                     varAnimationValue={this.state.animationValue}
+                    varPosition={{
+                        x: this.state.widgets.utility.setting.position.x,
+                        y: this.state.widgets.utility.setting.position.y
+                    }}
                     varMicroIcon={microIcon}/>
                 {this.state.widgets.utility.quote.active === true
                     ? <WidgetQuote
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
-                        funcRandColor={randColor}
                         funcCopyToClipboard={copyToClipboard}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
@@ -771,7 +852,6 @@ class Widgets extends Component{
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
-                        funcRandColor={randColor}
                         funcCopyToClipboard={copyToClipboard}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
@@ -789,7 +869,6 @@ class Widgets extends Component{
                         showHide={this.handleCallBack}
                         funcDragStart={dragStart}
                         funcDragStop={dragStop}
-                        funcRandColor={randColor}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varFullscreenFeature={this.state.fullscreenFeature}
@@ -819,7 +898,7 @@ class Widgets extends Component{
                     : <></>}
             </div>
         );
-    }
+    };
 };
 /// Widget template
 /*

@@ -257,8 +257,6 @@ class SnakeGame extends Component{
             overlay.style.visibility = "visible";
         };
     };
-    componentDidMount(){
-    };
     componentWillUnmount(){
         this.removeTimers();
     };

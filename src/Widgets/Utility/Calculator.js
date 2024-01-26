@@ -187,12 +187,13 @@ class WidgetCalculator extends Component{
                 break;
             case "MS":
                 if(this.state.input !== ""
-                    && this.state.input !== "UNDEFINED"){
-                    const lastNumberMS = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    && this.state.input !== "UNDEFINED"
+                    && /[-]?\d*[.]?\d+(?=\D*$)/.test(this.state.input)){
+                    const lastNumberMS = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     this.setState({
                         memory: [lastNumberMS, ...this.state.memory]
                     });
-                }
+                };
                 break;
             case "Mv":
                 document.getElementById("calculator-btn-memory-display").style.visibility = "visible";
@@ -270,13 +271,25 @@ class WidgetCalculator extends Component{
         this.props.funcHandleHotbar("calculator", what, "utility");
     };
     componentDidMount(){
-        this.props.funcRandColor();
+        /// Add event listener
         const inputField = document.getElementById("calculator-input-field");
         inputField.addEventListener("keydown", this.handleKeypress);
+        /// Read session storage
+        if(sessionStorage.getItem("calculator") !== null){
+            this.setState({
+                memory: JSON.parse(sessionStorage.getItem("calculator")).memory
+            });
+        }
     };
     componentWillUnmount(){
+        /// Remove event listener
         const inputField = document.getElementById("calculator-input-field");
         inputField.removeEventListener("keypress", this.handleKeypress);
+        /// Add to session storage
+        let data = {
+            "memory": this.state.memory
+        };
+        sessionStorage.setItem("calculator", JSON.stringify(data));
     };
     render(){
         return(
@@ -373,7 +386,7 @@ class WidgetCalculator extends Component{
                             {/* Memory Display */}
                             <div id="calculator-btn-memory-display">
                                 <div id="calculator-btn-memory-container">
-                                    {this.state.memory.map(curr => <p>{curr}</p>)}
+                                    {this.state.memory.map((curr, i) => <p key={i}>{curr}</p>)}
                                 </div>
                                 <button id="calculator-btn-memory-display-close"
                                     onClick={this.handleClick}

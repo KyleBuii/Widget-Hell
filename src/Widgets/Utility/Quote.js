@@ -14,11 +14,7 @@ class WidgetQuote extends Component{
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
     };
-    componentDidMount(){
-        this.handleNewQuote();
-    };
     handleNewQuote(){
-        this.props.funcRandColor();
         const randQuote = Math.floor(Math.random() * this.props.varQuotes.length);
         const randQuoteAuthor = (this.props.varQuotes[randQuote]["au"] === "") ? "Anon" : this.props.varQuotes[randQuote]["au"];
         this.setState({
@@ -37,6 +33,9 @@ class WidgetQuote extends Component{
     };
     handleHotbarBtn(what){
         this.props.funcHandleHotbar("quote", what, "utility");
+    };
+    componentDidMount(){
+        this.handleNewQuote();
     };
     render(){
         return(

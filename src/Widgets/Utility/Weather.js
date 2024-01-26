@@ -10,7 +10,7 @@ class WidgetWeather extends Component{
         super(props);
         this.state = {
             helpShow: false,
-            input: "auto:ip",
+            input: "",
             name: "",           /// Location
             region: "",
             localTime: "",
@@ -85,8 +85,27 @@ class WidgetWeather extends Component{
         this.props.funcHandleHotbar("weather", what, "utility");
     };
     componentDidMount(){
-        this.props.funcRandColor();
-        this.handleUpdate();
+        /// Default input
+        if(sessionStorage.getItem("weather") === null){
+            this.setState({
+                input: "auto:ip"
+            }, () => {
+                this.handleUpdate();   
+            });
+        }else{
+            let dataSessionStorage = JSON.parse(sessionStorage.getItem("weather"));
+            this.setState({
+                input: dataSessionStorage.input
+            }, () => {
+                this.handleUpdate();    
+            });
+        };
+    };
+    componentWillUnmount(){
+        let data = {
+            "input": this.state.input
+        };
+        sessionStorage.setItem("weather", JSON.stringify(data));
     };
     render(){
         return(

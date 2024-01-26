@@ -125,7 +125,7 @@ body{
         height: 4.8em;
     }
     &.p{
-        height: 8.4em;
+        height: 8.5em;
     }
 }
 
@@ -152,6 +152,7 @@ body{
         word-wrap: break-word;
         &.short{
             height: 6.5em;
+            width: unset;
         }
     }
 }

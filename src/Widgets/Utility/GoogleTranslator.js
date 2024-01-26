@@ -91,8 +91,8 @@ class WidgetGoogleTranslator extends Component{
         this.props.funcHandleHotbar("googletranslator", what, "utility");
     };
     componentDidMount(){
-        this.props.funcRandColor();
         const select = document.getElementById("select-languages");
+        /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.varLanguages.length; curr+=2){
             var optText = this.props.varLanguages[curr];
             var optValue = this.props.varLanguages[curr+1];
@@ -102,12 +102,31 @@ class WidgetGoogleTranslator extends Component{
             select.appendChild(el);
         };
         $('#googletranslator-translate-from optgroup').clone().appendTo('#googletranslator-translate-to');
-        this.setState({
-            from: "en",
-            to: "ja"
-        });
-        $("#googletranslator-translate-from").val("en");
-        $("#googletranslator-translate-to").val("ja");
+        /// Default values
+        if(sessionStorage.getItem("googletranslator") === null){
+            this.setState({
+                from: "en",
+                to: "en"
+            });
+            $("#googletranslator-translate-from").val("en");
+            $("#googletranslator-translate-to").val("en");
+        }else{
+            let dataSessionStorage = JSON.parse(sessionStorage.getItem("googletranslator"));
+            this.setState({
+                from: dataSessionStorage.from,
+                to: dataSessionStorage.to
+            }, () => {
+                $("#googletranslator-translate-from").val(this.state.from);
+                $("#googletranslator-translate-to").val(this.state.to);
+            });
+        };
+    };
+    componentWillUnmount(){
+        let data = {
+            "from": this.state.from,
+            "to": this.state.to
+        };
+        sessionStorage.setItem("googletranslator", JSON.stringify(data));
     };
     render(){
         return(

@@ -346,8 +346,12 @@ class WidgetSetting extends Component{
     render(){
         return(
             <Draggable
+                position={{
+                    x: this.props.varPosition.x,
+                    y: this.props.varPosition.y}}
                 onStart={() => this.props.funcDragStart("settings")}
                 onStop={() => this.props.funcDragStop("settings")}
+                onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y)}
                 cancel="button, span, p, section"
                 bounds="parent">
                 <div id="settings-widget"

@@ -415,22 +415,39 @@ class WidgetTranslator extends Component{
         this.props.funcHandleHotbar("translator", what, "utility");
     };
     componentDidMount(){
-        this.props.funcRandColor();
         /// Sort the "translate-to" optgroups options alphabetically
         this.props.funcSortSelect('#translator-translate-to #translate-to-other-languages');
         this.props.funcSortSelect('#translator-translate-to #translate-to-encryption');
         this.props.funcSortSelect('#translator-translate-to #translate-to-modify');
         /// Default values
-        this.setState({
-            from: "en",
-            to: "en"
-        });
-        $("#translator-translate-from").val("en");
-        $("#translator-translate-to").val("en");
+        if(sessionStorage.getItem("translator") === null){
+            this.setState({
+                from: "en",
+                to: "en"
+            });
+            $("#translator-translate-from").val("en");
+            $("#translator-translate-to").val("en");    
+        }else{
+            let dataSessionStorage = JSON.parse(sessionStorage.getItem("translator"));
+            this.setState({
+                from: dataSessionStorage.from,
+                to: dataSessionStorage.to
+            }, () => {
+                $("#translator-translate-from").val(this.state.from);
+                $("#translator-translate-to").val(this.state.to);
+            });
+        };
         /// Duplicate selects from "translate-from" to "translate-to"
         $('#translator-translate-from #translate-from-languages option').clone().prependTo('#translate-to-languages');
         $('#translator-translate-from #translate-from-other-languages option').clone().prependTo('#translate-to-other-languages');
         $('#translator-translate-from #translate-from-encryption option').clone().prependTo('#translate-to-encryption');
+    };
+    componentWillUnmount(){
+        let data = {
+            "from": this.state.from,
+            "to": this.state.to
+        };
+        sessionStorage.setItem("translator", JSON.stringify(data));
     };
     render(){
         return(
@@ -526,6 +543,7 @@ class WidgetTranslator extends Component{
                                     className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             </div>
                         </div>
+                        {/* Buttons */}
                         <div>
                             <button className="bottom-left btn-match fadded inverse"
                                 onClick={() => this.props.funcCopyToClipboard(this.state.converted)}>
