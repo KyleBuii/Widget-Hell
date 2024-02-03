@@ -391,7 +391,9 @@ class Widgets extends Component{
         this.state = {
             animationValue: "default",
             customBorderValue: "default",
-            fullscreenFeature: false,
+            hotbar: {
+                fullscreen: false
+            },
             prevPosition: {
                 prevX: 0,
                 prevY: 0
@@ -475,7 +477,7 @@ class Widgets extends Component{
         this.handleHotbar = this.handleHotbar.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
-        this.updateFeature = this.updateFeature.bind(this);
+        this.updateHotbar = this.updateHotbar.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
     };
     handleShowHide(what, where){
@@ -497,12 +499,14 @@ class Widgets extends Component{
                 }
             }), () => {
                 let e = document.getElementById(`${what}-widget`);
+                /// Add animation if it exists
                 if(this.state.animationValue !== "default"){
                     e.style.animation = "none";
                     window.requestAnimationFrame(() => {
                         e.style.animation = this.state.animationValue + "In 2s";
                     });
                 };
+                /// Add custom border if it exists
                 if(this.state.customBorderValue !== "default"){
                     this.updateCustomBorder(what);
                 };
@@ -588,7 +592,14 @@ class Widgets extends Component{
             default:
                 break;
         };
-    };        
+    };
+    updateHotbar(what, where){
+        this.setState({
+            hotbar: {
+                [where]: what
+            }
+        });
+    };
     updateCustomBorder(what){
         var widget, popout, combine;
         if(what !== undefined){
@@ -639,11 +650,6 @@ class Widgets extends Component{
             };
         });
     };
-    updateFeature(what, where){
-        this.setState({
-            [where + "Feature"]: what
-        });
-    };
     updateWidgetsActive(what, where){
         switch(where){
             case "utility":
@@ -678,7 +684,7 @@ class Widgets extends Component{
     };
     componentDidMount(){
         randColor();
-        /// Load widget's positions from local storage
+        /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             for(let i in this.state.widgets.utility){
@@ -724,7 +730,7 @@ class Widgets extends Component{
                 }));
             };
         };
-        /// Store widget's positions in local storage when the website closes/refreshes
+        /// Store widget's data in local storage when the website closes/refreshes
         window.addEventListener("beforeunload", () => {
             let data = {
                 utility: {},
@@ -733,16 +739,19 @@ class Widgets extends Component{
             };
             for(let i in this.state.widgets.utility){
                 data.utility[i] = {
+                    active: this.state.widgets.utility[i].active,
                     position: this.state.widgets.utility[i].position
                 };
             };
             for(let i in this.state.widgets.games){
                 data.games[i] = {
+                    active: this.state.widgets.games[i].active,
                     position: this.state.widgets.games[i].position
                 };
             };
             for(let i in this.state.widgets.fun){
                 data.fun[i] = {
+                    active: this.state.widgets.fun[i].active,
                     position: this.state.widgets.fun[i].position
                 };
             };
@@ -767,7 +776,7 @@ class Widgets extends Component{
                     funcSortSelect={sortSelect}
                     funcUpdateWidgetsActive={this.updateWidgetsActive}
                     funcUpdateValue={this.updateValue}
-                    funcUpdateFeature={this.updateFeature}
+                    funcUpdateHotbar={this.updateHotbar}
                     funcUpdatePosition={this.updatePosition}
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
@@ -791,7 +800,9 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varQuotes={quotes}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.utility.quote.position.x,
                             y: this.state.widgets.utility.quote.position.y
@@ -812,7 +823,9 @@ class Widgets extends Component{
                         funcSortSelect={sortSelect}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.utility.translator.position.x,
                             y: this.state.widgets.utility.translator.position.y
@@ -837,7 +850,9 @@ class Widgets extends Component{
                         funcRandSentence={randSentence}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.utility.googletranslator.position.x,
                             y: this.state.widgets.utility.googletranslator.position.y
@@ -855,7 +870,9 @@ class Widgets extends Component{
                         funcCopyToClipboard={copyToClipboard}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.utility.calculator.position.x,
                             y: this.state.widgets.utility.calculator.position.y
@@ -871,7 +888,9 @@ class Widgets extends Component{
                         funcDragStop={dragStop}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.utility.weather.position.x,
                             y: this.state.widgets.utility.weather.position.y
@@ -888,7 +907,9 @@ class Widgets extends Component{
                         funcDragStop={dragStop}
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
-                        varFullscreenFeature={this.state.fullscreenFeature}
+                        varHotbar={{
+                            fullscreen: this.state.hotbar.fullscreen
+                        }}
                         varPosition={{
                             x: this.state.widgets.games.snake.position.x,
                             y: this.state.widgets.games.snake.position.y

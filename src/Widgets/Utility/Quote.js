@@ -61,14 +61,14 @@ class WidgetQuote extends Component{
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
-                        {(this.props.varFullscreenFeature) 
-                            ? <section className="hotbar">
-                                <button className="btn-match inverse when-elements-are-not-straight"
+                        <section className="hotbar">
+                            {(this.props.varHotbar.fullscreen)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
                                 </button>
-                            </section>
-                            : <></>}
+                                : <></>}
+                        </section>
                         <div id="quote-container">
                             <span className="font-quote large">"</span>
                             <span id="quote-text"

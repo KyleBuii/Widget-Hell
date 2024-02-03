@@ -152,14 +152,14 @@ class WidgetGoogleTranslator extends Component{
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
-                        {(this.props.varFullscreenFeature) 
-                            ? <section className="hotbar">
-                                <button className="btn-match inverse when-elements-are-not-straight"
+                        <section className="hotbar">
+                            {(this.props.varHotbar.fullscreen)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
                                 </button>
-                            </section>
-                            : <></>}
+                                : <></>}
+                        </section>
                         <div className="flex-center space-nicely bottom">
                             <select id="googletranslator-translate-from"
                                 className="select-match dropdown-arrow"

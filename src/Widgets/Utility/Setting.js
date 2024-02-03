@@ -249,7 +249,7 @@ class WidgetSetting extends Component{
     };
     /// Handles all checkboxes
     handleCheckbox(what, where){
-        this.props.funcUpdateFeature(what, where);
+        this.props.funcUpdateHotbar(what, where);
     };
     handleTabSwitch(what){
         const allTabs = ["utility", "games", "fun"];
@@ -342,6 +342,33 @@ class WidgetSetting extends Component{
                 this.updateTab(currTab, this.state.widgetsSearch);
             };
         });
+    };
+    componentDidMount(){
+        /// Load widget's data from local storage
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            for(let i in dataLocalStorage.utility){
+                if(dataLocalStorage.utility[i].active === true){
+                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
+                    btn.style.opacity = "1";
+                    this.props.funcUpdateWidgetsActive(i, "utility");
+                };
+            };
+            for(let i in dataLocalStorage.games){
+                if(dataLocalStorage.games[i].active === true){
+                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
+                    btn.style.opacity = "1";
+                    this.props.funcUpdateWidgetsActive(i, "games");
+                };
+            };
+            for(let i in dataLocalStorage.fun){
+                if(dataLocalStorage.fun[i].active === true){
+                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
+                    btn.style.opacity = "1";
+                    this.props.funcUpdateWidgetsActive(i, "fun");
+                };
+            };
+        };
     };
     render(){
         return(
