@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan, FaRegPaste, FaExpand } from 'react-icons/fa6';
+import { FaRegTrashCan, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
 import { BsPlusSlashMinus } from 'react-icons/bs';
 import { FiDelete } from 'react-icons/fi';
 import { BiExpand } from 'react-icons/bi';
@@ -316,6 +316,14 @@ class WidgetCalculator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Reset Position */}
+                            {(this.props.varHotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen */}
                             {(this.props.varHotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>

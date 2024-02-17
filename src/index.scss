@@ -439,7 +439,7 @@ body{
 }
 
 .section-group{
-    max-width: 8em;
+    max-width: 10em;
     width: 100vmin;
     background-color: rgba(var(--randColorOpacity), 0.15);
     border-radius: 20px;
@@ -618,7 +618,7 @@ body{
         #settings-popout{
             padding: 0.4rem;
             select{
-                width: 10em;
+                width: 13em;
             }
         }
     }

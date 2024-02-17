@@ -392,7 +392,8 @@ class Widgets extends Component{
             animationValue: "default",
             customBorderValue: "default",
             hotbar: {
-                fullscreen: false
+                fullscreen: false,
+                resetposition: false
             },
             prevPosition: {
                 prevX: 0,
@@ -589,16 +590,34 @@ class Widgets extends Component{
                     }
                 }));
                 break;
+            case "resetposition":
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [element]: {
+                                ...prevState.widgets[where][element],
+                                position: {
+                                    x: 0,
+                                    y: 0
+                                }
+                            }
+                        }
+                    }
+                }));
+                break;
             default:
                 break;
         };
     };
     updateHotbar(what, where){
-        this.setState({
+        this.setState(prevState => ({
             hotbar: {
+                ...prevState.hotbar,
                 [where]: what
             }
-        });
+        }));
     };
     updateCustomBorder(what){
         var widget, popout, combine;
@@ -801,7 +820,8 @@ class Widgets extends Component{
                         funcUpdatePosition={this.updatePosition}
                         varQuotes={quotes}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.utility.quote.position.x,
@@ -824,7 +844,8 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.utility.translator.position.x,
@@ -851,7 +872,8 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.utility.googletranslator.position.x,
@@ -871,7 +893,8 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.utility.calculator.position.x,
@@ -889,7 +912,8 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.utility.weather.position.x,
@@ -908,7 +932,8 @@ class Widgets extends Component{
                         funcHandleHotbar={this.handleHotbar}
                         funcUpdatePosition={this.updatePosition}
                         varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen
+                            fullscreen: this.state.hotbar.fullscreen,
+                            resetposition: this.state.hotbar.resetposition
                         }}
                         varPosition={{
                             x: this.state.widgets.games.snake.position.x,

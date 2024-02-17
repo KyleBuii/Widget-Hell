@@ -3,7 +3,7 @@ import Slider from 'rc-slider';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand } from 'react-icons/fa6';
+import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 
@@ -403,14 +403,22 @@ class WidgetSnake extends Component{
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
-                        {(this.props.varFullscreenFeature) 
-                            ? <section className="hotbar">
-                                <button className="btn-match inverse when-elements-are-not-straight"
+                        <section className="hotbar">
+                            {/* Reset Position */}
+                            {(this.props.varHotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen */}
+                            {(this.props.varHotbar.fullscreen)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
                                 </button>
-                            </section>
-                            : <></>}
+                                : <></>}
+                        </section>
                         <section>
                             <SnakeGame size={this.state.size}/>
                         </section>

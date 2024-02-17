@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegCircleQuestion, FaExpand } from 'react-icons/fa6';
+import { FaRegCircleQuestion, FaExpand, Fa0 } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -132,6 +132,14 @@ class WidgetWeather extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Reset Position */}
+                            {(this.props.varHotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen */}
                             {(this.props.varHotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>

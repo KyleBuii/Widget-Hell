@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightLong, FaRegPaste, FaExpand } from 'react-icons/fa6';
+import { FaArrowRightLong, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
@@ -474,6 +474,14 @@ class WidgetTranslator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Reset Position */}
+                            {(this.props.varHotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen */}
                             {(this.props.varHotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>

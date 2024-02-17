@@ -488,7 +488,7 @@ class WidgetSetting extends Component{
                                             <b>Display</b>
                                         </span>
                                         {/* Screen Dimmer */}
-                                        <section className="flex-center row gap only-align-items">
+                                        <section className="element-ends">
                                             <span className="font small">
                                                 Screen Dimmer
                                             </span>
@@ -593,6 +593,32 @@ class WidgetSetting extends Component{
                                             <label className="font small"
                                                 htmlFor="settings-popout-feature-fullscreen">
                                                 Fullscreen
+                                            </label>
+                                            <input id="settings-popout-feature-fullscreen"
+                                                type="checkbox"
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen")}/>
+                                        </section>
+                                        {/* Reset Position */}
+                                        <section className="element-ends">
+                                            <label className="font small"
+                                                htmlFor="settings-popout-feature-resetposition">
+                                                Reset Position
+                                            </label>
+                                            <input id="settings-popout-feature-resetposition"
+                                                type="checkbox"
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition")}/>
+                                        </section>
+                                    </section>
+                                    {/* Misc Settings */}
+                                    <section className="section-group">
+                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <b>Misc</b>
+                                        </span>
+                                        {/* Save position of popup */}
+                                        <section className="element-ends">
+                                            <label className="font small"
+                                                htmlFor="settings-popout-feature-fullscreen">
+                                                Save Position: Popup
                                             </label>
                                             <input id="settings-popout-feature-fullscreen"
                                                 type="checkbox"
