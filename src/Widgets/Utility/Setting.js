@@ -220,7 +220,7 @@ class WidgetSetting extends Component{
     handleSelect(what, where){
         switch(where){
             case "animation":
-                this.props.funcUpdateValue(what, where);
+                this.props.funcUpdateValue(what, where, "values");
                 break;
             case "background":
                 const e = document.getElementById("App");
@@ -241,15 +241,15 @@ class WidgetSetting extends Component{
                 };
                 break;
             case "custom-border":
-                this.props.funcUpdateValue(what, "customBorder");
+                this.props.funcUpdateValue(what, "customBorder", "values");
                 break;
             default:
                 break;
         };
     };
     /// Handles all checkboxes
-    handleCheckbox(what, where){
-        this.props.funcUpdateHotbar(what, where);
+    handleCheckbox(what, where, type){
+        this.props.funcUpdateValue(what, where, type);
     };
     handleTabSwitch(what){
         const allTabs = ["utility", "games", "fun"];
@@ -407,7 +407,10 @@ class WidgetSetting extends Component{
                         {/* Show/Hide Widgets Popout */}
                         <Draggable
                             cancel="button, #show-hide-widgets-popout-tabs"
-                            defaultPosition={{x: 30, y: -55}}
+                            position={{
+                                x: this.props.varPositionPopout.showhidewidgets.x,
+                                y: this.props.varPositionPopout.showhidewidgets.y}}
+                            onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
                             bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
@@ -477,7 +480,10 @@ class WidgetSetting extends Component{
                         {/* Settings Popout */}
                         <Draggable
                             cancel="span, .toggleable, .slider, select"
-                            defaultPosition={{x: 105, y: -25}}
+                            position={{
+                                x: this.props.varPositionPopout.settings.x,
+                                y: this.props.varPositionPopout.settings.y}}
+                            onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
                             bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
                             <section id="settings-popout"
                                 className="popout">
@@ -596,7 +602,7 @@ class WidgetSetting extends Component{
                                             </label>
                                             <input id="settings-popout-feature-fullscreen"
                                                 type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen")}/>
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "hotbar")}/>
                                         </section>
                                         {/* Reset Position */}
                                         <section className="element-ends">
@@ -606,7 +612,7 @@ class WidgetSetting extends Component{
                                             </label>
                                             <input id="settings-popout-feature-resetposition"
                                                 type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition")}/>
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition", "hotbar")}/>
                                         </section>
                                     </section>
                                     {/* Misc Settings */}
@@ -622,7 +628,7 @@ class WidgetSetting extends Component{
                                             </label>
                                             <input id="settings-popout-feature-fullscreen"
                                                 type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen")}/>
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "savepositionpopout", "values")}/>
                                         </section>
                                     </section>
                                 </section>

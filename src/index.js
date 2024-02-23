@@ -389,8 +389,11 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            animationValue: "default",
-            customBorderValue: "default",
+            values: {
+                animation: "default",
+                customBorder: "default",    
+                savepositionpopout: false
+            },
             hotbar: {
                 fullscreen: false,
                 resetposition: false
@@ -405,6 +408,20 @@ class Widgets extends Component{
                         position: {
                             x: 0,
                             y: 0
+                        },
+                        popouts: {
+                            showhidewidgets: {
+                                position: {
+                                    x: 30,
+                                    y: -55
+                                }
+                            },
+                            settings: {
+                                position: {
+                                    x: 85,
+                                    y: -25
+                                }
+                            }
                         }
                     },
                     quote: {
@@ -443,15 +460,31 @@ class Widgets extends Component{
                             x: 0,
                             y: 0
                         },
+                        popouts: {
+                            expandinput: {
+                                position: {
+                                    x: 180,
+                                    y: -305
+                                }
+                            }
+                        },
                         drag: {
                             disabled: false
-                        }   
+                        }
                     },
                     weather: {
                         active: false,
                         position: {
                             x: 0,
                             y: 0
+                        },
+                        popouts: {
+                            searchhelp: {
+                                position: {
+                                    x: 0,
+                                    y: 125
+                                }
+                            }
                         },
                         drag: {
                             disabled: false
@@ -475,10 +508,8 @@ class Widgets extends Component{
             }
         };
         this.handleShowHide = this.handleShowHide.bind(this);
-        this.handleHotbar = this.handleHotbar.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
-        this.updateHotbar = this.updateHotbar.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
     };
     handleShowHide(what, where){
@@ -501,24 +532,24 @@ class Widgets extends Component{
             }), () => {
                 let e = document.getElementById(`${what}-widget`);
                 /// Add animation if it exists
-                if(this.state.animationValue !== "default"){
+                if(this.state.values.animation !== "default"){
                     e.style.animation = "none";
                     window.requestAnimationFrame(() => {
-                        e.style.animation = this.state.animationValue + "In 2s";
+                        e.style.animation = this.state.values.animation + "In 2s";
                     });
                 };
                 /// Add custom border if it exists
-                if(this.state.customBorderValue !== "default"){
+                if(this.state.values.customBorder !== "default"){
                     this.updateCustomBorder(what);
                 };
             });
         }else{
             let e = document.getElementById(`${what}-widget`);
             e.style.visibility = "hidden";
-            if(this.state.animationValue !== "default"){
+            if(this.state.values.animation !== "default"){
                 e.style.animation = "none";
                 window.requestAnimationFrame(() => {
-                    e.style.animation = this.state.animationValue + "Out 2s";
+                    e.style.animation = this.state.values.animation + "Out 2s";
                 });
                 e.addEventListener("animationend", (event) => {
                     if(event.animationName.slice(event.animationName.length-3) === "Out"){
@@ -611,14 +642,6 @@ class Widgets extends Component{
                 break;
         };
     };
-    updateHotbar(what, where){
-        this.setState(prevState => ({
-            hotbar: {
-                ...prevState.hotbar,
-                [where]: what
-            }
-        }));
-    };
     updateCustomBorder(what){
         var widget, popout, combine;
         if(what !== undefined){
@@ -630,7 +653,7 @@ class Widgets extends Component{
             popout = document.querySelectorAll(".popout");
             combine = [...widget, ...popout];
         };
-        switch(this.state.customBorderValue){
+        switch(this.state.values.customBorder){
             case "diagonal":
                 for(const element of combine){
                     element.style.border = "10px solid var(--randColor)";
@@ -660,13 +683,18 @@ class Widgets extends Component{
                 break;
         };
     };
-    updateValue(what, where){
-        this.setState({
-            [where + "Value"]: what
-        }, () => {
+    updateValue(what, where, type){
+        this.setState(prevState => ({
+            [type]: {
+                ...prevState[type],
+                [where]: what
+            }
+        }), () => {
             if(where === "customBorder"){
                 this.updateCustomBorder();
             };
+            console.log(this.state.values.savepositionpopout);
+            console.log("hi");
         });
     };
     updateWidgetsActive(what, where){
@@ -684,22 +712,48 @@ class Widgets extends Component{
                 break;
         };
     };
-    updatePosition(what, where, xNew, yNew){
-        this.setState(prevState => ({
-            widgets: {
-                ...prevState.widgets,
-                [where]: {
-                    ...prevState.widgets[where],
-                    [what]: {
-                        ...prevState.widgets[where][what],
-                        position: {
-                            x: xNew,
-                            y: yNew
+    updatePosition(what, where, xNew, yNew, type, name){
+        switch(type){
+            case "popout":
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [what]: {
+                                ...prevState.widgets[where][what],
+                                popouts: {
+                                    ...prevState.widgets[where][what].popouts,
+                                    [name]: {
+                                        position: {
+                                            x: xNew,
+                                            y: yNew
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-            }
-        }));
+                }));
+                break;
+            default:
+                this.setState(prevState => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [what]: {
+                                ...prevState.widgets[where][what],
+                                position: {
+                                    x: xNew,
+                                    y: yNew
+                                }
+                            }
+                        }
+                    }
+                }));
+                break;
+        };
     };
     componentDidMount(){
         randColor();
@@ -761,17 +815,26 @@ class Widgets extends Component{
                     active: this.state.widgets.utility[i].active,
                     position: this.state.widgets.utility[i].position
                 };
+                if(this.state.values.savepositionpopout){
+                    data.utility[i].popouts = this.state.widgets.utility[i].popouts;
+                };
             };
             for(let i in this.state.widgets.games){
                 data.games[i] = {
                     active: this.state.widgets.games[i].active,
                     position: this.state.widgets.games[i].position
                 };
+                if(this.state.values.savepositionpopout){
+                    data.games[i].popouts = this.state.widgets.games[i].popouts;
+                };
             };
             for(let i in this.state.widgets.fun){
                 data.fun[i] = {
                     active: this.state.widgets.fun[i].active,
                     position: this.state.widgets.fun[i].position
+                };
+                if(this.state.values.savepositionpopout){
+                    data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
             localStorage.setItem("widgets", JSON.stringify(data));          
@@ -795,7 +858,6 @@ class Widgets extends Component{
                     funcSortSelect={sortSelect}
                     funcUpdateWidgetsActive={this.updateWidgetsActive}
                     funcUpdateValue={this.updateValue}
-                    funcUpdateHotbar={this.updateHotbar}
                     funcUpdatePosition={this.updatePosition}
                     varWidgetsUtilityActive={widgetsUtilityActive}
                     varWidgetsGamesActive={widgetsGamesActive}
@@ -804,10 +866,20 @@ class Widgets extends Component{
                     varAnimations={animations}
                     varBackgrounds={backgrounds}
                     varCustomBorders={customBorders}
-                    varAnimationValue={this.state.animationValue}
+                    varAnimationValue={this.state.values.animation}
                     varPosition={{
                         x: this.state.widgets.utility.setting.position.x,
                         y: this.state.widgets.utility.setting.position.y
+                    }}
+                    varPositionPopout={{
+                        showhidewidgets: {
+                            x: this.state.widgets.utility.setting.popouts.showhidewidgets.position.x,
+                            y: this.state.widgets.utility.setting.popouts.showhidewidgets.position.y
+                        },
+                        settings: {
+                            x: this.state.widgets.utility.setting.popouts.settings.position.x,
+                            y: this.state.widgets.utility.setting.popouts.settings.position.y
+                        }
                     }}
                     varMicroIcon={microIcon}/>
                 {this.state.widgets.utility.quote.active === true
@@ -900,6 +972,12 @@ class Widgets extends Component{
                             x: this.state.widgets.utility.calculator.position.x,
                             y: this.state.widgets.utility.calculator.position.y
                         }}
+                        varPositionPopout={{
+                            expandinput: {
+                                x: this.state.widgets.utility.calculator.popouts.expandinput.position.x,
+                                y: this.state.widgets.utility.calculator.popouts.expandinput.position.y
+                            }
+                        }}
                         varDragDisabled={this.state.widgets.utility.calculator.drag.disabled}
                         varMedIcon={medIcon}
                         varOperation={operation}/>
@@ -918,6 +996,12 @@ class Widgets extends Component{
                         varPosition={{
                             x: this.state.widgets.utility.weather.position.x,
                             y: this.state.widgets.utility.weather.position.y
+                        }}
+                        varPositionPopout={{
+                            searchhelp: {
+                                x: this.state.widgets.utility.weather.popouts.searchhelp.position.x,
+                                y: this.state.widgets.utility.weather.popouts.searchhelp.position.y
+                            }
                         }}
                         varDragDisabled={this.state.widgets.utility.weather.drag.disabled}
                         varSmallIcon={smallIcon}

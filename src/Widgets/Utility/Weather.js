@@ -166,7 +166,10 @@ class WidgetWeather extends Component{
                             {/* Search help popout */}
                             <Draggable
                                 cancel="li"
-                                defaultPosition={{x: 0, y: 125}}
+                                position={{
+                                    x: this.props.varPositionPopout.searchhelp.x,
+                                    y: this.props.varPositionPopout.searchhelp.y}}
+                                onDrag={(event, data) => this.props.funcUpdatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
                                 bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
                                 <section id="weather-search-help-container"
                                     className="popout">

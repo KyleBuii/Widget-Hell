@@ -481,7 +481,10 @@ class WidgetCalculator extends Component{
                         {/* Expand Input Popout */}
                         <Draggable
                             cancel="p"
-                            defaultPosition={{x: 180, y: -305}}
+                            position={{
+                                x: this.props.varPositionPopout.expandinput.x,
+                                y: this.props.varPositionPopout.expandinput.y}}
+                            onDrag={(event, data) => this.props.funcUpdatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
                             bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">
