@@ -60,17 +60,17 @@ class WidgetSetting extends Component{
         let rand;
         switch(select){
             case "animation":
-                rand = this.props.varAnimations[Math.floor(Math.random() * this.props.varAnimations.length)];
+                rand = this.props.animations[Math.floor(Math.random() * this.props.animations.length)];
                 $("#settings-popout-design-select-animation").val(rand);
                 this.handleSelect(rand, "animation");
                 break;
             case "background":
-                rand = this.props.varBackgrounds[Math.floor(Math.random() * this.props.varBackgrounds.length)];
+                rand = this.props.backgrounds[Math.floor(Math.random() * this.props.backgrounds.length)];
                 $("#settings-popout-design-select-background").val(rand);
                 this.handleSelect(rand, "background");
                 break;
             case "custom-border":
-                rand = this.props.varCustomBorders[Math.floor(Math.random() * this.props.varCustomBorders.length)];
+                rand = this.props.customBorders[Math.floor(Math.random() * this.props.customBorders.length)];
                 $("#settings-popout-design-select-custom-border").val(rand);
                 this.handleSelect(rand, "custom-border");
                 break;
@@ -80,14 +80,14 @@ class WidgetSetting extends Component{
 
     };
     handleTrick(){
-        const combinedWidgets = [...this.props.varWidgetsUtilityActive, ...this.props.varWidgetsGamesActive];
+        const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive];
         if(combinedWidgets.length !== 0){
             const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
-            const randIndexAnimation = Math.floor(Math.random() * this.props.varTricks.length);
+            const randIndexAnimation = Math.floor(Math.random() * this.props.tricks.length);
             const e = document.getElementById(combinedWidgets[randIndexWidget] + "-widget-animation");
             e.style.animation = "none";
             window.requestAnimationFrame(() => {
-                e.style.animation = this.props.varTricks[randIndexAnimation] + " 2s";
+                e.style.animation = this.props.tricks[randIndexAnimation] + " 2s";
             });
         };
     };
@@ -103,10 +103,10 @@ class WidgetSetting extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "1";
                     showHideWidgetsPopout.style.visibility = "visible";
-                    if(this.props.varAnimationValue !== "default"){
+                    if(this.props.animationValue !== "default"){
                         showHideWidgetsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.props.varAnimationValue + "In 2s";
+                            showHideWidgetsPopout.style.animation = this.props.animationValue + "In 2s";
                         });
                     };
                 }else{
@@ -115,10 +115,10 @@ class WidgetSetting extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "0.5";
                     showHideWidgetsPopout.style.visibility = "hidden";
-                    if(this.props.varAnimationValue !== "default"){
+                    if(this.props.animationValue !== "default"){
                         showHideWidgetsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.props.varAnimationValue + "Out 2s";
+                            showHideWidgetsPopout.style.animation = this.props.animationValue + "Out 2s";
                         });
                     };
                 };    
@@ -132,10 +132,10 @@ class WidgetSetting extends Component{
                     });
                     btnSettings.style.opacity = "1";
                     settingsPopout.style.visibility = "visible";
-                    if(this.props.varAnimationValue !== "default"){
+                    if(this.props.animationValue !== "default"){
                         settingsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.props.varAnimationValue + "In 2s";
+                            settingsPopout.style.animation = this.props.animationValue + "In 2s";
                         });
                     };
                 }else{
@@ -144,34 +144,34 @@ class WidgetSetting extends Component{
                     });
                     btnSettings.style.opacity = "0.5";
                     settingsPopout.style.visibility = "hidden";
-                    if(this.props.varAnimationValue !== "default"){
+                    if(this.props.animationValue !== "default"){
                         settingsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.props.varAnimationValue + "Out 2s";
+                            settingsPopout.style.animation = this.props.animationValue + "Out 2s";
                         });
                     };
                 };
                 break;
             default:
                 const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
-                this.props.funcShowHide(what, where);
+                this.props.showHide(what, where);
                 if(this.props.widgets[what] === false){
                     btn.style.opacity = "1";
-                    this.props.funcUpdateWidgetsActive(what, where);
+                    this.props.updateWidgetsActive(what, where);
                 }else{
                     btn.style.opacity = "0.5";
                     switch(where){
                         case "utility":
-                            const widgetUtilityIndex = this.props.varWidgetsUtilityActive.indexOf(what);
-                            this.unorderedRemove(this.props.varWidgetsUtilityActive, widgetUtilityIndex);
+                            const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
+                            this.unorderedRemove(this.props.widgetsUtilityActive, widgetUtilityIndex);
                             break;
                         case "games":
-                            const widgetGamesIndex = this.props.varWidgetsGamesActive.indexOf(what);
-                            this.unorderedRemove(this.props.varWidgetsGamesActive, widgetGamesIndex);
+                            const widgetGamesIndex = this.props.widgetsGamesActive.indexOf(what);
+                            this.unorderedRemove(this.props.widgetsGamesActive, widgetGamesIndex);
                             break;
                         case "fun":
-                            const widgetFunIndex = this.props.varWidgetsFunActive.indexOf(what);
-                            this.unorderedRemove(this.props.varWidgetsFunActive, widgetFunIndex);
+                            const widgetFunIndex = this.props.widgetsFunActive.indexOf(what);
+                            this.unorderedRemove(this.props.widgetsFunActive, widgetFunIndex);
                             break;
                         default:
                             break;
@@ -220,7 +220,7 @@ class WidgetSetting extends Component{
     handleSelect(what, where){
         switch(where){
             case "animation":
-                this.props.funcUpdateValue(what, where, "values");
+                this.props.updateValue(what, where, "values");
                 break;
             case "background":
                 const e = document.getElementById("App");
@@ -241,7 +241,7 @@ class WidgetSetting extends Component{
                 };
                 break;
             case "custom-border":
-                this.props.funcUpdateValue(what, "customBorder", "values");
+                this.props.updateValue(what, "customBorder", "values");
                 break;
             default:
                 break;
@@ -249,7 +249,7 @@ class WidgetSetting extends Component{
     };
     /// Handles all checkboxes
     handleCheckbox(what, where, type){
-        this.props.funcUpdateValue(what, where, type);
+        this.props.updateValue(what, where, type);
     };
     handleTabSwitch(what){
         const allTabs = ["utility", "games", "fun"];
@@ -268,20 +268,20 @@ class WidgetSetting extends Component{
     updateTab(what){
         switch(what){
             case "utility":
-                for(var currUtilityWidget in this.props.varWidgetsUtilityActive){
-                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.varWidgetsUtilityActive[currUtilityWidget]);
+                for(var currUtilityWidget in this.props.widgetsUtilityActive){
+                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsUtilityActive[currUtilityWidget]);
                     btn.style.opacity = "1";
                 };
                 break;
             case "games":
-                for(var currGamesWidget in this.props.varWidgetsGamesActive){
-                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.varWidgetsGamesActive[currGamesWidget]);
+                for(var currGamesWidget in this.props.widgetsGamesActive){
+                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsGamesActive[currGamesWidget]);
                     btn.style.opacity = "1";
                 };
                 break;
             case "fun":
-                for(var currFunWidget in this.props.varWidgetsFunActive){
-                    const btn = document.getElementById("show-hide0widgets-popout-btn-" + this.props.varWidgetsFunActive[currFunWidget]);
+                for(var currFunWidget in this.props.widgetsFunActive){
+                    const btn = document.getElementById("show-hide0widgets-popout-btn-" + this.props.widgetsFunActive[currFunWidget]);
                     btn.style.opacity = "1";
                 };
                 break;
@@ -351,21 +351,21 @@ class WidgetSetting extends Component{
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
                     btn.style.opacity = "1";
-                    this.props.funcUpdateWidgetsActive(i, "utility");
+                    this.props.updateWidgetsActive(i, "utility");
                 };
             };
             for(let i in dataLocalStorage.games){
                 if(dataLocalStorage.games[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
                     btn.style.opacity = "1";
-                    this.props.funcUpdateWidgetsActive(i, "games");
+                    this.props.updateWidgetsActive(i, "games");
                 };
             };
             for(let i in dataLocalStorage.fun){
                 if(dataLocalStorage.fun[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
                     btn.style.opacity = "1";
-                    this.props.funcUpdateWidgetsActive(i, "fun");
+                    this.props.updateWidgetsActive(i, "fun");
                 };
             };
         };
@@ -374,11 +374,11 @@ class WidgetSetting extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                onStart={() => this.props.funcDragStart("settings")}
-                onStop={() => this.props.funcDragStop("settings")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                onStart={() => this.props.dragStart("settings")}
+                onStop={() => this.props.dragStop("settings")}
+                onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y)}
                 cancel="button, span, p, section"
                 bounds="parent">
                 <div id="settings-widget"
@@ -408,9 +408,9 @@ class WidgetSetting extends Component{
                         <Draggable
                             cancel="button, #show-hide-widgets-popout-tabs"
                             position={{
-                                x: this.props.varPositionPopout.showhidewidgets.x,
-                                y: this.props.varPositionPopout.showhidewidgets.y}}
-                            onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
+                                x: this.props.positionPopout.showhidewidgets.x,
+                                y: this.props.positionPopout.showhidewidgets.y}}
+                            onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
                             bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
@@ -481,9 +481,9 @@ class WidgetSetting extends Component{
                         <Draggable
                             cancel="span, .toggleable, .slider, select"
                             position={{
-                                x: this.props.varPositionPopout.settings.x,
-                                y: this.props.varPositionPopout.settings.y}}
-                            onDrag={(event, data) => this.props.funcUpdatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
+                                x: this.props.positionPopout.settings.x,
+                                y: this.props.positionPopout.settings.y}}
+                            onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
                             bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
                             <section id="settings-popout"
                                 className="popout">
@@ -531,7 +531,7 @@ class WidgetSetting extends Component{
                                                 </span>
                                                 <button className="btn-match inverse"
                                                     onClick={() => this.randomOption("animation")}>
-                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                         <FaRandom/>
                                                     </IconContext.Provider>
                                                 </button>
@@ -552,7 +552,7 @@ class WidgetSetting extends Component{
                                                 </span>
                                                 <button className="btn-match inverse"
                                                     onClick={() => this.randomOption("background")}>
-                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                         <FaRandom/>
                                                     </IconContext.Provider>
                                                 </button>
@@ -574,7 +574,7 @@ class WidgetSetting extends Component{
                                                 </span>
                                                 <button className="btn-match inverse"
                                                     onClick={() => this.randomOption("custom-border")}>
-                                                    <IconContext.Provider value={{ size: this.props.varMicroIcon, className: "global-class-name" }}>
+                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                         <FaRandom/>
                                                     </IconContext.Provider>
                                                 </button>
@@ -620,13 +620,23 @@ class WidgetSetting extends Component{
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Misc</b>
                                         </span>
+                                        {/* Display author names */}
+                                        <section className="element-ends">
+                                            <label className="font small"
+                                                htmlFor="settings-popout-feature-authornames">
+                                                Author Names
+                                            </label>
+                                            <input id="settings-popout-feature-authornames"
+                                                type="checkbox"
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "authornames", "values")}/>
+                                        </section>
                                         {/* Save position of popup */}
                                         <section className="element-ends">
                                             <label className="font small"
-                                                htmlFor="settings-popout-feature-fullscreen">
+                                                htmlFor="settings-popout-feature-savepositionpopup">
                                                 Save Position: Popup
                                             </label>
-                                            <input id="settings-popout-feature-fullscreen"
+                                            <input id="settings-popout-feature-savepositionpopup"
                                                 type="checkbox"
                                                 onChange={(event) => this.handleCheckbox(event.target.checked, "savepositionpopout", "values")}/>
                                         </section>

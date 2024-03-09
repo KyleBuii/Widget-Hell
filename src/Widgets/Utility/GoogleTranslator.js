@@ -66,7 +66,7 @@ class WidgetGoogleTranslator extends Component{
     /// Swaps "from" language and "to" language
     handleSwap(){
         if(this.state.from !== this.state.to){
-            this.props.funcRandColor();
+            this.props.randColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,
@@ -81,21 +81,21 @@ class WidgetGoogleTranslator extends Component{
     /// Handles random sentence button
     handleRandSentence(){
         this.setState({
-            input: this.props.funcRandSentence(),
+            input: this.props.randSentence(),
             from: "en"
         }, () => {
             $("#translator-translate-from").val("en");
         });
     };
     handleHotbarBtn(what){
-        this.props.funcHandleHotbar("googletranslator", what, "utility");
+        this.props.handleHotbar("googletranslator", what, "utility");
     };
     componentDidMount(){
         const select = document.getElementById("select-languages");
         /// Populate select with 'languages' array
-        for(var curr = 0; curr < this.props.varLanguages.length; curr+=2){
-            var optText = this.props.varLanguages[curr];
-            var optValue = this.props.varLanguages[curr+1];
+        for(var curr = 0; curr < this.props.languages.length; curr+=2){
+            var optText = this.props.languages[curr];
+            var optValue = this.props.languages[curr+1];
             var el = document.createElement("option");
             el.textContent = optText;
             el.value = optValue;
@@ -132,12 +132,12 @@ class WidgetGoogleTranslator extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("googletranslator")}
-                onStop={() => this.props.funcDragStop("googletranslator")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("googletranslator", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("googletranslator")}
+                onStop={() => this.props.defaultProps.dragStop("googletranslator")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("googletranslator", "utility", data.x, data.y)}
                 cancel="button, span, p, textarea, select"
                 bounds="parent">
                 <div id="googletranslator-widget"
@@ -147,21 +147,21 @@ class WidgetGoogleTranslator extends Component{
                         {/* Drag Handle */}
                         <span id="googletranslator-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("resetposition")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
@@ -177,7 +177,7 @@ class WidgetGoogleTranslator extends Component{
                             </select>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: this.props.varSmallIcon, className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -186,7 +186,7 @@ class WidgetGoogleTranslator extends Component{
                                 onChange={this.handleTo}></select>
                             <button className="btn-match inverse"
                                 onClick={this.handleTranslate}>
-                                <IconContext.Provider value={{ size: this.props.varSmallIcon, className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
                                 </IconContext.Provider>
                             </button>
@@ -202,12 +202,16 @@ class WidgetGoogleTranslator extends Component{
                             <button className="bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                             <button className="bottom-left btn-match fadded inverse"
-                                onClick={() => this.props.funcCopyToClipboard(this.state.converted)}>
+                                onClick={() => this.props.copyToClipboard(this.state.converted)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
                             </button>
                         </div>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

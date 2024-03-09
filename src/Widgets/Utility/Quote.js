@@ -15,10 +15,10 @@ class WidgetQuote extends Component{
         this.handleNewQuote = this.handleNewQuote.bind(this);
     };
     handleNewQuote(){
-        const randQuote = Math.floor(Math.random() * this.props.varQuotes.length);
-        const randQuoteAuthor = (this.props.varQuotes[randQuote]["au"] === "") ? "Anon" : this.props.varQuotes[randQuote]["au"];
+        const randQuote = Math.floor(Math.random() * this.props.quotes.length);
+        const randQuoteAuthor = (this.props.quotes[randQuote]["au"] === "") ? "Anon" : this.props.quotes[randQuote]["au"];
         this.setState({
-            currentQuote: this.props.varQuotes[randQuote]["qte"],
+            currentQuote: this.props.quotes[randQuote]["qte"],
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
@@ -31,9 +31,6 @@ class WidgetQuote extends Component{
             quoteAuthor.style.animation = "fadeIn 2s";
         });
     };
-    handleHotbarBtn(what){
-        this.props.funcHandleHotbar("quote", what, "utility");
-    };
     componentDidMount(){
         this.handleNewQuote();
     };
@@ -41,12 +38,12 @@ class WidgetQuote extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("quote")}
-                onStop={() => this.props.funcDragStop("quote")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("quote", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("quote")}
+                onStop={() => this.props.defaultProps.dragStop("quote")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("quote", "utility", data.x, data.y)}
                 cancel="button, span, p"
                 bounds="parent">
                 <div id="quote-widget" 
@@ -56,23 +53,23 @@ class WidgetQuote extends Component{
                         {/* Drag Handle */}
                         <span id="quote-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("quote", "resetposition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("quote", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
@@ -87,7 +84,7 @@ class WidgetQuote extends Component{
                             className="font-author">- {this.state.currentAuthor}</p>
                         <div className="element-ends space-nicely left">
                             <button className="btn-match fadded inverse"
-                                onClick={() => this.props.funcCopyToClipboard(this.state.currentQuote)}>
+                                onClick={() => this.props.copyToClipboard(this.state.currentQuote)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
@@ -95,6 +92,10 @@ class WidgetQuote extends Component{
                             <button className="btn-match"
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

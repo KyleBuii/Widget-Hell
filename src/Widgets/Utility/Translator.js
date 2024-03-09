@@ -61,7 +61,7 @@ class WidgetTranslator extends Component{
                     convert: prevState.input
                         .toString()
                         .split("")
-                        .map(letter => this.props.varBrailleFromDictionary[letter])
+                        .map(letter => this.props.brailleFromDictionary[letter])
                         .join("")
                 }));
                 break;
@@ -107,20 +107,20 @@ class WidgetTranslator extends Component{
                 }));
                 break;
             case "uwu":
-                const reUwuDictionary = new RegExp(Object.keys(this.props.varUwuDictionary)
+                const reUwuDictionary = new RegExp(Object.keys(this.props.uwuDictionary)
                     .map((key) => {
                         return "\\b" + key + "\\b";
                     })
                     .join("|"));
                 this.setState(prevState => ({
-                    converted: this.props.funcGrep(prevState.convert
+                    converted: this.props.grep(prevState.convert
                         .toString()
                         .toLowerCase()
-                        .split(this.props.varMatchAll))
+                        .split(this.props.matchAll))
                         .map((word) => {
                             return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
                                 : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
-                                : (reUwuDictionary.test(word)) ? word.replace(reUwuDictionary, this.props.varUwuDictionary[word][Math.floor(Math.random() * this.props.varUwuDictionary[word].length)])
+                                : (reUwuDictionary.test(word)) ? word.replace(reUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
                                 : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, "ww")
                                 : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, "ww")
                                 : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
@@ -131,16 +131,16 @@ class WidgetTranslator extends Component{
                         })
                 }), () => {
                     this.setState(prevState => ({
-                        converted: this.props.funcMergePunctuation(prevState.converted)
+                        converted: this.props.mergePunctuation(prevState.converted)
                     }));
                     /// Insert emoticon at random position
                     var randPosition;
-                    const randEmoticon = Math.floor(Math.random() * this.props.varUwuEmoticons.length);
+                    const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
                     if(this.state.converted.length > 4){
                         randPosition = Math.floor(Math.random() * (this.state.converted.length - 2) + 2);
                         this.setState(prevState => ({
                             converted: [...prevState.converted.slice(0, randPosition)
-                                , this.props.varUwuEmoticons[randEmoticon]
+                                , this.props.uwuEmoticons[randEmoticon]
                                 , ...prevState.converted.slice(randPosition)]
                                 .join(" ")
                         }));
@@ -159,21 +159,21 @@ class WidgetTranslator extends Component{
                         .toString()
                         .toLowerCase()
                         .split("")
-                        .map(letter => this.props.varBrailleDictionary[letter])
+                        .map(letter => this.props.brailleDictionary[letter])
                         .join("")
                 }));
                 break;
             case "emojify":
-                const reEmojifyDictionary = new RegExp(Object.keys(this.props.varEmojifyDictionary)
+                const reEmojifyDictionary = new RegExp(Object.keys(this.props.emojifyDictionary)
                     .map((key) => {
                         return "\\b" + key + "\\b";
                     })
                     .join("|"), "i");
                 this.setState(prevState => ({
-                    converted: this.props.funcMergePunctuation(this.props.funcGrep(prevState.convert
-                        .split(this.props.varMatchAll)
+                    converted: this.props.mergePunctuation(this.props.grep(prevState.convert
+                        .split(this.props.matchAll)
                         .map((word) => {
-                            return (reEmojifyDictionary.test(word)) ? word.replace(reEmojifyDictionary, word + " " + this.props.varEmojifyDictionary[word.toLowerCase()][Math.floor(Math.random() * this.props.varEmojifyDictionary[word.toLowerCase()].length)]) : word;
+                            return (reEmojifyDictionary.test(word)) ? word.replace(reEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)]) : word;
                         })))
                         .join(" ")
                 }), () => {
@@ -202,7 +202,7 @@ class WidgetTranslator extends Component{
                 if(this.state.reverseWord && this.state.reverseSentence){
                 /// Reverse Word + Sentence
                     this.setState(prevState => ({
-                        converted: this.props.funcMergePunctuation(prevState.convert
+                        converted: this.props.mergePunctuation(prevState.convert
                             .split(/([.?!])\s*/)
                             .map(sentence => sentence
                                 .split(" ")
@@ -231,7 +231,7 @@ class WidgetTranslator extends Component{
                 }else if(this.state.reverseSentence){
                 /// Reverse Sentence
                     this.setState(prevState => ({
-                        converted: this.props.funcMergePunctuation(prevState.convert
+                        converted: this.props.mergePunctuation(prevState.convert
                             .split(/([.!?"])\s*/)
                             .map(function(sentence){
                                 return sentence
@@ -340,7 +340,7 @@ class WidgetTranslator extends Component{
     /// Swaps "from" language and "to" language
     handleSwap(){
         if(this.state.from !== this.state.to){
-            this.props.funcRandColor();
+            this.props.randColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,
@@ -404,7 +404,7 @@ class WidgetTranslator extends Component{
     /// Handles random sentence button
     handleRandSentence(){
         this.setState({
-            input: this.props.funcRandSentence(),
+            input: this.props.randSentence(),
             from: "en"
         }, () => {
             this.convertFromText();
@@ -412,13 +412,13 @@ class WidgetTranslator extends Component{
         });
     };
     handleHotbarBtn(what){
-        this.props.funcHandleHotbar("translator", what, "utility");
+        this.props.handleHotbar("translator", what, "utility");
     };
     componentDidMount(){
         /// Sort the "translate-to" optgroups options alphabetically
-        this.props.funcSortSelect('#translator-translate-to #translate-to-other-languages');
-        this.props.funcSortSelect('#translator-translate-to #translate-to-encryption');
-        this.props.funcSortSelect('#translator-translate-to #translate-to-modify');
+        this.props.sortSelect('#translator-translate-to #translate-to-other-languages');
+        this.props.sortSelect('#translator-translate-to #translate-to-encryption');
+        this.props.sortSelect('#translator-translate-to #translate-to-modify');
         /// Default values
         if(sessionStorage.getItem("translator") === null){
             this.setState({
@@ -453,12 +453,12 @@ class WidgetTranslator extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("translator")}
-                onStop={() => this.props.funcDragStop("translator")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("translator", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("translator")}
+                onStop={() => this.props.defaultProps.dragStop("translator")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y)}
                 cancel="button, span, p, textarea, select, section"
                 bounds="parent">
                 <div id="translator-widget"
@@ -468,21 +468,21 @@ class WidgetTranslator extends Component{
                         {/* Drag Handle */}
                         <span id="translator-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("resetposition")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
@@ -512,7 +512,7 @@ class WidgetTranslator extends Component{
                             </select>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: this.props.varSmallIcon, className: "global-class-name" }}>
+                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
@@ -554,7 +554,7 @@ class WidgetTranslator extends Component{
                         {/* Buttons */}
                         <div>
                             <button className="bottom-left btn-match fadded inverse"
-                                onClick={() => this.props.funcCopyToClipboard(this.state.converted)}>
+                                onClick={() => this.props.copyToClipboard(this.state.converted)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
@@ -641,6 +641,10 @@ class WidgetTranslator extends Component{
                                 </section>
                             </section>
                         </Draggable>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

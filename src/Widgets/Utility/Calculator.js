@@ -36,7 +36,7 @@ class WidgetCalculator extends Component{
                 if(this.state.input !== ""
                     && this.state.input !== "UNDEF"){
                     var ans;
-                    const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.varOperation}])`);
+                    const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.operation}])`);
                     if(this.state.lastComputation !== ""
                         && !reCheckOperationExist.test(this.state.input)){
                         try{
@@ -73,7 +73,7 @@ class WidgetCalculator extends Component{
                                 input: "UNDEF"
                             });
                         }else{
-                            const reLastComputation = new RegExp(`(?!^-)(?:[${this.props.varOperation}]-?)(?=\\d*\\.?\\d+$)(?:\\d*\\.?\\d+)`);
+                            const reLastComputation = new RegExp(`(?!^-)(?:[${this.props.operation}]-?)(?=\\d*\\.?\\d+$)(?:\\d*\\.?\\d+)`);
                             this.setState({
                                 question: this.state.input,
                                 input: ans,
@@ -295,12 +295,12 @@ class WidgetCalculator extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("calculator")}
-                onStop={() => this.props.funcDragStop("calculator")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("calculator", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("calculator")}
+                onStop={() => this.props.defaultProps.dragStop("calculator")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y)}
                 cancel="button, span, p, input, textarea, section"
                 bounds="parent">
                 <div id="calculator-widget"
@@ -310,21 +310,21 @@ class WidgetCalculator extends Component{
                         {/* Drag Handle */}
                         <span id="calculator-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varMedIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.medIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("resetposition")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
@@ -349,7 +349,7 @@ class WidgetCalculator extends Component{
                         {/* Utility Bar */}
                         <div className="font smaller flex-center space-nicely bottom short">
                             <button className="btn-match fadded inverse"
-                                onClick={() => this.props.funcCopyToClipboard(this.state.input)}>
+                                onClick={() => this.props.copyToClipboard(this.state.input)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
@@ -482,9 +482,9 @@ class WidgetCalculator extends Component{
                         <Draggable
                             cancel="p"
                             position={{
-                                x: this.props.varPositionPopout.expandinput.x,
-                                y: this.props.varPositionPopout.expandinput.y}}
-                            onDrag={(event, data) => this.props.funcUpdatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
+                                x: this.props.positionPopout.expandinput.x,
+                                y: this.props.positionPopout.expandinput.y}}
+                            onDrag={(event, data) => this.props.defualtProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
                             bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">
@@ -494,6 +494,10 @@ class WidgetCalculator extends Component{
                                 </p>
                             </section>
                         </Draggable>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

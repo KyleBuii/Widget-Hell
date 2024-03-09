@@ -526,6 +526,13 @@ body{
     right: 3.7em;
 }
 
+/// Position for the author's name
+.author-name{
+    position: absolute;
+    bottom: 0.7rem;
+    right: 2rem;
+}
+
 /// Bar on top of widget
 .hotbar{
     position: fixed;

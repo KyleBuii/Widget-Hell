@@ -371,7 +371,7 @@ class WidgetSnake extends Component{
         };
     };
     handleHotbarBtn(what){
-        this.props.funcHandleHotbar("snake", what, "games");
+        this.props.defaultProps.handleHotbar("snake", what, "games");
     };
     componentDidMount(){
         window.addEventListener("resize", this.resizer);
@@ -383,12 +383,12 @@ class WidgetSnake extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("snake")}
-                onStop={() => this.props.funcDragStop("snake")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("snake", "games", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("snake")}
+                onStop={() => this.props.defaultProps.dragStop("snake")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("snake", "games", data.x, data.y)}
                 cancel="button, section"
                 bounds="parent">
                 <div id="snake-widget"
@@ -398,21 +398,21 @@ class WidgetSnake extends Component{
                         {/* Drag Handle */}
                         <span id="snake-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("resetposition")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
@@ -422,6 +422,10 @@ class WidgetSnake extends Component{
                         <section>
                             <SnakeGame size={this.state.size}/>
                         </section>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by ?&emsp;Modified by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

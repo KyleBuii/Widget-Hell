@@ -392,7 +392,8 @@ class Widgets extends Component{
             values: {
                 animation: "default",
                 customBorder: "default",    
-                savepositionpopout: false
+                savepositionpopout: false,
+                authornames: false
             },
             hotbar: {
                 fullscreen: false,
@@ -508,6 +509,7 @@ class Widgets extends Component{
             }
         };
         this.handleShowHide = this.handleShowHide.bind(this);
+        this.handleHotbar = this.handleHotbar.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
@@ -693,8 +695,6 @@ class Widgets extends Component{
             if(where === "customBorder"){
                 this.updateCustomBorder();
             };
-            console.log(this.state.values.savepositionpopout);
-            console.log("hi");
         });
     };
     updateWidgetsActive(what, where){
@@ -841,6 +841,19 @@ class Widgets extends Component{
         });
     };
     render(){
+        const defaultProps = {
+            dragStart:dragStart,
+            dragStop:dragStop,
+            updatePosition:this.updatePosition,
+            handleHotbar:this.handleHotbar,
+            values:{
+                authornames: this.state.values.authornames
+            },
+            hotbar:{
+                fullscreen: this.state.hotbar.fullscreen,
+                resetposition: this.state.hotbar.resetposition
+            }
+        };
         return(
             <div id="widget-container">
                 <WidgetSetting
@@ -852,26 +865,26 @@ class Widgets extends Component{
                         weather: this.state.widgets.utility.weather.active,
                         snake: this.state.widgets.games.snake.active
                     }}
-                    funcShowHide={this.handleShowHide}
-                    funcDragStart={dragStart}
-                    funcDragStop={dragStop}
-                    funcSortSelect={sortSelect}
-                    funcUpdateWidgetsActive={this.updateWidgetsActive}
-                    funcUpdateValue={this.updateValue}
-                    funcUpdatePosition={this.updatePosition}
-                    varWidgetsUtilityActive={widgetsUtilityActive}
-                    varWidgetsGamesActive={widgetsGamesActive}
-                    varWidgetsFunActive={widgetsFunActive}
-                    varTricks={tricks}
-                    varAnimations={animations}
-                    varBackgrounds={backgrounds}
-                    varCustomBorders={customBorders}
-                    varAnimationValue={this.state.values.animation}
-                    varPosition={{
+                    showHide={this.handleShowHide}
+                    dragStart={dragStart}
+                    dragStop={dragStop}
+                    sortSelect={sortSelect}
+                    updateWidgetsActive={this.updateWidgetsActive}
+                    updateValue={this.updateValue}
+                    updatePosition={this.updatePosition}
+                    widgetsUtilityActive={widgetsUtilityActive}
+                    widgetsGamesActive={widgetsGamesActive}
+                    widgetsFunActive={widgetsFunActive}
+                    tricks={tricks}
+                    animations={animations}
+                    backgrounds={backgrounds}
+                    customBorders={customBorders}
+                    animationValue={this.state.values.animation}
+                    position={{
                         x: this.state.widgets.utility.setting.position.x,
                         y: this.state.widgets.utility.setting.position.y
                     }}
-                    varPositionPopout={{
+                    positionPopout={{
                         showhidewidgets: {
                             x: this.state.widgets.utility.setting.popouts.showhidewidgets.position.x,
                             y: this.state.widgets.utility.setting.popouts.showhidewidgets.position.y
@@ -881,150 +894,102 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.setting.popouts.settings.position.y
                         }
                     }}
-                    varMicroIcon={microIcon}/>
+                    microIcon={microIcon}/>
                 {this.state.widgets.utility.quote.active === true
                     ? <WidgetQuote
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcCopyToClipboard={copyToClipboard}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varQuotes={quotes}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        copyToClipboard={copyToClipboard}
+                        quotes={quotes}
+                        position={{
                             x: this.state.widgets.utility.quote.position.x,
                             y: this.state.widgets.utility.quote.position.y
                         }}
-                        varDragDisabled={this.state.widgets.utility.quote.drag.disabled}
-                        varLargeIcon={largeIcon}/>
+                        dragDisabled={this.state.widgets.utility.quote.drag.disabled}
+                        largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.translator.active === true
                     ? <WidgetTranslator
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcRandColor={randColor}
-                        funcCopyToClipboard={copyToClipboard}
-                        funcGrep={grep}
-                        funcMergePunctuation={mergePunctuation}
-                        funcRandSentence={randSentence}
-                        funcSortSelect={sortSelect}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        randColor={randColor}
+                        copyToClipboard={copyToClipboard}
+                        grep={grep}
+                        mergePunctuation={mergePunctuation}
+                        randSentence={randSentence}
+                        sortSelect={sortSelect}
+                        position={{
                             x: this.state.widgets.utility.translator.position.x,
                             y: this.state.widgets.utility.translator.position.y
                         }}
-                        varDragDisabled={this.state.widgets.utility.translator.drag.disabled}
-                        varBrailleDictionary={brailleDictionary}
-                        varBrailleFromDictionary={brailleFromDictionary}
-                        varUwuDictionary={uwuDictionary}
-                        varUwuEmoticons={uwuEmoticons}
-                        varEmojifyDictionary={emojifyDictionary}
-                        varMatchAll={matchAll}
-                        varSmallIcon={smallIcon}
-                        varLargeIcon={largeIcon}/>
+                        dragDisabled={this.state.widgets.utility.translator.drag.disabled}
+                        brailleDictionary={brailleDictionary}
+                        brailleFromDictionary={brailleFromDictionary}
+                        uwuDictionary={uwuDictionary}
+                        uwuEmoticons={uwuEmoticons}
+                        emojifyDictionary={emojifyDictionary}
+                        matchAll={matchAll}
+                        smallIcon={smallIcon}
+                        largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.googletranslator.active === true
                     ? <WidgetGoogleTranslator
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcRandColor={randColor}
-                        funcCopyToClipboard={copyToClipboard}
-                        funcRandSentence={randSentence}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        randColor={randColor}
+                        copyToClipboard={copyToClipboard}
+                        randSentence={randSentence}
+                        position={{
                             x: this.state.widgets.utility.googletranslator.position.x,
                             y: this.state.widgets.utility.googletranslator.position.y
                         }}
-                        varDragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
-                        varLanguages={languages}
-                        varSmallIcon={smallIcon}
-                        varLargeIcon={largeIcon}/>
+                        dragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
+                        languages={languages}
+                        smallIcon={smallIcon}
+                        largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.calculator.active === true
                     ? <WidgetCalculator
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcCopyToClipboard={copyToClipboard}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        copyToClipboard={copyToClipboard}
+                        position={{
                             x: this.state.widgets.utility.calculator.position.x,
                             y: this.state.widgets.utility.calculator.position.y
                         }}
-                        varPositionPopout={{
+                        positionPopout={{
                             expandinput: {
                                 x: this.state.widgets.utility.calculator.popouts.expandinput.position.x,
                                 y: this.state.widgets.utility.calculator.popouts.expandinput.position.y
                             }
                         }}
-                        varDragDisabled={this.state.widgets.utility.calculator.drag.disabled}
-                        varMedIcon={medIcon}
-                        varOperation={operation}/>
+                        dragDisabled={this.state.widgets.utility.calculator.drag.disabled}
+                        medIcon={medIcon}
+                        operation={operation}/>
                     : <></>}
                 {this.state.widgets.utility.weather.active === true
                     ? <WidgetWeather
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        position={{
                             x: this.state.widgets.utility.weather.position.x,
                             y: this.state.widgets.utility.weather.position.y
                         }}
-                        varPositionPopout={{
+                        positionPopout={{
                             searchhelp: {
                                 x: this.state.widgets.utility.weather.popouts.searchhelp.position.x,
                                 y: this.state.widgets.utility.weather.popouts.searchhelp.position.y
                             }
                         }}
-                        varDragDisabled={this.state.widgets.utility.weather.drag.disabled}
-                        varSmallIcon={smallIcon}
-                        varMedIcon={medIcon}
-                        varLargeIcon={largeIcon}/>
+                        dragDisabled={this.state.widgets.utility.weather.drag.disabled}
+                        smallIcon={smallIcon}
+                        medIcon={medIcon}
+                        largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.snake.active === true
                     ? <WidgetSnake
-                        showHide={this.handleCallBack}
-                        funcDragStart={dragStart}
-                        funcDragStop={dragStop}
-                        funcHandleHotbar={this.handleHotbar}
-                        funcUpdatePosition={this.updatePosition}
-                        varHotbar={{
-                            fullscreen: this.state.hotbar.fullscreen,
-                            resetposition: this.state.hotbar.resetposition
-                        }}
-                        varPosition={{
+                        defaultProps={defaultProps}
+                        position={{
                             x: this.state.widgets.games.snake.position.x,
                             y: this.state.widgets.games.snake.position.y
                         }}
-                        varDragDisabled={this.state.widgets.games.snake.drag.disabled}
-                        varLargeIcon={largeIcon}/>
+                        dragDisabled={this.state.widgets.games.snake.drag.disabled}
+                        largeIcon={largeIcon}/>
                     : <></>}
             </div>
         );

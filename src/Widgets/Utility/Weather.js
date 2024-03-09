@@ -111,12 +111,12 @@ class WidgetWeather extends Component{
         return(
             <Draggable
                 position={{
-                    x: this.props.varPosition.x,
-                    y: this.props.varPosition.y}}
-                disabled={this.props.varDragDisabled}
-                onStart={() => this.props.funcDragStart("weather")}
-                onStop={() => this.props.funcDragStop("weather")}
-                onDrag={(event, data) => this.props.funcUpdatePosition("weather", "utility", data.x, data.y)}
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("weather")}
+                onStop={() => this.props.defaultProps.dragStop("weather")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y)}
                 cancel="button, span, input, section"
                 bounds="parent">
                 <div id="weather-widget"
@@ -126,21 +126,21 @@ class WidgetWeather extends Component{
                         {/* Drag Handle */}
                         <span id="weather-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.varHotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("resetposition")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
-                            {(this.props.varHotbar.fullscreen)
+                            {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
                                     onClick={() => this.handleHotbarBtn("fullscreen")}>
                                     <FaExpand/>
@@ -158,7 +158,7 @@ class WidgetWeather extends Component{
                                 </input>
                                 <button className="help-btn left-side when-elements-are-not-straight"
                                     onClick={this.handleHelp}>
-                                    <IconContext.Provider value={{ size: this.props.varSmallIcon, className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
                                 </button>
@@ -167,9 +167,9 @@ class WidgetWeather extends Component{
                             <Draggable
                                 cancel="li"
                                 position={{
-                                    x: this.props.varPositionPopout.searchhelp.x,
-                                    y: this.props.varPositionPopout.searchhelp.y}}
-                                onDrag={(event, data) => this.props.funcUpdatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
+                                    x: this.props.positionPopout.searchhelp.x,
+                                    y: this.props.positionPopout.searchhelp.y}}
+                                onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
                                 bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
                                 <section id="weather-search-help-container"
                                     className="popout">
@@ -198,7 +198,7 @@ class WidgetWeather extends Component{
                                 <img className="no-highlight"
                                     src={this.state.weatherIcon}
                                     alt="weather-icon"
-                                    style={{height: this.props.varMedIcon, width: this.props.varMedIcon}}></img>
+                                    style={{height: this.props.medIcon, width: this.props.medIcon}}></img>
                                 <div id="weather-info-temp-c-container">
                                     <span id="weather-info-temp-c"
                                         className="font large">
@@ -232,6 +232,10 @@ class WidgetWeather extends Component{
                         </section>
                         <span id="weather-last-updated"
                             className="font small normal">Last updated: {this.state.lastUpdated}</span>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authornames)
+                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>
