@@ -267,9 +267,6 @@ class WidgetCalculator extends Component{
                 break;
         };
     };
-    handleHotbarBtn(what){
-        this.props.funcHandleHotbar("calculator", what, "utility");
-    };
     componentDidMount(){
         /// Add event listener
         const inputField = document.getElementById("calculator-input-field");
@@ -319,14 +316,14 @@ class WidgetCalculator extends Component{
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "resetposition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
@@ -496,7 +493,7 @@ class WidgetCalculator extends Component{
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authornames)
-                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>
                 </div>

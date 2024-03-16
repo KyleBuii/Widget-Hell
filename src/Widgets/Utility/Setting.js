@@ -594,42 +594,54 @@ class WidgetSetting extends Component{
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Feature</b>
                                         </span>
-                                        {/* Fullscreen */}
-                                        <section className="element-ends">
-                                            <label className="font small"
-                                                htmlFor="settings-popout-feature-fullscreen">
-                                                Fullscreen
-                                            </label>
-                                            <input id="settings-popout-feature-fullscreen"
-                                                type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "hotbar")}/>
-                                        </section>
-                                        {/* Reset Position */}
-                                        <section className="element-ends">
-                                            <label className="font small"
-                                                htmlFor="settings-popout-feature-resetposition">
-                                                Reset Position
-                                            </label>
-                                            <input id="settings-popout-feature-resetposition"
-                                                type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition", "hotbar")}/>
-                                        </section>
+                                        {/* General Sub Section */}
+                                        <fieldset className="section-sub">
+                                            <legend className="font small space-nicely bottom short">
+                                                General
+                                            </legend>
+                                            {/* Display author names */}
+                                            <section className="element-ends">
+                                                <label className="font small"
+                                                    htmlFor="settings-popout-feature-authornames">
+                                                    Author Names
+                                                </label>
+                                                <input id="settings-popout-feature-authornames"
+                                                    type="checkbox"
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "authornames", "values")}/>
+                                            </section>
+                                        </fieldset>
+                                        {/* Hotbar Sub Section */}
+                                        <fieldset className="section-sub">
+                                            <legend className="font small space-nicely bottom short">
+                                                Hotbar
+                                            </legend>
+                                            {/* Fullscreen */}
+                                            <section className="element-ends">
+                                                <label className="font small"
+                                                    htmlFor="settings-popout-feature-fullscreen">
+                                                    Fullscreen
+                                                </label>
+                                                <input id="settings-popout-feature-fullscreen"
+                                                    type="checkbox"
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "hotbar")}/>
+                                            </section>
+                                            {/* Reset Position */}
+                                            <section className="element-ends">
+                                                <label className="font small"
+                                                    htmlFor="settings-popout-feature-resetposition">
+                                                    Reset Position
+                                                </label>
+                                                <input id="settings-popout-feature-resetposition"
+                                                    type="checkbox"
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition", "hotbar")}/>
+                                            </section>
+                                        </fieldset>
                                     </section>
                                     {/* Misc Settings */}
                                     <section className="section-group">
                                         <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                             <b>Misc</b>
                                         </span>
-                                        {/* Display author names */}
-                                        <section className="element-ends">
-                                            <label className="font small"
-                                                htmlFor="settings-popout-feature-authornames">
-                                                Author Names
-                                            </label>
-                                            <input id="settings-popout-feature-authornames"
-                                                type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "authornames", "values")}/>
-                                        </section>
                                         {/* Save position of popup */}
                                         <section className="element-ends">
                                             <label className="font small"

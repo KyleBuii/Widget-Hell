@@ -74,6 +74,7 @@ class WidgetQuote extends Component{
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Quote */}
                         <div id="quote-container">
                             <span className="font-quote large">"</span>
                             <span id="quote-text"
@@ -94,7 +95,7 @@ class WidgetQuote extends Component{
                         </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authornames)
-                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>
                 </div>

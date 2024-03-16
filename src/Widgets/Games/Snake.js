@@ -370,9 +370,6 @@ class WidgetSnake extends Component{
             });
         };
     };
-    handleHotbarBtn(what){
-        this.props.defaultProps.handleHotbar("snake", what, "games");
-    };
     componentDidMount(){
         window.addEventListener("resize", this.resizer);
     };
@@ -407,14 +404,14 @@ class WidgetSnake extends Component{
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "resetposition", "games")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "fullscreen", "games")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
@@ -424,7 +421,7 @@ class WidgetSnake extends Component{
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authornames)
-                            ? <span className="font smaller normal-transparent author-name">Created by ?&emsp;Modified by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by ?&emsp;Modified by Kyle</span>
                             : <></>}
                     </div>
                 </div>

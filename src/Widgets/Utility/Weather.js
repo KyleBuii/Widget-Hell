@@ -81,9 +81,6 @@ class WidgetWeather extends Component{
             };
         };
     };
-    handleHotbarBtn(what){
-        this.props.funcHandleHotbar("weather", what, "utility");
-    };
     componentDidMount(){
         /// Default input
         if(sessionStorage.getItem("weather") === null){
@@ -135,14 +132,14 @@ class WidgetWeather extends Component{
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "resetposition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
@@ -174,15 +171,15 @@ class WidgetWeather extends Component{
                                 <section id="weather-search-help-container"
                                     className="popout">
                                     <ul className="font medium">
-                                        <li>Latitude and Longitude <br/><span className="font small normal-transparent">e.g: 48.8567,2.3508</span></li>
-                                        <li>City name <span className="font small normal-transparent">e.g.: Paris</span></li>
-                                        <li>US zip <span className="font small normal-transparent">e.g.: 10001</span></li>
-                                        <li>UK postcode <span className="font small normal-transparent">e.g: SW1</span></li>
-                                        <li>Canada postal code <span className="font small normal-transparent">e.g: G2J</span></li>
-                                        <li>Metar:&lt;metar code&gt; <span className="font small normal-transparent">e.g: metar:EGLL</span></li>
-                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font small normal-transparent">e.g: iata:DXB</span></li>
-                                        <li>Auto IP lookup <span className="font small normal-transparent">e.g: auto:ip</span></li>
-                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small normal-transparent">e.g: 100.0.0.1</span></li>
+                                        <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
+                                        <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
+                                        <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
+                                        <li>UK postcode <span className="font small transparent-normal">e.g: SW1</span></li>
+                                        <li>Canada postal code <span className="font small transparent-normal">e.g: G2J</span></li>
+                                        <li>Metar:&lt;metar code&gt; <span className="font small transparent-normal">e.g: metar:EGLL</span></li>
+                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font small transparent-normal">e.g: iata:DXB</span></li>
+                                        <li>Auto IP lookup <span className="font small transparent-normal">e.g: auto:ip</span></li>
+                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small transparent-normal">e.g: 100.0.0.1</span></li>
                                     </ul>
                                 </section>
                             </Draggable>
@@ -204,14 +201,14 @@ class WidgetWeather extends Component{
                                         className="font large">
                                         <b>{this.state.tempC}&deg;C</b>
                                     </span>
-                                    <span className="font small bold-transparent flex-center">{this.state.feelsLikeC}&deg;C</span>
+                                    <span className="font small transparent-bold flex-center">{this.state.feelsLikeC}&deg;C</span>
                                 </div>
                                 <div id="weather-info-temp-f-container">
                                     <span id="weather-info-temp-f"
                                         className="font large">
                                         <b>{this.state.tempF}&deg;F</b>
                                     </span>
-                                    <span className="font small bold-transparent flex-center">{this.state.feelsLikeF}&deg;F</span>
+                                    <span className="font small transparent-bold flex-center">{this.state.feelsLikeF}&deg;F</span>
                                 </div>
                             </div>
                             <div id="weather-info-cond-local-time"
@@ -234,7 +231,7 @@ class WidgetWeather extends Component{
                             className="font small normal">Last updated: {this.state.lastUpdated}</span>
                         {/* Author */}
                         {(this.props.defaultProps.values.authornames)
-                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>
                 </div>

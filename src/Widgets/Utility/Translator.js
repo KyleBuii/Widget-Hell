@@ -411,9 +411,6 @@ class WidgetTranslator extends Component{
             $("#translator-translate-from").val("en");
         });
     };
-    handleHotbarBtn(what){
-        this.props.handleHotbar("translator", what, "utility");
-    };
     componentDidMount(){
         /// Sort the "translate-to" optgroups options alphabetically
         this.props.sortSelect('#translator-translate-to #translate-to-other-languages');
@@ -477,14 +474,14 @@ class WidgetTranslator extends Component{
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetposition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("resetposition")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "resetposition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.handleHotbarBtn("fullscreen")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
@@ -643,7 +640,7 @@ class WidgetTranslator extends Component{
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authornames)
-                            ? <span className="font smaller normal-transparent author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>
                 </div>

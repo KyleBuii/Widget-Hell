@@ -44,11 +44,11 @@ body{
     &.bold{
         font-weight: bold;
     }
-    &.normal-transparent{
+    &.transparent-normal{
         font-weight: normal;
         color: rgba(var(--randColorOpacity), 0.4);    
     }
-    &.bold-transparent{
+    &.transparent-bold{
         font-weight: bold;
         color: rgba(var(--randColorOpacity), 0.4);
     }
@@ -444,6 +444,16 @@ body{
     background-color: rgba(var(--randColorOpacity), 0.15);
     border-radius: 20px;
     padding: 1rem;
+}
+
+.section-sub{
+    margin: 0em;
+    padding: 0em;
+    border: 0px;
+    border-top: 1px solid var(--randColor);
+    legend{
+        margin-left: 0.5em;
+    }
 }
 
 .overlay{
