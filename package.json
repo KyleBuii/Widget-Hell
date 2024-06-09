@@ -17,6 +17,7 @@
     "mathjs": "^11.9.1",
     "rc-slider": "^10.2.1",
     "react": "^18.2.0",
+    "react-calendar": "^5.0.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
@@ -26,6 +27,7 @@
     "react-scripts": "5.0.1",
     "react-switch": "^7.0.0",
     "react-tabs": "^6.0.2",
+    "react-time-picker": "^7.0.0",
     "sanitize-html": "^2.11.0",
     "sass": "^1.64.1",
     "web-vitals": "^2.1.4"

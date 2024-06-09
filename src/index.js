@@ -11,6 +11,7 @@ import WidgetTranslator from './Widgets/Utility/Translator.js';
 import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.js';
 import WidgetCalculator from './Widgets/Utility/Calculator.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
+import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
 
 
 //////////////////// Variables ////////////////////
@@ -490,6 +491,16 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
+                    },
+                    timeconversion: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
                     }
                 },
                 games: {
@@ -863,6 +874,7 @@ class Widgets extends Component{
                         googletranslator: this.state.widgets.utility.googletranslator.active,
                         calculator: this.state.widgets.utility.calculator.active,
                         weather: this.state.widgets.utility.weather.active,
+                        timeconversion: this.state.widgets.utility.timeconversion.active,
                         snake: this.state.widgets.games.snake.active
                     }}
                     showHide={this.handleShowHide}
@@ -991,35 +1003,70 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.games.snake.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.utility.timeconversion.active === true
+                    ? <WidgetTimeConversion
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.timeconversion.position.x,
+                            y: this.state.widgets.utility.timeconversion.position.y
+                        }}
+                        sortSelect={sortSelect}
+                        dragDisabled={this.state.widgets.utility.timeconversion.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
             </div>
         );
     };
 };
 /// Widget template
 /*
-class []Widget extends Component{
+class Widget[] extends Component{
     render(){
         return(
-            <Draggable onStart={() => this.props.funcDragStart("[]")}
-                onStop={() => this.props.funcDragStop("[]")}
-                cancel="button, section"
+            <Draggable 
+                position={{
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("[]")}
+                onStop={() => this.props.defaultProps.dragStop("[]")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y)}
+                cancel=""
                 bounds="parent">
                 <div id="[]-widget"
                     className="widget">
                     <div id="[]-widget-animation"
                         className="widget-animation">
+                        {/* Drag Handle *
                         <span id="[]-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.varLargeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar *
+                        <section className="hotbar">
+                            {/* Reset Position *
+                            {(this.props.defaultProps.hotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "resetposition", "[WIDGET TYPE]")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen *
+                            {(this.props.defaultProps.hotbar.fullscreen)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
+                                    <FaExpand/>
+                                </button>
+                                : <></>}
+                        </section>
                     </div>
                 </div>
             </Draggable>
         );
     };
-}
+};
 */
 
 

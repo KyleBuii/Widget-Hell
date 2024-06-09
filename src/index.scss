@@ -292,6 +292,9 @@ body{
     }
     &.gap{
         gap: 0.3em;
+        &.medium{
+            gap: 1em;
+        }
     }
 }
 
@@ -366,9 +369,18 @@ body{
     align-items: center;
     justify-content: center;
     gap: 0.3em;
+    &.col-auto{
+        grid-template-columns: max-content max-content;
+    }
     &.col-2{
         &.spread-short{
             grid-template-columns: repeat(2, 2.225em);
+        }
+        &.spread-average{
+            grid-template-columns: repeat(2, 3.2em);
+        }
+        &.spread-average-long{
+            grid-template-columns: repeat(2, 4em);
         }
         &.spread-long{
             grid-template-columns: repeat(2, 9.38em);
@@ -475,6 +487,58 @@ body{
     }
 }
 
+/// Floating positions for elements
+.bottom-left{
+    position: absolute;
+    top: 21em;
+    left: 3em;
+}
+
+.bottom-right{
+    position: absolute;
+    top: 20.2em;
+    right: 3.7em;
+}
+
+/// Position for the author's name
+.author-name{
+    position: absolute;
+    bottom: 0.7rem;
+    right: 2rem;
+}
+
+/// Bar on top of widget
+.hotbar{
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    top: -1.2em;
+    right: 1.2em;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 6px 6px 0px 0px;
+    height: 1.2em;
+}
+
+/// Maximize widget with a little of leeway
+.fullscreen{
+    top: 1.4em;
+    left: 0.8em;
+    min-height: calc(100vh - 2.2em);
+    max-height: calc(100vh - 2.2em);
+    min-width: calc(100vw - 1.3em);
+    max-width: calc(100vw - 1.3em);
+}
+
+.fullscreen-animation{
+    min-height: calc(100vh - 5.2em);
+    max-height: calc(100vh - 5.2em);
+}
+
+
+//////////////////// Class: Libraries ////////////////////
+/// React tabs
 .react-tabs{
     @extend .no-highlight;
     &__tab-list{
@@ -523,53 +587,50 @@ body{
     }
 }
 
-/// Floating positions for elements
-.bottom-left{
-    position: absolute;
-    top: 21em;
-    left: 3em;
+/// React calendar
+.react-calendar{
+    color: var(--randColor);
+    border-color: var(--randColor) !important;
 }
 
-.bottom-right{
-    position: absolute;
-    top: 20.2em;
-    right: 3.7em;
+.react-calendar__tile--active,
+.react-calendar__tile--hasActive{
+    background: var(--randColor) !important;
 }
 
-/// Position for the author's name
-.author-name{
-    position: absolute;
-    bottom: 0.7rem;
-    right: 2rem;
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus,
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus{
+    background: var(--randColorLight) !important;
 }
 
-/// Bar on top of widget
-.hotbar{
-    position: fixed;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    top: -1.2em;
-    right: 1.2em;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 6px 6px 0px 0px;
-    height: 1.2em;
+/// React time picker
+.react-time-picker__wrapper{
+    border-color: var(--randColor) !important;
 }
 
-/// Maximize widget with a little of leeway
-.fullscreen{
-    top: 1.4em;
-    left: 0.8em;
-    min-height: calc(100vh - 2.2em);
-    max-height: calc(100vh - 2.2em);
-    min-width: calc(100vw - 1.3em);
-    max-width: calc(100vw - 1.3em);
+.react-time-picker__clock{
+    border-color: var(--randColor) !important;
 }
 
-.fullscreen-animation{
-    min-height: calc(100vh - 5.2em);
-    max-height: calc(100vh - 5.2em);
+.react-time-picker__button:enabled:hover .react-time-picker__button__icon,
+.react-time-picker__button:enabled:focus .react-time-picker__button__icon{
+    stroke: var(--randColor) !important;
+}
+
+/// React clock
+.react-clock__face{
+    border-color: var(--randColor) !important;
+}
+
+.react-clock__mark__body,
+.react-clock__hand__body{
+    background-color: var(--randColorLight) !important;
+}
+
+.react-clock__second-hand__body {
+    background-color: red !important;
 }
 
 
@@ -788,6 +849,10 @@ body{
     }
 }
 
+#timeconversion-widget{
+    max-width: 40em;
+    width: 100vmin;
+}
 
 //////////////////// Animations: Widgets ////////////////////
 @keyframes fadeIn{

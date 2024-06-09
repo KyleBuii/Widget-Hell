@@ -21,7 +21,8 @@ class WidgetSetting extends Component{
                     translatorBtn: true,
                     googleTranslatorBtn: true,
                     calculatorBtn: true,
-                    weatherBtn: true
+                    weatherBtn: true,
+                    timeConversionBtn: true
                 },
                 widgetsBtnGames: {
                     snakeBtn: true,
@@ -392,7 +393,8 @@ class WidgetSetting extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        <section className="font large-medium no-color grid">
+                        {/* Buttons */}
+                        <section className="font large-medium no-color flex-center column gap">
                             <button id="settings-btn-show-hide-widgets"
                                 className="btn-match option opt-long disabled-option"
                                 onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
@@ -455,17 +457,22 @@ class WidgetSetting extends Component{
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("weather", "utility")}>Weather</button>
                                                 : <></>}
+                                            {(this.state.widgetsBtn.widgetsBtnUtility["timeConversionBtn"] === true)
+                                                ? <button id="show-hide-widgets-popout-btn-timeconversion"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("timeconversion", "utility")}>Time Conversion</button>
+                                                : <></>}
                                         </section>
                                     </TabPanel>
                                     {/* Games */}
                                     <TabPanel>
                                         <section id="show-hide-widgets-popout-btn-games"
                                             className="font large-medium no-color grid col-2 spread-long space-nicely all">
-                                            {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
+                                            {/* {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
                                                 ? <button id="show-hide-widgets-popout-btn-snake"
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
-                                                : <></>}
+                                                : <></>} */}
                                         </section>
                                     </TabPanel>
                                     {/* Fun */}

@@ -1,0 +1,331 @@
+import { React, Component } from 'react';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { FaExpand, Fa0, FaArrowDownLong } from 'react-icons/fa6';
+import { IconContext } from 'react-icons';
+import Draggable from 'react-draggable';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
+
+
+class WidgetTimeConversion extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            date: new Date(),
+            month: 0,
+            day: 0,
+            year: 0,
+            time: 0,
+            timeformat: "en",
+            hour12: true,
+            timezone: "JST"
+        };
+    };
+    handleChange(where, what){
+        switch(where){
+            case "date":
+                this.setState({
+                    date: new Date(`${what.toLocaleString().slice(0, 9)} ${this.state.time}`)
+                }, () => {
+                    /// Update values in inputs
+                    this.updateDate();
+                });        
+                break;
+            case "time":
+                this.setState({
+                    date: new Date(`${this.state.date.toLocaleString().slice(0, 9)} ${what}`),
+                    time: what
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    handleBtn(what){
+        switch(what){
+            case "12hr":
+                this.setState({
+                    timeformat: "en",
+                    hour12: true
+                });
+                break;
+            case "24hr":
+                this.setState({
+                    timeformat: "sv",
+                    hour12: false
+                }); 
+                break;
+            default:
+                break;
+        };
+    };
+    updateDate(event, what){
+        switch(what){
+            case "month":
+                const inputMonth = document.getElementById("timeconversion-input-month");
+                let tempMonth = 1;
+                /// If number is < min, set to min
+                if((event.target.value !== "") && (Number(event.target.value) < inputMonth.min)){
+                    tempMonth = inputMonth.min;
+                /// If number is > than 2 digits
+                }else if(event.target.value.length >= 3){
+                    /// If number sliced to 2 digits is <= max, set to 2 digits
+                    if(Number(event.target.value.slice(0, 2)) <= inputMonth.max){
+                        tempMonth = event.target.value.slice(0, 2);
+                    /// Else set to max since 2 digits is > max
+                    }else{
+                        tempMonth = inputMonth.max;
+                    };
+                /// If number is 2 digits and is > max, set to max
+                }else if((event.target.value.length === 2) && (Number(event.target.value) > inputMonth.max)){
+                    tempMonth = inputMonth.max;
+                /// Else set to value since it will be a 1 or 2 digit that is between min and max
+                }else{
+                    tempMonth = event.target.value;
+                }
+                this.setState({
+                    date: new Date(`${this.state.year} ${tempMonth} ${this.state.day} ${this.state.time}`),
+                    month: tempMonth
+                });
+                break;
+            case "day":
+                const inputDay = document.getElementById("timeconversion-input-day");
+                let tempDay = 1;
+                /// If number is < min, set to min
+                if((event.target.value !== "") && (Number(event.target.value) < inputDay.min)){
+                    tempDay = inputDay.min;
+                /// If number is > than 2 digits
+                }else if(event.target.value.length >= 3){
+                    /// If number sliced to 2 digits is <= max, set to 2 digits
+                    if(Number(event.target.value.slice(0, 2)) <= inputDay.max){
+                        tempDay = event.target.value.slice(0, 2);
+                    /// Else set to max since 2 digits is > max
+                    }else{
+                        tempDay = inputDay.max;
+                    };
+                /// If number is 2 digits and is > max, set to max
+                }else if((event.target.value.length === 2) && (Number(event.target.value) > inputDay.max)){
+                    tempDay = inputDay.max;
+                /// Else set to value since it will be a 1 or 2 digit that is between min and max
+                }else{
+                    tempDay = event.target.value;
+                }
+                this.setState({
+                    date: new Date(`${this.state.year} ${this.state.month} ${tempDay} ${this.state.time}`),
+                    day: tempDay
+                });
+                break;
+            case "year":
+                const inputYear = document.getElementById("timeconversion-input-year");
+                let tempYear = 1;
+                let validYear = 822;
+                /// If number is > than 4 digits
+                if(event.target.value.length >= 5){
+                    /// If number sliced to 4 digits is <= max, set to 4 digits
+                    if(Number(event.target.value.slice(0, 4)) <= inputYear.max){
+                        tempYear = event.target.value.slice(0, 4);
+                    /// Else set to max since 4 digits is > max
+                    }else{
+                        tempYear = inputYear.max;
+                    };
+                    validYear = tempYear;
+                /// If number is 4 or 3 digits
+                }else if((event.target.value.length === 4) || (event.target.value.length === 3)){
+                    /// If number is > max, set to max
+                    if(Number(event.target.value) > inputYear.max){
+                        tempYear = inputYear.max;
+                    /// If number is < min, set to min
+                    }else if(Number(event.target.value) < inputYear.min){
+                        tempYear = inputYear.min;
+                    /// Else set to value since it is between min and max
+                    }else{
+                        tempYear = event.target.value;
+                    };
+                    validYear = tempYear;
+                }else{
+                    tempYear = event.target.value;
+                }
+                this.setState({
+                    date: new Date(`${validYear} ${this.state.month} ${this.state.day} ${this.state.time}`),
+                    year: tempYear
+                });
+                break;
+            default:
+                const temp = this.state.date
+                    .toLocaleString("en-US", {
+                        hour12: false
+                    })
+                    .split(/\/|,/);
+                this.setState({
+                    month: temp[0],
+                    day: temp[1],
+                    year: temp[2],
+                    time: this.state.time
+                })
+                break;
+        }
+    };
+    componentDidMount(){
+        /// Set current date and time as default
+        const temp = this.state.date
+            .toLocaleString("en-US", {
+                hour12: false
+            })
+        .split(/\/|,/);
+        this.setState({
+            month: temp[0],
+            day: temp[1],
+            year: temp[2],
+            time: temp[3]
+        })
+        this.props.sortSelect('#timeconversion-select-timezone');
+    };
+    render(){
+        return(
+            <Draggable 
+                position={{
+                    x: this.props.position.x,
+                    y: this.props.position.y}}
+                disabled={this.props.dragDisabled}
+                onStart={() => this.props.defaultProps.dragStart("timeconversion")}
+                onStop={() => this.props.defaultProps.dragStop("timeconversion")}
+                onDrag={(event, data) => this.props.defaultProps.updatePosition("timeconversion", "utility", data.x, data.y)}
+                cancel="input, label, button, select, .react-calendar, .react-time-picker, .react-clock"
+                bounds="parent">
+                <div id="timeconversion-widget"
+                    className="widget">
+                    <div id="timeconversion-widget-animation"
+                        className="widget-animation">
+                        {/* Drag Handle */}
+                        <span id="timeconversion-widget-draggable"
+                            className="draggable">
+                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+                                <FaGripHorizontal/>
+                            </IconContext.Provider>
+                        </span>
+                        {/* Hotbar */}
+                        <section className="hotbar">
+                            {/* Reset Position */}
+                            {(this.props.defaultProps.hotbar.resetposition)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "resetposition", "utility")}>
+                                    <Fa0/>
+                                </button>
+                                : <></>}
+                            {/* Fullscreen */}
+                            {(this.props.defaultProps.hotbar.fullscreen)
+                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "fullscreen", "utility")}>
+                                    <FaExpand/>
+                                </button>
+                                : <></>}
+                        </section>
+                        <section className="flex-center row gap medium">
+                            <section className="flex-center column gap">
+                                {/* Original date and time */}
+                                <section className="flex-center column gap">
+                                    {/* Inputs */}
+                                    <section className="grid col-auto">
+                                        <label htmlFor="timeconversion-input-month"
+                                            className="font medium">
+                                            Month: 
+                                        </label>
+                                        <input id="timeconversion-input-month"
+                                            className="input-typable"
+                                            type="number"
+                                            max="12"
+                                            min="1"
+                                            value={this.state.month}
+                                            onChange={(event) => this.updateDate(event, "month")}></input>
+                                        <label htmlFor="timeconversion-input-day"
+                                            className="font medium">
+                                            Day: 
+                                        </label>
+                                        <input id="timeconversion-input-day"
+                                            className="input-typable"
+                                            type="number"
+                                            max="31"
+                                            min="1"
+                                            value={this.state.day}
+                                            onChange={(event) => this.updateDate(event, "day")}></input>
+                                        <label htmlFor="timeconversion-input-year"
+                                            className="font medium">
+                                            Year: 
+                                        </label>
+                                        <input id="timeconversion-input-year"
+                                            className="input-typable"
+                                            type="number"
+                                            max="9999"
+                                            min="100"
+                                            value={this.state.year}
+                                            onChange={(event) => this.updateDate(event, "year")}></input>
+                                        <label className="font medium">
+                                            Time:
+                                        </label>
+                                        <TimePicker
+                                            onChange={(val) => this.handleChange("time", val)}
+                                            value={this.state.time}
+                                            locale={this.state.timeformat}/>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <button id="time-conversion-btn-twelvehr"
+                                            className="btn-match option opt-small"
+                                            onClick={() => this.handleBtn("12hr")}>12hr</button>
+                                        <button id="time-conversion-btn-twentyfourhr" 
+                                            className="btn-match option opt-small"
+                                            onClick={() => this.handleBtn("24hr")}>24hr</button>
+                                    </section>
+                                </section>
+                                {/* Convert */}
+                                <section className="flex-center row gap">
+                                    <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
+                                        <FaArrowDownLong/>
+                                    </IconContext.Provider>
+                                    <select id="timeconversion-select-timezone"
+                                        className="select-match dropdown-arrow"
+                                        onChange={(e) => this.setState({
+                                                timezone: e.target.value
+                                            })
+                                        }>
+                                        <option value="ist">IST (UTC+5:30)</option>
+                                        <option value="cet">CET (UTC+1)</option>
+                                        <option value="eet">EET (UTC+2)</option>
+                                        <option value="est">EST (UTC-5)</option>
+                                        <option value="gmt">GMT (UTC+0)</option>
+                                        <option value="hst">HST (UTC-10)</option>
+                                        <option value="mst">MST (UTC-7)</option>
+                                        <option value="nz">NZST (UTC+12)</option>
+                                        <option value="prc">CST (UTC+8)</option>
+                                        <option value="rok">KST (UTC+9)</option>
+                                        <option value="utc">UTC</option>
+                                    </select>
+                                </section>
+                                {/* Converted date */}
+                                <section className="flex-center column gap">
+                                    <label htmlFor="timeconversion-input-month"
+                                        className="font medium">
+                                        {this.state.date.toLocaleString("en-US", {
+                                            hour12: this.state.hour12,
+                                            timeZone: this.state.timezone
+                                        })}
+                                    </label>
+                                </section>
+                            </section>
+                            {/* Calendar */}
+                            <div>
+                                <Calendar
+                                    onChange={(val) => this.handleChange("date", val)}
+                                    value={this.state.date}/>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </Draggable>
+        );
+    };
+};
+
+export default WidgetTimeConversion;
