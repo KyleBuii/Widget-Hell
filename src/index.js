@@ -872,6 +872,7 @@ class Widgets extends Component{
     };
     componentDidMount(){
         randColor();
+        this.storeData();
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -984,6 +985,7 @@ class Widgets extends Component{
                         spreadsheet: this.state.widgets.utility.spreadsheet.active,
                         snake: this.state.widgets.games.snake.active
                     }}
+                    defaultProps={defaultProps}
                     showHide={this.handleShowHide}
                     dragStart={dragStart}
                     dragStop={dragStop}

@@ -372,6 +372,7 @@ class WidgetSetting extends Component{
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
+            let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
             for(let i in dataLocalStorage.utility){
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
@@ -381,25 +382,25 @@ class WidgetSetting extends Component{
                 switch(i){
                     case "setting":
                         this.setState({
-                            screenDimmer: dataLocalStorage["utility"]["setting"]["values"]["screenDimmer"],
-                            screenDimmerValue: dataLocalStorage["utility"]["setting"]["values"]["screenDimmerValue"],
-                            background: dataLocalStorage["utility"]["setting"]["values"]["background"]
+                            screenDimmer: localStorageValues["screenDimmer"],
+                            screenDimmerValue: localStorageValues["screenDimmerValue"],
+                            background: localStorageValues["background"]
                         }, () => {
                             /// Update Display
                             if(this.state.screenDimmer === true){
                                 document.getElementById("App").style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
                             };
                             /// Update Design
-                            $("#settings-popout-design-select-animation").val(dataLocalStorage["utility"]["setting"]["values"]["animation"]);
-                            $("#settings-popout-design-select-custom-border").val(dataLocalStorage["utility"]["setting"]["values"]["customBorder"]);
+                            $("#settings-popout-design-select-animation").val(localStorageValues["animation"]);
+                            $("#settings-popout-design-select-custom-border").val(localStorageValues["customBorder"]);
                             $("#settings-popout-design-select-background").val(this.state.background);
                             this.updateBackground(this.state.background);
                             /// Update Feature
-                            document.getElementById("settings-popout-feature-authorNames").checked = dataLocalStorage["utility"]["setting"]["values"]["authorNames"];
-                            document.getElementById("settings-popout-feature-fullscreen").checked = dataLocalStorage["utility"]["setting"]["hotbar"]["fullscreen"];
-                            document.getElementById("settings-popout-feature-resetPosition").checked = dataLocalStorage["utility"]["setting"]["hotbar"]["resetPosition"];
+                            document.getElementById("settings-popout-feature-authorNames").checked = this.props.defaultProps.values.authorNames;
+                            document.getElementById("settings-popout-feature-fullscreen").checked = this.props.defaultProps.hotbar.fullscreen;
+                            document.getElementById("settings-popout-feature-resetPosition").checked = this.props.defaultProps.hotbar.resetPosition;
                             /// Update Misc
-                            document.getElementById("settings-popout-feature-savepositionpopup").checked = dataLocalStorage["utility"]["setting"]["values"]["savePositionPopout"];
+                            document.getElementById("settings-popout-feature-savepositionpopup").checked = localStorageValues["savePositionPopout"];
                         });
                         break;
                     default:
