@@ -314,9 +314,9 @@ class WidgetCalculator extends Component{
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "resetposition", "utility")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
@@ -492,7 +492,7 @@ class WidgetCalculator extends Component{
                             </section>
                         </Draggable>
                         {/* Author */}
-                        {(this.props.defaultProps.values.authornames)
+                        {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>

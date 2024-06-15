@@ -612,6 +612,8 @@ body{
 
 .react-time-picker__clock{
     border-color: var(--randColor) !important;
+    position: absolute !important;
+    top: -12.5em !important;
 }
 
 .react-time-picker__button:enabled:hover .react-time-picker__button__icon,
@@ -620,6 +622,10 @@ body{
 }
 
 /// React clock
+.react-clock{
+    top: 0%;
+}
+
 .react-clock__face{
     border-color: var(--randColor) !important;
 }

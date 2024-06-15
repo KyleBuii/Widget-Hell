@@ -22,7 +22,8 @@ class WidgetSetting extends Component{
                     googleTranslatorBtn: true,
                     calculatorBtn: true,
                     weatherBtn: true,
-                    timeConversionBtn: true
+                    timeConversionBtn: true,
+                    spreadsheetBtn: true
                 },
                 widgetsBtnGames: {
                     snakeBtn: true,
@@ -36,7 +37,8 @@ class WidgetSetting extends Component{
             funTab: false,
             settings: false,                /// Settings
             screenDimmer: false,
-            screenDimmerValue: ""
+            screenDimmerValue: 100,
+            background: "default"
         };
         this.handleTrick = this.handleTrick.bind(this);
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
@@ -44,6 +46,7 @@ class WidgetSetting extends Component{
         this.handleSlider = this.handleSlider.bind(this);
         this.handleTabSwitch = this.handleTabSwitch.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.storeData = this.storeData.bind(this);
     };
     /// Remove element at index "i" where order doesn't matter
     unorderedRemove(arr, i){
@@ -224,22 +227,10 @@ class WidgetSetting extends Component{
                 this.props.updateValue(what, where, "values");
                 break;
             case "background":
-                const e = document.getElementById("App");
-                switch(what){
-                    case "default":
-                        e.style.backgroundColor = "var(--randColor)";
-                        e.style.backgroundImage = "none";
-                        break;
-                    case "white":
-                        e.style.backgroundColor = "white";
-                        e.style.backgroundImage = "none";
-                        break;
-                    case "linear-gradient":
-                        e.style.backgroundImage = "linear-gradient(var(--randColor), var(--randColorLight))";
-                        break;
-                    default:
-                        break;
-                };
+                this.updateBackground(what);
+                this.setState({
+                    background: what
+                });
                 break;
             case "custom-border":
                 this.props.updateValue(what, "customBorder", "values");
@@ -344,15 +335,75 @@ class WidgetSetting extends Component{
             };
         });
     };
-    componentDidMount(){
-        /// Load widget's data from local storage
+    updateBackground(what){
+        const e = document.getElementById("App");
+        switch(what){
+            case "default":
+                e.style.backgroundColor = "var(--randColor)";
+                e.style.backgroundImage = "none";
+                break;
+            case "white":
+                e.style.backgroundColor = "white";
+                e.style.backgroundImage = "none";
+                break;
+            case "linear-gradient":
+                e.style.backgroundImage = "linear-gradient(var(--randColor), var(--randColorLight))";
+                break;
+            default:
+                break;
+        };
+    };
+    storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            dataLocalStorage["utility"]["setting"] = {
+                ...dataLocalStorage["utility"]["setting"],
+                values: {
+                    ...dataLocalStorage["utility"]["setting"]["values"],
+                    screenDimmer: this.state.screenDimmer,
+                    screenDimmerValue: this.state.screenDimmerValue,
+                    background: this.state.background
+                }
+            };
+            localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
+        };
+    };
+    async componentDidMount(){
+        /// Load widget's data from local storage
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
             for(let i in dataLocalStorage.utility){
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
                     btn.style.opacity = "1";
                     this.props.updateWidgetsActive(i, "utility");
+                };
+                switch(i){
+                    case "setting":
+                        this.setState({
+                            screenDimmer: dataLocalStorage["utility"]["setting"]["values"]["screenDimmer"],
+                            screenDimmerValue: dataLocalStorage["utility"]["setting"]["values"]["screenDimmerValue"],
+                            background: dataLocalStorage["utility"]["setting"]["values"]["background"]
+                        }, () => {
+                            /// Update Display
+                            if(this.state.screenDimmer === true){
+                                document.getElementById("App").style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                            };
+                            /// Update Design
+                            $("#settings-popout-design-select-animation").val(dataLocalStorage["utility"]["setting"]["values"]["animation"]);
+                            $("#settings-popout-design-select-custom-border").val(dataLocalStorage["utility"]["setting"]["values"]["customBorder"]);
+                            $("#settings-popout-design-select-background").val(this.state.background);
+                            this.updateBackground(this.state.background);
+                            /// Update Feature
+                            document.getElementById("settings-popout-feature-authorNames").checked = dataLocalStorage["utility"]["setting"]["values"]["authorNames"];
+                            document.getElementById("settings-popout-feature-fullscreen").checked = dataLocalStorage["utility"]["setting"]["hotbar"]["fullscreen"];
+                            document.getElementById("settings-popout-feature-resetPosition").checked = dataLocalStorage["utility"]["setting"]["hotbar"]["resetPosition"];
+                            /// Update Misc
+                            document.getElementById("settings-popout-feature-savepositionpopup").checked = dataLocalStorage["utility"]["setting"]["values"]["savePositionPopout"];
+                        });
+                        break;
+                    default:
+                        break;
                 };
             };
             for(let i in dataLocalStorage.games){
@@ -370,6 +421,12 @@ class WidgetSetting extends Component{
                 };
             };
         };
+        /// Save widget's data to local storage
+        window.addEventListener("beforeunload", this.storeData);
+    };
+    componentWillUnmount(){
+        this.storeData();
+        window.removeEventListener("beforeunload", this.storeData);
     };
     render(){
         return(
@@ -462,6 +519,11 @@ class WidgetSetting extends Component{
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("timeconversion", "utility")}>Time Conversion</button>
                                                 : <></>}
+                                            {(this.state.widgetsBtn.widgetsBtnUtility["spreadsheetBtn"] === true)
+                                                ? <button id="show-hide-widgets-popout-btn-spreadsheet"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("spreadsheet", "utility")}>Spreadsheet</button>
+                                                : <></>}
                                         </section>
                                     </TabPanel>
                                     {/* Games */}
@@ -522,7 +584,7 @@ class WidgetSetting extends Component{
                                             onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
                                             min={5}
                                             max={130}
-                                            defaultValue={100}
+                                            value={this.state.screenDimmerValue}
                                             disabled={!this.state.screenDimmer}/>
                                     </section>
                                     {/* Design Settings */}
@@ -609,12 +671,12 @@ class WidgetSetting extends Component{
                                             {/* Display author names */}
                                             <section className="element-ends">
                                                 <label className="font small"
-                                                    htmlFor="settings-popout-feature-authornames">
+                                                    htmlFor="settings-popout-feature-authorNames">
                                                     Author Names
                                                 </label>
-                                                <input id="settings-popout-feature-authornames"
+                                                <input id="settings-popout-feature-authorNames"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "authornames", "values")}/>
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "authorNames", "values")}/>
                                             </section>
                                         </fieldset>
                                         {/* Hotbar Sub Section */}
@@ -635,12 +697,12 @@ class WidgetSetting extends Component{
                                             {/* Reset Position */}
                                             <section className="element-ends">
                                                 <label className="font small"
-                                                    htmlFor="settings-popout-feature-resetposition">
+                                                    htmlFor="settings-popout-feature-resetPosition">
                                                     Reset Position
                                                 </label>
-                                                <input id="settings-popout-feature-resetposition"
+                                                <input id="settings-popout-feature-resetPosition"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetposition", "hotbar")}/>
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "hotbar")}/>
                                             </section>
                                         </fieldset>
                                     </section>
@@ -657,7 +719,7 @@ class WidgetSetting extends Component{
                                             </label>
                                             <input id="settings-popout-feature-savepositionpopup"
                                                 type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "savepositionpopout", "values")}/>
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
                                         </section>
                                     </section>
                                 </section>

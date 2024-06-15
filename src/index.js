@@ -12,6 +12,7 @@ import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.js';
 import WidgetCalculator from './Widgets/Utility/Calculator.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
 import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
+import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
 
 
 //////////////////// Variables ////////////////////
@@ -393,12 +394,12 @@ class Widgets extends Component{
             values: {
                 animation: "default",
                 customBorder: "default",    
-                savepositionpopout: false,
-                authornames: false
+                savePositionPopout: false,
+                authorNames: false
             },
             hotbar: {
                 fullscreen: false,
-                resetposition: false
+                resetPosition: false
             },
             prevPosition: {
                 prevX: 0,
@@ -501,6 +502,16 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
+                    },
+                    spreadsheet: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
                     }
                 },
                 games: {
@@ -524,6 +535,7 @@ class Widgets extends Component{
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
+        this.storeData = this.storeData.bind(this);
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
@@ -634,7 +646,7 @@ class Widgets extends Component{
                     }
                 }));
                 break;
-            case "resetposition":
+            case "resetPosition":
                 this.setState(prevState => ({
                     widgets: {
                         ...prevState.widgets,
@@ -766,11 +778,105 @@ class Widgets extends Component{
                 break;
         };
     };
+    storeData(){
+        let data = {
+            utility: {},
+            games: {},
+            fun: {}
+        };
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            for(let i in this.state.widgets.utility){
+                data.utility[i] = {
+                    ...dataLocalStorage["utility"][i],
+                    active: this.state.widgets.utility[i].active,
+                    position: this.state.widgets.utility[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.utility[i].popouts = this.state.widgets.utility[i].popouts;
+                };
+                switch(i){
+                    case "setting":
+                        data.utility[i] = {
+                            ...data.utility[i],
+                            ...dataLocalStorage["utility"][i],
+                            values: {
+                                ...data.utility[i]["values"],
+                                animation: this.state.values.animation,
+                                customBorder: this.state.values.customBorder,
+                                authorNames: this.state.values.authorNames,
+                                savePositionPopout: this.state.values.savePositionPopout
+                            },
+                            hotbar: {
+                                ...data.utility[i]["hotbar"],
+                                fullscreen: this.state.hotbar.fullscreen,
+                                resetPosition: this.state.hotbar.resetPosition
+                            }
+                        };
+                        break;
+                    default:
+                        break;
+                };
+            };
+            for(let i in this.state.widgets.games){
+                data.games[i] = {
+                    ...dataLocalStorage["games"][i],
+                    active: this.state.widgets.games[i].active,
+                    position: this.state.widgets.games[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.games[i].popouts = this.state.widgets.games[i].popouts;
+                };
+            };
+            for(let i in this.state.widgets.fun){
+                data.fun[i] = {
+                    ...dataLocalStorage["fun"][i],
+                    active: this.state.widgets.fun[i].active,
+                    position: this.state.widgets.fun[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.fun[i].popouts = this.state.widgets.fun[i].popouts;
+                };
+            };
+        /// First load
+        }else{
+            for(let i in this.state.widgets.utility){
+                data.utility[i] = {
+                    active: this.state.widgets.utility[i].active,
+                    position: this.state.widgets.utility[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.utility[i].popouts = this.state.widgets.utility[i].popouts;
+                };
+            };
+            for(let i in this.state.widgets.games){
+                data.games[i] = {
+                    active: this.state.widgets.games[i].active,
+                    position: this.state.widgets.games[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.games[i].popouts = this.state.widgets.games[i].popouts;
+                };
+            };
+            for(let i in this.state.widgets.fun){
+                data.fun[i] = {
+                    active: this.state.widgets.fun[i].active,
+                    position: this.state.widgets.fun[i].position
+                };
+                if(this.state.values.savePositionPopout){
+                    data.fun[i].popouts = this.state.widgets.fun[i].popouts;
+                };
+            };
+        };
+        localStorage.setItem("widgets", JSON.stringify(data));
+    };
     componentDidMount(){
         randColor();
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
+            let localStorageHotbar = dataLocalStorage["utility"]["setting"]["hotbar"];
             for(let i in this.state.widgets.utility){
                 this.setState(prevState => ({
                     widgets: {
@@ -783,7 +889,34 @@ class Widgets extends Component{
                             }
                         }
                     }
-                }));
+                }), () => {
+                    this.updateCustomBorder();    
+                });
+                /// For specific widgets that have unique state values
+                switch(i){
+                    case "setting":
+                        this.setState({
+                            values: {
+                                ...this.state.values,
+                                animation: localStorageValues["animation"],
+                                customBorder: localStorageValues["customBorder"],    
+                                savePositionPopout: localStorageValues["savePositionPopout"],
+                                authorNames: localStorageValues["authorNames"]
+                            },
+                            hotbar: {
+                                ...this.state.hotbar,
+                                fullscreen: localStorageHotbar["fullscreen"],
+                                resetPosition: localStorageHotbar["resetPosition"]
+                            }
+                        });
+                        /// Set custom border for setting
+                        if(localStorageValues["customBorder"] !== "default"){
+                            // this.updateCustomBorder("setting");
+                        };
+                        break;
+                    default:
+                        break;
+                };
             };
             for(let i in this.state.widgets.games){
                 this.setState(prevState => ({
@@ -797,7 +930,9 @@ class Widgets extends Component{
                             }
                         }
                     }
-                }));
+                }), () => {
+                    this.updateCustomBorder();    
+                });
             };
             for(let i in this.state.widgets.fun){
                 this.setState(prevState => ({
@@ -811,45 +946,16 @@ class Widgets extends Component{
                             }
                         }
                     }
-                }));
+                }), () => {
+                    this.updateCustomBorder();
+                });
             };
         };
         /// Store widget's data in local storage when the website closes/refreshes
-        window.addEventListener("beforeunload", () => {
-            let data = {
-                utility: {},
-                games: {},
-                fun: {}
-            };
-            for(let i in this.state.widgets.utility){
-                data.utility[i] = {
-                    active: this.state.widgets.utility[i].active,
-                    position: this.state.widgets.utility[i].position
-                };
-                if(this.state.values.savepositionpopout){
-                    data.utility[i].popouts = this.state.widgets.utility[i].popouts;
-                };
-            };
-            for(let i in this.state.widgets.games){
-                data.games[i] = {
-                    active: this.state.widgets.games[i].active,
-                    position: this.state.widgets.games[i].position
-                };
-                if(this.state.values.savepositionpopout){
-                    data.games[i].popouts = this.state.widgets.games[i].popouts;
-                };
-            };
-            for(let i in this.state.widgets.fun){
-                data.fun[i] = {
-                    active: this.state.widgets.fun[i].active,
-                    position: this.state.widgets.fun[i].position
-                };
-                if(this.state.values.savepositionpopout){
-                    data.fun[i].popouts = this.state.widgets.fun[i].popouts;
-                };
-            };
-            localStorage.setItem("widgets", JSON.stringify(data));          
-        });
+        window.addEventListener("beforeunload", this.storeData);
+    };
+    componentWillUnmount(){
+        window.removeEventListener("beforeunload", this.storeData);
     };
     render(){
         const defaultProps = {
@@ -858,11 +964,11 @@ class Widgets extends Component{
             updatePosition:this.updatePosition,
             handleHotbar:this.handleHotbar,
             values:{
-                authornames: this.state.values.authornames
+                authorNames: this.state.values.authorNames
             },
             hotbar:{
                 fullscreen: this.state.hotbar.fullscreen,
-                resetposition: this.state.hotbar.resetposition
+                resetPosition: this.state.hotbar.resetPosition
             }
         };
         return(
@@ -875,6 +981,7 @@ class Widgets extends Component{
                         calculator: this.state.widgets.utility.calculator.active,
                         weather: this.state.widgets.utility.weather.active,
                         timeconversion: this.state.widgets.utility.timeconversion.active,
+                        spreadsheet: this.state.widgets.utility.spreadsheet.active,
                         snake: this.state.widgets.games.snake.active
                     }}
                     showHide={this.handleShowHide}
@@ -1010,8 +1117,18 @@ class Widgets extends Component{
                             x: this.state.widgets.utility.timeconversion.position.x,
                             y: this.state.widgets.utility.timeconversion.position.y
                         }}
-                        sortSelect={sortSelect}
                         dragDisabled={this.state.widgets.utility.timeconversion.drag.disabled}
+                        sortSelect={sortSelect}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.spreadsheet.active === true
+                    ? <WidgetSpreadsheet
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.spreadsheet.position.x,
+                            y: this.state.widgets.utility.spreadsheet.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.spreadsheet.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
             </div>
@@ -1047,9 +1164,9 @@ class Widget[] extends Component{
                         {/* Hotbar *
                         <section className="hotbar">
                             {/* Reset Position *
-                            {(this.props.defaultProps.hotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "resetposition", "[WIDGET TYPE]")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "resetPosition", "[WIDGET TYPE]")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}

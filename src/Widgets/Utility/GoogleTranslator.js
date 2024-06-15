@@ -151,9 +151,9 @@ class WidgetGoogleTranslator extends Component{
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "resetposition", "utility")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
@@ -206,7 +206,7 @@ class WidgetGoogleTranslator extends Component{
                             </button>
                         </div>
                         {/* Author */}
-                        {(this.props.defaultProps.values.authornames)
+                        {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
                             : <></>}
                     </div>

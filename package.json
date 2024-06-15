@@ -25,6 +25,7 @@
     "react-native": "^0.72.4",
     "react-redux": "^9.0.4",
     "react-scripts": "5.0.1",
+    "react-spreadsheet": "^0.9.4",
     "react-switch": "^7.0.0",
     "react-tabs": "^6.0.2",
     "react-time-picker": "^7.0.0",

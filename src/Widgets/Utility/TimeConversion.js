@@ -209,9 +209,9 @@ class WidgetTimeConversion extends Component{
                         {/* Hotbar */}
                         <section className="hotbar">
                             {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetposition)
+                            {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "resetposition", "utility")}>
+                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
