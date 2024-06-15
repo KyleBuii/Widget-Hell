@@ -373,6 +373,7 @@ class WidgetSetting extends Component{
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
             let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
+            let localStorageHotbar = dataLocalStorage["utility"]["setting"]["hotbar"];
             for(let i in dataLocalStorage.utility){
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
@@ -396,9 +397,9 @@ class WidgetSetting extends Component{
                             $("#settings-popout-design-select-background").val(this.state.background);
                             this.updateBackground(this.state.background);
                             /// Update Feature
-                            document.getElementById("settings-popout-feature-authorNames").checked = this.props.defaultProps.values.authorNames;
-                            document.getElementById("settings-popout-feature-fullscreen").checked = this.props.defaultProps.hotbar.fullscreen;
-                            document.getElementById("settings-popout-feature-resetPosition").checked = this.props.defaultProps.hotbar.resetPosition;
+                            document.getElementById("settings-popout-feature-authorNames").checked = localStorageValues["authorNames"];
+                            // document.getElementById("settings-popout-feature-fullscreen").checked = localStorageHotbar["fullscreen"];
+                            // document.getElementById("settings-popout-feature-resetPosition").checked = localStorageHotbar["resetPosition"];
                             /// Update Misc
                             document.getElementById("settings-popout-feature-savepositionpopup").checked = localStorageValues["savePositionPopout"];
                         });

@@ -910,10 +910,6 @@ class Widgets extends Component{
                                 resetPosition: localStorageHotbar["resetPosition"]
                             }
                         });
-                        /// Set custom border for setting
-                        if(localStorageValues["customBorder"] !== "default"){
-                            // this.updateCustomBorder("setting");
-                        };
                         break;
                     default:
                         break;
@@ -985,7 +981,6 @@ class Widgets extends Component{
                         spreadsheet: this.state.widgets.utility.spreadsheet.active,
                         snake: this.state.widgets.games.snake.active
                     }}
-                    defaultProps={defaultProps}
                     showHide={this.handleShowHide}
                     dragStart={dragStart}
                     dragStop={dragStop}
