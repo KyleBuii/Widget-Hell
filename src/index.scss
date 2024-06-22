@@ -264,6 +264,9 @@ body{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    &.not-spaced{
+        justify-content: unset;
+    }
 }
 
 .when-elements-are-not-straight{
@@ -384,6 +387,10 @@ body{
         }
         &.spread-long{
             grid-template-columns: repeat(2, 9.38em);
+        }
+        &.spread-setting{
+            gap: 1.4em;
+            grid-template-columns: repeat(2, 4.3em);
         }
     }
     &.col-3{

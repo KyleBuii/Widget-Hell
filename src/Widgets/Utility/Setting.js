@@ -36,9 +36,18 @@ class WidgetSetting extends Component{
             gamesTab: false,
             funTab: false,
             settings: false,                /// Settings
-            screenDimmer: false,
-            screenDimmerValue: 100,
-            background: "default"
+            values: {
+                screenDimmer: false,
+                screenDimmerValue: 100,
+                background: "default",
+                animation: "default",
+                customBorder: "default",
+                shadow: false,
+                authorNames: false,
+                fullscreen: false,
+                resetPosition: false,
+                savePositionPopout: false
+            }
         };
         this.handleTrick = this.handleTrick.bind(this);
         this.handlePressableBtn = this.handlePressableBtn.bind(this);
@@ -73,10 +82,10 @@ class WidgetSetting extends Component{
                 $("#settings-popout-design-select-background").val(rand);
                 this.handleSelect(rand, "background");
                 break;
-            case "custom-border":
+            case "customBorder":
                 rand = this.props.customBorders[Math.floor(Math.random() * this.props.customBorders.length)];
                 $("#settings-popout-design-select-custom-border").val(rand);
-                this.handleSelect(rand, "custom-border");
+                this.handleSelect(rand, "customBorder");
                 break;
             default:
                 break;
@@ -190,9 +199,12 @@ class WidgetSetting extends Component{
             case "btn-screen-dimmer":
                 const bg = document.getElementById("App");
                 this.setState({
-                    screenDimmer: value
+                    values: {
+                        ...this.state.values,
+                        screenDimmer: value
+                    }
                 }, () => {
-                    if(this.state.screenDimmer === true){
+                    if(this.state.values.screenDimmer === true){
                         bg.style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
                     }else{
                         bg.style.filter = "brightness(100%)";
@@ -209,10 +221,13 @@ class WidgetSetting extends Component{
             case "slider-screen-dimmer":
                 const bg = document.getElementById("App");
                 this.setState({
-                    screenDimmerValue: value
+                    values: {
+                        ...this.state.values,
+                        screenDimmerValue: value
+                    }
                 }, () => {
-                    if(this.state.screenDimmer === true){
-                        bg.style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                    if(this.state.values.screenDimmer === true){
+                        bg.style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                     };
                 });
                 break;
@@ -222,18 +237,21 @@ class WidgetSetting extends Component{
     };
     /// Handles all selects
     handleSelect(what, where){
+        this.setState({
+            values: {
+                ...this.state.values,
+                [where]: what
+            }
+        });
         switch(where){
             case "animation":
                 this.props.updateValue(what, where, "values");
                 break;
             case "background":
                 this.updateBackground(what);
-                this.setState({
-                    background: what
-                });
                 break;
-            case "custom-border":
-                this.props.updateValue(what, "customBorder", "values");
+            case "customBorder":
+                this.props.updateValue(what, where, "values");
                 break;
             default:
                 break;
@@ -241,6 +259,15 @@ class WidgetSetting extends Component{
     };
     /// Handles all checkboxes
     handleCheckbox(what, where, type){
+        this.setState({
+            values: {
+                ...this.state.values,
+                [where]: what
+            }
+        });
+        if(where){
+            this.props.updateDesign(where, what);
+        };
         this.props.updateValue(what, where, type);
     };
     handleTabSwitch(what){
@@ -360,9 +387,15 @@ class WidgetSetting extends Component{
                 ...dataLocalStorage["utility"]["setting"],
                 values: {
                     ...dataLocalStorage["utility"]["setting"]["values"],
-                    screenDimmer: this.state.screenDimmer,
-                    screenDimmerValue: this.state.screenDimmerValue,
-                    background: this.state.background
+                    screenDimmer: this.state.values.screenDimmer,
+                    screenDimmerValue: this.state.values.screenDimmerValue,
+                    background: this.state.values.background,
+                    animation: this.state.values.animation,
+                    customBorder: this.state.values.customBorder,
+                    authorNames: this.state.values.authorNames,
+                    fullscreen: this.state.values.fullscreen,
+                    resetPosition: this.state.values.resetPosition,
+                    savePositionPopout: this.state.values.savePositionPopout
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -373,7 +406,6 @@ class WidgetSetting extends Component{
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
             let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
-            let localStorageHotbar = dataLocalStorage["utility"]["setting"]["hotbar"];
             for(let i in dataLocalStorage.utility){
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
@@ -383,25 +415,34 @@ class WidgetSetting extends Component{
                 switch(i){
                     case "setting":
                         this.setState({
-                            screenDimmer: localStorageValues["screenDimmer"],
-                            screenDimmerValue: localStorageValues["screenDimmerValue"],
-                            background: localStorageValues["background"]
+                            values: {
+                                ...this.state.values,
+                                screenDimmer: localStorageValues["screenDimmer"],
+                                screenDimmerValue: localStorageValues["screenDimmerValue"],
+                                background: localStorageValues["background"],
+                                animation: localStorageValues["animation"],
+                                customBorder: localStorageValues["customBorder"],
+                                authorNames: localStorageValues["authorNames"],
+                                fullscreen: localStorageValues["fullscreen"],
+                                resetPosition: localStorageValues["resetPosition"],
+                                savePositionPopout: localStorageValues["savePositionPopout"]
+                            }
                         }, () => {
                             /// Update Display
-                            if(this.state.screenDimmer === true){
-                                document.getElementById("App").style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                            if(this.state.values.screenDimmer === true){
+                                document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                             };
                             /// Update Design
-                            $("#settings-popout-design-select-animation").val(localStorageValues["animation"]);
-                            $("#settings-popout-design-select-custom-border").val(localStorageValues["customBorder"]);
-                            $("#settings-popout-design-select-background").val(this.state.background);
-                            this.updateBackground(this.state.background);
+                            $("#settings-popout-design-select-animation").val(this.state.values.animation);
+                            $("#settings-popout-design-select-custom-border").val(this.state.values.customBorder);
+                            $("#settings-popout-design-select-background").val(this.state.values.background);
+                            this.updateBackground(this.state.values.background);
                             /// Update Feature
-                            document.getElementById("settings-popout-feature-authorNames").checked = localStorageValues["authorNames"];
-                            // document.getElementById("settings-popout-feature-fullscreen").checked = localStorageHotbar["fullscreen"];
-                            // document.getElementById("settings-popout-feature-resetPosition").checked = localStorageHotbar["resetPosition"];
+                            document.getElementById("settings-popout-feature-authorNames").checked = this.state.values.authorNames;
+                            document.getElementById("settings-popout-feature-fullscreen").checked = this.state.values.fullscreen;
+                            document.getElementById("settings-popout-feature-resetPosition").checked = this.state.values.resetPosition;
                             /// Update Misc
-                            document.getElementById("settings-popout-feature-savepositionpopup").checked = localStorageValues["savePositionPopout"];
+                            document.getElementById("settings-popout-feature-savepositionpopup").checked = this.state.values.savePositionPopout;
                         });
                         break;
                     default:
@@ -427,7 +468,6 @@ class WidgetSetting extends Component{
         window.addEventListener("beforeunload", this.storeData);
     };
     componentWillUnmount(){
-        this.storeData();
         window.removeEventListener("beforeunload", this.storeData);
     };
     render(){
@@ -550,7 +590,7 @@ class WidgetSetting extends Component{
                         </Draggable>
                         {/* Settings Popout */}
                         <Draggable
-                            cancel="span, .toggleable, .slider, select"
+                            cancel="span, .toggleable, .slider, select, input"
                             position={{
                                 x: this.props.positionPopout.settings.x,
                                 y: this.props.positionPopout.settings.y}}
@@ -570,7 +610,7 @@ class WidgetSetting extends Component{
                                                 Screen Dimmer
                                             </span>
                                             <Switch className="toggleable"
-                                                checked={this.state.screenDimmer}
+                                                checked={this.state.values.screenDimmer}
                                                 onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
                                                 onColor="#86d3ff"
                                                 onHandleColor="#2693e6"
@@ -586,8 +626,8 @@ class WidgetSetting extends Component{
                                             onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
                                             min={5}
                                             max={130}
-                                            value={this.state.screenDimmerValue}
-                                            disabled={!this.state.screenDimmer}/>
+                                            value={this.state.values.screenDimmerValue}
+                                            disabled={!this.state.values.screenDimmer}/>
                                     </section>
                                     {/* Design Settings */}
                                     <section className="section-group">
@@ -644,7 +684,7 @@ class WidgetSetting extends Component{
                                                     Custom Border
                                                 </span>
                                                 <button className="btn-match inverse"
-                                                    onClick={() => this.randomOption("custom-border")}>
+                                                    onClick={() => this.randomOption("customBorder")}>
                                                     <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                         <FaRandom/>
                                                     </IconContext.Provider>
@@ -652,12 +692,26 @@ class WidgetSetting extends Component{
                                             </section>
                                             <select id="settings-popout-design-select-custom-border"
                                                 className="select-match dropdown-arrow space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event.target.value, "custom-border")}
+                                                onChange={(event) => this.handleSelect(event.target.value, "customBorder")}
                                                 defaultValue={"default"}>
                                                 <option value="default">Default</option>
                                                 <option value="diagonal">Diagonal</option>
                                                 <option value="dashed">Dashed</option>
+                                                <option value="double">Double</option>
                                             </select>
+                                        </section>
+                                        {/* Checkboxes */}
+                                        <section className="grid col-2 spread-setting">
+                                            {/* Shadow */}
+                                            <section className="element-ends not-spaced">
+                                                <label className="font small"
+                                                    htmlFor="settings-popout-design-shadow">
+                                                    Shadow
+                                                </label>
+                                                <input id="settings-popout-design-shadow"
+                                                    type="checkbox"
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "shadow", "values")}/>
+                                            </section>
                                         </section>
                                     </section>
                                     {/* Feature Settings */}
