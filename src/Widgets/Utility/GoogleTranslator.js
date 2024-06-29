@@ -5,6 +5,16 @@ import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import $ from 'jquery';
+import Select from "react-select";
+
+
+/// Select option
+const optionsTranslate = [
+    {
+        label: "Languages",
+        options: []
+    }
+];
 
 
 class WidgetGoogleTranslator extends Component{
@@ -30,7 +40,7 @@ class WidgetGoogleTranslator extends Component{
     };
     async handleTranslate(){
         if(this.state.input !== ""){
-            const url = 'https://translated-mymemory---translation-memory.p.rapidapi.com/get?langpair=' + this.state.from + '%7C' + this.state.to + '&q=' + this.state.input + '&mt=1&onlyprivate=0&de=a%40b.c';
+            const url = 'https://translated-mymemory---translation-memory.p.rapidapi.com/get?langpair=' + this.state.from.value + '%7C' + this.state.to.value + '&q=' + this.state.input + '&mt=1&onlyprivate=0&de=a%40b.c';
             const options = {
                 method: 'GET',
                 headers: {
@@ -54,28 +64,24 @@ class WidgetGoogleTranslator extends Component{
     /// Handles the "from" language select
     handleFrom(event){
         this.setState({
-            from: event.target.value
+            from: event
         });
     };
     /// Handles the "to" language select
     handleTo(event){
         this.setState({
-            to: event.target.value,
+            to: event,
         });
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
-        if(this.state.from !== this.state.to){
+        if(this.state.from.value !== this.state.to.value){
             this.props.randColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,
                 to: prev
             }));
-            const v1 = $("#googletranslator-translate-from").val();
-            const v2 = $("#googletranslator-translate-to").val();
-            $("#googletranslator-translate-from").val(v2);
-            $("#googletranslator-translate-to").val(v1);
         };
     };
     /// Handles random sentence button
@@ -88,25 +94,24 @@ class WidgetGoogleTranslator extends Component{
         });
     };
     componentDidMount(){
-        const select = document.getElementById("select-languages");
         /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.languages.length; curr+=2){
-            var optText = this.props.languages[curr];
-            var optValue = this.props.languages[curr+1];
-            var el = document.createElement("option");
-            el.textContent = optText;
-            el.value = optValue;
-            select.appendChild(el);
+            // var optText = this.props.languages[curr];
+            // var optValue = this.props.languages[curr+1];
+            // var el = document.createElement("option");
+            // el.textContent = optText;
+            // el.value = optValue;
+            // select.appendChild(el);
+            optionsTranslate[0]["options"].push(
+                {value: this.props.languages[curr+1], label: this.props.languages[curr]}
+            );
         };
-        $('#googletranslator-translate-from optgroup').clone().appendTo('#googletranslator-translate-to');
         /// Default values
         if(sessionStorage.getItem("googletranslator") === null){
             this.setState({
-                from: "en",
-                to: "en"
+                from: {value: "en", label: "English"},
+                to: {value: "en", label: "English"}
             });
-            $("#googletranslator-translate-from").val("en");
-            $("#googletranslator-translate-to").val("en");
         }else{
             let dataSessionStorage = JSON.parse(sessionStorage.getItem("googletranslator"));
             this.setState({
@@ -165,22 +170,44 @@ class WidgetGoogleTranslator extends Component{
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Select */}
                         <div className="flex-center space-nicely bottom">
-                            <select id="googletranslator-translate-from"
-                                className="select-match dropdown-arrow"
-                                onChange={this.handleFrom}>
-                                <optgroup id="select-languages"
-                                    label="Languages"></optgroup>
-                            </select>
+                            {/* Select From */}
+                            <Select id="googletranslator-translate-from"
+                                className="select-match"
+                                value={this.state.from}
+                                defaultValue={optionsTranslate[0]["options"][0]}
+                                onChange={this.handleFrom}
+                                options={optionsTranslate}
+                                formatGroupLabel={this.props.formatGroupLabel}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        ...this.props.selectTheme
+                                    }
+                                })}/>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
                                 </IconContext.Provider>
                             </button>
-                            <select id="googletranslator-translate-to"
-                                className="select-match dropdown-arrow"
-                                onChange={this.handleTo}></select>
+                            {/* Select To */}
+                            <Select id="googletranslator-translate-to"
+                                className="select-match"
+                                value={this.state.to}
+                                defaultValue={optionsTranslate[0]["options"][0]}
+                                onChange={this.handleTo}
+                                options={optionsTranslate}
+                                formatGroupLabel={this.props.formatGroupLabel}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        ...this.props.selectTheme
+                                    }
+                                })}/>
                             <button className="btn-match inverse"
                                 onClick={this.handleTranslate}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>

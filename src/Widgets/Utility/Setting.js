@@ -395,7 +395,8 @@ class WidgetSetting extends Component{
                     authorNames: this.state.values.authorNames,
                     fullscreen: this.state.values.fullscreen,
                     resetPosition: this.state.values.resetPosition,
-                    savePositionPopout: this.state.values.savePositionPopout
+                    savePositionPopout: this.state.values.savePositionPopout,
+                    shadow: this.state.values.shadow
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -425,7 +426,8 @@ class WidgetSetting extends Component{
                                 authorNames: localStorageValues["authorNames"],
                                 fullscreen: localStorageValues["fullscreen"],
                                 resetPosition: localStorageValues["resetPosition"],
-                                savePositionPopout: localStorageValues["savePositionPopout"]
+                                savePositionPopout: localStorageValues["savePositionPopout"],
+                                shadow: localStorageValues["shadow"]
                             }
                         }, () => {
                             /// Update Display
@@ -437,6 +439,10 @@ class WidgetSetting extends Component{
                             $("#settings-popout-design-select-custom-border").val(this.state.values.customBorder);
                             $("#settings-popout-design-select-background").val(this.state.values.background);
                             this.updateBackground(this.state.values.background);
+                            document.getElementById("settings-popout-design-shadow").checked = this.state.values.shadow;
+                            if(this.state.values.shadow === true){
+                                this.props.updateDesign("shadow", true);
+                            };
                             /// Update Feature
                             document.getElementById("settings-popout-feature-authorNames").checked = this.state.values.authorNames;
                             document.getElementById("settings-popout-feature-fullscreen").checked = this.state.values.fullscreen;
@@ -748,7 +754,7 @@ class WidgetSetting extends Component{
                                                 </label>
                                                 <input id="settings-popout-feature-fullscreen"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "hotbar")}/>
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "values")}/>
                                             </section>
                                             {/* Reset Position */}
                                             <section className="element-ends">
@@ -758,7 +764,7 @@ class WidgetSetting extends Component{
                                                 </label>
                                                 <input id="settings-popout-feature-resetPosition"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "hotbar")}/>
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}/>
                                             </section>
                                         </fieldset>
                                     </section>

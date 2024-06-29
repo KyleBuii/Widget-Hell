@@ -1,7 +1,6 @@
 import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
-import $ from 'jquery';
 /// Games
 import WidgetSnake from './Widgets/Games/Snake.js';
 /// Utility
@@ -99,7 +98,7 @@ const sentences = [
     , "PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT"    
     , 'Twitch should ban the term "live-streaming." It’s offensive to dead people. My great grandparents are dead and I would like to show them some respect and have twitch ban the term “live-streaming”. It’s a slur used against dead people.'
     , 'I, an atheist, accidentally said “oh my g*d” instead of “oh my science”'
-    , "Darkness blacker than black and darker than dark, I beseech thee, combine with my deep crimson. The time of awakening cometh. Justice, fallen upon the infallible boundary, appear now as an intangible distortions! I desire for my torrent of power a destructive force: a destructive force without equal! Return all creation to cinders, and come frome the abyss! Explosion!"    
+    , "Darkness blacker than black and darker than dark, I beseech thee, combine with my deep crimson. The time of awakening cometh. Justice, fallen upon the infallible boundary, appear now as an intangible distortions! I desire for my torrent of power a destructive force: a destructive force without equal! Return all creation to cinders, and come from the abyss! Explosion!"    
     , "Oh, blackness shrouded in light, Frenzied blaze clad in night, In the name of the crimson demons, let the collapse of thine origin manifest. Summon before me the root of thy power hidden within the lands of the kingdom of demise! Explosion!"
     , "Crimson-black blaze, king of myriad worlds, though I promulgate the laws of nature, I am the alias of destruction incarnate in accordance with the principles of all creation. Let the hammer of eternity descend unto me! Explosion!"    
     , "O crucible which melts my soul, scream forth from the depths of the abyss and engulf my enemies in a crimson wave! Pierce trough, EXPLOSION!"    
@@ -273,7 +272,6 @@ const emojifyDictionary = {
     "just": ["&#x261D;&#xFE0F;"],
     "phone": ["&#x1F4F1;"],
 };
-/// Non-mutable
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
 const widgetsFunActive = [];
@@ -282,11 +280,33 @@ const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
     + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
 const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
+const formatGroupLabel = (data) => (
+    <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between"}}>
+        <span className="font transparent-bold">{data.label}</span>
+        <span style={{
+            backgroundColor: `rgba(${getComputedStyle(document.documentElement).getPropertyValue("--randColorOpacity")}, 0.3)`,
+            borderRadius: "2em",
+            color: getComputedStyle(document.documentElement).getPropertyValue("--randColor"),
+            display: "inline-block",
+            fontSize: 12,
+            fontWeight: "normal",
+            lineHeight: "1",
+            minWidth: 1,
+            padding: "0.16666666666667em 0.5em",
+            textAlign: "center"}}>
+            {data.options.length}
+        </span>
+    </div>
+);
+const selectTheme = {};
 
 
 //////////////////// Functions ////////////////////
 function randColor(){
-    const r = document.querySelector(":root");
+    const r = document.documentElement;
     const colorR = Math.floor(Math.random() * colorRange);
     const colorG = Math.floor(Math.random() * colorRange);
     const colorB = Math.floor(Math.random() * colorRange);
@@ -296,6 +316,14 @@ function randColor(){
     r.style.setProperty("--randColor", randColor);
     r.style.setProperty("--randColorLight", randColorLight);
     r.style.setProperty("--randColorOpacity", randColorOpacity);
+    /// Set react-select colors
+    selectTheme.primary = randColor;    /// Currently selected option background color
+    selectTheme.primary25 = `rgba(${randColorOpacity}, 0.3)`;   /// Hover option background color
+    selectTheme.neutral20 = randColor;   /// Border color of select
+    selectTheme.neutral30 = randColorLight;  /// Hover border color
+    selectTheme.neutral40 = randColorLight;  /// Hover arrow color
+    selectTheme.neutral60 = randColorLight;  /// Active arrow color
+    selectTheme.neutral80 = randColor;  /// Placeholder text color
 };
 
 function dragStart(what){
@@ -326,22 +354,10 @@ function dragStop(what){
 };
 
 function sortSelect(what){
-    const options = $(what + ' option');
-    const arrOptions = options
-        .map(function(_, o){
-            return{
-                text: $(o).text(),
-                value: $(o).val()
-            };
-        }).get();
-        arrOptions.sort(function(o1, o2){
-            return o1.text > o2.text ? 1
-                : o1.text < o2.text ? -1
-                : 0;
-    });
-    options.each(function(i, o){
-        $(o).text(arrOptions[i].text);
-        $(o).val(arrOptions[i].value);
+    what.forEach((value) => {
+        value.options.sort((a, b) => {
+            return a.label.localeCompare(b.label);  
+        });
     });
 };
 
@@ -918,7 +934,8 @@ class Widgets extends Component{
                                 savePositionPopout: localStorageValues["savePositionPopout"],
                                 authorNames: localStorageValues["authorNames"],
                                 fullscreen: localStorageValues["fullscreen"],
-                                resetPosition: localStorageValues["resetPosition"]
+                                resetPosition: localStorageValues["resetPosition"],
+                                shadow: localStorageValues["shadow"]
                             },
                         });
                         break;
@@ -958,6 +975,8 @@ class Widgets extends Component{
                     this.updateCustomBorder();
                 });
             };
+        }else{
+            this.storeData();
         };
         /// Store widget's data in local storage when the website closes/refreshes
         window.addEventListener("beforeunload", this.storeData);
@@ -1056,6 +1075,8 @@ class Widgets extends Component{
                         uwuEmoticons={uwuEmoticons}
                         emojifyDictionary={emojifyDictionary}
                         matchAll={matchAll}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1071,6 +1092,8 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
                         languages={languages}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1129,6 +1152,8 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.timeconversion.drag.disabled}
                         sortSelect={sortSelect}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.spreadsheet.active === true

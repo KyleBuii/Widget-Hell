@@ -229,34 +229,9 @@ body{
 }
 
 .select-match{
-    cursor: pointer;
     color: var(--randColor);
-    border: 1px solid var(--randColor);
-    border-radius: 5.6px;
     font-size: 0.75em;
-    -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
-    padding: 0.05rem 1.12rem 0.05rem 0.3rem;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-    :checked{
-        background-color: rgba(var(--randColorOpacity), 0.3);
-    }
-    &:disabled{
-        opacity: 0.3;
-    }
-    &.dropdown-arrow{
-        background-image: url("../public/images/downArrow.svg");
-        background-repeat: no-repeat;
-        background-position: right 0.3em top 0.12em;
-        background-size: 1em 1.1em;
-        fill: red;
-    }
+    width: 100%;
 }
 
 /// Space between 2 elements | []-----[]
@@ -497,14 +472,14 @@ body{
 /// Floating positions for elements
 .bottom-left{
     position: absolute;
-    top: 21em;
-    left: 3em;
+    bottom: 2.8em;
+    left: 2.8em;
 }
 
 .bottom-right{
     position: absolute;
-    top: 20.2em;
-    right: 3.7em;
+    bottom: 2.8em;
+    right: 3.8em;
 }
 
 /// Position for the author's name

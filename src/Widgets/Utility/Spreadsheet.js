@@ -14,7 +14,15 @@ class WidgetSpreadsheet extends Component{
             rowLabels: [1, 2, 3, 4, 5, 6, 7, 8],
             data: []
         };
+        this.handleData = this.handleData.bind(this);
         this.storeData = this.storeData.bind(this);
+    };
+    handleData(what){
+        if(JSON.stringify(this.state.data) !== JSON.stringify(what)){
+            this.setState({
+                data: what
+            });
+        };
     };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
@@ -27,15 +35,16 @@ class WidgetSpreadsheet extends Component{
         };
     };
     componentDidMount(){
-        /// Load data from local storage to populate the spreadsheet
+        /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
-            if(dataLocalStorage["utility"]["spreadsheet"]["data"] !== null){
+            let localStorageSpreadsheet = dataLocalStorage["utility"]["spreadsheet"];
+            if(localStorageSpreadsheet["data"] !== undefined){
                 this.setState({
-                    data: dataLocalStorage["utility"]["spreadsheet"]["data"]
+                    data: localStorageSpreadsheet["data"]
                 });
             }else{
-                const temp = [];
+                let temp = [];
                 for(let i = 0; i < 8; i++){
                     temp[i] = [];
                     for(let j = 0; j < 8; j++){
@@ -44,16 +53,23 @@ class WidgetSpreadsheet extends Component{
                 };
                 this.setState({
                     data: temp
-                });
+                });   
             };
+        }else{
+            let temp = [];
+            for(let i = 0; i < 8; i++){
+                temp[i] = [];
+                for(let j = 0; j < 8; j++){
+                    temp[i].push({});
+                };
+            };
+            this.setState({
+                data: temp
+            });       
         };
-        /// Store data in local storage when refreshing
-        window.addEventListener("beforeunload", this.storeData);
     };
     componentWillUnmount(){
-        /// Store data in local storage
         this.storeData();
-        window.removeEventListener("beforeunload", this.storeData);
     };
     render(){
         return(
@@ -99,9 +115,7 @@ class WidgetSpreadsheet extends Component{
                             data={this.state.data}
                             columnLabels={this.state.colLabels}
                             rowLabels={this.state.rowLabels}
-                            onChange={(val) => this.setState({
-                                data: val
-                            })}/>
+                            onChange={(val) => this.handleData(val)}/>
                     </div>
                 </div>
             </Draggable>

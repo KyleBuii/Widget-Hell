@@ -4,8 +4,64 @@ import { FaArrowRightLong, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
-import $ from 'jquery';
 import sanitizeHtml from 'sanitize-html';
+import Select from "react-select";
+
+
+/// Select options
+const optionsTranslateFrom = [
+    {
+        label: "Languages",
+        options: [
+            {value: "en", label: "English"}
+        ]
+    },
+    {
+        label: "Other Languages",
+        options: [
+            {value: "pekofy", label: "Pekofy"},
+            {value: "braille", label: "Braille"}
+        ]
+    },
+    {
+        label: "Encryption",
+        options: [
+            {value: "base64", label: "Base64"}
+        ]
+    }
+];
+const optionsTranslateTo = [
+    {
+        label: "Languages",
+        options: [
+            {value: "en", label: "English"}
+        ]
+    },
+    {
+        label: "Other Languages",
+        options: [
+            {value: "pekofy", label: "Pekofy"},
+            {value: "braille", label: "Braille"},
+            {value: "pig-latin", label: "Pig latin"},
+            {value: "uwu", label: "UwU"},
+            {value: "emojify", label: "Emojify"}
+        ]
+    },
+    {
+        label: "Encryption",
+        options: [
+            {value: "base64", label: "Base64"}
+        ]
+    },
+    {
+        label: "Modify",
+        options: [
+            {value: "replace", label: "Replace"},
+            {value: "reverse", label: "Reverse"},
+            {value: "case-transform", label: "Case Transform"}
+        ]
+    }
+];
 
 
 class WidgetTranslator extends Component{
@@ -15,8 +71,8 @@ class WidgetTranslator extends Component{
             input: "",
             convert: "",
             converted: "",
-            from: "",
-            to: "",
+            from: {},
+            to: {},
             replaceFrom: "",
             replaceTo: "",
             reverseWord: false,
@@ -48,7 +104,7 @@ class WidgetTranslator extends Component{
     };
     /// Convert the "from" language to english
     convertFromText(){
-        switch(this.state.from){
+        switch(this.state.from.value){
             /// Other languages
             case "pekofy":
                 this.setState(prevState => ({
@@ -83,7 +139,7 @@ class WidgetTranslator extends Component{
     };
     /// Convert english to the "to" language
     convertToText(){
-        switch(this.state.to){
+        switch(this.state.to.value){
             /// Other languages
             case "pig-latin":
                 this.setState(prevState => ({
@@ -303,7 +359,7 @@ class WidgetTranslator extends Component{
     /// Handles "word-break" for unbreakable strings
     handleWordBreak(){
         const translatedText = document.getElementById("translator-translated-text");
-        switch(this.state.to){
+        switch(this.state.to.value){
             case "braille":
             case "base64":
                 translatedText.style.wordBreak = "break-all";
@@ -316,7 +372,7 @@ class WidgetTranslator extends Component{
     /// Handles the "from" language select
     handleFrom(event){
         this.setState({
-            from: event.target.value
+            from: event
         }, () => {
             if(this.state.input !== ""){
                 this.convertFromText();
@@ -326,20 +382,20 @@ class WidgetTranslator extends Component{
     /// Handles the "to" language select
     handleTo(event){
         this.setState({
-            to: event.target.value,
+            to: event,
         }, () => {
             this.handleWordBreak();
             if(this.state.input !== ""){
                 this.convertToText();
             }
         });
-        document.getElementById("replace-popout").style.visibility = (event.target.value === "replace") ? "visible" : "hidden";
-        document.getElementById("reverse-popout").style.visibility = (event.target.value === "reverse") ? "visible" : "hidden";
-        document.getElementById("case-transform-popout").style.visibility = (event.target.value === "case-transform") ? "visible" : "hidden";
+        document.getElementById("replace-popout").style.visibility = (event.value === "replace") ? "visible" : "hidden";
+        document.getElementById("reverse-popout").style.visibility = (event.value === "reverse") ? "visible" : "hidden";
+        document.getElementById("case-transform-popout").style.visibility = (event.value === "case-transform") ? "visible" : "hidden";
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
-        if(this.state.from !== this.state.to){
+        if(this.state.from.value !== this.state.to.value){
             this.props.randColor();
             const prev = this.state.from;
             this.setState(prevState => ({
@@ -348,10 +404,6 @@ class WidgetTranslator extends Component{
             }), () => {
                 this.convertFromText();
             });
-            const v1 = $("#translator-translate-from").val();
-            const v2 = $("#translator-translate-to").val();
-            $("#translator-translate-from").val(v2);
-            $("#translator-translate-to").val(v1);
         };
     };
     /// Saves "converted" text into "input" field
@@ -405,39 +457,27 @@ class WidgetTranslator extends Component{
     handleRandSentence(){
         this.setState({
             input: this.props.randSentence(),
-            from: "en"
         }, () => {
             this.convertFromText();
-            $("#translator-translate-from").val("en");
         });
     };
     componentDidMount(){
         /// Sort the "translate-to" optgroups options alphabetically
-        this.props.sortSelect('#translator-translate-to #translate-to-other-languages');
-        this.props.sortSelect('#translator-translate-to #translate-to-encryption');
-        this.props.sortSelect('#translator-translate-to #translate-to-modify');
+        this.props.sortSelect(optionsTranslateFrom);
+        this.props.sortSelect(optionsTranslateTo);
         /// Default values
         if(sessionStorage.getItem("translator") === null){
             this.setState({
-                from: "en",
-                to: "en"
+                from: {value: "en", label: "English"},
+                to: {value: "en", label: "English"}
             });
-            $("#translator-translate-from").val("en");
-            $("#translator-translate-to").val("en");    
         }else{
             let dataSessionStorage = JSON.parse(sessionStorage.getItem("translator"));
             this.setState({
                 from: dataSessionStorage.from,
                 to: dataSessionStorage.to
-            }, () => {
-                $("#translator-translate-from").val(this.state.from);
-                $("#translator-translate-to").val(this.state.to);
             });
         };
-        /// Duplicate selects from "translate-from" to "translate-to"
-        $('#translator-translate-from #translate-from-languages option').clone().prependTo('#translate-to-languages');
-        $('#translator-translate-from #translate-from-other-languages option').clone().prependTo('#translate-to-other-languages');
-        $('#translator-translate-from #translate-from-encryption option').clone().prependTo('#translate-to-encryption');
     };
     componentWillUnmount(){
         let data = {
@@ -456,7 +496,7 @@ class WidgetTranslator extends Component{
                 onStart={() => this.props.defaultProps.dragStart("translator")}
                 onStop={() => this.props.defaultProps.dragStop("translator")}
                 onDrag={(event, data) => this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y)}
-                cancel="button, span, p, textarea, select, section"
+                cancel="button, span, p, textarea, section, .select-match"
                 bounds="parent">
                 <div id="translator-widget"
                     className="widget">
@@ -489,24 +529,20 @@ class WidgetTranslator extends Component{
                         {/* Select */}
                         <div className="flex-center space-nicely bottom">
                             {/* Select From */}
-                            <select id="translator-translate-from"
-                                className="select-match dropdown-arrow"
-                                defaultValue={"en"}
-                                onChange={this.handleFrom}>
-                                <optgroup label="Languages"
-                                    id="translate-from-languages">
-                                    <option value="en">English</option>
-                                </optgroup>
-                                <optgroup label="Other Languages"
-                                    id="translate-from-other-languages">
-                                    <option value="pekofy">Pekofy</option>
-                                    <option value="braille">Braille</option>
-                                </optgroup>
-                                <optgroup label="Encryption"
-                                    id="translate-from-encryption">
-                                    <option value="base64">Base64</option>
-                                </optgroup>
-                            </select>
+                            <Select id="translator-translate-from"
+                                className="select-match"
+                                value={this.state.from}
+                                defaultValue={optionsTranslateFrom[0]["options"][0]}
+                                onChange={this.handleFrom}
+                                options={optionsTranslateFrom}
+                                formatGroupLabel={this.props.formatGroupLabel}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        ...this.props.selectTheme
+                                    }
+                                })}/>
                             <button className="btn-match inverse"
                                 onClick={this.handleSwap}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
@@ -514,26 +550,20 @@ class WidgetTranslator extends Component{
                                 </IconContext.Provider>
                             </button>
                             {/* Select To */}
-                            <select id="translator-translate-to"
-                                className="select-match dropdown-arrow"
-                                defaultValue={"english"}
-                                onChange={this.handleTo}>
-                                <optgroup label="Languages"
-                                    id="translate-to-languages"></optgroup>
-                                <optgroup label="Other Languages"
-                                    id="translate-to-other-languages">
-                                    <option value="pig-latin">Pig latin</option>
-                                    <option value="uwu">UwU</option>
-                                    <option value="emojify">Emojify</option>
-                                </optgroup>
-                                <optgroup label="Encryption"
-                                    id="translate-to-encryption"></optgroup>
-                                <optgroup label="Modify">
-                                    <option value="replace">Replace</option>
-                                    <option value="reverse">Reverse</option>
-                                    <option value="case-transform">Case Transform</option>
-                                </optgroup>
-                            </select>
+                            <Select id="translator-translate-to"
+                                className="select-match"
+                                value={this.state.to}
+                                defaultValue={optionsTranslateTo[0]["options"][0]}
+                                onChange={this.handleTo}
+                                options={optionsTranslateTo}
+                                formatGroupLabel={this.props.formatGroupLabel}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        ...this.props.selectTheme
+                                    }
+                                })}/>
                         </div>
                         {/* Display */}
                         <div className="flex-center column">

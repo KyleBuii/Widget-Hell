@@ -8,6 +8,28 @@ import 'react-calendar/dist/Calendar.css';
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import Select from "react-select";
+
+
+/// Select option
+const optionsTimzones = [
+    {
+        label: "Timezones",
+        options: [
+            {value: "ist", label: "IST (UTC+5:30)"},
+            {value: "cet", label: "CET (UTC+1)"},
+            {value: "eet", label: "EET (UTC+2)"},
+            {value: "est", label: "EST (UTC-5)"},
+            {value: "gmt", label: "GMT (UTC+0)"},
+            {value: "hst", label: "HST (UTC-10)"},
+            {value: "mst", label: "MST (UTC-7)"},
+            {value: "nz", label: "NZST (UTC+12)"},
+            {value: "prc", label: "CST (UTC+8)"},
+            {value: "rok", label: "KST (UTC+9)"},
+            {value: "utc", label: "UTC"}
+        ]
+    }
+];
 
 
 class WidgetTimeConversion extends Component{
@@ -21,7 +43,8 @@ class WidgetTimeConversion extends Component{
             time: 0,
             timeformat: "en",
             hour12: true,
-            timezone: "JST"
+            timezoneoriginal: "",
+            timezone: {}
         };
     };
     handleChange(where, what){
@@ -169,6 +192,7 @@ class WidgetTimeConversion extends Component{
         }
     };
     componentDidMount(){
+        /// Default values
         /// Set current date and time as default
         const temp = this.state.date
             .toLocaleString("en-US", {
@@ -181,7 +205,23 @@ class WidgetTimeConversion extends Component{
             year: temp[2],
             time: temp[3]
         })
-        this.props.sortSelect('#timeconversion-select-timezone');
+        if(sessionStorage.getItem("timeconversion") === null){
+            this.setState({
+                timezone: {value: "est", label: "EST (UTC-5)"}
+            });
+        }else{
+            let dataSessionStorage = JSON.parse(sessionStorage.getItem("timeconversion"));
+            this.setState({
+                timezone: dataSessionStorage.timezone
+            });
+        };
+        this.props.sortSelect(optionsTimzones);
+    };
+    componentWillUnmount(){
+        let data = {
+            "timezone": this.state.timezone
+        };
+        sessionStorage.setItem("timeconversion", JSON.stringify(data));
     };
     render(){
         return(
@@ -229,6 +269,18 @@ class WidgetTimeConversion extends Component{
                                 <section className="flex-center column gap">
                                     {/* Inputs */}
                                     <section className="grid col-auto">
+                                        {/* <label htmlFor="timeconversion-select-timezone-original"
+                                            className="font medium">
+                                            Zone:
+                                        </label>
+                                        <select id="timeconversion-select-timezone-original"
+                                            className="select-match dropdown-arrow"
+                                            onChange={(e) => this.setState({
+                                                timezoneoriginal: e.target.value
+                                            })
+                                        }>
+                                            <option value="default">Default</option>
+                                        </select> */}
                                         <label htmlFor="timeconversion-input-month"
                                             className="font medium">
                                             Month: 
@@ -281,27 +333,26 @@ class WidgetTimeConversion extends Component{
                                 </section>
                                 {/* Convert */}
                                 <section className="flex-center row gap">
-                                    <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: "1.8em", className: "global-class-name" }}>
                                         <FaArrowDownLong/>
                                     </IconContext.Provider>
-                                    <select id="timeconversion-select-timezone"
-                                        className="select-match dropdown-arrow"
+                                    <Select id="timeconversion-select-timezone"
+                                        className="select-match"
+                                        value={this.state.timezone}
+                                        defaultValue={optionsTimzones[0]["options"][0]}
                                         onChange={(e) => this.setState({
-                                                timezone: e.target.value
+                                                timezone: e
                                             })
-                                        }>
-                                        <option value="ist">IST (UTC+5:30)</option>
-                                        <option value="cet">CET (UTC+1)</option>
-                                        <option value="eet">EET (UTC+2)</option>
-                                        <option value="est">EST (UTC-5)</option>
-                                        <option value="gmt">GMT (UTC+0)</option>
-                                        <option value="hst">HST (UTC-10)</option>
-                                        <option value="mst">MST (UTC-7)</option>
-                                        <option value="nz">NZST (UTC+12)</option>
-                                        <option value="prc">CST (UTC+8)</option>
-                                        <option value="rok">KST (UTC+9)</option>
-                                        <option value="utc">UTC</option>
-                                    </select>
+                                        }
+                                        options={optionsTimzones}
+                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            colors: {
+                                                ...theme.colors,
+                                                ...this.props.selectTheme
+                                            }
+                                        })}/>
                                 </section>
                                 {/* Converted date */}
                                 <section className="flex-center column gap">
@@ -309,7 +360,7 @@ class WidgetTimeConversion extends Component{
                                         className="font medium">
                                         {this.state.date.toLocaleString("en-US", {
                                             hour12: this.state.hour12,
-                                            timeZone: this.state.timezone
+                                            timeZone: this.state.timezone.value
                                         })}
                                     </label>
                                 </section>
