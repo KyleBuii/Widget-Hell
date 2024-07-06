@@ -556,6 +556,7 @@ class WidgetSetting extends Component{
                                         <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
                                         <input id="show-hide-widgets-popout-search"
                                             className="input-typable all-side"
+                                            name="settings-input-show-hide-widgets-search"
                                             type="text"
                                             placeholder="Search"
                                             value={this.state.search}
@@ -644,6 +645,7 @@ class WidgetSetting extends Component{
                                                 Screen Dimmer
                                             </span>
                                             <Switch className="toggleable"
+                                                name="settings-switch-screen-dimmer"
                                                 checked={this.state.values.screenDimmer}
                                                 onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
                                                 onColor="#86d3ff"
@@ -764,6 +766,7 @@ class WidgetSetting extends Component{
                                                     Shadow
                                                 </label>
                                                 <input id="settings-popout-design-shadow"
+                                                    name="settings-input-popout-design-shadow"
                                                     type="checkbox"
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, "shadow", "values")}/>
                                             </section>
@@ -786,6 +789,7 @@ class WidgetSetting extends Component{
                                                     Author Names
                                                 </label>
                                                 <input id="settings-popout-feature-authorNames"
+                                                    name="settings-input-popout-feature-authorNames"
                                                     type="checkbox"
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, "authorNames", "values")}/>
                                             </section>
@@ -802,6 +806,7 @@ class WidgetSetting extends Component{
                                                     Fullscreen
                                                 </label>
                                                 <input id="settings-popout-feature-fullscreen"
+                                                    name="settings-input-popout-feature-fullscreen"
                                                     type="checkbox"
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "values")}/>
                                             </section>
@@ -812,6 +817,7 @@ class WidgetSetting extends Component{
                                                     Reset Position
                                                 </label>
                                                 <input id="settings-popout-feature-resetPosition"
+                                                    name="settings-input-popout-feature-resetPosition"
                                                     type="checkbox"
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}/>
                                             </section>
@@ -829,6 +835,7 @@ class WidgetSetting extends Component{
                                                 Save Position: Popup
                                             </label>
                                             <input id="settings-popout-feature-savepositionpopup"
+                                                name="settings-input-popout-feature-savepositionpopout"
                                                 type="checkbox"
                                                 onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
                                         </section>

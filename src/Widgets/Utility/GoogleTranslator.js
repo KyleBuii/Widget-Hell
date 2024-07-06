@@ -217,6 +217,7 @@ class WidgetGoogleTranslator extends Component{
                         </div>
                         <div className="cut-scrollbar-corner-part-1 textarea">
                             <textarea className="cut-scrollbar-corner-part-2 textarea"
+                                name="googletranslator-textarea-input"
                                 onChange={this.handleChange}
                                 value={this.state.input}></textarea>
                         </div>

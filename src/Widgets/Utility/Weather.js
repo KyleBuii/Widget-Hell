@@ -149,6 +149,7 @@ class WidgetWeather extends Component{
                             className="flex-center gap">
                             <div className="when-elements-are-not-straight">
                                 <input className="input-typable right-side with-help-btn"
+                                    name="weather-input-search"
                                     placeholder="Enter location"
                                     onChange={this.handleChange}
                                     value={this.state.input}>

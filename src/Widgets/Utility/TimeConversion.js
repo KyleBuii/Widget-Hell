@@ -287,6 +287,7 @@ class WidgetTimeConversion extends Component{
                                         </label>
                                         <input id="timeconversion-input-month"
                                             className="input-typable"
+                                            name="timeconversion-input-month"
                                             type="number"
                                             max="12"
                                             min="1"
@@ -298,6 +299,7 @@ class WidgetTimeConversion extends Component{
                                         </label>
                                         <input id="timeconversion-input-day"
                                             className="input-typable"
+                                            name="timeconversion-input-day"
                                             type="number"
                                             max="31"
                                             min="1"
@@ -309,14 +311,15 @@ class WidgetTimeConversion extends Component{
                                         </label>
                                         <input id="timeconversion-input-year"
                                             className="input-typable"
+                                            name="timeconversion-input-year"
                                             type="number"
                                             max="9999"
                                             min="100"
                                             value={this.state.year}
                                             onChange={(event) => this.updateDate(event, "year")}></input>
-                                        <label className="font medium">
+                                        <span className="font medium">
                                             Time:
-                                        </label>
+                                        </span>
                                         <TimePicker
                                             onChange={(val) => this.handleChange("time", val)}
                                             value={this.state.time}

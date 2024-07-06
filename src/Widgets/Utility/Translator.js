@@ -569,6 +569,7 @@ class WidgetTranslator extends Component{
                         <div className="flex-center column">
                             <div className="cut-scrollbar-corner-part-1 textarea">
                                 <textarea className="cut-scrollbar-corner-part-2 textarea"
+                                    name="translator-textarea-input"
                                     onChange={this.handleChange}
                                     value={this.state.input}></textarea>
                             </div>
@@ -599,12 +600,14 @@ class WidgetTranslator extends Component{
                                 <section className="flex-center column space-nicely all long">
                                     <section className="flex-center">
                                         <input className="input-typable all-side input-button-input"
+                                            name="translator-input-popout-replace-from"
                                             type="text"
                                             onChange={this.handleReplaceFrom}></input>
                                         <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
                                             <FaArrowRightLong/>
                                         </IconContext.Provider>
                                         <input className="input-typable all-side input-button-input"
+                                            name="translator-input-popout-replace-to"
                                             type="text"
                                             onChange={this.handleReplaceTo}></input>
                                     </section>

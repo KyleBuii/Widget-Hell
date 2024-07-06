@@ -433,12 +433,14 @@ class WidgetCalculator extends Component{
                         <div id="calculator-display-container"
                             className="flex-center column">
                             <input className="font small input-typable no-side space-nicely right short bottom short"
+                                name="calculator-input-question"
                                 type="text"
                                 value={this.state.question}
                                 readOnly>
                             </input>
                             <input id="calculator-input-field"
                                 className="font large bold input-typable no-side"
+                                name="calculator-input-input"
                                 type="text"
                                 value={this.state.input}
                                 onChange={this.handleChange}>
