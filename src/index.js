@@ -890,7 +890,7 @@ class Widgets extends Component{
         }else{
             for(let i in this.state.widgets.utility){
                 data.utility[i] = {
-                    active: this.state.widgets.utility[i].active,
+                    active: false,
                     position: this.state.widgets.utility[i].position
                 };
                 if(this.state.values.savePositionPopout){
@@ -899,7 +899,7 @@ class Widgets extends Component{
             };
             for(let i in this.state.widgets.games){
                 data.games[i] = {
-                    active: this.state.widgets.games[i].active,
+                    active: false,
                     position: this.state.widgets.games[i].position
                 };
                 if(this.state.values.savePositionPopout){
@@ -908,7 +908,7 @@ class Widgets extends Component{
             };
             for(let i in this.state.widgets.fun){
                 data.fun[i] = {
-                    active: this.state.widgets.fun[i].active,
+                    active: false,
                     position: this.state.widgets.fun[i].position
                 };
                 if(this.state.values.savePositionPopout){
