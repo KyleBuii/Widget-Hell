@@ -6,7 +6,40 @@ import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import $ from 'jquery';
+import Select from "react-select";
+
+
+/// Select options
+const optionsAnimation = [
+    {
+        label: "Animations",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "fade", label: "Fade"}
+        ]
+    }
+];
+const optionsBackground = [
+    {
+        label: "Backgrounds",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "white", label: "White"},
+            {value: "linear-gradient", label: "Linear-gradient"}
+        ]
+    }
+];
+const optionsCustomBorder = [
+    {
+        label: "Custom Borders",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "diagonal", label: "Diagonal"},
+            {value: "dashed", label: "Dashed"},
+            {value: "double", label: "Double"}
+        ]
+    }
+];
 
 
 class WidgetSetting extends Component{
@@ -39,9 +72,9 @@ class WidgetSetting extends Component{
             values: {
                 screenDimmer: false,
                 screenDimmerValue: 100,
-                background: "default",
-                animation: "default",
-                customBorder: "default",
+                background: {},
+                animation: {},
+                customBorder: {},
                 shadow: false,
                 authorNames: false,
                 fullscreen: false,
@@ -73,18 +106,15 @@ class WidgetSetting extends Component{
         let rand;
         switch(select){
             case "animation":
-                rand = this.props.animations[Math.floor(Math.random() * this.props.animations.length)];
-                $("#settings-popout-design-select-animation").val(rand);
+                rand = optionsAnimation[0].options[Math.floor(Math.random() * (optionsAnimation[0].options.length - 1)) + 1];
                 this.handleSelect(rand, "animation");
                 break;
             case "background":
-                rand = this.props.backgrounds[Math.floor(Math.random() * this.props.backgrounds.length)];
-                $("#settings-popout-design-select-background").val(rand);
+                rand = optionsBackground[0].options[Math.floor(Math.random() * (optionsBackground[0].options.length - 1)) + 1];
                 this.handleSelect(rand, "background");
                 break;
             case "customBorder":
-                rand = this.props.customBorders[Math.floor(Math.random() * this.props.customBorders.length)];
-                $("#settings-popout-design-select-custom-border").val(rand);
+                rand = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
                 this.handleSelect(rand, "customBorder");
                 break;
             default:
@@ -116,10 +146,10 @@ class WidgetSetting extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "1";
                     showHideWidgetsPopout.style.visibility = "visible";
-                    if(this.props.animationValue !== "default"){
+                    if(this.state.values.animation.value !== "default"){
                         showHideWidgetsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.props.animationValue + "In 2s";
+                            showHideWidgetsPopout.style.animation = this.state.values.animation.value + "In 2s";
                         });
                     };
                 }else{
@@ -128,10 +158,10 @@ class WidgetSetting extends Component{
                     });
                     btnShowHideWidgets.style.opacity = "0.5";
                     showHideWidgetsPopout.style.visibility = "hidden";
-                    if(this.props.animationValue !== "default"){
+                    if(this.state.values.animation.value !== "default"){
                         showHideWidgetsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.props.animationValue + "Out 2s";
+                            showHideWidgetsPopout.style.animation = this.state.values.animation.value + "Out 2s";
                         });
                     };
                 };    
@@ -145,10 +175,11 @@ class WidgetSetting extends Component{
                     });
                     btnSettings.style.opacity = "1";
                     settingsPopout.style.visibility = "visible";
-                    if(this.props.animationValue !== "default"){
+                    settingsPopout.style.display = "block";
+                    if(this.state.values.animation.value !== "default"){
                         settingsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.props.animationValue + "In 2s";
+                            settingsPopout.style.animation = this.state.values.animation.value + "In 2s";
                         });
                     };
                 }else{
@@ -156,11 +187,11 @@ class WidgetSetting extends Component{
                         settings: false
                     });
                     btnSettings.style.opacity = "0.5";
-                    settingsPopout.style.visibility = "hidden";
-                    if(this.props.animationValue !== "default"){
+                    settingsPopout.style.display = "none";
+                    if(this.state.values.animation.value !== "default"){
                         settingsPopout.style.animation = "none";
                         window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.props.animationValue + "Out 2s";
+                            settingsPopout.style.animation = this.state.values.animation.value + "Out 2s";
                         });
                     };
                 };
@@ -248,7 +279,7 @@ class WidgetSetting extends Component{
                 this.props.updateValue(what, where, "values");
                 break;
             case "background":
-                this.updateBackground(what);
+                this.updateBackground(what.value);
                 break;
             case "customBorder":
                 this.props.updateValue(what, where, "values");
@@ -435,10 +466,7 @@ class WidgetSetting extends Component{
                                 document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                             };
                             /// Update Design
-                            $("#settings-popout-design-select-animation").val(this.state.values.animation);
-                            $("#settings-popout-design-select-custom-border").val(this.state.values.customBorder);
-                            $("#settings-popout-design-select-background").val(this.state.values.background);
-                            this.updateBackground(this.state.values.background);
+                            this.updateBackground(this.state.values.background.value);
                             document.getElementById("settings-popout-design-shadow").checked = this.state.values.shadow;
                             if(this.state.values.shadow === true){
                                 this.props.updateDesign("shadow", true);
@@ -596,7 +624,7 @@ class WidgetSetting extends Component{
                         </Draggable>
                         {/* Settings Popout */}
                         <Draggable
-                            cancel="span, .toggleable, .slider, select, input"
+                            cancel="span, .toggleable, .slider, input, button, .select-match"
                             position={{
                                 x: this.props.positionPopout.settings.x,
                                 y: this.props.positionPopout.settings.y}}
@@ -653,13 +681,21 @@ class WidgetSetting extends Component{
                                                     </IconContext.Provider>
                                                 </button>
                                             </section>
-                                            <select id="settings-popout-design-select-animation"
-                                                className="select-match dropdown-arrow space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event.target.value, "animation")}
-                                                defaultValue={"default"}>
-                                                <option value="default">Default</option>
-                                                <option value="fade">Fade</option>
-                                            </select>
+                                            <Select id="settings-popout-design-select-animation"
+                                                className="select-match space-nicely top medium"
+                                                value={this.state.values.animation}
+                                                defaultValue={optionsAnimation[0]["options"][0]}
+                                                onChange={(event) => this.handleSelect(event, "animation")}
+                                                options={optionsAnimation}
+                                                formatGroupLabel={this.props.formatGroupLabel}
+                                                styles={this.props.selectStyleSmall}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        ...this.props.selectTheme
+                                                    }
+                                                })}/>
                                         </section>
                                         {/* Background */}
                                         <section>
@@ -674,14 +710,21 @@ class WidgetSetting extends Component{
                                                     </IconContext.Provider>
                                                 </button>
                                             </section>
-                                            <select id="settings-popout-design-select-background"
-                                                className="select-match dropdown-arrow space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event.target.value, "background")}
-                                                defaultValue={"default"}>
-                                                <option value="default">Default</option>
-                                                <option value="white">White</option>
-                                                <option value="linear-gradient">Linear-gradient</option>
-                                            </select>
+                                            <Select id="settings-popout-design-select-background"
+                                                className="select-match space-nicely top medium"
+                                                value={this.state.values.background}
+                                                defaultValue={optionsBackground[0]["options"][0]}
+                                                onChange={(event) => this.handleSelect(event, "background")}
+                                                options={optionsBackground}
+                                                formatGroupLabel={this.props.formatGroupLabel}
+                                                styles={this.props.selectStyleSmall}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        ...this.props.selectTheme
+                                                    }
+                                                })}/>
                                         </section>
                                         {/* Custom Border */}
                                         <section>
@@ -696,15 +739,21 @@ class WidgetSetting extends Component{
                                                     </IconContext.Provider>
                                                 </button>
                                             </section>
-                                            <select id="settings-popout-design-select-custom-border"
-                                                className="select-match dropdown-arrow space-nicely top medium"
-                                                onChange={(event) => this.handleSelect(event.target.value, "customBorder")}
-                                                defaultValue={"default"}>
-                                                <option value="default">Default</option>
-                                                <option value="diagonal">Diagonal</option>
-                                                <option value="dashed">Dashed</option>
-                                                <option value="double">Double</option>
-                                            </select>
+                                            <Select id="settings-popout-design-select-custom-border"
+                                                className="select-match space-nicely top medium"
+                                                value={this.state.values.customBorder}
+                                                defaultValue={optionsCustomBorder[0]["options"][0]}
+                                                onChange={(event) => this.handleSelect(event, "customBorder")}
+                                                options={optionsCustomBorder}
+                                                formatGroupLabel={this.props.formatGroupLabel}
+                                                styles={this.props.selectStyleSmall}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        ...this.props.selectTheme
+                                                    }
+                                                })}/>
                                         </section>
                                         {/* Checkboxes */}
                                         <section className="grid col-2 spread-setting">

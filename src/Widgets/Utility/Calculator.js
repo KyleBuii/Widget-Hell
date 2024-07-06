@@ -30,7 +30,7 @@ class WidgetCalculator extends Component{
             input: event.target.value
         });
     };
-    handleClick(event){
+    handleClick(event, where){
         switch(event.target.value){
             case "=":
                 if(this.state.input !== ""
@@ -150,12 +150,30 @@ class WidgetCalculator extends Component{
                 };
                 break;
             case "MC":
-                if(this.state.input !== ""
-                    && this.state.input !== "UNDEFINED"){
+                let contianerMemory = document.getElementById("calculator-btn-memory-container");
+                if(where !== undefined){
+                    if(where === 0){
+                        this.setState({
+                            memory: [...this.state.memory.slice(0, this.state.memory.length - 1)]
+                        }, () => {
+                            this.updateLabelMemory();
+                        });
+                    }else{
+                        this.setState({
+                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), ...this.state.memory.slice(this.state.memory.length - where)]
+                        }, () => {
+                            this.updateLabelMemory();
+                        });
+                    };
+                    contianerMemory.removeChild(
+                        contianerMemory.children[where]
+                    );
+                }else{
                     this.setState({
                         memory: []
                     });
-                }
+                    contianerMemory.innerHTML = "";
+                };
                 break;
             case "MR":
                 if(this.state.input !== ""
@@ -168,22 +186,46 @@ class WidgetCalculator extends Component{
             case "M+":
                 if(this.state.input !== ""
                 && this.state.input !== "UNDEFINED"){
-                    const lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
-                    const add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
-                    this.setState({
-                        memory: [add, ...this.state.memory.slice(1)]
-                    });
+                    let lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    var add;
+                    if(where !== undefined){
+                        add = evaluate(this.state.memory[(this.state.memory.length - 1) - where] + "+" + lastNumberMAdd);
+                        this.setState({
+                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), add, ...this.state.memory.slice(this.state.memory.length - where)]
+                        });
+                    }else{
+                        add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
+                        this.setState({
+                            memory: [add, ...this.state.memory.slice(1)]
+                        });
+                    };
+                    document.getElementById("calculator-btn-memory-container")
+                        .children[where]
+                        .children[0]
+                        .innerHTML = add;
                 }
                 break;
             case "M-":
                 if(this.state.input !== ""
                     && this.state.input !== "UNDEFINED"){
-                    const lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
-                    const subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
-                    this.setState({
-                        memory: [subtract, ...this.state.memory.slice(1)]
-                    });
-                }
+                    let lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    var subtract;
+                    if(where !== undefined){
+                        subtract = evaluate(this.state.memory[(this.state.memory.length - 1) - where] + "-" + lastNumberMSubtract);
+                        this.setState({
+                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), subtract, ...this.state.memory.slice(this.state.memory.length - where)]
+                        });
+                    }else{
+                        subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
+                        this.setState({
+                            memory: [subtract, ...this.state.memory.slice(1)]
+                        });
+                    };
+                    document.getElementById("calculator-btn-memory-container")
+                        .children[where]
+                        .children[0]
+                        .innerHTML = subtract;
+                };
                 break;
             case "MS":
                 if(this.state.input !== ""
@@ -192,6 +234,9 @@ class WidgetCalculator extends Component{
                     const lastNumberMS = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     this.setState({
                         memory: [lastNumberMS, ...this.state.memory]
+                    }, () => {
+                        this.createLabelMemory(lastNumberMS, this.state.memory.length - 1);
+                        this.updateLabelMemory();
                     });
                 };
                 break;
@@ -216,6 +261,8 @@ class WidgetCalculator extends Component{
         this.setState({
             memory: []
         });
+        document.getElementById("calculator-btn-memory-container")
+            .innerHTML = "";
     };
     /// Handles all buttons that are pressable
     handlePressableBtn(what){
@@ -267,6 +314,56 @@ class WidgetCalculator extends Component{
                 break;
         };
     };
+    /// Creates a memory label
+    createLabelMemory(what, index){
+        let divLabel = document.createElement("div");
+        let divButtons = document.createElement("div");
+        let spanLabel = document.createElement("span");
+        let buttonClear = document.createElement("button");
+        let buttonAdd = document.createElement("button");
+        let buttonSubtract = document.createElement("button");
+        divLabel.className = "flex-center row justify-content-right hoverable-label";
+        /// Number
+        spanLabel.innerHTML = what;
+        divLabel.appendChild(spanLabel);
+        /// Buttons
+        divButtons.className = "flex-center row gap only-flex float middle-left";
+        /// Button: MC
+        buttonClear.className = "btn-match fadded option";
+        buttonClear.value = "MC";
+        buttonClear.onclick = (event) => {
+            this.handleClick(event, ((this.state.memory.length - 1) - index));
+        };
+        buttonClear.appendChild(document.createTextNode("MC"));
+        divButtons.appendChild(buttonClear);
+        /// Button: M+
+        buttonAdd.className = "btn-match fadded option";
+        buttonAdd.value = "M+";
+        buttonAdd.onclick = (event) => {
+            this.handleClick(event, ((this.state.memory.length - 1) - index));
+        };
+        buttonAdd.appendChild(document.createTextNode("M+"));
+        divButtons.appendChild(buttonAdd);
+        /// Button: M-
+        buttonSubtract.className = "btn-match fadded option";
+        buttonSubtract.value = "M-";
+        buttonSubtract.onclick = (event) => {
+            this.handleClick(event, ((this.state.memory.length - 1) - index));
+        };
+        buttonSubtract.appendChild(document.createTextNode("M\u2212"));
+        divButtons.appendChild(buttonSubtract);
+        divLabel.appendChild(divButtons);
+        document.getElementById("calculator-btn-memory-container")
+            .prepend(divLabel);
+    };
+    /// Updates memory labels
+    updateLabelMemory(){
+        document.getElementById("calculator-btn-memory-container")
+            .innerHTML = "";
+        this.state.memory.forEach((value, index) => {
+            this.createLabelMemory(value, index);    
+        });
+    };
     componentDidMount(){
         /// Add event listener
         const inputField = document.getElementById("calculator-input-field");
@@ -275,6 +372,10 @@ class WidgetCalculator extends Component{
         if(sessionStorage.getItem("calculator") !== null){
             this.setState({
                 memory: JSON.parse(sessionStorage.getItem("calculator")).memory
+            }, () => {
+                this.state.memory.forEach((value, index) => {
+                    this.createLabelMemory(value, index);    
+                });
             });
         }
     };
@@ -390,9 +491,7 @@ class WidgetCalculator extends Component{
                         <section className="grid col-4">
                             {/* Memory Display */}
                             <div id="calculator-btn-memory-display">
-                                <div id="calculator-btn-memory-container">
-                                    {this.state.memory.map((curr, i) => <p key={i}>{curr}</p>)}
-                                </div>
+                                <div id="calculator-btn-memory-container"></div>
                                 <button id="calculator-btn-memory-display-close"
                                     onClick={this.handleClick}
                                     value="memory-close"></button>

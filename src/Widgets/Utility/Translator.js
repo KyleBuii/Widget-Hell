@@ -580,13 +580,13 @@ class WidgetTranslator extends Component{
                         </div>
                         {/* Buttons */}
                         <div>
-                            <button className="bottom-left btn-match fadded inverse"
+                            <button className="float bottom-left btn-match fadded inverse"
                                 onClick={() => this.props.copyToClipboard(this.state.converted)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
                             </button>
-                            <button className="bottom-right btn-match fadded"
+                            <button className="float bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                         </div>
                         {/* Replace Popout */}

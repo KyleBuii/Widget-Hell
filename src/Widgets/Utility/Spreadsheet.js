@@ -116,6 +116,10 @@ class WidgetSpreadsheet extends Component{
                             columnLabels={this.state.colLabels}
                             rowLabels={this.state.rowLabels}
                             onChange={(val) => this.handleData(val)}/>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

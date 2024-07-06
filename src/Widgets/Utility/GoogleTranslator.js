@@ -140,7 +140,7 @@ class WidgetGoogleTranslator extends Component{
                 onStart={() => this.props.defaultProps.dragStart("googletranslator")}
                 onStop={() => this.props.defaultProps.dragStop("googletranslator")}
                 onDrag={(event, data) => this.props.defaultProps.updatePosition("googletranslator", "utility", data.x, data.y)}
-                cancel="button, span, p, textarea, select"
+                cancel="button, span, p, textarea, .select-match"
                 bounds="parent">
                 <div id="googletranslator-widget"
                     className="widget">
@@ -223,9 +223,9 @@ class WidgetGoogleTranslator extends Component{
                         <div id="googletranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
-                            <button className="bottom-right btn-match fadded"
+                            <button className="float bottom-right btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
-                            <button className="bottom-left btn-match fadded inverse"
+                            <button className="float bottom-left btn-match fadded inverse"
                                 onClick={() => this.props.copyToClipboard(this.state.converted)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>

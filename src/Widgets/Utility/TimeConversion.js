@@ -372,6 +372,10 @@ class WidgetTimeConversion extends Component{
                                     value={this.state.date}/>
                             </div>
                         </section>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

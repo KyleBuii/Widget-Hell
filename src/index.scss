@@ -252,6 +252,9 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    &.justify-content-right{
+        justify-content: right;
+    }
     &.only-align-items{
         justify-content: unset;
     }
@@ -470,22 +473,27 @@ body{
 }
 
 /// Floating positions for elements
-.bottom-left{
-    position: absolute;
-    bottom: 2.8em;
-    left: 2.8em;
-}
-
-.bottom-right{
-    position: absolute;
-    bottom: 2.8em;
-    right: 3.8em;
+.float{
+    &.bottom-left{
+        position: absolute;
+        bottom: 2.8em;
+        left: 2.8em;
+    }
+    &.middle-left{
+        position: absolute;
+        left: 0.3em;
+    }
+    &.bottom-right{
+        position: absolute;
+        bottom: 2.8em;
+        right: 3.8em;
+    }
 }
 
 /// Position for the author's name
 .author-name{
     position: absolute;
-    bottom: 0.7rem;
+    bottom: 0.5rem;
     right: 2rem;
 }
 
@@ -516,6 +524,15 @@ body{
 .fullscreen-animation{
     min-height: calc(100vh - 5.2em);
     max-height: calc(100vh - 5.2em);
+}
+
+.hoverable-label{
+    div{
+        visibility: hidden;
+    }
+    &:hover div{
+        visibility: visible;
+    }
 }
 
 
@@ -747,10 +764,13 @@ body{
             margin: 1.23rem 0.3rem 1.23rem 0.9rem;
             overflow-y: scroll;
             overflow-x: hidden;
-            p{
-                margin: 0rem 0.3rem 0.6rem;
+            div{
+                margin-right: 0.3rem;
                 text-align: right;
                 word-wrap: break-word;
+                div{
+                    margin: 0;
+                }
             }
         }
         #calculator-btn-memory-display-close{
