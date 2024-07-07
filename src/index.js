@@ -570,6 +570,7 @@ class Widgets extends Component{
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
+            console.log(`Show ${what} widget.`);
             randColor();
             this.setState(prevState => ({
                 widgets: {
@@ -604,6 +605,7 @@ class Widgets extends Component{
                 };
             });
         }else{
+            console.log(`Hide ${what} widget.`);
             let e = document.getElementById(`${what}-widget`);
             e.style.visibility = "hidden";
             if(this.state.values.animation.value !== "default"){
