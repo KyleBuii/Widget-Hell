@@ -197,15 +197,12 @@ class WidgetSetting extends Component{
                 };
                 break;
             default:
-                console.log(`${what} button pressed!`);
                 const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
                 this.props.showHide(what, where);
                 if(this.props.widgets[what] === false){
-                    console.log("Light up button.");
                     btn.style.opacity = "1";
                     this.props.updateWidgetsActive(what, where);
                 }else{
-                    console.log("Dim button.");
                     btn.style.opacity = "0.5";
                     switch(where){
                         case "utility":
