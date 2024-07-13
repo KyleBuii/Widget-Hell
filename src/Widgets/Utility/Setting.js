@@ -15,7 +15,9 @@ const optionsAnimation = [
         label: "Animations",
         options: [
             {value: "default", label: "Default"},
-            {value: "fade", label: "Fade"}
+            {value: "fade", label: "Fade"},
+            {value: "shrink", label: "Shrink"},
+            {value: "blastingOff", label: "Blasting Off"}
         ]
     }
 ];
@@ -25,7 +27,7 @@ const optionsBackground = [
         options: [
             {value: "default", label: "Default"},
             {value: "white", label: "White"},
-            {value: "linear-gradient", label: "Linear-gradient"}
+            {value: "linear-gradient", label: "Linear-gradient"},
         ]
     }
 ];
@@ -48,7 +50,7 @@ class WidgetSetting extends Component{
         this.state = {
             showHideWidgets: false,
             search: "",
-            widgetsBtn: {                   /// Widgets Buttons
+            widgetsBtn: {
                 widgetsBtnUtility: {
                     quoteBtn: true,
                     translatorBtn: true,
@@ -60,21 +62,21 @@ class WidgetSetting extends Component{
                 },
                 widgetsBtnGames: {
                     snakeBtn: true,
-                    textRPGBtn: true
+                    typingTestBtn: true
                 },
                 widgetsBtnFun: {
                 }
             },
-            utilityTab: true,               /// Tabs
+            utilityTab: true,
             gamesTab: false,
             funTab: false,
-            settings: false,                /// Settings
+            settings: false,
             values: {
                 screenDimmer: false,
                 screenDimmerValue: 100,
-                background: {},
-                animation: {},
-                customBorder: {},
+                background: {value: "default", label: "Default"},
+                animation: {value: "default", label: "Default"},
+                customBorder: {value: "default", label: "Default"},
                 shadow: false,
                 authorNames: false,
                 fullscreen: false,
@@ -176,24 +178,12 @@ class WidgetSetting extends Component{
                     btnSettings.style.opacity = "1";
                     settingsPopout.style.visibility = "visible";
                     settingsPopout.style.display = "block";
-                    if(this.state.values.animation.value !== "default"){
-                        settingsPopout.style.animation = "none";
-                        window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.state.values.animation.value + "In 2s";
-                        });
-                    };
                 }else{
                     this.setState({
                         settings: false
                     });
                     btnSettings.style.opacity = "0.5";
                     settingsPopout.style.display = "none";
-                    if(this.state.values.animation.value !== "default"){
-                        settingsPopout.style.animation = "none";
-                        window.requestAnimationFrame(() => {
-                            settingsPopout.style.animation = this.state.values.animation.value + "Out 2s";
-                        });
-                    };
                 };
                 break;
             default:
@@ -389,7 +379,7 @@ class WidgetSetting extends Component{
             }
         }), () => {
             if(what.length <= 2){
-                this.updateTab(currTab, this.state.widgetsSearch);
+                this.updateTab(currTab);
             };
         });
     };
@@ -401,7 +391,7 @@ class WidgetSetting extends Component{
                 e.style.backgroundImage = "none";
                 break;
             case "white":
-                e.style.backgroundColor = "white";
+                e.style.backgrsoundColor = "white";
                 e.style.backgroundImage = "none";
                 break;
             case "linear-gradient":
@@ -434,7 +424,7 @@ class WidgetSetting extends Component{
         };
     };
     async componentDidMount(){
-        /// Load widget's data from local storage
+        /// Load utility widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
             let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
@@ -442,7 +432,6 @@ class WidgetSetting extends Component{
                 if(dataLocalStorage.utility[i].active === true){
                     let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
                     btn.style.opacity = "1";
-                    this.props.updateWidgetsActive(i, "utility");
                 };
                 switch(i){
                     case "setting":
@@ -481,20 +470,6 @@ class WidgetSetting extends Component{
                         break;
                     default:
                         break;
-                };
-            };
-            for(let i in dataLocalStorage.games){
-                if(dataLocalStorage.games[i].active === true){
-                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
-                    btn.style.opacity = "1";
-                    this.props.updateWidgetsActive(i, "games");
-                };
-            };
-            for(let i in dataLocalStorage.fun){
-                if(dataLocalStorage.fun[i].active === true){
-                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
-                    btn.style.opacity = "1";
-                    this.props.updateWidgetsActive(i, "fun");
                 };
             };
         };
@@ -612,6 +587,11 @@ class WidgetSetting extends Component{
                                                     className="btn-match option opt-medium disabled-option"
                                                     onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
                                                 : <></>} */}
+                                            {(this.state.widgetsBtn.widgetsBtnGames["typingTestBtn"] === true)
+                                                ? <button id="show-hide-widgets-popout-btn-typingtest"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("typingtest", "games")}>Typing Test</button>
+                                                : <></>}
                                         </section>
                                     </TabPanel>
                                     {/* Fun */}
@@ -687,6 +667,7 @@ class WidgetSetting extends Component{
                                                 className="select-match space-nicely top medium"
                                                 value={this.state.values.animation}
                                                 defaultValue={optionsAnimation[0]["options"][0]}
+                                                isDisabled={!this.state.settings}
                                                 onChange={(event) => this.handleSelect(event, "animation")}
                                                 options={optionsAnimation}
                                                 formatGroupLabel={this.props.formatGroupLabel}

@@ -234,7 +234,7 @@ body{
     width: 100%;
 }
 
-/// Space between 2 elements | []-----[]
+/// Space between elements | []-----[]
 .element-ends{
     display: flex;
     align-items: center;
@@ -276,6 +276,9 @@ body{
         &.medium{
             gap: 1em;
         }
+        &.large{
+            gap: 2em;
+        }
     }
 }
 
@@ -295,6 +298,7 @@ body{
     pointer-events: none;
 }
 
+/// Inputs
 .input-typable{
     width: 10rem;
     border: 1px solid var(--randColor);
@@ -328,6 +332,11 @@ body{
             width: 100vmin;
         }
     }
+}
+
+.input-invisible{
+    opacity: 0;
+    position: absolute;
 }
 
 .help-btn{
@@ -441,6 +450,9 @@ body{
     background-color: rgba(var(--randColorOpacity), 0.15);
     border-radius: 20px;
     padding: 1rem;
+    &.group-large{
+        max-width: 45em;
+    }
 }
 
 .section-sub{
@@ -533,6 +545,24 @@ body{
     &:hover div{
         visibility: visible;
     }
+}
+
+/// Creates a line bellow element
+.line{
+    width: 100%;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 2px solid rgba(var(--randColorOpacity), 0.08);
+}
+
+
+//////////////////// Class: Cursor Trails ////////////////////
+.trail{
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border-radius: 3px;
+    background: black;
 }
 
 
@@ -645,6 +675,9 @@ body{
     font-family: 'Tahoma', sans-serif;
     background-color: var(--randColor);
     overflow: hidden;
+    transition-property: background-color;
+    transition-duration: 500ms;
+    transition-timing-function: linear;
 }
 
 #widget-container{
@@ -652,35 +685,6 @@ body{
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-
-//////////////////// IDs: Widget Games ////////////////////
-#snake-widget{
-    max-width: 100%;
-    #snake-widget-animation{
-        padding: 1.6rem 2rem 2rem 1.6rem;
-        #snake-display{
-            max-width: 100%;
-            position: relative;
-            &:focus{
-                outline: none;
-            }
-            #snake-display-grid{
-                max-width: 100%;
-                box-sizing: content-box;
-                border: 4px solid var(--randColor);
-                display: flex;
-                flex-wrap: wrap;
-            }
-            #snake-overlay{
-                margin: 0.25rem;
-            }
-            #snake-popout-settings{
-                padding: 0.4rem;
-            }
-        }
-    }
 }
 
 
@@ -862,16 +866,90 @@ body{
     width: 100vmin;
 }
 
+
+//////////////////// IDs: Widget Games ////////////////////
+#snake-widget{
+    max-width: 100%;
+    #snake-widget-animation{
+        padding: 1.6rem 2rem 2rem 1.6rem;
+        #snake-display{
+            max-width: 100%;
+            position: relative;
+            &:focus{
+                outline: none;
+            }
+            #snake-display-grid{
+                max-width: 100%;
+                box-sizing: content-box;
+                border: 4px solid var(--randColor);
+                display: flex;
+                flex-wrap: wrap;
+            }
+            #snake-overlay{
+                margin: 0.25rem;
+            }
+            #snake-popout-settings{
+                padding: 0.4rem;
+            }
+        }
+    }
+}
+
+#typingtest-widget{
+    max-width: 50em;
+    max-height: 26.46em;
+    width: 100%;
+    #typingtest-text{
+        overflow: hidden;
+        p{
+            margin: 0;
+            letter-spacing: 1px;
+            text-align: justify;
+            span{
+                &.correct{
+                    color: lawngreen;
+                    background: #e7fbd3;
+                }
+                &.incorrect{
+                    color: #cb3439;
+                    background: #ffc0cb;
+                }
+                &.active{
+                    border-bottom: 3px solid var(--randColor);
+                }
+            }
+        }
+    }
+}
+
+
 //////////////////// Animations: Widgets ////////////////////
 @keyframes fadeIn{
     0%   { opacity: 0; }
     100% { opacity: 1; }
 }
-
 @keyframes fadeOut{
     0%   { opacity: 1;
            visibility: visible; }
     100% { opacity: 0; }
+}
+
+@keyframes shrinkIn{
+    0%   { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+@keyframes shrinkOut{
+    0%   { transform: scale(1);
+           visibility: visible; }
+    100% { transform: scale(0) }
+}
+
+@keyframes blastingOffOut{
+    0%   { visibility: visible;
+           transform: scale(1); }
+    100% { transform: scale(0);
+           translate: 100% -100%; 
+           rotate: 1080deg; }
 }
 
 

@@ -1,9 +1,7 @@
 import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
-/// Games
-import WidgetSnake from './Widgets/Games/Snake.js';
-/// Utility
+/// Widgets: Utility
 import WidgetSetting from './Widgets/Utility/Setting.js';
 import WidgetQuote from './Widgets/Utility/Quote.js';
 import WidgetTranslator from './Widgets/Utility/Translator.js';
@@ -12,6 +10,9 @@ import WidgetCalculator from './Widgets/Utility/Calculator.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
 import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
 import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
+/// Widgets: Games
+import WidgetSnake from './Widgets/Games/Snake.js';
+import WidgetTypingTest from './Widgets/Games/TypingTest.js';
 
 
 //////////////////// Variables ////////////////////
@@ -27,64 +28,84 @@ const tricks = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
     {
-        qte: "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you."
-        , au: "Some college professor"
+        quote: "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you."
+        , author: "Some college professor"
     },
     {
-        qte: "Your direction is more important than your speed."
-        , au: "Richard L. Evans"
+        quote: "Your direction is more important than your speed."
+        , author: "Richard L. Evans"
     },
     {
-        qte: "All things are difficult before they are easy."
-        , au: "Thomas Fuller"
+        quote: "All things are difficult before they are easy."
+        , author: "Thomas Fuller"
     },
     {
-        qte: "Your first workout will be bad. Your first podcast will be bad. Your first speech will be bad. Your first video will be bad. Your first ANYTHING will be bad. But you can't make your 100th without making your first."
-        , au: ""
+        quote: "Your first workout will be bad. Your first podcast will be bad. Your first speech will be bad. Your first video will be bad. Your first ANYTHING will be bad. But you can't make your 100th without making your first."
+        , author: ""
     }, 
     {
-        qte: "If you are depressed, you are living in the past. If you are anxious, you are living in the future. If you are at peace, you are living in the present."
-        , au: "Lao Tzu"
+        quote: "If you are depressed, you are living in the past. If you are anxious, you are living in the future. If you are at peace, you are living in the present."
+        , author: "Lao Tzu"
     },
     {
-        qte: "Accept both compliments and criticism. It takes both sun and rain for a flower to grow."
-        , au: ""
+        quote: "Accept both compliments and criticism. It takes both sun and rain for a flower to grow."
+        , author: ""
     },
     {
-        qte: "Every day is an opportunity to improve, even if it is only by 1%. It's not about being invincible, it's about being unstoppable."
-        , au: "改善 (Kaizen)"
+        quote: "Every day is an opportunity to improve, even if it is only by 1%. It's not about being invincible, it's about being unstoppable."
+        , author: "改善 (Kaizen)"
     },
     {
-        qte: "Start where you are. Use what you have. Do what you can."
-        , au: "Arthur Ashe"
+        quote: "Start where you are. Use what you have. Do what you can."
+        , author: "Arthur Ashe"
     },
     {
-        qte: "Some days, it's easier. Other days, it's harder. Be it easy or hard, the only way to get there... is to start."
-        , au: ""
+        quote: "Some days, it's easier. Other days, it's harder. Be it easy or hard, the only way to get there... is to start."
+        , author: ""
     },
     {
-        qte: "Never be a prisoner of your past. It was a lesson, not a life sentence."
-        , au: ""
+        quote: "Never be a prisoner of your past. It was a lesson, not a life sentence."
+        , author: ""
     },
     {
-        qte: "Just because it's taking time, doesn't mean it's not happening."
-        , au: ""
+        quote: "Just becauthorse it's taking time, doesn't mean it's not happening."
+        , author: ""
     },
     {
-        qte: "If you aren't willing to look like a foolish beginner, you'll never become a graceful master. Embarrassment is the cost of entry."
-        , au: ""
+        quote: "If you aren't willing to look like a foolish beginner, you'll never become a graceful master. Embarrassment is the cost of entry."
+        , author: ""
     },
     {
-        qte: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time."
-        , au: "Thomas Edison"
+        quote: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time."
+        , author: "Thomas Edison"
     },
     {
-        qte: "Was it a bad day? Or was it a bad five minutes that you milked all day?"
-        , au: ""
+        quote: "Was it a bad day? Or was it a bad five minutes that you milked all day?"
+        , author: ""
     },
     {
-        qte: "Sometimes it takes ten years to get that one year that changes your life."
-        , au: ""
+        quote: "Sometimes it takes ten years to get that one year that changes your life."
+        , author: ""
+    },
+    {
+        quote: "It's not the load that breaks you down, it's the way you carry it."
+        , author: "Lou Holtz"
+    },
+    {
+        quote: "Care about what other people think and you will always be their prisoner."
+        , author: "Lao Tzu"
+    },
+    {
+        quote: "Fear has led to more procrastinations than laziness ever will."
+        , author: "Ankur Warikoo"
+    },
+    {
+        quote: "Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking."
+        , author: "Steve Jobs"
+    },
+    {
+        quote: "Don't watch the clock; do what it does. Keep going."
+        , author: "Sam Levenson"
     }
 ];
 const sentences = [
@@ -101,9 +122,13 @@ const sentences = [
     , "O crucible which melts my soul, scream forth from the depths of the abyss and engulf my enemies in a crimson wave! Pierce trough, EXPLOSION!"    
     , 'If you ask Rick Astley for a copy of the movie "UP", he cannot give you it as he can never give you up. But, by doing that, he is letting you down, and thus, is creating something known as the Astley Paradox.'
     , "Reddit should rename 'share' to 'spreddit', 'delete' to 'shreddit' and 'karma' to 'creddit'. Yet they haven't. I don't geddit."
-    , "The tower of rebellion creeps upon man’s world… The unspoken faith displayed before me… The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
+    , "The tower of rebellion creeps upon man’s world... The unspoken faith displayed before me... The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
     , "Glasses are really versatile. First, you can have glasses-wearing girls take them off and suddenly become beautiful, or have girls wearing glasses flashing those cute grins, or have girls stealing the protagonist's glasses and putting them on like, \"Haha, got your glasses!\" That's just way too cute! Also, boys with glasses! I really like when their glasses have that suspicious looking gleam, and it's amazing how it can look really cool or just be a joke. I really like how it can fulfill all those abstract needs. Being able to switch up the styles and colors of glasses based on your mood is a lot of fun too! It's actually so much fun! You have those half rim glasses, or the thick frame glasses, everything! It's like you're enjoying all these kinds of glasses at a buffet. I really want Luna to try some on or Marine to try some on to replace her eyepatch. We really need glasses to become a thing in hololive and start selling them for HoloComi. Don't. You. Think. We. Really. Need. To. Officially. Give. Everyone. Glasses?"
     , "Eggs, Bacon, Grist, Sausage. The cockroaches in your bedroom held you hostage."
+    , "As a man who has a daughter, you are LITERALLY dedicating at least 20 years of your life simply to raise a girl for another man to enjoy. It is the ULTIMATE AND FINAL SIMP. Think about it logically."
+    , "A rizzler's last thoughts should be of Ohio."
+    , "I can't tell you how much I love Azusa. I want to examine her eyes up close, comfort her delicate wings with all of my sanctity, run my fingers through her soft yet perfect-seeming hair. I want to caress her whole body, not leave every centimeter untouched, massage her sweet head, care for her cheeks, touch and admire her toes and fingers while protecting her sacred legs with all my strength and dignity. How I wish to have a single glimpse of holy Azusa before my death, and store that deep in my mind to revoke at the moment of life's end to depart in bliss. Every time I just think of Azusa, if I haven't averted the sight of this goddess, I am filled with eternal happiness and contentment in all ways, so that even in the most difficult times of my life I have a reason to keep going. Every night I lie on my Azusa body pillow, face crying with joy as I replay scenarios of how I would exchange words with holy Azusa. I dream of her with her hands in mine, sitting on a bank of our city's hill, hidden under the night starry sky, our faces close, her eyes closed as I reach for a tender, protective kiss. Every day I step out of my bed just for Azusa. Every day I can't think of anything but Azusa. Every day I live only for Azusa. Come into my care, into my arms, I will heal you, I will take care of you, I will guarantee to fight for you with all my willpower and vitality until my last breath. I love you Azusa!!"
+    , `What the fuck did you just fucking say about me, you little perma-freshie? I'll have you know I graduated top of my class in the blade temple, and I've been involved in numerous secret raids on Duke Erisia’s manor, and I have over 300 confirmed grips. I am trained in primadon warfare and I'm the top sniper in the entire summer company. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on all five Luminants, mark my fucking words. You think you can get away with saying that shit to me over Deepwoken? Think again, fucker. As we speak I am contacting my secret network of Voidwalker spies across the Etrean Luminant and your spawn is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fuckng dead, kid. I can be anywhere, anytime, and I can grip you in over seven hundred ways, and that's just with Way of Navae. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the Central Authority and I will use it to its full extent to wipe your miserable ass off the face of the Luminant, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking wiped, kiddo.`
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -117,7 +142,7 @@ const uwuDictionary = {
     "of": ["ob"]
 };
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
-    , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)"];
+    , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)", "=w="];
 const brailleDictionary = {
     ' ': '⠀',
     '_': '⠸',
@@ -555,6 +580,16 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
+                    },
+                    typingtest: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
                     }
                 },
                 fun: {
@@ -586,7 +621,7 @@ class Widgets extends Component{
                     }
                 }
             }), () => {
-                let e = document.getElementById(`${what}-widget`);
+                let e = document.getElementById(`${what}-widget-animation`);
                 /// Add animation if it exists
                 if(this.state.values.animation.value !== "default"){
                     e.style.animation = "none";
@@ -604,7 +639,7 @@ class Widgets extends Component{
                 };
             });
         }else{
-            let e = document.getElementById(`${what}-widget`);
+            let e = document.getElementById(`${what}-widget-animation`);
             e.style.visibility = "hidden";
             if(this.state.values.animation.value !== "default"){
                 e.style.animation = "none";
@@ -937,7 +972,10 @@ class Widgets extends Component{
                         }
                     }
                 }), () => {
-                    this.updateCustomBorder();    
+                    this.updateCustomBorder();
+                    if(this.state.widgets.utility[i].active === true){
+                        this.updateWidgetsActive(i, "utility");
+                    };
                 });
                 /// For specific widgets that have unique state values
                 switch(i){
@@ -972,7 +1010,10 @@ class Widgets extends Component{
                         }
                     }
                 }), () => {
-                    this.updateCustomBorder();    
+                    this.updateCustomBorder();
+                    if(this.state.widgets.games[i].active === true){
+                        this.updateWidgetsActive(i, "games");
+                    }; 
                 });
             };
             for(let i in this.state.widgets.fun){
@@ -989,6 +1030,9 @@ class Widgets extends Component{
                     }
                 }), () => {
                     this.updateCustomBorder();
+                    if(this.state.widgets.fun[i].active === true){
+                        this.updateWidgetsActive(i, "fun");
+                    };
                 });
             };
         }else{
@@ -1025,7 +1069,8 @@ class Widgets extends Component{
                         weather: this.state.widgets.utility.weather.active,
                         timeconversion: this.state.widgets.utility.timeconversion.active,
                         spreadsheet: this.state.widgets.utility.spreadsheet.active,
-                        snake: this.state.widgets.games.snake.active
+                        snake: this.state.widgets.games.snake.active,
+                        typingtest: this.state.widgets.games.typingtest.active
                     }}
                     showHide={this.handleShowHide}
                     dragStart={dragStart}
@@ -1058,6 +1103,7 @@ class Widgets extends Component{
                         }
                     }}
                     microIcon={microIcon}/>
+                {/* Widgets: Utility */}
                 {this.state.widgets.utility.quote.active === true
                     ? <WidgetQuote
                         defaultProps={defaultProps}
@@ -1148,16 +1194,6 @@ class Widgets extends Component{
                         medIcon={medIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.games.snake.active === true
-                    ? <WidgetSnake
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.games.snake.position.x,
-                            y: this.state.widgets.games.snake.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.snake.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
                 {this.state.widgets.utility.timeconversion.active === true
                     ? <WidgetTimeConversion
                         defaultProps={defaultProps}
@@ -1179,6 +1215,28 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.spreadsheet.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.spreadsheet.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {/* Widgets: Games */}
+                {this.state.widgets.games.snake.active === true
+                    ? <WidgetSnake
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.games.snake.position.x,
+                            y: this.state.widgets.games.snake.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.snake.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.typingtest.active === true
+                    ? <WidgetTypingTest
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.games.typingtest.position.x,
+                            y: this.state.widgets.games.typingtest.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.typingtest.drag.disabled}
+                        randSentence={randSentence}
                         largeIcon={largeIcon}/>
                     : <></>}
             </div>

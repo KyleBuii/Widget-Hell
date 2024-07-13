@@ -32,6 +32,11 @@ class WidgetCalculator extends Component{
     };
     handleClick(event, where){
         switch(event.target.value){
+            case "number":
+                this.setState({
+                    input: this.state.memory[where]
+                });
+                break;
             case "=":
                 if(this.state.input !== ""
                     && this.state.input !== "UNDEF"){
@@ -186,45 +191,53 @@ class WidgetCalculator extends Component{
             case "M+":
                 if(this.state.input !== ""
                 && this.state.input !== "UNDEFINED"){
-                    let lastNumberMAdd = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    let lastNumberMAdd = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     var add;
                     if(where !== undefined){
-                        add = evaluate(this.state.memory[(this.state.memory.length - 1) - where] + "+" + lastNumberMAdd);
+                        add = evaluate(this.state.memory[where] + "+" + lastNumberMAdd);
                         this.setState({
-                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), add, ...this.state.memory.slice(this.state.memory.length - where)]
+                            memory: [...this.state.memory.slice(0, where), add, ...this.state.memory.slice(where + 1)]
                         });
+                        document.getElementById("calculator-btn-memory-container")
+                            .children[where]
+                            .children[0]
+                            .innerHTML = add;
                     }else{
                         add = evaluate(this.state.memory[0] + "+" + lastNumberMAdd);
                         this.setState({
                             memory: [add, ...this.state.memory.slice(1)]
                         });
+                        document.getElementById("calculator-btn-memory-container")
+                            .children[0]
+                            .children[0]
+                            .innerHTML = add;
                     };
-                    document.getElementById("calculator-btn-memory-container")
-                        .children[where]
-                        .children[0]
-                        .innerHTML = add;
                 }
                 break;
             case "M-":
                 if(this.state.input !== ""
                     && this.state.input !== "UNDEFINED"){
-                    let lastNumberMSubtract = this.state.input.toString().match(/[-]?\d+(?=\D*$)/);
+                    let lastNumberMSubtract = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     var subtract;
                     if(where !== undefined){
-                        subtract = evaluate(this.state.memory[(this.state.memory.length - 1) - where] + "-" + lastNumberMSubtract);
+                        subtract = evaluate(this.state.memory[where] + "-" + lastNumberMSubtract);
                         this.setState({
-                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), subtract, ...this.state.memory.slice(this.state.memory.length - where)]
+                            memory: [...this.state.memory.slice(0, where), subtract, ...this.state.memory.slice(where + 1)]
                         });
+                        document.getElementById("calculator-btn-memory-container")
+                            .children[where]
+                            .children[0]
+                            .innerHTML = subtract;
                     }else{
                         subtract = evaluate(this.state.memory[0] + "-" + lastNumberMSubtract);
                         this.setState({
                             memory: [subtract, ...this.state.memory.slice(1)]
                         });
+                        document.getElementById("calculator-btn-memory-container")
+                            .children[0]
+                            .children[0]
+                            .innerHTML = subtract;
                     };
-                    document.getElementById("calculator-btn-memory-container")
-                        .children[where]
-                        .children[0]
-                        .innerHTML = subtract;
                 };
                 break;
             case "MS":
@@ -324,6 +337,10 @@ class WidgetCalculator extends Component{
         let buttonSubtract = document.createElement("button");
         divLabel.className = "flex-center row justify-content-right hoverable-label";
         /// Number
+        spanLabel.value = "number";
+        spanLabel.onclick = (event) => {
+            this.handleClick(event, index);
+        };
         spanLabel.innerHTML = what;
         divLabel.appendChild(spanLabel);
         /// Buttons
@@ -332,7 +349,7 @@ class WidgetCalculator extends Component{
         buttonClear.className = "btn-match fadded option";
         buttonClear.value = "MC";
         buttonClear.onclick = (event) => {
-            this.handleClick(event, ((this.state.memory.length - 1) - index));
+            this.handleClick(event, index);
         };
         buttonClear.appendChild(document.createTextNode("MC"));
         divButtons.appendChild(buttonClear);
@@ -340,7 +357,7 @@ class WidgetCalculator extends Component{
         buttonAdd.className = "btn-match fadded option";
         buttonAdd.value = "M+";
         buttonAdd.onclick = (event) => {
-            this.handleClick(event, ((this.state.memory.length - 1) - index));
+            this.handleClick(event, index);
         };
         buttonAdd.appendChild(document.createTextNode("M+"));
         divButtons.appendChild(buttonAdd);
@@ -348,13 +365,13 @@ class WidgetCalculator extends Component{
         buttonSubtract.className = "btn-match fadded option";
         buttonSubtract.value = "M-";
         buttonSubtract.onclick = (event) => {
-            this.handleClick(event, ((this.state.memory.length - 1) - index));
+            this.handleClick(event, index);
         };
         buttonSubtract.appendChild(document.createTextNode("M\u2212"));
         divButtons.appendChild(buttonSubtract);
         divLabel.appendChild(divButtons);
         document.getElementById("calculator-btn-memory-container")
-            .prepend(divLabel);
+            .appendChild(divLabel);
     };
     /// Updates memory labels
     updateLabelMemory(){

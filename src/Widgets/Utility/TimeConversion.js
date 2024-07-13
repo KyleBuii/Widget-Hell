@@ -335,7 +335,7 @@ class WidgetTimeConversion extends Component{
                                     </section>
                                 </section>
                                 {/* Convert */}
-                                <section className="flex-center row gap">
+                                <section className="flex-center row gap space-nicely all">
                                     <IconContext.Provider value={{ size: "1.8em", className: "global-class-name" }}>
                                         <FaArrowDownLong/>
                                     </IconContext.Provider>

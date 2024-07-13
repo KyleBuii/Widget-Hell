@@ -16,9 +16,9 @@ class WidgetQuote extends Component{
     };
     handleNewQuote(){
         const randQuote = Math.floor(Math.random() * this.props.quotes.length);
-        const randQuoteAuthor = (this.props.quotes[randQuote]["au"] === "") ? "Anon" : this.props.quotes[randQuote]["au"];
+        const randQuoteAuthor = (this.props.quotes[randQuote]["author"] === "") ? "Anon" : this.props.quotes[randQuote]["author"];
         this.setState({
-            currentQuote: this.props.quotes[randQuote]["qte"],
+            currentQuote: this.props.quotes[randQuote]["quote"],
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
