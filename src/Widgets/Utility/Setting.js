@@ -391,7 +391,7 @@ class WidgetSetting extends Component{
                 e.style.backgroundImage = "none";
                 break;
             case "white":
-                e.style.backgrsoundColor = "white";
+                e.style.backgroundColor = "white";
                 e.style.backgroundImage = "none";
                 break;
             case "linear-gradient":
