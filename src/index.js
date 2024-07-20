@@ -13,6 +13,7 @@ import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
 /// Widgets: Games
 import WidgetSnake from './Widgets/Games/Snake.js';
 import WidgetTypingTest from './Widgets/Games/TypingTest.js';
+import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
 
 
 //////////////////// Variables ////////////////////
@@ -106,11 +107,22 @@ const quotes = [
     {
         quote: "Don't watch the clock; do what it does. Keep going."
         , author: "Sam Levenson"
+    },
+    {
+        quote: "You are free and that is why you are lost.",
+        author: "Franz Kafka"
+    },
+    {
+        quote: "It's hard to hate someone once you understand them."
+        , author: "Lucy Christopher"
+    },
+    {
+        quote: "The sunrise, of course, doesn't care if we watch it or not. It will keep on being beautiful, even if no one bothers to look at it."
+        , author: "Gene Amole"
     }
 ];
 const sentences = [
-    "Curse you Perry the Platypus."
-    , "My mum (82F) told me (12M) to do the dishes (16) but I (12M) was too busy playing Fortnite (3 kills) so I (12M) grabbed my controller (DualShock 4) and threw it at her (138kph). She fucking died, and I (12M) went to prison (18 years). While in prison I (12M) incited several riots (3) and assumed leadership of a gang responsible for smuggling drugs (cocaine) into the country. I (12M) also ordered the assassination of several celebrities (Michael Jackson, Elvis Presley and Jeffrey Epstein) and planned a terrorist attack (9/11)."
+    "My mum (82F) told me (12M) to do the dishes (16) but I (12M) was too busy playing Fortnite (3 kills) so I (12M) grabbed my controller (DualShock 4) and threw it at her (138kph). She fucking died, and I (12M) went to prison (18 years). While in prison I (12M) incited several riots (3) and assumed leadership of a gang responsible for smuggling drugs (cocaine) into the country. I (12M) also ordered the assassination of several celebrities (Michael Jackson, Elvis Presley and Jeffrey Epstein) and planned a terrorist attack (9/11)."
     , "So I (74M) was recently hit by a car (2014 Honda) and died. My wife (5F) organized me a funeral (cost $2747) without asking me (74M) at all. I (74M) was unable to make it because I (74M) was dead (17 days). At the funeral I heard my dad (15M) and other family members talking about how they wish I could be there and now I feel bad for not showing up."
     , "I think fortnite should add a pregnant female skin. Every kill she gets she slowly gives birth. When in water blood comes out. At 10 kills she gives birth and the baby can be your pet."
     , "PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT"    
@@ -129,6 +141,10 @@ const sentences = [
     , "A rizzler's last thoughts should be of Ohio."
     , "I can't tell you how much I love Azusa. I want to examine her eyes up close, comfort her delicate wings with all of my sanctity, run my fingers through her soft yet perfect-seeming hair. I want to caress her whole body, not leave every centimeter untouched, massage her sweet head, care for her cheeks, touch and admire her toes and fingers while protecting her sacred legs with all my strength and dignity. How I wish to have a single glimpse of holy Azusa before my death, and store that deep in my mind to revoke at the moment of life's end to depart in bliss. Every time I just think of Azusa, if I haven't averted the sight of this goddess, I am filled with eternal happiness and contentment in all ways, so that even in the most difficult times of my life I have a reason to keep going. Every night I lie on my Azusa body pillow, face crying with joy as I replay scenarios of how I would exchange words with holy Azusa. I dream of her with her hands in mine, sitting on a bank of our city's hill, hidden under the night starry sky, our faces close, her eyes closed as I reach for a tender, protective kiss. Every day I step out of my bed just for Azusa. Every day I can't think of anything but Azusa. Every day I live only for Azusa. Come into my care, into my arms, I will heal you, I will take care of you, I will guarantee to fight for you with all my willpower and vitality until my last breath. I love you Azusa!!"
     , `What the fuck did you just fucking say about me, you little perma-freshie? I'll have you know I graduated top of my class in the blade temple, and I've been involved in numerous secret raids on Duke Erisia’s manor, and I have over 300 confirmed grips. I am trained in primadon warfare and I'm the top sniper in the entire summer company. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on all five Luminants, mark my fucking words. You think you can get away with saying that shit to me over Deepwoken? Think again, fucker. As we speak I am contacting my secret network of Voidwalker spies across the Etrean Luminant and your spawn is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fuckng dead, kid. I can be anywhere, anytime, and I can grip you in over seven hundred ways, and that's just with Way of Navae. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the Central Authority and I will use it to its full extent to wipe your miserable ass off the face of the Luminant, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking wiped, kiddo.`
+    , "My name is Guido Mista. I'm 44 years old. My house is in the southwest section of Naples, where all the slums are, and I have 4 wives. I work as a hitman for Passione, and I get home every day by 4:44 AM at the latest. I smoke 4 packs a day, and I always drink. I'm in bed by 4:44PM, and make sure I get 4 hours of sleep, no matter what. After having a glass of cold beer and doing about 44 minutes of stretches before going to bed, I usually have problems sleeping and I stay up until morning. Just like an elderly, I wake up with fatigue and stress in the morning. I was told there were issues at my last check-up. I'm trying to explain that I'm a person who wishes to live a very quiet life. I take care seek trouble with enemies, like winning and losing, that would cause me to lose sleep at night. That is how I deal with society, and I know that is what brings me sadness. Although, if I were to fight I would lose to everyone."
+    , "Honor among thieves is honor under the seas!"
+    , "sniff sniff i-is that a BOY I smell? sniff sniff mmm yes I smell it! BOYSMELL!!!! I smell a boy! W-What is a boy doing here?!?! omygosh what am I gonna do?!?! THERE'S A BOY HERE! I'M FREAKING OUT SO MUCH!!!! calm down calm down and take a nice, deep breathe... sniff sniff it smells so good! I love boysmell so much!!!! It makes me feel so amazing. I'm getting tingles all over from the delicious boyscent! It's driving me boyCRAZY!!!!!!"
+    , "When you're on a chicken bender grab a box of chicken tenders, bawk ba gawk!"
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -397,7 +413,8 @@ function dragStop(what){
 function sortSelect(what){
     what.forEach((value) => {
         value.options.sort((a, b) => {
-            return a.label.localeCompare(b.label);  
+            return ["Default"].indexOf(b.label) - ["Default"].indexOf(a.label)
+                || a.label.localeCompare(b.label);
         });
     });
 };
@@ -593,6 +610,16 @@ class Widgets extends Component{
                     }
                 },
                 fun: {
+                    pokemonsearch: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    }
                 }
             }
         };
@@ -1070,7 +1097,8 @@ class Widgets extends Component{
                         timeconversion: this.state.widgets.utility.timeconversion.active,
                         spreadsheet: this.state.widgets.utility.spreadsheet.active,
                         snake: this.state.widgets.games.snake.active,
-                        typingtest: this.state.widgets.games.typingtest.active
+                        typingtest: this.state.widgets.games.typingtest.active,
+                        pokemonsearch: this.state.widgets.fun.pokemonsearch.active
                     }}
                     showHide={this.handleShowHide}
                     dragStart={dragStart}
@@ -1239,6 +1267,18 @@ class Widgets extends Component{
                         randSentence={randSentence}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {/* Widgets: Fun */}
+                {this.state.widgets.fun.pokemonsearch.active === true
+                    ? <WidgetPokemonSearch
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.pokemonsearch.position.x,
+                            y: this.state.widgets.fun.pokemonsearch.position.y
+                        }}
+                        dragDisabled={this.state.widgets.fun.pokemonsearch.drag.disabled}
+                        microIcon={microIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
             </div>
         );
     };
@@ -1286,6 +1326,10 @@ class Widget[] extends Component{
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Author *
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className="font smaller transparent-normal author-name">Created by [AUTHOR NAME]</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>
@@ -1299,7 +1343,10 @@ class Widget[] extends Component{
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 root.render(
-    <div id="App">
-        <Widgets/>
+    <div id="Base">
+        <div id="App"
+            className="background-default">
+            <Widgets/>
+        </div>
     </div>
 );

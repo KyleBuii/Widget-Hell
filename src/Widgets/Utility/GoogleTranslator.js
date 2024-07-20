@@ -96,12 +96,6 @@ class WidgetGoogleTranslator extends Component{
     componentDidMount(){
         /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.languages.length; curr+=2){
-            // var optText = this.props.languages[curr];
-            // var optValue = this.props.languages[curr+1];
-            // var el = document.createElement("option");
-            // el.textContent = optText;
-            // el.value = optValue;
-            // select.appendChild(el);
             optionsTranslate[0]["options"].push(
                 {value: this.props.languages[curr+1], label: this.props.languages[curr]}
             );

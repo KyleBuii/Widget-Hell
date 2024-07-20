@@ -28,6 +28,45 @@ const optionsBackground = [
             {value: "default", label: "Default"},
             {value: "white", label: "White"},
             {value: "linear-gradient", label: "Linear-gradient"},
+            {value: "diagonal", label: "Diagonal"},
+            {value: "microbial-mat", label: "Microbial Mat"},
+            {value: "stairs", label: "Stairs"},
+            {value: "half-rombes", label: "Half-Rombes"},
+            {value: "arrows", label: "Arrows"},
+            {value: "zig-zag", label: "Zig-Zag"},
+            {value: "weave", label: "Weave"},
+            {value: "upholstery", label: "Upholstery"},
+            {value: "starry-night", label: "Starry Night"},
+            {value: "marrakesh", label: "Marrakesh"},
+            {value: "rainbow-bokeh", label: "Rainbow Bokeh"},
+            {value: "carbon", label: "Carbon"},
+            {value: "carbon-fibre", label: "Carbon Fibre"},
+            {value: "hearts", label: "Hearts"},
+            {value: "argyle", label: "Argyle"},
+            {value: "steps", label: "Steps"},
+            {value: "waves", label: "Waves"},
+            {value: "cross", label: "Cross"},
+            {value: "yin-yang", label: "Yin Yang"},
+            {value: "stars", label: "Stars"},
+            {value: "brady-bunch", label: "Brady Bunch"},
+            {value: "shippo", label: "Shippo"},
+            {value: "bricks", label: "Bricks"},
+            {value: "seigaiha", label: "Seigaiha"},
+            {value: "japanese-cube", label: "Japanese Cube"},
+            {value: "polka-dot", label: "Polka Dot"},
+            {value: "houndstooth", label: "Houndstooth"},
+            {value: "checkerboard", label: "Checkerboard"},
+            {value: "diagonal-checkerboard", label: "Diagonal Checkerboard"},
+            {value: "tartan", label: "Tartan"},
+            {value: "madras", label: "Madras"},
+            {value: "lined-paper", label: "Lined Paper"},
+            {value: "blueprint-grid", label: "Blueprint Grid"},
+            {value: "tablecloth", label: "Tablecloth"},
+            {value: "cicada-stripes", label: "Cicada Stripes"},
+            {value: "honeycomb", label: "Honeycomb"},
+            {value: "wave", label: "Wave"},
+            {value: "chocolate-weave", label: "Chocolate Weave"},
+            {value: "cross-dots", label: "Cross-Dots"}
         ]
     }
 ];
@@ -65,6 +104,7 @@ class WidgetSetting extends Component{
                     typingTestBtn: true
                 },
                 widgetsBtnFun: {
+                    pokemonSearchBtn: true
                 }
             },
             utilityTab: true,
@@ -258,18 +298,12 @@ class WidgetSetting extends Component{
     };
     /// Handles all selects
     handleSelect(what, where){
-        this.setState({
-            values: {
-                ...this.state.values,
-                [where]: what
-            }
-        });
         switch(where){
             case "animation":
                 this.props.updateValue(what, where, "values");
                 break;
             case "background":
-                this.updateBackground(what.value);
+                this.updateBackground(what);
                 break;
             case "customBorder":
                 this.props.updateValue(what, where, "values");
@@ -277,6 +311,12 @@ class WidgetSetting extends Component{
             default:
                 break;
         };
+        this.setState({
+            values: {
+                ...this.state.values,
+                [where]: what
+            }
+        });
     };
     /// Handles all checkboxes
     handleCheckbox(what, where, type){
@@ -321,7 +361,7 @@ class WidgetSetting extends Component{
                 break;
             case "fun":
                 for(var currFunWidget in this.props.widgetsFunActive){
-                    const btn = document.getElementById("show-hide0widgets-popout-btn-" + this.props.widgetsFunActive[currFunWidget]);
+                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsFunActive[currFunWidget]);
                     btn.style.opacity = "1";
                 };
                 break;
@@ -384,22 +424,9 @@ class WidgetSetting extends Component{
         });
     };
     updateBackground(what){
-        const e = document.getElementById("App");
-        switch(what){
-            case "default":
-                e.style.backgroundColor = "var(--randColor)";
-                e.style.backgroundImage = "none";
-                break;
-            case "white":
-                e.style.backgroundColor = "white";
-                e.style.backgroundImage = "none";
-                break;
-            case "linear-gradient":
-                e.style.backgroundImage = "linear-gradient(var(--randColor), var(--randColorLight))";
-                break;
-            default:
-                break;
-        };
+        let e = document.getElementById("App");
+        e.classList.remove(`background-${this.state.values.background.value}`);
+        e.classList.add(`background-${what.value}`);    
     };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
@@ -424,6 +451,10 @@ class WidgetSetting extends Component{
         };
     };
     async componentDidMount(){
+        /// Sort selects
+        this.props.sortSelect(optionsAnimation);
+        this.props.sortSelect(optionsBackground);
+        this.props.sortSelect(optionsCustomBorder);
         /// Load utility widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
@@ -455,7 +486,7 @@ class WidgetSetting extends Component{
                                 document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                             };
                             /// Update Design
-                            this.updateBackground(this.state.values.background.value);
+                            this.updateBackground(this.state.values.background);
                             document.getElementById("settings-popout-design-shadow").checked = this.state.values.shadow;
                             if(this.state.values.shadow === true){
                                 this.props.updateDesign("shadow", true);
@@ -598,6 +629,11 @@ class WidgetSetting extends Component{
                                     <TabPanel>
                                         <section id="show-hide-widgets-popout-btn-fun"
                                             className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                            {(this.state.widgetsBtn.widgetsBtnFun["pokemonSearchBtn"] === true)
+                                                ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
+                                                    className="btn-match option opt-medium disabled-option"
+                                                    onClick={() => this.handlePressableBtn("pokemonsearch", "fun")}>Pokemon Search</button>
+                                                : <></>}
                                         </section>
                                     </TabPanel>
                                 </Tabs>

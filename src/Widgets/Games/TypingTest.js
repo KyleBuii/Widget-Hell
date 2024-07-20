@@ -159,7 +159,7 @@ class WidgetTypingTest extends Component{
             isTyping: false
         });
     };
-    handleButton(what){
+    handleButton(what, amount){
         switch(what){
             case "AZ":
                 this.handleLoadText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -172,6 +172,13 @@ class WidgetTypingTest extends Component{
                 break;
             case "za":
                 this.handleLoadText("zyxwvutsrqponmlkjihgfedcba");
+                break;
+            case "numbers":
+                let stringNumber = "";
+                for(let i = 0; i < amount; i++){
+                    stringNumber += (Math.random() * 10).toString().replace(".", "");
+                };
+                this.handleLoadText(stringNumber);
                 break;
             default:
                 break;
@@ -231,7 +238,7 @@ class WidgetTypingTest extends Component{
                             autoComplete="off"></input>
                         {/* Text */}
                         <div id="typingtest-text"
-                            className="font large-medium line">
+                            className="font large-medium line bellow">
                             <p></p>
                         </div>
                         {/* Information */}
@@ -260,22 +267,39 @@ class WidgetTypingTest extends Component{
                         </div>
                         {/* Presets */}
                         <div className="flex-center column section-group group-large space-nicely top">
-                            <span className="font medium bold line">Presets</span>
-                            <div className="flex-center row gap medium">
-                                <button className="btn-match option opt-small"
-                                    type="button"
-                                    onClick={() => this.handleButton("AZ")}>A-Z</button>
-                                <button className="btn-match option opt-small"
-                                    type="button"
-                                    onClick={() => this.handleButton("az")}>a-z</button>
-                                <button className="btn-match option opt-small"
-                                    type="button"
-                                    onClick={() => this.handleButton("ZA")}>Z-A</button>
-                                <button className="btn-match option opt-small"
-                                    type="button"
-                                    onClick={() => this.handleButton("za")}>z-a</button>
+                            <span className="font medium bold line bellow">Presets</span>
+                            <div className="flex-center column gap medium">
+                                <div className="flex-center row gap medium">
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("AZ")}>A-Z</button>
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("az")}>a-z</button>
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("ZA")}>Z-A</button>
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("za")}>z-a</button>
+                                </div>
+                                <div className="flex-center row gap medium">
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("numbers", 1)}>1-9: 16</button>
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("numbers", 2)}>1-9: 32</button>
+                                    <button className="btn-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handleButton("numbers", 3)}>1-9: 48</button>
+                                </div>
                             </div>
                         </div>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            : <></>}
                     </div>
                 </div>
             </Draggable>

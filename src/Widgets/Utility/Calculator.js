@@ -39,7 +39,7 @@ class WidgetCalculator extends Component{
                 break;
             case "=":
                 if(this.state.input !== ""
-                    && this.state.input !== "UNDEF"){
+                    && !/\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b/.test(this.state.input)){
                     var ans;
                     const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.operation}])`);
                     if(this.state.lastComputation !== ""
