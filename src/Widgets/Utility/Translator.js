@@ -436,22 +436,13 @@ class WidgetTranslator extends Component{
     };
     /// Handles all buttons that are pressable (opacity: 0.5 on click)
     handlePressableBtn(what, popout){
-        const btn = document.getElementById(`${popout}-popout-btn-${what}`);
-        if(this.state[what] === false){
-            this.setState({
-                [what]: true
-            }, () => {
-                this.convertToText();
-            });
-            btn.style.opacity = "1";
-        }else{
-            this.setState({
-                [what]: false
-            }, () => {
-                this.convertToText();
-            });
-            btn.style.opacity = "0.5";
-        };
+        const popoutButton = document.getElementById(`${popout}-popout-btn-${what}`);
+        popoutButton.style.opacity = (this.state[what] === false) ? "1" : "0.5";
+        this.setState({
+            [what]: !this.state[what]
+        }, () => {
+            this.convertToText();
+        });
     };
     /// Handles random sentence button
     handleRandSentence(){

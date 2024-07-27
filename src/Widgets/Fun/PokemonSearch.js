@@ -1,6 +1,7 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { AiOutlineSetting } from 'react-icons/ai';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -8,6 +9,17 @@ import Draggable from 'react-draggable';
 /// Variables
 const Pokedex = require("pokeapi-js-wrapper")
 const P = new Pokedex.Pokedex()
+const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
+const clamp = (value, min = 0, max = 100 ) => {
+    return Math.min(Math.max(value, min), max);
+};
+const adjust = (value, fromMin, fromMax, toMin, toMax) => {
+	return round(toMin + (toMax - toMin) * (value - fromMin) / (fromMax - fromMin));
+};
+let springRotate = { x: 0, y: 0 };
+let springGlare = { x: 50, y: 50, o: 0 };
+let springBackground = { x: 50, y: 50 };
+let springRotateDelta = { x: 0, y: 0 };
 
 
 class WidgetPokemonSearch extends Component{
@@ -26,7 +38,10 @@ class WidgetPokemonSearch extends Component{
             specialAttack: "",
             specialDefense: "",
             speed: "",
-            shiny: false
+            setting: false,
+            shiny: false,
+            flipped: false,
+            previousValue: ""
         };
         this.handleButton = this.handleButton.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -54,17 +69,63 @@ class WidgetPokemonSearch extends Component{
                     });
                 });
                 break;
-            case "shiny":
-                this.setState({
-                    shiny: !this.state.shiny
-                }, () => {
-                    let buttonPokemonShiny = document.getElementById("pokemonsearch-button-shiny");
-                    buttonPokemonShiny.style.opacity = (this.state.shiny) ? "1" : "0.5";    
-                });
-                this.fetchPokemon(this.state.searched);
+            case "setting":
+                const buttonSetting = document.getElementById("pokemonsearch-button-setting");
+                const popoutSetting = document.getElementById("pokemonsearch-popout-setting");
+                if(this.state.setting === false){
+                    this.setState({
+                        setting: true
+                    });
+                    buttonSetting.style.opacity = "1";
+                    popoutSetting.style.visibility = "visible";
+                }else{
+                    this.setState({
+                        setting: false
+                    });
+                    buttonSetting.style.opacity = "0.5";
+                    popoutSetting.style.visibility = "hidden";
+                };
                 break;
             default:
                 break;
+        };
+    };
+    handleButtonPressable(what){
+        const popoutButton = document.getElementById(`pokemonsearch-popout-setting-button-${what}`);
+        popoutButton.style.opacity = (this.state[what] === false) ? "1" : "0.5";
+        this.setState({
+            [what]: !this.state[what]
+        });
+        this.fetchPokemon(this.state.searched);
+    };
+    handleRadioPressable(what){
+        let currentValue = what.target.value;
+        let value = "";
+        let cardPokemon = document.getElementById("pokemonsearch-card-pokemon");
+        let popoutButton = document.getElementById(`pokemonsearch-popout-setting-button-${currentValue}`);
+        if(this.state.previousValue === currentValue){
+            cardPokemon.setAttribute("rarity", "");
+            popoutButton.checked = false;
+            value = "";
+        }else{
+            cardPokemon.setAttribute("rarity", currentValue);
+            value = currentValue;
+        };
+        this.setState({
+            previousValue: value
+        });
+        /// Speciifc rarities
+        if(currentValue === "cosmosHolo"){
+            const r = document.documentElement;
+            let randomSeed = {
+                x: Math.random(),
+                y: Math.random()
+            }
+            let cosmosPosition = { 
+                x: Math.floor( randomSeed.x * 734 ), 
+                y: Math.floor( randomSeed.y * 1280 ) 
+            };
+            r.style.setProperty("--cosmosbg", `${cosmosPosition.x}px ${cosmosPosition.y}px`);    
         };
     };
     handleKeyPress(event){
@@ -106,17 +167,11 @@ class WidgetPokemonSearch extends Component{
             });
             /// Pokemon image
             let imagePokemon = document.createElement("img");
-            imagePokemon.className = "front";
             imagePokemon.alt = "Searched pokemon";
-            imagePokemon.src = (this.state.shiny) ? data.sprites.front_shiny : data.sprites.front_default;
-            imagePokemon.onclick = () => {
-                if(imagePokemon.classList.contains("front")){
-                    imagePokemon.src = (this.state.shiny) ? data.sprites.back_shiny : data.sprites.back_default;
-                    imagePokemon.classList.remove("front");
-                }else{
-                    imagePokemon.src = (this.state.shiny) ? data.sprites.front_shiny : data.sprites.front_default;
-                    imagePokemon.classList.add("front");   
-                };
+            if(this.state.flipped){
+                imagePokemon.src = (this.state.shiny) ? data.sprites.back_shiny : data.sprites.back_default;
+            }else{
+                imagePokemon.src = (this.state.shiny) ? data.sprites.front_shiny : data.sprites.front_default;
             };
             divPokemonImage.appendChild(imagePokemon);
             /// Pokemon types
@@ -147,7 +202,7 @@ class WidgetPokemonSearch extends Component{
                 let tempSpan = document.createElement("span");
                 let tempImg = document.createElement("img");
                 tempSpan.className = `circle pokemon ${data.types[i].type.name}`;
-                tempImg.src = `${process.env.PUBLIC_URL}/images/pokemon/${data.types[i].type.name}.svg`;
+                tempImg.src = `${process.env.PUBLIC_URL}/images/pokemon/type/${data.types[i].type.name}.svg`;
                 tempSpan.appendChild(tempImg);
                 divPokemonTypes.prepend(tempSpan);
             };
@@ -155,11 +210,82 @@ class WidgetPokemonSearch extends Component{
             console.error(err);
         };
     };
+    handleInteract(e){
+        const $el = e.target;
+        const rect = $el.getBoundingClientRect(); // get element's current size/position
+        const absolute = {
+            x: e.clientX - rect.left, // get mouse position from left
+            y: e.clientY - rect.top, // get mouse position from right
+        };
+        const percent = {
+            x: clamp(round((100 / rect.width) * absolute.x)),
+            y: clamp(round((100 / rect.height) * absolute.y)),
+        };
+        const center = {
+            x: percent.x - 50,
+            y: percent.y - 50,
+        };
+        springBackground = {
+            x: adjust(percent.x, 0, 100, 37, 63),
+            y: adjust(percent.y, 0, 100, 33, 67)
+        };
+        springRotate = {
+            x: round(-(center.x / 3.5)),
+            y: round(center.y / 2),
+        };
+        springGlare = {
+            x: round(percent.x),
+            y: round(percent.y),
+            o: 1,
+        };
+        const r = document.documentElement;
+        /// Set variables in CSS
+        r.style.setProperty("--pointer-x", `${springGlare.x}%`);
+        r.style.setProperty("--pointer-y", `${springGlare.y}%`);
+        r.style.setProperty("--pointer-from-center", clamp(
+            Math.sqrt(
+                (springGlare.y - 50) * (springGlare.y - 50) +
+                (springGlare.x - 50) * (springGlare.x - 50)
+            ) / 50
+            , 0
+            , 1)
+        );
+        r.style.setProperty("--pointer-from-top", (springGlare.y / 100));
+        r.style.setProperty("--pointer-from-left", (springGlare.x / 100));
+        r.style.setProperty("--card-opacity", springGlare.o);
+        r.style.setProperty("--rotate-x", `${springRotate.x + springRotateDelta.x}deg`);
+        r.style.setProperty("--rotate-y", `${springRotate.y + springRotateDelta.y}deg`);
+        r.style.setProperty("--background-x", `${springBackground.x}%`);
+        r.style.setProperty("--background-y", `${springBackground.y}%`);
+    };
+    handleInteractEnd(e, delay = 500){
+        setTimeout(function(){
+            springRotate = { x: 0, y: 0 };
+            springGlare = { x: 50, y: 50, o: 0 };
+            springBackground = { x: 50, y: 50 };
+            const r = document.documentElement;
+            r.style.setProperty("--pointer-x", `${springGlare.x}%`);
+            r.style.setProperty("--pointer-y", `${springGlare.y}%`);
+            r.style.setProperty("--pointer-from-center", clamp(
+                Math.sqrt(
+                    (springGlare.y - 50) * (springGlare.y - 50) +
+                    (springGlare.x - 50) * (springGlare.x - 50)
+                ) / 50
+                , 0
+                , 1)
+            );
+            r.style.setProperty("--pointer-from-top", (springGlare.y / 100));
+            r.style.setProperty("--pointer-from-left", (springGlare.x / 100));
+            r.style.setProperty("--card-opacity", springGlare.o);
+            r.style.setProperty("--rotate-x", `${springRotate.x + springRotateDelta.x}deg`);
+            r.style.setProperty("--rotate-y", `${springRotate.y + springRotateDelta.y}deg`);
+            r.style.setProperty("--background-x", `${springBackground.x}%`);
+            r.style.setProperty("--background-y", `${springBackground.y}%`);
+        }, delay);
+    };
     componentDidMount(){
         let inputPokemonSearch = document.getElementById("pokemonsearch-input-search");
         inputPokemonSearch.addEventListener("keydown", this.handleKeyPress);
-        let buttonPokemonShiny = document.getElementById("pokemonsearch-button-shiny");
-        buttonPokemonShiny.style.opacity = "0.5";    
         this.fetchPokemon("furret");
     };
     componentWillUnmount(){
@@ -176,7 +302,7 @@ class WidgetPokemonSearch extends Component{
                 onStart={() => this.props.defaultProps.dragStart("pokemonsearch")}
                 onStop={() => this.props.defaultProps.dragStop("pokemonsearch")}
                 onDrag={(event, data) => this.props.defaultProps.updatePosition("pokemonsearch", "fun", data.x, data.y)}
-                cancel="input, button, .card-pokemon"
+                cancel="input, button, .card, .popout"
                 bounds="parent">
                 <div id="pokemonsearch-widget"
                     className="widget">
@@ -207,7 +333,7 @@ class WidgetPokemonSearch extends Component{
                                 : <></>}
                         </section>
                         {/* Pokemon Search */}
-                        <div className="flex-center column gap space-nicely bottom">
+                        <div className="flex-center column gap space-nicely bottom longer">
                             <label className="font medium bold"
                                 htmlFor="pokemonsearch-input-search">Search for Pokémon Name or ID:</label>
                             <div className="flex-center row gap">
@@ -234,65 +360,78 @@ class WidgetPokemonSearch extends Component{
                                     className="btn-match option"
                                     type="button"
                                     onClick={() => this.handleButton("search")}>Search</button>
+                                {/* Setting Button */}
+                                <button id="pokemonsearch-button-setting"
+                                    className="btn-match inverse disabled-option space-nicely top medium"
+                                    onClick={() => this.handleButton("setting")}>
+                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
+                                        <AiOutlineSetting/>
+                                    </IconContext.Provider>
+                                </button>
                             </div>
                         </div>
                         {/* Pokemon Information */}
-                        <div className="flex-center column gap medium">
-                            <div id="pokemonsearch-card-pokemon">
-                                {/* Subtype */}
-                                <span id="pokemonsearch-span-subtype"
-                                    className="font no-color">BASIC</span>
-                                {/* Name */}
-                                <div id="pokemonsearch-div-name">
-                                    <span className="font medium bold black">{this.state.name}</span>
-                                </div>
-                                {/* Health */}
-                                <div id="pokemonsearch-div-hp">
-                                    <span className="font micro bold black">HP</span>
-                                    <span className="font medium bold black">{this.state.hp}</span>
-                                </div>
-                                {/* Type */}
-                                <div id="pokemonsearch-div-types"></div>
-                                {/* Pokemon Image */}
-                                <div id="pokemonsearch-div-image"
-                                    className="flex-center"></div>
-                                {/* Shiny button */}
-                                <button id="pokemonsearch-button-shiny" 
-                                    className="btn-match inverse"
-                                    onClick={() => this.handleButton("shiny")}>
-                                    <img src={`${process.env.PUBLIC_URL}/images/pokemon/text/shiny.png`}
-                                        alt={"Shiny toggle"}></img>
-                                </button>
-                                {/* Number, Height, and Weight */}
-                                <div id="pokemonsearch-div-data" 
-                                    className="flex-center row gap medium font micro">
-                                    <span>NO. {this.state.id}</span>
-                                    <span>HT: {this.state.height}</span>
-                                    <span>WT: {this.state.weight} lbs.</span>
-                                </div>
-                                {/* Moves */}
-                                <div id="pokemonsearch-div-moves"></div>
-                                {/* Footer */}
-                                <div id="pokemonsearch-div-bottom"
-                                    className="flex-center row gap font micro bold">
-                                    <div className="flex-center column">
-                                        <div>
-                                            {/* Weakness */}
-                                            <span>weakness</span>
-                                            {/* Resistance */}
-                                            <span>resistance</span>
-                                        </div>
-                                        <div>
-                                            {/* Retreat */}
-                                            <span>retreat</span>
+                        <div className="flex-center column gap large">
+                            {/* Pokemon Card */}
+                            <div className="card">
+                                <div className="card-translater">
+                                    <div className="card-rotator flex-center"
+                                        onPointerMove={this.handleInteract}
+                                        onMouseOut={this.handleInteractEnd}>
+                                        <div id="pokemonsearch-card-pokemon"
+                                            rarity={""}>
+                                            {/* Subtype */}
+                                            <span id="pokemonsearch-span-subtype"
+                                                className="font no-color">BASIC</span>
+                                            {/* Name */}
+                                            <div id="pokemonsearch-div-name">
+                                                <span className="font medium bold black">{this.state.name}</span>
+                                            </div>
+                                            {/* Health */}
+                                            <div id="pokemonsearch-div-hp">
+                                                <span className="font micro bold black">HP</span>
+                                                <span className="font medium bold black">{this.state.hp}</span>
+                                            </div>
+                                            {/* Type */}
+                                            <div id="pokemonsearch-div-types"></div>
+                                            {/* Pokemon Image */}
+                                            <div id="pokemonsearch-div-image"
+                                                className="flex-center"></div>
+                                            {/* Number, Height, and Weight */}
+                                            <div id="pokemonsearch-div-data" 
+                                                className="font micro">
+                                                <span>NO. {this.state.id}</span>
+                                                <span>HT: {this.state.height}</span>
+                                                <span>WT: {this.state.weight} lbs.</span>
+                                            </div>
+                                            {/* Moves */}
+                                            <div id="pokemonsearch-div-moves"></div>
+                                            {/* Footer */}
+                                            <div id="pokemonsearch-div-bottom"
+                                                className="font micro bold">
+                                                <div id="pokemonsearch-div-bottom-weakness">
+                                                    <div>
+                                                        {/* Weakness */}
+                                                        <span>weakness</span>
+                                                        {/* Resistance */}
+                                                        <span>resistance</span>
+                                                    </div>
+                                                    <div>
+                                                        {/* Retreat */}
+                                                        <span>retreat</span>
+                                                    </div>
+                                                </div>
+                                                {/* Flavortext */}
+                                                <div id="pokemonsearch-div-flavortext"
+                                                    className="font italic"></div>
+                                            </div>
+                                            <div className="card-shine"></div>
+                                            <div className="card-glare"></div>
                                         </div>
                                     </div>
-                                    {/* Flavortext */}
-                                    <div id="pokemonsearch-div-flavortext"
-                                        className="font italic"></div>
                                 </div>
                             </div>
-                            {/* Extra Data */}
+                            {/* Extra Information */}
                             <table className="table">
                                 <thead>
                                     <tr>
@@ -324,6 +463,149 @@ class WidgetPokemonSearch extends Component{
                                 </tbody>
                             </table>
                         </div>
+                        {/* Settings Popout */}
+                        <Draggable
+                            cancel="button, .radio-match"
+                            defaultPosition={{x: 290, y: -750}}
+                            bounds={{top: -845, left: -285, right: 322, bottom: 15}}>
+                            <section id="pokemonsearch-popout-setting"
+                                className="popout">
+                                <section className="grid space-nicely all long font medium">
+                                    <button id="pokemonsearch-popout-setting-button-shiny"
+                                        className="btn-match option opt-long disabled-option"
+                                        onClick={() => this.handleButtonPressable("shiny")}>Shiny</button>
+                                    <button id="pokemonsearch-popout-setting-button-flipped"
+                                        className="btn-match option opt-long disabled-option"
+                                        onClick={() => this.handleButtonPressable("flipped")}>Flipped</button>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-amazingRare"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="amazingRare"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-amazingRare">Amazing Rare</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-cosmosHolo"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="cosmosHolo"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-cosmosHolo">Cosmos Holo</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-radiantHolo"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="radiantHolo"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-radiantHolo">Radiant Holo</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-rainbowAlt"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="rainbowAlt"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-rainbowAlt">Rainbow Alt</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-rainbowHolo"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="rainbowHolo"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-rainbowHolo">Rainbow Holo</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-regularHolo"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="regularHolo"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-regularHolo">Regular Holo</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-reverseHolo"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="reverseHolo"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-reverseHolo">Reverse Holo</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-secretRare"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="secretRare"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-secretRare">Secret Rare</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-shinyRare"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="shinyRare"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyRare">Shiny Rare</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-shinyV"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="shinyV"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyV">Shiny V</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-shinyVmax"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="shinyVmax"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyVmax">Shiny VMAX</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-vmax"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="vmax"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-vmax">VMAX</label>
+                                        </div>
+                                    </section>
+                                    <section className="flex-center row gap">
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-v"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="v"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-v">V</label>
+                                        </div>
+                                        <div className="radio-match">
+                                            <input id="pokemonsearch-popout-setting-button-vstar"
+                                                type="radio"
+                                                name="groupRarity"
+                                                value="vstar"
+                                                onClick={(event) => this.handleRadioPressable(event)}/>
+                                            <label htmlFor="pokemonsearch-popout-setting-button-vstar">VSTAR</label>
+                                        </div>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>

@@ -9,6 +9,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Select from "react-select";
 
 
+/// Variables
+let intervalTimeBased;
 /// Select options
 const optionsAnimation = [
     {
@@ -65,6 +67,7 @@ const optionsBackground = [
             {value: "cicada-stripes", label: "Cicada Stripes"},
             {value: "honeycomb", label: "Honeycomb"},
             {value: "wave", label: "Wave"},
+            {value: "pyramid", label: "Pyramid"},
             {value: "chocolate-weave", label: "Chocolate Weave"},
             {value: "cross-dots", label: "Cross-Dots"}
         ]
@@ -113,6 +116,7 @@ class WidgetSetting extends Component{
             settings: false,
             values: {
                 screenDimmer: false,
+                screenDimmerSlider: false,
                 screenDimmerValue: 100,
                 background: {value: "default", label: "Default"},
                 animation: {value: "default", label: "Default"},
@@ -121,7 +125,8 @@ class WidgetSetting extends Component{
                 authorNames: false,
                 fullscreen: false,
                 resetPosition: false,
-                savePositionPopout: false
+                savePositionPopout: false,
+                timeBased: false
             }
         };
         this.handleTrick = this.handleTrick.bind(this);
@@ -262,13 +267,28 @@ class WidgetSetting extends Component{
                 this.setState({
                     values: {
                         ...this.state.values,
-                        screenDimmer: value
+                        screenDimmer: value,
+                        screenDimmerSlider: (this.state.values.timeBased) ? false : true
                     }
                 }, () => {
-                    if(this.state.values.screenDimmer === true){
-                        bg.style.filter = "brightness(" + this.state.screenDimmerValue + "%)";
+                    if(this.state.values.timeBased === false){
+                        if(this.state.values.screenDimmer){
+                            bg.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
+                        }else{
+                            bg.style.filter = "brightness(100%)";
+                            this.setState({
+                                values: {
+                                    ...this.state.values,
+                                    screenDimmerSlider: false
+                                }
+                            });
+                        };
                     }else{
-                        bg.style.filter = "brightness(100%)";
+                        if(this.state.values.screenDimmer){
+                            this.handleInterval(value);
+                        }else{
+                            bg.style.filter = "brightness(100%)";
+                        };
                     };
                 });
                 break;
@@ -325,10 +345,24 @@ class WidgetSetting extends Component{
                 ...this.state.values,
                 [where]: what
             }
+        }, () => {
+            switch(where){
+                case "savePositionPopout":
+                    break;
+                case "timeBased":
+                    this.setState({
+                        values: {
+                            ...this.state.values,
+                            screenDimmerSlider: !what
+                        }
+                    });
+                    this.handleInterval(what);
+                    break;
+                default:
+                    this.props.updateDesign(where, what);
+                    break;
+            };    
         });
-        if(where){
-            this.props.updateDesign(where, what);
-        };
         this.props.updateValue(what, where, type);
     };
     handleTabSwitch(what){
@@ -428,6 +462,59 @@ class WidgetSetting extends Component{
         e.classList.remove(`background-${this.state.values.background.value}`);
         e.classList.add(`background-${what.value}`);    
     };
+    handleInterval(what){
+        if(what === true){
+            this.updateScreenDimmer();
+            intervalTimeBased = setInterval(this.updateScreenDimmer, 1800000);
+        }else{
+            let app = document.getElementById("App");
+            app.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
+            clearInterval(intervalTimeBased);
+        };
+    };
+    updateScreenDimmer(){
+        /// Triggers a new screen dim every 30 minutes based on time
+        /// 24-6 = 40% brightness
+        /// 7-8 = 40% - 100% brightness: 2 hours:30 minutes x 4 -> 15% increase
+        /// 8-18 = 100% brightness
+        /// 19-24 = 100% to 40% brightness: 5 hours:30 minutes x 10 -> 6% decrease
+        let app = document.getElementById("App");
+        let date = new Date();
+        let brightness;
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        if(hour >= 0 && hour <= 6){
+            brightness = 40;
+        }else if(hour >= 8 && hour<= 18){
+            brightness = 100;
+        };
+        switch(hour){
+            case 7:
+                brightness = (minute <= 30) ? 55 : 70;
+                break;
+            case 8:
+                brightness = (minute <= 30) ? 85 : 100;
+                break;
+            case 19:
+                brightness = (minute <= 30) ? 94 : 88;
+                break;
+            case 20:
+                brightness = (minute <= 30) ? 82 : 76;
+                break;
+            case 21:
+                brightness = (minute <= 30) ? 70 : 64;
+                break;
+            case 22:
+                brightness = (minute <= 30) ? 58 : 52;
+                break;
+            case 23:
+                brightness = (minute <= 30) ? 46 : 40;
+                break;
+            default:
+                break;
+        };
+        app.style.filter = `brightness(${brightness}%)`;
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -444,7 +531,8 @@ class WidgetSetting extends Component{
                     fullscreen: this.state.values.fullscreen,
                     resetPosition: this.state.values.resetPosition,
                     savePositionPopout: this.state.values.savePositionPopout,
-                    shadow: this.state.values.shadow
+                    shadow: this.state.values.shadow,
+                    timeBased: this.state.values.timeBased
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -470,6 +558,7 @@ class WidgetSetting extends Component{
                             values: {
                                 ...this.state.values,
                                 screenDimmer: localStorageValues["screenDimmer"],
+                                screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
                                 screenDimmerValue: localStorageValues["screenDimmerValue"],
                                 background: localStorageValues["background"],
                                 animation: localStorageValues["animation"],
@@ -478,11 +567,15 @@ class WidgetSetting extends Component{
                                 fullscreen: localStorageValues["fullscreen"],
                                 resetPosition: localStorageValues["resetPosition"],
                                 savePositionPopout: localStorageValues["savePositionPopout"],
-                                shadow: localStorageValues["shadow"]
+                                shadow: localStorageValues["shadow"],
+                                timeBased: localStorageValues["timeBased"]
                             }
                         }, () => {
                             /// Update Display
-                            if(this.state.values.screenDimmer === true){
+                            document.getElementById("settings-popout-display-timeBased").checked = this.state.values.timeBased;
+                            if(this.state.values.screenDimmer && this.state.values.timeBased){
+                                this.handleInterval(true);
+                            }else if(this.state.values.screenDimmer){
                                 document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                             };
                             /// Update Design
@@ -679,7 +772,18 @@ class WidgetSetting extends Component{
                                             min={5}
                                             max={130}
                                             value={this.state.values.screenDimmerValue}
-                                            disabled={!this.state.values.screenDimmer}/>
+                                            disabled={!this.state.values.screenDimmerSlider}/>
+                                        <section className="element-ends">
+                                            <label className="font small"
+                                                htmlFor="settings-popout-display-timeBased">
+                                                Change based on time
+                                            </label>
+                                            <input id="settings-popout-display-timeBased"
+                                                name="settings-input-popout-display-timeBased"
+                                                type="checkbox"
+                                                disabled={!this.state.values.screenDimmer}
+                                                onChange={(event) => this.handleCheckbox(event.target.checked, "timeBased", "values")}/>
+                                        </section>
                                     </section>
                                     {/* Design Settings */}
                                     <section className="section-group">

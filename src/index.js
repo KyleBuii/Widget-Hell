@@ -20,6 +20,7 @@ import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
 /// Mutable
 const microIcon = "0.6em";
 const smallIcon = "0.88em";
+const smallMedIcon = "1.2em";
 const medIcon = "4em";
 const largeIcon = "5em";
 const zIndexDefault = 2;
@@ -119,6 +120,22 @@ const quotes = [
     {
         quote: "The sunrise, of course, doesn't care if we watch it or not. It will keep on being beautiful, even if no one bothers to look at it."
         , author: "Gene Amole"
+    },
+    {
+        quote: "You’ll stop worrying what others think about you when you realize how seldom they do."
+        , author: "David Foster Wallace"
+    },
+    {
+        quote: "Although the world is full of suffering, it is also full of the overcoming of it."
+        , author: "Helen Keller"
+    },
+    {
+        quote: "Somewhere, something incredible is waiting to be known."
+        , author: "Carl Sagan"
+    },
+    {
+        quote: "We shape clay into a pot, but it is the emptiness inside that holds whatever we want."
+        , author: "Lao Tzu"
     }
 ];
 const sentences = [
@@ -145,6 +162,12 @@ const sentences = [
     , "Honor among thieves is honor under the seas!"
     , "sniff sniff i-is that a BOY I smell? sniff sniff mmm yes I smell it! BOYSMELL!!!! I smell a boy! W-What is a boy doing here?!?! omygosh what am I gonna do?!?! THERE'S A BOY HERE! I'M FREAKING OUT SO MUCH!!!! calm down calm down and take a nice, deep breathe... sniff sniff it smells so good! I love boysmell so much!!!! It makes me feel so amazing. I'm getting tingles all over from the delicious boyscent! It's driving me boyCRAZY!!!!!!"
     , "When you're on a chicken bender grab a box of chicken tenders, bawk ba gawk!"
+    , "I don't care what your pronouns are if you spill foundation secrets, consider yourself was/were."
+    , "While he lacked the vocabulary to frame it in modern scientific terms, the man who is credited with the concept that matters composed of atoms from a cosmological perspective is also known as the father of alchemy and creator of toxicology, Paracelsus, or Philippus Aureolus Theophrastus Bombastus von Hohenheim."
+    , "Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki! Totsugeki!"
+    , "I am so tired of peeing. I drink the water, which I apparently need to live or something, and then I have to go put the water somewhere else 5 minutes later. I drink the water, I go to a place to un-drink the water, I wash my hands, I leave, and then I have to drink more water. Guess where that water ends up? Not in me! I give the water to my body and like a child it tosses it out and demands more. All hours of the day, all hours of the night no matter what I'm doing my life is interrupted by piss fucking bullshit."
+    , "Oh senpai, hey! I didn't know you walked this way. We're right in front of your house? I-I wasn't looking or anything, I just happened to be walking by! It'd be creepy to know where you live, s-stupid! What was I walking by for? OKAY! I had to give you something! L-listen, don't get the wrong idea, I was just up at 4 am cooking like schoolgirls do and it happened to be your favorite and I thought maybe you'd like some since I had extra! BE GRATEFUL! UGHHIUGH! Uhh, how did I know it was your favorite? Well I... aaaAAAAAAAHHH!"
+    , "Nice opinion. Just one tiny problem with it. Inspecting your post, it looks like your opinion is different from mine. Boy, let me tell you something. I am the baseline for opinions, any opinion I hold is objectively correct and, as a result, any other opinions are wrong. And guess what? You happen to hold a wrong one. And I hope you know that your opinion is now illegal. I have now contacted the FBI, the CIA, the NSA, the Navy SEALs, the Secret Service and your mom. You'll rot in prison for the rest of your life over this, mark my words you'll be sorry you ever shared your opinions. By the time you're reading this, you're done for boy. Nature will punish you. Humanity will punish you. Supernatural beings will punish you. Space will punish you. Oh yeah, and we decided that just to make sure we'll nuke your house from orbit so there's no chance you can run away and everyone you know will die. It's a small price to pay to remove you're wrong opinion from this world."
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -1277,6 +1300,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.fun.pokemonsearch.drag.disabled}
                         microIcon={microIcon}
+                        smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
             </div>
