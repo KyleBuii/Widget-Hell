@@ -9,7 +9,7 @@ class WidgetWeather extends Component{
     constructor(props){
         super(props);
         this.state = {
-            helpShow: false,
+            help: false,
             input: "",
             name: "",           /// Location
             region: "",
@@ -26,25 +26,19 @@ class WidgetWeather extends Component{
         };
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleHelp = this.handleHelp.bind(this);
+        this.handlePressableButton = this.handlePressableButton.bind(this);
     };
     handleChange(event){
         this.setState({
             input: event.target.value
         });
     };
-    handleHelp(){
-        if(this.state.helpShow === false){
-            this.setState({
-                helpShow: true
-            });
-            document.getElementById("weather-search-help-container").style.visibility = "visible";
-        }else{
-            this.setState({
-                helpShow: false
-            });
-            document.getElementById("weather-search-help-container").style.visibility = "hidden";
-        };
+    handlePressableButton(what){
+        let popoutAnimation = document.getElementById(`weather-${what}-popout-animation`);
+        this.setState({
+            [what]: !this.state[what]
+        });
+        this.props.defaultProps.showHidePopout(popoutAnimation, !this.state[what]);
     };
     /// API call
     async handleUpdate(){
@@ -155,7 +149,7 @@ class WidgetWeather extends Component{
                                     value={this.state.input}>
                                 </input>
                                 <button className="help-btn left-side when-elements-are-not-straight"
-                                    onClick={this.handleHelp}>
+                                    onClick={() => this.handlePressableButton("help")}>
                                     <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
@@ -169,19 +163,22 @@ class WidgetWeather extends Component{
                                     y: this.props.positionPopout.searchhelp.y}}
                                 onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
                                 bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
-                                <section id="weather-search-help-container"
+                                <section id="weather-help-popout"
                                     className="popout">
-                                    <ul className="font medium">
-                                        <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
-                                        <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
-                                        <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
-                                        <li>UK postcode <span className="font small transparent-normal">e.g: SW1</span></li>
-                                        <li>Canada postal code <span className="font small transparent-normal">e.g: G2J</span></li>
-                                        <li>Metar:&lt;metar code&gt; <span className="font small transparent-normal">e.g: metar:EGLL</span></li>
-                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font small transparent-normal">e.g: iata:DXB</span></li>
-                                        <li>Auto IP lookup <span className="font small transparent-normal">e.g: auto:ip</span></li>
-                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small transparent-normal">e.g: 100.0.0.1</span></li>
-                                    </ul>
+                                    <section id="weather-help-popout-animation"
+                                        className="popout-animation">
+                                        <ul className="font medium">
+                                            <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
+                                            <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
+                                            <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
+                                            <li>UK postcode <span className="font small transparent-normal">e.g: SW1</span></li>
+                                            <li>Canada postal code <span className="font small transparent-normal">e.g: G2J</span></li>
+                                            <li>Metar:&lt;metar code&gt; <span className="font small transparent-normal">e.g: metar:EGLL</span></li>
+                                            <li>Iata:&lt;3 digit airport code&gt; <span className="font small transparent-normal">e.g: iata:DXB</span></li>
+                                            <li>Auto IP lookup <span className="font small transparent-normal">e.g: auto:ip</span></li>
+                                            <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small transparent-normal">e.g: 100.0.0.1</span></li>
+                                        </ul>
+                                    </section>
                                 </section>
                             </Draggable>
                             <button className="btn-match"
@@ -232,7 +229,7 @@ class WidgetWeather extends Component{
                             className="font small normal">Last updated: {this.state.lastUpdated}</span>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

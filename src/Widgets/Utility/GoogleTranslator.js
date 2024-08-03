@@ -229,7 +229,7 @@ class WidgetGoogleTranslator extends Component{
                         </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

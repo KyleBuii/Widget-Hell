@@ -16,6 +16,7 @@ class WidgetTypingTest extends Component{
         this.state = {
             time: timeMax,
             mistakes: 0,
+            wrongStrokes: 0,
             wpm: 0,
             cpm: 0,
             characterIndex: 0,
@@ -111,7 +112,8 @@ class WidgetTypingTest extends Component{
                         .add("correct");
                 }else{
                     this.setState({
-                        mistakes: this.state.mistakes + 1
+                        mistakes: this.state.mistakes + 1,
+                        wrongStrokes: this.state.wrongStrokes + 1
                     });
                     characters[this.state.characterIndex]
                         .classList
@@ -178,9 +180,25 @@ class WidgetTypingTest extends Component{
             case "brainrot":
                 let words = "skibidi gyatt rizz only in ohio duke dennis did you pray today livvy dunne rizzing up baby gronk sussy imposter pibby glitch in real life sigma alpha omega male grindset andrew tate goon cave freddy fazbear colleen ballinger smurf cat vs strawberry elephant blud dawg shmlawg ishowspeed a whole bunch of turbulence ambatukam bro really thinks he's carti literally hitting the griddy the ocky way kai cenat fanum tax garten of banban no edging in class not the mosquito again bussing axel in harlem whopper whopper whopper whopper 1 2 buckle my shoe goofy ahh aiden ross sin city monday left me broken quirked up white boy busting it down sexual style goated with the sauce john pork grimace shake kiki do you love me huggy wuggy nathaniel b lightskin stare biggest bird omar the referee amogus uncanny wholesome reddit chungus keanu reeves pizza tower zesty poggers kumalala savesta quandale dingle glizzy rose toy ankha zone thug shaker morbin time dj khaled sisyphus oceangate shadow wizard money gang ayo the pizza here PLUH nair butthole waxing t-pose ugandan knuckles family guy funny moments compilation with subway surfers gameplay at the bottom nickeh30 ratio uwu delulu opium bird cg5 mewing fortnite battle pass all my fellas gta 6 backrooms gigachad based cringe kino redpilled no nut november pokénut november wojak literally 1984 foot fetish F in the chat i love lean looksmaxxing gassy incredible theodore john kaczynski social credit bing chilling xbox live mrbeast kid named finger better caul saul i am a surgeon one in a krillion hit or miss i guess they never miss huh i like ya cut g ice spice we go gym kevin james josh hutcherson edit coffin of andy and leyley metal pipe falling"
                     .split(" ");
-                let sentence = [];
-                for(let i = 0; i < 100; i++){
-                    sentence.push(words[Math.floor(Math.random() * words.length)]);
+                let indexRandom = Math.floor(Math.random() * words.length);
+                let indexRandomMax = indexRandom + 100;
+                let isOverLength = (indexRandomMax > words.length - 1) ? true : false;
+                let sentence = [
+                    ...words.slice(
+                        indexRandom,
+                        (indexRandomMax > words.length - 1)
+                            ? words.length
+                            : indexRandomMax
+                    )
+                ];
+                if(isOverLength){
+                    console.log(indexRandom, indexRandomMax, words.length)
+                    sentence.push(
+                        ...words.slice(
+                            0,
+                            (indexRandomMax - words.length)
+                        )
+                    )
                 };
                 this.handleLoadText(sentence.join(" "));
                 break;
@@ -260,7 +278,7 @@ class WidgetTypingTest extends Component{
                             </div>
                             <div className="flex-center row gap">
                                 <span className="font medium bold">Mistakes: </span>
-                                <span className="font medium">{this.state.mistakes}</span>
+                                <span className="font medium">{this.state.mistakes} | {this.state.wrongStrokes}</span>
                             </div>
                             <div className="flex-center row gap">
                                 <span className="font medium bold">WPM: </span>
@@ -312,7 +330,7 @@ class WidgetTypingTest extends Component{
                         </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

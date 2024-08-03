@@ -136,6 +136,30 @@ const quotes = [
     {
         quote: "We shape clay into a pot, but it is the emptiness inside that holds whatever we want."
         , author: "Lao Tzu"
+    },
+    {
+        quote: "It is during our darkest moments that we must focus to see the light."
+        , author: "Aristotle Onassis"
+    },
+    {
+        quote: "You waste years by not being able to waste hours."
+        , author: "Amor Tversky"
+    },
+    {
+        quote: "The most common way people give up their power is by thinking they don’t have any."
+        , author: "Alice Walker"
+    },
+    {
+        quote: 'How many people long for that "past, simpler, and better world," I wonder, without ever recognizing the truth that perhaps it was they who were simpler and better, and not the world about them?'
+        , author: "Drizzt Do'Urden (R. A. Salvatore)"
+    },
+    {
+        quote: "You only live once, but if you do it right, once is enough."
+        , author: "Mae West"
+    },
+    {
+        quote: "When people go back in time in movies or books they are often afraid of doing any small thing because it might drastically change the future. Yet people in the present don't realize the small things they do will change the future in ways they can't even imagine."
+        , author: "/u/Reichukey"
     }
 ];
 const sentences = [
@@ -168,6 +192,11 @@ const sentences = [
     , "I am so tired of peeing. I drink the water, which I apparently need to live or something, and then I have to go put the water somewhere else 5 minutes later. I drink the water, I go to a place to un-drink the water, I wash my hands, I leave, and then I have to drink more water. Guess where that water ends up? Not in me! I give the water to my body and like a child it tosses it out and demands more. All hours of the day, all hours of the night no matter what I'm doing my life is interrupted by piss fucking bullshit."
     , "Oh senpai, hey! I didn't know you walked this way. We're right in front of your house? I-I wasn't looking or anything, I just happened to be walking by! It'd be creepy to know where you live, s-stupid! What was I walking by for? OKAY! I had to give you something! L-listen, don't get the wrong idea, I was just up at 4 am cooking like schoolgirls do and it happened to be your favorite and I thought maybe you'd like some since I had extra! BE GRATEFUL! UGHHIUGH! Uhh, how did I know it was your favorite? Well I... aaaAAAAAAAHHH!"
     , "Nice opinion. Just one tiny problem with it. Inspecting your post, it looks like your opinion is different from mine. Boy, let me tell you something. I am the baseline for opinions, any opinion I hold is objectively correct and, as a result, any other opinions are wrong. And guess what? You happen to hold a wrong one. And I hope you know that your opinion is now illegal. I have now contacted the FBI, the CIA, the NSA, the Navy SEALs, the Secret Service and your mom. You'll rot in prison for the rest of your life over this, mark my words you'll be sorry you ever shared your opinions. By the time you're reading this, you're done for boy. Nature will punish you. Humanity will punish you. Supernatural beings will punish you. Space will punish you. Oh yeah, and we decided that just to make sure we'll nuke your house from orbit so there's no chance you can run away and everyone you know will die. It's a small price to pay to remove you're wrong opinion from this world."
+    , `I bet these hetero's kiss girls General Gravicius grunts, his hips rapidly slamming his erect donger deep into Shadow's lean muscled frame. Sweat drips from his brow as he moans a quiet prayer before both nuts erupt, turning him into a fountain of cum, launching Shadow at least 5 meters onto the floor. Gravicius smirks at the sight, "I fuck for God, Exile. Who do you fuck for?`
+    , "Sticking out your gyatt for Nerizzler. You're so bau bau. You're so Biboo tax. I just wanna be your Shiori."
+    , "Oh look, it's another VTuber trying to make waves in the vast ocean of content creators. Your 'slice of life sea fox' gimmick is about as fresh as week-old sushi. But hey, at least you're consistent - consistently blending into the background like the beige t-shirt of the VTuber world. Your streams are probably as deep as a puddle, but I'm sure your 'deep blue' location makes you feel profound. Keep riding that mediocrity wave, sweetie. Maybe one day you'll actually make a splash."
+    , "Hey guys, did you know that in terms of male human and female Pokemon breeding, Vaporeon is the most compatible Pokemon for humans? Not only are they in the field egg group, which is mostly comprised of mammals, Vaporeon are an average of 3”03’ tall and 63.9 pounds, this means they’re large enough to be able handle human dicks, and with their impressive Base Stats for HP and access to Acid Armor, you can be rough with one. Due to their mostly water based biology, there’s no doubt in my mind that an aroused Vaporeon would be incredibly wet, so wet that you could easily have sex with one for hours without getting sore. They can also learn the moves Attract, Baby-Doll Eyes, Captivate, Charm, and Tail Whip, along with not having fur to hide nipples, so it’d be incredibly easy for one to get you in the mood. With their abilities Water Absorb and Hydration, they can easily recover from fatigue with enough water. No other Pokemon comes close to this level of compatibility. Also, fun fact, if you pull out enough, you can make your Vaporeon turn white. Vaporeon is literally built for human dick. Ungodly defense stat+high HP pool+Acid Armor means it can take cock all day, all shapes and sizes and still come for more."
+    , "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon? While their maximum temperature is likely too much for most, they are capable of controlling it, so they can set themselves to the perfect temperature for you. Along with that, they have a lot of fluff, making them undeniably incredibly soft to touch. But that's not all, they have a very respectable special defense stat of 110, which means that they are likely very calm and resistant to emotional damage. Because of this, if you have a bad day, you can vent to it while hugging it, and it won't mind. It can make itself even more endearing with moves like Charm and Baby Doll Eyes, ensuring that you never have a prolonged bout of depression ever again."
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -490,7 +519,7 @@ class Widgets extends Component{
         this.state = {
             values: {
                 animation: {},
-                customBorder: {},    
+                customBorder: {},
                 savePositionPopout: false,
                 authorNames: false,
                 fullscreen: false,
@@ -647,6 +676,7 @@ class Widgets extends Component{
             }
         };
         this.handleShowHide = this.handleShowHide.bind(this);
+        this.handleShowHidePopout = this.handleShowHidePopout.bind(this);
         this.handleHotbar = this.handleHotbar.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
@@ -726,6 +756,39 @@ class Widgets extends Component{
                     }
                 }));
             };
+        };
+    };
+    handleShowHidePopout(popout, visible, button, inverse){
+        if(visible){
+            if(button !== undefined){
+                if(inverse){
+                    button.style.color = "rgba(var(--randColorOpacity), 1)";
+                }else{
+                    button.style.opacity = "1";
+                };
+            };
+            popout.style.visibility = "visible";
+            if(this.state.values.animation.value !== "default"){
+                popout.style.animation = "none";
+                window.requestAnimationFrame(() => {
+                    popout.style.animation = this.state.values.animation.value + "In 2s";
+                });
+            };
+        }else{
+            if(button !== undefined){
+                if(inverse){
+                    button.style.color = "rgba(var(--randColorOpacity), 0.2)";
+                }else{
+                    button.style.opacity = "0.5";
+                };
+            };
+            popout.style.visibility = "hidden";
+            if(this.state.values.animation.value !== "default"){
+                popout.style.animation = "none";
+                window.requestAnimationFrame(() => {
+                    popout.style.animation = this.state.values.animation.value + "Out 2s";
+                });
+            };   
         };
     };
     handleHotbar(element, what, where){
@@ -817,63 +880,72 @@ class Widgets extends Component{
                 break;
         };
     };
-    updateCustomBorder(what){
-        let widget, popout, combine;
-        if(what !== undefined){
+    updateCustomBorder(what, value){
+        let widget, popout, widgetAll;
+        if(what !== undefined && what !== ""){
             widget = document.getElementById(what + "-widget-animation");
-            popout = widget.querySelectorAll(".popout");
-            combine = [widget, ...popout];
+            popout = widget.querySelectorAll(".popout-animation");
+            widgetAll = [widget, ...popout];
         }else{
             widget = document.querySelectorAll(".widget-animation");
-            popout = document.querySelectorAll(".popout");
-            combine = [...widget, ...popout];
+            popout = document.querySelectorAll(".popout-animation");
+            widgetAll = [...widget, ...popout];
         };
-        switch(this.state.values.customBorder.value){
-            case "diagonal":
-                for(const element of combine){
-                    element.style.border = "10px solid var(--randColor)";
-                    element.style.borderImage = `
-                        repeating-linear-gradient(45deg,
-                            transparent,
-                            transparent 5px,
-                            var(--randColor) 6px,
-                            var(--randColor) 15px,
-                            transparent 16px,
-                            transparent 20px
-                        ) 20/1rem`;
-                };
-                break;
-            case "dashed":
-                for(const element of combine){
-                    element.style.border = "5px dashed var(--randColor)";
-                };
-                break;
-            case "double":
-                for(const element of combine){
-                    element.style.border = "10px double var(--randColor)";
-                };
-                break;
-            case "default":
-                for(const element of combine){
-                    element.style.border = "1px solid var(--randColor)";
-                    element.style.borderImage = "none"
-                };
-                break;
-            default:
-                break;
+        if(value !== undefined){
+            for(const element of widgetAll){
+                element.classList.remove(`border-${this.state.values.customBorder.value}`);
+                element.classList.add(`border-${value.value}`);
+            };
+        }else{
+            for(const element of widgetAll){
+                element.classList.add(`border-${this.state.values.customBorder.value}`);
+            };
         };
+        // switch(this.state.values.customBorder.value){
+        //     case "diagonal":
+        //         for(const element of widgetAll){
+        //             element.style.border = "10px solid var(--randColor)";
+        //             element.style.borderImage = `
+        //                 repeating-linear-gradient(45deg,
+        //                     transparent,
+        //                     transparent 5px,
+        //                     var(--randColor) 6px,
+        //                     var(--randColor) 15px,
+        //                     transparent 16px,
+        //                     transparent 20px
+        //                 ) 20/1rem`;
+        //         };
+        //         break;
+        //     case "dashed":
+        //         for(const element of widgetAll){
+        //             element.style.border = "5px dashed var(--randColor)";
+        //         };
+        //         break;
+        //     case "double":
+        //         for(const element of widgetAll){
+        //             element.style.border = "10px double var(--randColor)";
+        //         };
+        //         break;
+        //     case "default":
+        //         for(const element of widgetAll){
+        //             element.style.border = "1px solid var(--randColor)";
+        //             element.style.borderImage = "none"
+        //         };
+        //         break;
+        //     default:
+        //         break;
+        // };
     };
     updateValue(what, where, type){
+        if(where === "customBorder"){
+            this.updateCustomBorder("", what);
+        };
         this.setState(prevState => ({
             [type]: {
                 ...prevState[type],
                 [where]: what
             }
-        }), () => {
-            if(where === "customBorder"){
-                this.updateCustomBorder();
-            };
-        });
+        }));
     };
     updateWidgetsActive(what, where){
         switch(where){
@@ -1100,6 +1172,7 @@ class Widgets extends Component{
             dragStop:dragStop,
             updatePosition:this.updatePosition,
             handleHotbar:this.handleHotbar,
+            showHidePopout: this.handleShowHidePopout,
             values: {
                 authorNames: this.state.values.authorNames
             },
@@ -1124,6 +1197,7 @@ class Widgets extends Component{
                         pokemonsearch: this.state.widgets.fun.pokemonsearch.active
                     }}
                     showHide={this.handleShowHide}
+                    showHidePopout={this.handleShowHidePopout}
                     dragStart={dragStart}
                     dragStop={dragStop}
                     sortSelect={sortSelect}
@@ -1266,6 +1340,10 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.spreadsheet.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.spreadsheet.drag.disabled}
+                        formatGroupLabel={formatGroupLabel}
+                        selectStyleSmall={selectStyleSmall}
+                        selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {/* Widgets: Games */}

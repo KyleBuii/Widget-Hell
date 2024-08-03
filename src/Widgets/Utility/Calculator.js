@@ -279,27 +279,14 @@ class WidgetCalculator extends Component{
     };
     /// Handles all buttons that are pressable
     handlePressableBtn(what){
-        const btn = document.getElementById("calculator-btn-input-expand");
-        const popout = document.getElementById("calculator-input-expand-popout");
-        switch(what){
-            case "expand-input":
-                if(this.state.expandInput === false){
-                    this.setState({
-                        expandInput: true
-                    });
-                    btn.style.color = "rgba(var(--randColorOpacity), 1)";
-                    popout.style.visibility = "visible";
-                }else{
-                    this.setState({
-                        expandInput: false
-                    });
-                    btn.style.color = "rgba(var(--randColorOpacity), 0.2)";
-                    popout.style.visibility = "hidden";
-                };
-                break;
-            default:
-                break;
-        };
+        let button = document.getElementById(`calculator-btn-${what}`);
+        let popoutAnimation = document.getElementById(`calculator-${what}-popout-animation`);
+        let whatState = what
+            .replace(/-(.)/, (all, char) => char.toUpperCase()); 
+        this.setState({
+            [whatState]: !this.state[whatState]
+        });
+        this.props.defaultProps.showHidePopout(popoutAnimation, !this.state[whatState], button, true);
     };
     /// Handles keyboard shortcuts
     handleKeypress(event){
@@ -473,7 +460,7 @@ class WidgetCalculator extends Component{
                             </button>
                             <button id="calculator-btn-input-expand" 
                                 className="btn-match fadded inverse"
-                                onClick={() => this.handlePressableBtn("expand-input")}>
+                                onClick={() => this.handlePressableBtn("input-expand")}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <BiExpand/>
                                 </IconContext.Provider>
@@ -599,19 +586,22 @@ class WidgetCalculator extends Component{
                             position={{
                                 x: this.props.positionPopout.expandinput.x,
                                 y: this.props.positionPopout.expandinput.y}}
-                            onDrag={(event, data) => this.props.defualtProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
+                            onDrag={(event, data) => this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
                             bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">
-                                <p id="calculator-input-expand-text"
-                                    className="cut-scrollbar-corner-part-2 p short font medium break-word space-nicely all long">
-                                    {this.state.input}
-                                </p>
+                                <section id="calculator-input-expand-popout-animation"
+                                    className="popout-animation">
+                                    <p id="calculator-input-expand-text"
+                                        className="cut-scrollbar-corner-part-2 p short font medium break-word space-nicely all long">
+                                        {this.state.input}
+                                    </p>
+                                </section>
                             </section>
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

@@ -8,6 +8,8 @@ import sanitizeHtml from 'sanitize-html';
 import Select from "react-select";
 
 
+/// Variables
+let regexPopouts = new RegExp(/replace|reverse|case-transform/);
 /// Select options
 const optionsTranslateFrom = [
     {
@@ -381,6 +383,17 @@ class WidgetTranslator extends Component{
     };
     /// Handles the "to" language select
     handleTo(event){
+        let popoutAnimation;
+        /// If previous value is a popout, hide it
+        if(regexPopouts.test(this.state.to.value)){
+            popoutAnimation = document.getElementById(`${this.state.to.value}-popout-animation`);
+            this.props.defaultProps.showHidePopout(popoutAnimation, false);
+        };
+        /// If chosen value is a popout, show it
+        if(regexPopouts.test(event.value)){
+            popoutAnimation = document.getElementById(`${event.value}-popout-animation`);
+            this.props.defaultProps.showHidePopout(popoutAnimation, true);
+        };
         this.setState({
             to: event,
         }, () => {
@@ -389,9 +402,6 @@ class WidgetTranslator extends Component{
                 this.convertToText();
             }
         });
-        document.getElementById("replace-popout").style.visibility = (event.value === "replace") ? "visible" : "hidden";
-        document.getElementById("reverse-popout").style.visibility = (event.value === "reverse") ? "visible" : "hidden";
-        document.getElementById("case-transform-popout").style.visibility = (event.value === "case-transform") ? "visible" : "hidden";
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
@@ -467,6 +477,11 @@ class WidgetTranslator extends Component{
             this.setState({
                 from: dataSessionStorage.from,
                 to: dataSessionStorage.to
+            }, () => {
+                if(regexPopouts.test(this.state.to.value)){
+                    let popoutAnimation = document.getElementById(`${this.state.to.value}-popout-animation`);
+                    this.props.defaultProps.showHidePopout(popoutAnimation, true);        
+                };
             });
         };
     };
@@ -588,23 +603,26 @@ class WidgetTranslator extends Component{
                             bounds={{top: -135, left: -375, right: 425, bottom: 270}}>
                             <section id="replace-popout"
                                 className="popout">
-                                <section className="flex-center column space-nicely all long">
-                                    <section className="flex-center">
-                                        <input className="input-typable all-side input-button-input"
-                                            name="translator-input-popout-replace-from"
-                                            type="text"
-                                            onChange={this.handleReplaceFrom}></input>
-                                        <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
-                                            <FaArrowRightLong/>
-                                        </IconContext.Provider>
-                                        <input className="input-typable all-side input-button-input"
-                                            name="translator-input-popout-replace-to"
-                                            type="text"
-                                            onChange={this.handleReplaceTo}></input>
-                                    </section>
-                                    <section className="space-nicely top medium">
-                                        <button className="btn-match option opt-long"
-                                            onClick={this.handleSave}>Save</button>
+                                <section id="replace-popout-animation"
+                                    className="popout-animation">
+                                    <section className="flex-center column space-nicely all long">
+                                        <section className="flex-center">
+                                            <input className="input-typable all-side input-button-input"
+                                                name="translator-input-popout-replace-from"
+                                                type="text"
+                                                onChange={this.handleReplaceFrom}></input>
+                                            <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                                <FaArrowRightLong/>
+                                            </IconContext.Provider>
+                                            <input className="input-typable all-side input-button-input"
+                                                name="translator-input-popout-replace-to"
+                                                type="text"
+                                                onChange={this.handleReplaceTo}></input>
+                                        </section>
+                                        <section className="space-nicely top medium">
+                                            <button className="btn-match option opt-long"
+                                                onClick={this.handleSave}>Save</button>
+                                        </section>
                                     </section>
                                 </section>
                             </section>
@@ -616,16 +634,19 @@ class WidgetTranslator extends Component{
                             bounds={{top: -120, left: -300, right: 425, bottom: 270}}>
                             <section id="reverse-popout"
                                 className="popout">
-                                <section className="grid space-nicely all long">
-                                    <button className="btn-match option opt-long"
-                                        onClick={this.handleSave}>Save</button>
-                                    <section className="flex-center row gap">
-                                        <button id="reverse-popout-btn-reverseWord"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("reverseWord", "reverse")}>Word</button>
-                                        <button id="reverse-popout-btn-reverseSentence"
-                                            className="btn-match option opt-medium disabled-option"
-                                            onClick={() => this.handlePressableBtn("reverseSentence", "reverse")}>Sentence</button>
+                                <section id="reverse-popout-animation"
+                                    className="popout-animation">
+                                    <section className="grid space-nicely all long">
+                                        <button className="btn-match option opt-long"
+                                            onClick={this.handleSave}>Save</button>
+                                        <section className="flex-center row gap">
+                                            <button id="reverse-popout-btn-reverseWord"
+                                                className="btn-match option opt-medium disabled-option"
+                                                onClick={() => this.handlePressableBtn("reverseWord", "reverse")}>Word</button>
+                                            <button id="reverse-popout-btn-reverseSentence"
+                                                className="btn-match option opt-medium disabled-option"
+                                                onClick={() => this.handlePressableBtn("reverseSentence", "reverse")}>Sentence</button>
+                                        </section>
                                     </section>
                                 </section>
                             </section>
@@ -637,34 +658,37 @@ class WidgetTranslator extends Component{
                             bounds={{top: -145, left: -300, right: 425, bottom: 270}}>
                             <section id="case-transform-popout"
                                 className="popout">
-                                <section className="grid space-nicely all long">
-                                    <button className="btn-match option opt-long"
-                                        onClick={this.handleSave}>Save</button>
-                                    <section className="flex-center row gap">
-                                        <button id="case-transform-popout-btn-caseTransformLower"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("caseTransformLower", "case-transform")}>Lower</button>
-                                        <button id="case-transform-popout-btn-caseTransformUpper"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("caseTransformUpper", "case-transform")}>Upper</button>
-                                        <button id="case-transform-popout-btn-caseTransformCapitalize"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("caseTransformCapitalize", "case-transform")}>Capitalize</button>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <button id="case-transform-popout-btn-caseTransformAlternate"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("caseTransformAlternate", "case-transform")}>Alternate</button>
-                                        <button id="case-transform-popout-btn-caseTransformInverse"
-                                            className="btn-match option opt-small disabled-option"
-                                            onClick={() => this.handlePressableBtn("caseTransformInverse", "case-transform")}>Inverse</button>
+                                <section id="case-transform-popout-animation"
+                                    className="popout-animation">
+                                    <section className="grid space-nicely all long">
+                                        <button className="btn-match option opt-long"
+                                            onClick={this.handleSave}>Save</button>
+                                        <section className="flex-center row gap">
+                                            <button id="case-transform-popout-btn-caseTransformLower"
+                                                className="btn-match option opt-small disabled-option"
+                                                onClick={() => this.handlePressableBtn("caseTransformLower", "case-transform")}>Lower</button>
+                                            <button id="case-transform-popout-btn-caseTransformUpper"
+                                                className="btn-match option opt-small disabled-option"
+                                                onClick={() => this.handlePressableBtn("caseTransformUpper", "case-transform")}>Upper</button>
+                                            <button id="case-transform-popout-btn-caseTransformCapitalize"
+                                                className="btn-match option opt-small disabled-option"
+                                                onClick={() => this.handlePressableBtn("caseTransformCapitalize", "case-transform")}>Capitalize</button>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <button id="case-transform-popout-btn-caseTransformAlternate"
+                                                className="btn-match option opt-small disabled-option"
+                                                onClick={() => this.handlePressableBtn("caseTransformAlternate", "case-transform")}>Alternate</button>
+                                            <button id="case-transform-popout-btn-caseTransformInverse"
+                                                className="btn-match option opt-small disabled-option"
+                                                onClick={() => this.handlePressableBtn("caseTransformInverse", "case-transform")}>Inverse</button>
+                                        </section>
                                     </section>
                                 </section>
                             </section>
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

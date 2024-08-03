@@ -233,7 +233,7 @@ class WidgetTimeConversion extends Component{
                 onStart={() => this.props.defaultProps.dragStart("timeconversion")}
                 onStop={() => this.props.defaultProps.dragStop("timeconversion")}
                 onDrag={(event, data) => this.props.defaultProps.updatePosition("timeconversion", "utility", data.x, data.y)}
-                cancel="input, label, button, select, .react-calendar, .react-time-picker, .react-clock"
+                cancel="input, label, button, .select-match, .react-calendar, .react-time-picker, .react-clock"
                 bounds="parent">
                 <div id="timeconversion-widget"
                     className="widget">
@@ -377,7 +377,7 @@ class WidgetTimeConversion extends Component{
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

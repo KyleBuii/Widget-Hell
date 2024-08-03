@@ -70,21 +70,12 @@ class WidgetPokemonSearch extends Component{
                 });
                 break;
             case "setting":
-                const buttonSetting = document.getElementById("pokemonsearch-button-setting");
-                const popoutSetting = document.getElementById("pokemonsearch-popout-setting");
-                if(this.state.setting === false){
-                    this.setState({
-                        setting: true
-                    });
-                    buttonSetting.style.opacity = "1";
-                    popoutSetting.style.visibility = "visible";
-                }else{
-                    this.setState({
-                        setting: false
-                    });
-                    buttonSetting.style.opacity = "0.5";
-                    popoutSetting.style.visibility = "hidden";
-                };
+                let buttonSetting = document.getElementById("pokemonsearch-button-setting");
+                let popoutAnimationSetting = document.getElementById("pokemonsearch-popout-animation-setting");
+                this.setState({
+                    setting: !this.state.setting
+                });
+                this.props.defaultProps.showHidePopout(popoutAnimationSetting, !this.state.setting, buttonSetting);
                 break;
             default:
                 break;
@@ -470,145 +461,148 @@ class WidgetPokemonSearch extends Component{
                             bounds={{top: -845, left: -285, right: 322, bottom: 15}}>
                             <section id="pokemonsearch-popout-setting"
                                 className="popout">
-                                <section className="grid space-nicely all long font medium">
-                                    <button id="pokemonsearch-popout-setting-button-shiny"
-                                        className="btn-match option opt-long disabled-option"
-                                        onClick={() => this.handleButtonPressable("shiny")}>Shiny</button>
-                                    <button id="pokemonsearch-popout-setting-button-flipped"
-                                        className="btn-match option opt-long disabled-option"
-                                        onClick={() => this.handleButtonPressable("flipped")}>Flipped</button>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-amazingRare"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="amazingRare"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-amazingRare">Amazing Rare</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-cosmosHolo"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="cosmosHolo"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-cosmosHolo">Cosmos Holo</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-radiantHolo"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="radiantHolo"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-radiantHolo">Radiant Holo</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-rainbowAlt"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="rainbowAlt"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-rainbowAlt">Rainbow Alt</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-rainbowHolo"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="rainbowHolo"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-rainbowHolo">Rainbow Holo</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-regularHolo"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="regularHolo"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-regularHolo">Regular Holo</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-reverseHolo"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="reverseHolo"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-reverseHolo">Reverse Holo</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-secretRare"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="secretRare"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-secretRare">Secret Rare</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-shinyRare"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="shinyRare"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyRare">Shiny Rare</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-shinyV"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="shinyV"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyV">Shiny V</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-shinyVmax"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="shinyVmax"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-shinyVmax">Shiny VMAX</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-vmax"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="vmax"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-vmax">VMAX</label>
-                                        </div>
-                                    </section>
-                                    <section className="flex-center row gap">
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-v"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="v"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-v">V</label>
-                                        </div>
-                                        <div className="radio-match">
-                                            <input id="pokemonsearch-popout-setting-button-vstar"
-                                                type="radio"
-                                                name="groupRarity"
-                                                value="vstar"
-                                                onClick={(event) => this.handleRadioPressable(event)}/>
-                                            <label htmlFor="pokemonsearch-popout-setting-button-vstar">VSTAR</label>
-                                        </div>
+                                <section id="pokemonsearch-popout-animation-setting"
+                                    className="popout-animation">
+                                    <section className="grid space-nicely all long font medium">
+                                        <button id="pokemonsearch-popout-setting-button-shiny"
+                                            className="btn-match option opt-long disabled-option"
+                                            onClick={() => this.handleButtonPressable("shiny")}>Shiny</button>
+                                        <button id="pokemonsearch-popout-setting-button-flipped"
+                                            className="btn-match option opt-long disabled-option"
+                                            onClick={() => this.handleButtonPressable("flipped")}>Flipped</button>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-amazingRare"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="amazingRare"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-amazingRare">Amazing Rare</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-cosmosHolo"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="cosmosHolo"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-cosmosHolo">Cosmos Holo</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-radiantHolo"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="radiantHolo"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-radiantHolo">Radiant Holo</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-rainbowAlt"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="rainbowAlt"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-rainbowAlt">Rainbow Alt</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-rainbowHolo"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="rainbowHolo"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-rainbowHolo">Rainbow Holo</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-regularHolo"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="regularHolo"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-regularHolo">Regular Holo</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-reverseHolo"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="reverseHolo"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-reverseHolo">Reverse Holo</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-secretRare"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="secretRare"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-secretRare">Secret Rare</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-shinyRare"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="shinyRare"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-shinyRare">Shiny Rare</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-shinyV"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="shinyV"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-shinyV">Shiny V</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-shinyVmax"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="shinyVmax"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-shinyVmax">Shiny VMAX</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-vmax"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="vmax"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-vmax">VMAX</label>
+                                            </div>
+                                        </section>
+                                        <section className="flex-center row gap">
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-v"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="v"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-v">V</label>
+                                            </div>
+                                            <div className="radio-match">
+                                                <input id="pokemonsearch-popout-setting-button-vstar"
+                                                    type="radio"
+                                                    name="groupRarity"
+                                                    value="vstar"
+                                                    onClick={(event) => this.handleRadioPressable(event)}/>
+                                                <label htmlFor="pokemonsearch-popout-setting-button-vstar">VSTAR</label>
+                                            </div>
+                                        </section>
                                     </section>
                                 </section>
                             </section>
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

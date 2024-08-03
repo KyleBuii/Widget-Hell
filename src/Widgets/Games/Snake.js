@@ -421,7 +421,7 @@ class WidgetSnake extends Component{
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by ?&emsp;Modified by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by ?&emsp;Modified by Me</span>
                             : <></>}
                     </div>
                 </div>

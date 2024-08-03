@@ -125,6 +125,9 @@ body{
     &.break-word{
         word-break: break-all;
     }
+    &.no-break-word{
+        white-space: nowrap;
+    }
 }
 
 .font-quote{
@@ -161,6 +164,24 @@ body{
     padding: 1.6rem;
     border-radius: 25.4px;
     border: 1px solid var(--randColor);
+}
+
+.popout{
+    z-index: 3;
+    position: absolute;
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popout-animation{
+    background-color: white;
+    font-size: 0.76em;
+    text-align: left;
+    border-radius: 20px;
+    box-shadow: 0em 0em 0.6em 0.05em var(--randColor);
+    max-width: 100vmin;
 }
 
 .draggable{
@@ -375,6 +396,9 @@ body{
     }
     &.gap{
         gap: 0.3em;
+        &.small{
+            gap: 0.6em;
+        }
         &.medium{
             gap: 1em;
         }
@@ -382,18 +406,6 @@ body{
             gap: 2em;
         }
     }
-}
-
-.popout{
-    z-index: 3;
-    visibility: hidden;
-    position: absolute;
-    background-color: white;
-    font-size: 0.76em;
-    text-align: left;
-    border-radius: 20px;
-    box-shadow: 0em 0em 0.6em 0.05em var(--randColor);
-    max-width: 100vmin;
 }
 
 .pointer-events-none{
@@ -2946,6 +2958,48 @@ body{
 }
 //#endregion
 
+//#region Borders
+.border-default{
+    border: 1px solid var(--randColor);
+    border-image: none;
+}
+
+.border-diagonal{
+    border: 10px solid var(--randColor);
+    border-image: 
+        repeating-linear-gradient(45deg,
+            transparent,
+            transparent 5px,
+            var(--randColor) 6px,
+            var(--randColor) 15px,
+            transparent 16px,
+            transparent 20px) 20/1rem;
+}
+
+.border-dashed{
+    border: 5px dashed var(--randColor);
+}
+
+.border-double{
+    border: 10px double var(--randColor);
+}
+
+.border-map-inspired{
+    /// by Stephy
+    --dash-size: 5px;
+    --theme-color: mediumseagreen;
+    --fill-color: beige;
+    background: var(--randColorLight);
+	border: 5px dashed var(--theme-color);
+	box-shadow: 0 0 0 (5px / 2) var(--randColor),
+		        0 0 0 (5px * 2.5) #fff,
+		        inset 0 0 0 (5px / 2) var(--randColor),
+		        0 5px (5px * 2) (5px * 3) rgba(0,0,0,0.5),
+		        inset 0 0 0 (5px * 1.2) #fff,
+		        inset 0 0 100vw 100vw var(--fill-color);
+}
+//#endregion
+
 /// Cursor trail
 .trail{
     position: absolute;
@@ -3071,7 +3125,7 @@ body{
     position: relative;
     font-family: 'Tahoma', sans-serif;
     overflow: hidden;
-    transition-property: background-color;
+    transition-property: background-color, border;
     transition-duration: 500ms;
     transition-timing-function: linear;
 }
@@ -3092,7 +3146,7 @@ body{
     max-width: 100vmin;
     max-height: 26.46em;
     #settings-widget-animation{
-        #show-hide-widgets-popout{
+        #show-hide-widgets-popout-animation{
             padding: 0.6rem;
             #show-hide-widgets-popout-search{
                 width: 8em;
@@ -3100,11 +3154,8 @@ body{
                 float: right;
             }
         }
-        #settings-popout{
+        #settings-popout-animation{
             padding: 0.4rem;
-            select{
-                width: 13em;
-            }
         }
     }
 }
@@ -3193,7 +3244,7 @@ body{
             background-color: transparent;
         }
     }
-    #calculator-input-expand-popout{
+    #calculator-input-expand-popout-animation{
         height: 10em;
         width: 10em;
     }
@@ -3202,7 +3253,7 @@ body{
 #weather-widget{
     max-width: 22.1em;
     width: 100vh;
-    #weather-search-help-container{
+    #weather-help-popout{
         padding: 0.5em 0em 1em;
         ul{
             height: 12.64em;

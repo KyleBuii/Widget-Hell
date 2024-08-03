@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaExpand, Fa0, FaBold, FaSuperscript, FaSubscript, FaListOl, FaListUl, FaRotateLeft, FaRotateRight, FaLink, FaLinkSlash, FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaIndent, FaOutdent } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Spreadsheet from 'react-spreadsheet';
@@ -81,7 +81,7 @@ class WidgetSpreadsheet extends Component{
                 onStart={() => this.props.defaultProps.dragStart("spreadsheet")}
                 onStop={() => this.props.defaultProps.dragStop("spreadsheet")}
                 onDrag={(event, data) => this.props.defaultProps.updatePosition("spreadsheet", "utility", data.x, data.y)}
-                cancel=".Spreadsheet"
+                cancel=".Spreadsheet, button, .select-match, input, label"
                 bounds="parent">
                 <div id="spreadsheet-widget"
                     className="widget">
@@ -118,7 +118,7 @@ class WidgetSpreadsheet extends Component{
                             onChange={(val) => this.handleData(val)}/>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Kyle</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>

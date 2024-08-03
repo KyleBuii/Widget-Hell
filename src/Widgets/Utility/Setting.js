@@ -80,7 +80,8 @@ const optionsCustomBorder = [
             {value: "default", label: "Default"},
             {value: "diagonal", label: "Diagonal"},
             {value: "dashed", label: "Dashed"},
-            {value: "double", label: "Double"}
+            {value: "double", label: "Double"},
+            {value: "map-inspired", label: "Map Inspired"}
         ]
     }
 ];
@@ -186,32 +187,11 @@ class WidgetSetting extends Component{
         switch(what){
             case "showHideWidgets":
                 const btnShowHideWidgets = document.getElementById("settings-btn-show-hide-widgets");
-                const showHideWidgetsPopout = document.getElementById("show-hide-widgets-popout");
-                if(this.state.showHideWidgets === false){
-                    this.setState({
-                        showHideWidgets: true
-                    });
-                    btnShowHideWidgets.style.opacity = "1";
-                    showHideWidgetsPopout.style.visibility = "visible";
-                    if(this.state.values.animation.value !== "default"){
-                        showHideWidgetsPopout.style.animation = "none";
-                        window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.state.values.animation.value + "In 2s";
-                        });
-                    };
-                }else{
-                    this.setState({
-                        showHideWidgets: false
-                    });
-                    btnShowHideWidgets.style.opacity = "0.5";
-                    showHideWidgetsPopout.style.visibility = "hidden";
-                    if(this.state.values.animation.value !== "default"){
-                        showHideWidgetsPopout.style.animation = "none";
-                        window.requestAnimationFrame(() => {
-                            showHideWidgetsPopout.style.animation = this.state.values.animation.value + "Out 2s";
-                        });
-                    };
-                };    
+                const showHideWidgetsPopoutAnimation = document.getElementById("show-hide-widgets-popout-animation");
+                this.setState({
+                    showHideWidgets: !this.state.showHideWidgets
+                });
+                this.props.showHidePopout(showHideWidgetsPopoutAnimation, !this.state.showHideWidgets, btnShowHideWidgets);
                 break;
             case "settings":
                 const btnSettings = document.getElementById("settings-btn-settings");
@@ -648,88 +628,91 @@ class WidgetSetting extends Component{
                             bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
-                                <Tabs defaultIndex={0}>
-                                    <TabList id="show-hide-widgets-popout-tabs">
-                                        <Tab onClick={() => this.handleTabSwitch("utility")}>Utility</Tab>
-                                        <Tab onClick={() => this.handleTabSwitch("games")}>Games</Tab>
-                                        <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
-                                        <input id="show-hide-widgets-popout-search"
-                                            className="input-typable all-side"
-                                            name="settings-input-show-hide-widgets-search"
-                                            type="text"
-                                            placeholder="Search"
-                                            value={this.state.search}
-                                            onChange={this.handleSearch}></input>
-                                    </TabList>
-                                    {/* Utility */}
-                                    <TabPanel>
-                                        <section id="show-hide-widgets-popout-btn-utility"
-                                            className="font large-medium no-color grid col-2 spread-long space-nicely all">
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["quoteBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-quote"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("quote", "utility")}>Quote</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["translatorBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-translator"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("translator", "utility")}>Translator</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["googleTranslatorBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-googletranslator"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("googletranslator", "utility")}>Google Translator</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["calculatorBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-calculator"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("calculator", "utility")}>Calculator</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["weatherBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-weather"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("weather", "utility")}>Weather</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["timeConversionBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-timeconversion"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("timeconversion", "utility")}>Time Conversion</button>
-                                                : <></>}
-                                            {(this.state.widgetsBtn.widgetsBtnUtility["spreadsheetBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-spreadsheet"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("spreadsheet", "utility")}>Spreadsheet</button>
-                                                : <></>}
-                                        </section>
-                                    </TabPanel>
-                                    {/* Games */}
-                                    <TabPanel>
-                                        <section id="show-hide-widgets-popout-btn-games"
-                                            className="font large-medium no-color grid col-2 spread-long space-nicely all">
-                                            {/* {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-snake"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
-                                                : <></>} */}
-                                            {(this.state.widgetsBtn.widgetsBtnGames["typingTestBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-typingtest"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("typingtest", "games")}>Typing Test</button>
-                                                : <></>}
-                                        </section>
-                                    </TabPanel>
-                                    {/* Fun */}
-                                    <TabPanel>
-                                        <section id="show-hide-widgets-popout-btn-fun"
-                                            className="font large-medium no-color grid col-2 spread-long space-nicely all">
-                                            {(this.state.widgetsBtn.widgetsBtnFun["pokemonSearchBtn"] === true)
-                                                ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
-                                                    className="btn-match option opt-medium disabled-option"
-                                                    onClick={() => this.handlePressableBtn("pokemonsearch", "fun")}>Pokemon Search</button>
-                                                : <></>}
-                                        </section>
-                                    </TabPanel>
-                                </Tabs>
+                                <section id="show-hide-widgets-popout-animation"
+                                    className="popout-animation">
+                                    <Tabs defaultIndex={0}>
+                                        <TabList id="show-hide-widgets-popout-tabs">
+                                            <Tab onClick={() => this.handleTabSwitch("utility")}>Utility</Tab>
+                                            <Tab onClick={() => this.handleTabSwitch("games")}>Games</Tab>
+                                            <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
+                                            <input id="show-hide-widgets-popout-search"
+                                                className="input-typable all-side"
+                                                name="settings-input-show-hide-widgets-search"
+                                                type="text"
+                                                placeholder="Search"
+                                                value={this.state.search}
+                                                onChange={this.handleSearch}></input>
+                                        </TabList>
+                                        {/* Utility */}
+                                        <TabPanel>
+                                            <section id="show-hide-widgets-popout-btn-utility"
+                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["quoteBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-quote"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("quote", "utility")}>Quote</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["translatorBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-translator"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("translator", "utility")}>Translator</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["googleTranslatorBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-googletranslator"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("googletranslator", "utility")}>Google Translator</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["calculatorBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-calculator"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("calculator", "utility")}>Calculator</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["weatherBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-weather"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("weather", "utility")}>Weather</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["timeConversionBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-timeconversion"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("timeconversion", "utility")}>Time Conversion</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["spreadsheetBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-spreadsheet"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("spreadsheet", "utility")}>Spreadsheet</button>
+                                                    : <></>}
+                                            </section>
+                                        </TabPanel>
+                                        {/* Games */}
+                                        <TabPanel>
+                                            <section id="show-hide-widgets-popout-btn-games"
+                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                {/* {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-snake"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
+                                                    : <></>} */}
+                                                {(this.state.widgetsBtn.widgetsBtnGames["typingTestBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-typingtest"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("typingtest", "games")}>Typing Test</button>
+                                                    : <></>}
+                                            </section>
+                                        </TabPanel>
+                                        {/* Fun */}
+                                        <TabPanel>
+                                            <section id="show-hide-widgets-popout-btn-fun"
+                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                {(this.state.widgetsBtn.widgetsBtnFun["pokemonSearchBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("pokemonsearch", "fun")}>Pokemon Search</button>
+                                                    : <></>}
+                                            </section>
+                                        </TabPanel>
+                                    </Tabs>
+                                </section>
                             </section>
                         </Draggable>
                         {/* Settings Popout */}
@@ -742,223 +725,226 @@ class WidgetSetting extends Component{
                             bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
                             <section id="settings-popout"
                                 className="popout">
-                                <section className="font large-medium flex-center column gap space-nicely all">
-                                    {/* Display Settings */}
-                                    <section className="section-group">
-                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                            <b>Display</b>
-                                        </span>
-                                        {/* Screen Dimmer */}
-                                        <section className="element-ends">
-                                            <span className="font small">
-                                                Screen Dimmer
+                                <section id="settings-popout-animation"
+                                    className="popout-animation">
+                                    <section className="font large-medium flex-center column gap space-nicely all">
+                                        {/* Display Settings */}
+                                        <section className="section-group">
+                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                <b>Display</b>
                                             </span>
-                                            <Switch className="toggleable"
-                                                name="settings-switch-screen-dimmer"
-                                                checked={this.state.values.screenDimmer}
-                                                onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
-                                                onColor="#86d3ff"
-                                                onHandleColor="#2693e6"
-                                                handleDiameter={15}
-                                                uncheckedIcon={false}
-                                                checkedIcon={false}
-                                                boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
-                                                activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
-                                                height={15}
-                                                width={30}/>
-                                        </section>
-                                        <Slider className="slider space-nicely top medium"
-                                            onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
-                                            min={5}
-                                            max={130}
-                                            value={this.state.values.screenDimmerValue}
-                                            disabled={!this.state.values.screenDimmerSlider}/>
-                                        <section className="element-ends">
-                                            <label className="font small"
-                                                htmlFor="settings-popout-display-timeBased">
-                                                Change based on time
-                                            </label>
-                                            <input id="settings-popout-display-timeBased"
-                                                name="settings-input-popout-display-timeBased"
-                                                type="checkbox"
-                                                disabled={!this.state.values.screenDimmer}
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "timeBased", "values")}/>
-                                        </section>
-                                    </section>
-                                    {/* Design Settings */}
-                                    <section className="section-group">
-                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                            <b>Design</b>
-                                        </span>
-                                        {/* Animation */}
-                                        <section>
+                                            {/* Screen Dimmer */}
                                             <section className="element-ends">
                                                 <span className="font small">
-                                                    Animation
+                                                    Screen Dimmer
                                                 </span>
-                                                <button className="btn-match inverse"
-                                                    onClick={() => this.randomOption("animation")}>
-                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
-                                                        <FaRandom/>
-                                                    </IconContext.Provider>
-                                                </button>
+                                                <Switch className="toggleable"
+                                                    name="settings-switch-screen-dimmer"
+                                                    checked={this.state.values.screenDimmer}
+                                                    onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
+                                                    onColor="#86d3ff"
+                                                    onHandleColor="#2693e6"
+                                                    handleDiameter={15}
+                                                    uncheckedIcon={false}
+                                                    checkedIcon={false}
+                                                    boxShadow="0px 1px 3px rgba(0, 0, 0, 0.6)"
+                                                    activeBoxShadow="0px 0px 1px 5px rgba(0, 0, 0, 0.2)"
+                                                    height={15}
+                                                    width={30}/>
                                             </section>
-                                            <Select id="settings-popout-design-select-animation"
-                                                className="select-match space-nicely top medium"
-                                                value={this.state.values.animation}
-                                                defaultValue={optionsAnimation[0]["options"][0]}
-                                                isDisabled={!this.state.settings}
-                                                onChange={(event) => this.handleSelect(event, "animation")}
-                                                options={optionsAnimation}
-                                                formatGroupLabel={this.props.formatGroupLabel}
-                                                styles={this.props.selectStyleSmall}
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        ...this.props.selectTheme
-                                                    }
-                                                })}/>
-                                        </section>
-                                        {/* Background */}
-                                        <section>
-                                            <section className="element-ends">
-                                                <span className="font small">
-                                                    Background
-                                                </span>
-                                                <button className="btn-match inverse"
-                                                    onClick={() => this.randomOption("background")}>
-                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
-                                                        <FaRandom/>
-                                                    </IconContext.Provider>
-                                                </button>
-                                            </section>
-                                            <Select id="settings-popout-design-select-background"
-                                                className="select-match space-nicely top medium"
-                                                value={this.state.values.background}
-                                                defaultValue={optionsBackground[0]["options"][0]}
-                                                onChange={(event) => this.handleSelect(event, "background")}
-                                                options={optionsBackground}
-                                                formatGroupLabel={this.props.formatGroupLabel}
-                                                styles={this.props.selectStyleSmall}
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        ...this.props.selectTheme
-                                                    }
-                                                })}/>
-                                        </section>
-                                        {/* Custom Border */}
-                                        <section>
-                                            <section className="element-ends">
-                                                <span className="font small">
-                                                    Custom Border
-                                                </span>
-                                                <button className="btn-match inverse"
-                                                    onClick={() => this.randomOption("customBorder")}>
-                                                    <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
-                                                        <FaRandom/>
-                                                    </IconContext.Provider>
-                                                </button>
-                                            </section>
-                                            <Select id="settings-popout-design-select-custom-border"
-                                                className="select-match space-nicely top medium"
-                                                value={this.state.values.customBorder}
-                                                defaultValue={optionsCustomBorder[0]["options"][0]}
-                                                onChange={(event) => this.handleSelect(event, "customBorder")}
-                                                options={optionsCustomBorder}
-                                                formatGroupLabel={this.props.formatGroupLabel}
-                                                styles={this.props.selectStyleSmall}
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        ...this.props.selectTheme
-                                                    }
-                                                })}/>
-                                        </section>
-                                        {/* Checkboxes */}
-                                        <section className="grid col-2 spread-setting">
-                                            {/* Shadow */}
-                                            <section className="element-ends not-spaced">
-                                                <label className="font small"
-                                                    htmlFor="settings-popout-design-shadow">
-                                                    Shadow
-                                                </label>
-                                                <input id="settings-popout-design-shadow"
-                                                    name="settings-input-popout-design-shadow"
-                                                    type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "shadow", "values")}/>
-                                            </section>
-                                        </section>
-                                    </section>
-                                    {/* Feature Settings */}
-                                    <section className="section-group">
-                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                            <b>Feature</b>
-                                        </span>
-                                        {/* General Sub Section */}
-                                        <fieldset className="section-sub">
-                                            <legend className="font small space-nicely bottom short">
-                                                General
-                                            </legend>
-                                            {/* Display author names */}
+                                            <Slider className="slider space-nicely top medium"
+                                                onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
+                                                min={5}
+                                                max={130}
+                                                value={this.state.values.screenDimmerValue}
+                                                disabled={!this.state.values.screenDimmerSlider}/>
                                             <section className="element-ends">
                                                 <label className="font small"
-                                                    htmlFor="settings-popout-feature-authorNames">
-                                                    Author Names
+                                                    htmlFor="settings-popout-display-timeBased">
+                                                    Change based on time
                                                 </label>
-                                                <input id="settings-popout-feature-authorNames"
-                                                    name="settings-input-popout-feature-authorNames"
+                                                <input id="settings-popout-display-timeBased"
+                                                    name="settings-input-popout-display-timeBased"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "authorNames", "values")}/>
+                                                    disabled={!this.state.values.screenDimmer}
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "timeBased", "values")}/>
                                             </section>
-                                        </fieldset>
-                                        {/* Hotbar Sub Section */}
-                                        <fieldset className="section-sub">
-                                            <legend className="font small space-nicely bottom short">
-                                                Hotbar
-                                            </legend>
-                                            {/* Fullscreen */}
+                                        </section>
+                                        {/* Design Settings */}
+                                        <section className="section-group">
+                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                <b>Design</b>
+                                            </span>
+                                            {/* Animation */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Animation
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("animation")}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id="settings-popout-design-select-animation"
+                                                    className="select-match space-nicely top medium"
+                                                    value={this.state.values.animation}
+                                                    defaultValue={optionsAnimation[0]["options"][0]}
+                                                    isDisabled={!this.state.settings}
+                                                    onChange={(event) => this.handleSelect(event, "animation")}
+                                                    options={optionsAnimation}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Background */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Background
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("background")}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id="settings-popout-design-select-background"
+                                                    className="select-match space-nicely top medium"
+                                                    value={this.state.values.background}
+                                                    defaultValue={optionsBackground[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "background")}
+                                                    options={optionsBackground}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Custom Border */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Custom Border
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("customBorder")}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id="settings-popout-design-select-custom-border"
+                                                    className="select-match space-nicely top medium"
+                                                    value={this.state.values.customBorder}
+                                                    defaultValue={optionsCustomBorder[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "customBorder")}
+                                                    options={optionsCustomBorder}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Checkboxes */}
+                                            <section className="grid col-2 spread-setting">
+                                                {/* Shadow */}
+                                                <section className="element-ends not-spaced">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-design-shadow">
+                                                        Shadow
+                                                    </label>
+                                                    <input id="settings-popout-design-shadow"
+                                                        name="settings-input-popout-design-shadow"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "shadow", "values")}/>
+                                                </section>
+                                            </section>
+                                        </section>
+                                        {/* Feature Settings */}
+                                        <section className="section-group">
+                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                <b>Feature</b>
+                                            </span>
+                                            {/* General Sub Section */}
+                                            <fieldset className="section-sub">
+                                                <legend className="font small space-nicely bottom short">
+                                                    General
+                                                </legend>
+                                                {/* Display author names */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-feature-authorNames">
+                                                        Author Names
+                                                    </label>
+                                                    <input id="settings-popout-feature-authorNames"
+                                                        name="settings-input-popout-feature-authorNames"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "authorNames", "values")}/>
+                                                </section>
+                                            </fieldset>
+                                            {/* Hotbar Sub Section */}
+                                            <fieldset className="section-sub">
+                                                <legend className="font small space-nicely bottom short">
+                                                    Hotbar
+                                                </legend>
+                                                {/* Fullscreen */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-feature-fullscreen">
+                                                        Fullscreen
+                                                    </label>
+                                                    <input id="settings-popout-feature-fullscreen"
+                                                        name="settings-input-popout-feature-fullscreen"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "values")}/>
+                                                </section>
+                                                {/* Reset Position */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-feature-resetPosition">
+                                                        Reset Position
+                                                    </label>
+                                                    <input id="settings-popout-feature-resetPosition"
+                                                        name="settings-input-popout-feature-resetPosition"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}/>
+                                                </section>
+                                            </fieldset>
+                                        </section>
+                                        {/* Misc Settings */}
+                                        <section className="section-group">
+                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                <b>Misc</b>
+                                            </span>
+                                            {/* Save position of popup */}
                                             <section className="element-ends">
                                                 <label className="font small"
-                                                    htmlFor="settings-popout-feature-fullscreen">
-                                                    Fullscreen
+                                                    htmlFor="settings-popout-feature-savepositionpopup">
+                                                    Save Position: Popup
                                                 </label>
-                                                <input id="settings-popout-feature-fullscreen"
-                                                    name="settings-input-popout-feature-fullscreen"
+                                                <input id="settings-popout-feature-savepositionpopup"
+                                                    name="settings-input-popout-feature-savepositionpopout"
                                                     type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "values")}/>
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
                                             </section>
-                                            {/* Reset Position */}
-                                            <section className="element-ends">
-                                                <label className="font small"
-                                                    htmlFor="settings-popout-feature-resetPosition">
-                                                    Reset Position
-                                                </label>
-                                                <input id="settings-popout-feature-resetPosition"
-                                                    name="settings-input-popout-feature-resetPosition"
-                                                    type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}/>
-                                            </section>
-                                        </fieldset>
-                                    </section>
-                                    {/* Misc Settings */}
-                                    <section className="section-group">
-                                        <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                            <b>Misc</b>
-                                        </span>
-                                        {/* Save position of popup */}
-                                        <section className="element-ends">
-                                            <label className="font small"
-                                                htmlFor="settings-popout-feature-savepositionpopup">
-                                                Save Position: Popup
-                                            </label>
-                                            <input id="settings-popout-feature-savepositionpopup"
-                                                name="settings-input-popout-feature-savepositionpopout"
-                                                type="checkbox"
-                                                onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
                                         </section>
                                     </section>
                                 </section>
