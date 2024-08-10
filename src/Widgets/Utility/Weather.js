@@ -1,6 +1,8 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegCircleQuestion, FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaRegCircleQuestion, FaExpand, Fa0, FaWind, FaLocationDot, FaDroplet } from 'react-icons/fa6';
+import { MdWaves } from "react-icons/md";
+import { WiCloudyGusts } from "react-icons/wi";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -22,7 +24,13 @@ class WidgetWeather extends Component{
             weatherCondition: "",
             weatherIcon: "",
             windMPH: "",
-            windKPH: ""
+            windKPH: "",
+            windDirection: 30,
+            humidity: "",
+            precipitationMm: 0,
+            precipitationIn: 0,
+            gustMPH: "",
+            gustKPH: ""
         };
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -66,7 +74,13 @@ class WidgetWeather extends Component{
                     weatherCondition: result.current.condition.text,
                     weatherIcon: result.current.condition.icon,
                     windMPH: result.current.wind_mph,
-                    windKPH: result.current.wind_kph
+                    windKPH: result.current.wind_kph,
+                    windDirection: result.current.wind_degree,
+                    humidity: result.current.humidity,
+                    percipitationMm: result.current.precip_mm,
+                    percipitationIn: result.current.precip_in,
+                    gustMPH: result.current.gust_mph,
+                    gustKPH: result.current.gust_kph
                 });
             }catch(err){
                 this.setState({
@@ -76,17 +90,17 @@ class WidgetWeather extends Component{
         };
     };
     componentDidMount(){
-        /// Default input
-        if(sessionStorage.getItem("weather") === null){
-            this.setState({
-                input: "auto:ip"
-            }, () => {
-                this.handleUpdate();   
-            });
-        }else{
+        /// If a value exists in session storage, load it
+        if(sessionStorage.getItem("weather") !== null){
             let dataSessionStorage = JSON.parse(sessionStorage.getItem("weather"));
             this.setState({
                 input: dataSessionStorage.input
+            }, () => {
+                this.handleUpdate();    
+            });
+        }else{
+            this.setState({
+                input: "auto:ip"
             }, () => {
                 this.handleUpdate();    
             });
@@ -138,95 +152,141 @@ class WidgetWeather extends Component{
                                 </button>
                                 : <></>}
                         </section>
-                        {/* Search bar */}
-                        <div id="weather-search-container"
-                            className="flex-center gap">
-                            <div className="when-elements-are-not-straight">
-                                <input className="input-typable right-side with-help-btn"
+                        {/* Search */}
+                        <div className="flex-center row gap small space-nicely bottom">
+                            <div id="weather-search-input">
+                                <input className="input-match"
                                     name="weather-input-search"
                                     placeholder="Enter location"
                                     onChange={this.handleChange}
                                     value={this.state.input}>
                                 </input>
-                                <button className="help-btn left-side when-elements-are-not-straight"
+                                <button id="weather-search-help-button"
+                                    className="btn-match inverse"
                                     onClick={() => this.handlePressableButton("help")}>
                                     <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
                                 </button>
                             </div>
-                            {/* Search help popout */}
-                            <Draggable
-                                cancel="li"
-                                position={{
-                                    x: this.props.positionPopout.searchhelp.x,
-                                    y: this.props.positionPopout.searchhelp.y}}
-                                onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
-                                bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
-                                <section id="weather-help-popout"
-                                    className="popout">
-                                    <section id="weather-help-popout-animation"
-                                        className="popout-animation">
-                                        <ul className="font medium">
-                                            <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
-                                            <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
-                                            <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
-                                            <li>UK postcode <span className="font small transparent-normal">e.g: SW1</span></li>
-                                            <li>Canada postal code <span className="font small transparent-normal">e.g: G2J</span></li>
-                                            <li>Metar:&lt;metar code&gt; <span className="font small transparent-normal">e.g: metar:EGLL</span></li>
-                                            <li>Iata:&lt;3 digit airport code&gt; <span className="font small transparent-normal">e.g: iata:DXB</span></li>
-                                            <li>Auto IP lookup <span className="font small transparent-normal">e.g: auto:ip</span></li>
-                                            <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small transparent-normal">e.g: 100.0.0.1</span></li>
-                                        </ul>
-                                    </section>
-                                </section>
-                            </Draggable>
-                            <button className="btn-match"
+                            <button className="btn-match with-input"
                                 onClick={this.handleUpdate}>
                                 Update
                             </button>
                         </div>
-                        {/* Information box */}
-                        <section id="weather-info-container"
-                            className="flex-center column only-flex">
-                            <div id="weather-info-icon-temp">
-                                <img className="no-highlight"
-                                    src={this.state.weatherIcon}
-                                    alt="weather-icon"
-                                    style={{height: this.props.medIcon, width: this.props.medIcon}}></img>
-                                <div id="weather-info-temp-c-container">
-                                    <span id="weather-info-temp-c"
-                                        className="font large">
-                                        <b>{this.state.tempC}&deg;C</b>
+                        {/* Search help popout */}
+                        <Draggable
+                            cancel="li"
+                            position={{
+                                x: this.props.positionPopout.searchhelp.x,
+                                y: this.props.positionPopout.searchhelp.y}}
+                            onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
+                            bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
+                            <section id="weather-help-popout"
+                                className="popout">
+                                <section id="weather-help-popout-animation"
+                                    className="popout-animation">
+                                    <ul className="font medium">
+                                        <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
+                                        <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
+                                        <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
+                                        <li>UK postcode <span className="font small transparent-normal">e.g: SW1</span></li>
+                                        <li>Canada postal code <span className="font small transparent-normal">e.g: G2J</span></li>
+                                        <li>Metar:&lt;metar code&gt; <span className="font small transparent-normal">e.g: metar:EGLL</span></li>
+                                        <li>Iata:&lt;3 digit airport code&gt; <span className="font small transparent-normal">e.g: iata:DXB</span></li>
+                                        <li>Auto IP lookup <span className="font small transparent-normal">e.g: auto:ip</span></li>
+                                        <li>IP address (IPv4 and IPv6 supported) <br/><span className="font small transparent-normal">e.g: 100.0.0.1</span></li>
+                                    </ul>
+                                </section>
+                            </section>
+                        </Draggable>
+                        {/* Location */}
+                        <div className="flex-center row gap only-align-items">
+                            <IconContext.Provider value={{ size: "1em", className: "global-class-name", color: "var(--randColorLight)" }}>
+                                <FaLocationDot/>
+                            </IconContext.Provider>
+                            <span className="font medium bold">{this.state.name}, {this.state.region}</span>
+                        </div>
+                        {/* Weather Information */}
+                        <section className="flex-center column gap">
+                            {/* Image */}
+                            <img className="no-highlight"
+                                src={this.state.weatherIcon}
+                                alt="weather icon"
+                                style={{height: this.props.largeIcon, width: this.props.largeIcon}}></img>
+                            {/* Temperature */}
+                            <div id="weather-temperature"
+                                className="flex-center row gap larger">
+                                <div className="flex-center column">
+                                    <span className="font larger bold">
+                                        <span>{this.state.tempC}</span>
+                                        <span className="font micro text-above">&deg;C</span>
                                     </span>
-                                    <span className="font small transparent-bold flex-center">{this.state.feelsLikeC}&deg;C</span>
+                                    <span className="font small transparent-bold">{this.state.feelsLikeC}&deg;C</span>
                                 </div>
-                                <div id="weather-info-temp-f-container">
-                                    <span id="weather-info-temp-f"
-                                        className="font large">
-                                        <b>{this.state.tempF}&deg;F</b>
+                                <div className="flex-center column">
+                                    <span className="font larger bold">
+                                        <span>{this.state.tempF}</span>
+                                        <span className="font micro text-above">&deg;F</span>
                                     </span>
-                                    <span className="font small transparent-bold flex-center">{this.state.feelsLikeF}&deg;F</span>
+                                    <span className="font small transparent-bold">{this.state.feelsLikeF}&deg;F</span>
                                 </div>
                             </div>
-                            <div id="weather-info-cond-local-time"
-                                className="font medium normal">
-                                <span>{this.state.weatherCondition}</span>
-                                <span>{this.state.localTime}</span>
-                            </div>
-                            <div id="weather-info-wind"
-                                className="font medium normal">
-                                <span>Wind:</span>
-                                <span>{this.state.windKPH} KPH</span>
-                                <span>{this.state.windMPH} MPH</span>
-                            </div>
-                            <div id="weather-info-location"
-                                className="font small normal">
-                                <span>{this.state.name}, {this.state.region}</span>
+                            {/* Condition */}
+                            <span id="weather-condition"
+                                className="font medium">{this.state.weatherCondition}</span>
+                            <div className="flex-center column gap medium">
+                                <div className="flex-center row gap larger">
+                                    {/* Humidity */}
+                                    <div className="flex-center row gap small">
+                                        <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
+                                            <MdWaves/>
+                                        </IconContext.Provider>
+                                        <div className="flex-center column only-justify-content">
+                                            <span className="font medium">{this.state.humidity}%</span>
+                                            <span className="font small">Humidity</span>
+                                        </div>
+                                    </div>
+                                    {/* Wind */}
+                                    <div className="flex-center row gap small">
+                                        <IconContext.Provider value={{ size: "1.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
+                                            <FaWind style={{ transform: `rotate(${this.state.windDirection}deg)` }}/>
+                                        </IconContext.Provider>
+                                        <div className="flex-center column only-justify-content">
+                                            <span className="font medium">{this.state.windKPH}Km/h</span>
+                                            <span className="font medium">{this.state.windMPH}Mi/h</span>
+                                            <span className="font small">Wind Speed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex-center row gap small">
+                                    {/* Percipitation */}
+                                    <div className="flex-center row gap small">
+                                        <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
+                                            <FaDroplet/>
+                                        </IconContext.Provider>
+                                        <div className="flex-center column only-justify-content">
+                                            <span className="font medium">{this.state.precipitationMm}mm</span>
+                                            <span className="font medium">{this.state.precipitationIn}in</span>
+                                            <span className="font small">Precipitation</span>
+                                        </div>
+                                    </div>
+                                    {/* Gust */}
+                                    <div className="flex-center row gap small">
+                                        <IconContext.Provider value={{ size: "2.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
+                                            <WiCloudyGusts/>
+                                        </IconContext.Provider>
+                                        <div className="flex-center column only-justify-content">
+                                            <span className="font medium">{this.state.gustKPH}Km/h</span>
+                                            <span className="font medium">{this.state.gustMPH}Mi/h</span>
+                                            <span className="font small">Wind Gust</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
-                        <span id="weather-last-updated"
-                            className="font small normal">Last updated: {this.state.lastUpdated}</span>
+                        {/* Last Updated */}
+                        <span className="font micro transparent-normal">Last updated: {this.state.lastUpdated}</span>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>

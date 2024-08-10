@@ -85,6 +85,16 @@ const optionsCustomBorder = [
         ]
     }
 ];
+const optionsVoice = [
+    {
+        label: "Voices",
+        options: [
+            {value: "0", label: "David"},
+            {value: "1", label: "Mark"},
+            {value: "2", label: "Zira"}
+        ]
+    }
+];
 
 
 class WidgetSetting extends Component{
@@ -101,14 +111,18 @@ class WidgetSetting extends Component{
                     calculatorBtn: true,
                     weatherBtn: true,
                     timeConversionBtn: true,
-                    spreadsheetBtn: true
+                    spreadsheetBtn: true,
+                    notepadBtn: true,
+                    qrCodeBtn: true,
+                    batteryBtn: true,
                 },
                 widgetsBtnGames: {
                     snakeBtn: true,
                     typingTestBtn: true
                 },
                 widgetsBtnFun: {
-                    pokemonSearchBtn: true
+                    pokemonSearchBtn: true,
+                    pickerWheelBtn: true
                 }
             },
             utilityTab: true,
@@ -127,7 +141,10 @@ class WidgetSetting extends Component{
                 fullscreen: false,
                 resetPosition: false,
                 savePositionPopout: false,
-                timeBased: false
+                timeBased: false,
+                voice: {value: "0", label: "David"},
+                pitch: 0,
+                rate: 0
             }
         };
         this.handleTrick = this.handleTrick.bind(this);
@@ -164,6 +181,10 @@ class WidgetSetting extends Component{
             case "customBorder":
                 rand = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
                 this.handleSelect(rand, "customBorder");
+                break;
+            case "voice":
+                rand = optionsVoice[0].options[Math.floor(Math.random() * (optionsVoice[0].options.length - 1)) + 1];
+                this.handleSelect(rand, "voice");
                 break;
             default:
                 break;
@@ -292,6 +313,26 @@ class WidgetSetting extends Component{
                     };
                 });
                 break;
+            case "slider-voice-pitch":
+                this.setState({
+                    values: {
+                        ...this.state.values,
+                        pitch: value
+                    }
+                }, () => {
+                    this.props.updateValue(value, "pitch", "values");
+                });
+                break;
+            case "slider-voice-rate":
+                this.setState({
+                    values: {
+                        ...this.state.values,
+                        rate: value
+                    }
+                }, () => {
+                    this.props.updateValue(value, "rate", "values");
+                });
+                break;
             default:
                 break;
         };
@@ -300,13 +341,12 @@ class WidgetSetting extends Component{
     handleSelect(what, where){
         switch(where){
             case "animation":
+            case "customBorder":
+            case "voice":
                 this.props.updateValue(what, where, "values");
                 break;
             case "background":
                 this.updateBackground(what);
-                break;
-            case "customBorder":
-                this.props.updateValue(what, where, "values");
                 break;
             default:
                 break;
@@ -512,7 +552,10 @@ class WidgetSetting extends Component{
                     resetPosition: this.state.values.resetPosition,
                     savePositionPopout: this.state.values.savePositionPopout,
                     shadow: this.state.values.shadow,
-                    timeBased: this.state.values.timeBased
+                    timeBased: this.state.values.timeBased,
+                    voice: this.state.values.voice,
+                    pitch: this.state.values.pitch,
+                    rate: this.state.values.rate
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -548,7 +591,10 @@ class WidgetSetting extends Component{
                                 resetPosition: localStorageValues["resetPosition"],
                                 savePositionPopout: localStorageValues["savePositionPopout"],
                                 shadow: localStorageValues["shadow"],
-                                timeBased: localStorageValues["timeBased"]
+                                timeBased: localStorageValues["timeBased"],
+                                voice: localStorageValues["voice"],
+                                pitch: localStorageValues["pitch"],
+                                rate: localStorageValues["rate"]
                             }
                         }, () => {
                             /// Update Display
@@ -646,7 +692,7 @@ class WidgetSetting extends Component{
                                         {/* Utility */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-btn-utility"
-                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
                                                 {(this.state.widgetsBtn.widgetsBtnUtility["quoteBtn"] === true)
                                                     ? <button id="show-hide-widgets-popout-btn-quote"
                                                         className="btn-match option opt-medium disabled-option"
@@ -682,17 +728,32 @@ class WidgetSetting extends Component{
                                                         className="btn-match option opt-medium disabled-option"
                                                         onClick={() => this.handlePressableBtn("spreadsheet", "utility")}>Spreadsheet</button>
                                                     : <></>}
+                                                {/* {(this.state.widgetsBtn.widgetsBtnUtility["notepadBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-notepad"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("notepad", "utility")}>Notepad</button>
+                                                    : <></>} */}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["qrCodeBtn"])
+                                                    ? <button id="show-hide-widgets-popout-btn-qrcode"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("qrcode", "utility")}>QR Code Generator</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnUtility["batteryBtn"])
+                                                    ? <button id="show-hide-widgets-popout-btn-battery"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("battery", "utility")}>Device Battery</button>
+                                                    : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-btn-games"
                                                 className="font large-medium no-color grid col-2 spread-long space-nicely all">
-                                                {/* {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
+                                                {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
                                                     ? <button id="show-hide-widgets-popout-btn-snake"
                                                         className="btn-match option opt-medium disabled-option"
                                                         onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
-                                                    : <></>} */}
+                                                    : <></>}
                                                 {(this.state.widgetsBtn.widgetsBtnGames["typingTestBtn"] === true)
                                                     ? <button id="show-hide-widgets-popout-btn-typingtest"
                                                         className="btn-match option opt-medium disabled-option"
@@ -708,6 +769,11 @@ class WidgetSetting extends Component{
                                                     ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
                                                         className="btn-match option opt-medium disabled-option"
                                                         onClick={() => this.handlePressableBtn("pokemonsearch", "fun")}>Pokemon Search</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnFun["pickerWheelBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-pickerwheel"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("pickerwheel", "fun")}>Picker Wheel</button>
                                                     : <></>}
                                             </section>
                                         </TabPanel>
@@ -756,6 +822,12 @@ class WidgetSetting extends Component{
                                                 onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
                                                 min={5}
                                                 max={130}
+                                                marks={{
+                                                    100: {
+                                                        label: 100,
+                                                        style: {display: "none" }
+                                                    }
+                                                }}
                                                 value={this.state.values.screenDimmerValue}
                                                 disabled={!this.state.values.screenDimmerSlider}/>
                                             <section className="element-ends">
@@ -934,17 +1006,87 @@ class WidgetSetting extends Component{
                                             <span className="font small when-elements-are-not-straight space-nicely bottom short">
                                                 <b>Misc</b>
                                             </span>
-                                            {/* Save position of popup */}
-                                            <section className="element-ends">
-                                                <label className="font small"
-                                                    htmlFor="settings-popout-feature-savepositionpopup">
-                                                    Save Position: Popup
-                                                </label>
-                                                <input id="settings-popout-feature-savepositionpopup"
-                                                    name="settings-input-popout-feature-savepositionpopout"
-                                                    type="checkbox"
-                                                    onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
-                                            </section>
+                                            {/* Voice */}
+                                            <fieldset className="section-sub">
+                                                <legend className="font small space-nicely bottom short">
+                                                    Voice
+                                                </legend>
+                                                {/* Voice Change */}
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Type
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("voice")}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select className="select-match space-nicely top medium"
+                                                    value={this.state.values.voice}
+                                                    defaultValue={optionsVoice[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "voice")}
+                                                    options={optionsVoice}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                                {/* Pitch */}
+                                                <span className="font small">
+                                                    Pitch
+                                                </span>
+                                                <Slider className="slider space-nicely top medium"
+                                                    onChange={(value) => this.handleSlider(value, "slider-voice-pitch")}
+                                                    min={0}
+                                                    max={2}
+                                                    step={0.1}
+                                                    marks={{
+                                                        0: {
+                                                            label: 0,
+                                                            style: {display: "none" }
+                                                        }
+                                                    }}
+                                                    value={this.state.values.pitch}/>
+                                                {/* Rate */}
+                                                <span className="font small">
+                                                    Rate
+                                                </span>
+                                                <Slider className="slider space-nicely top medium"
+                                                    onChange={(value) => this.handleSlider(value, "slider-voice-rate")}
+                                                    min={0.1}
+                                                    max={10}
+                                                    step={0.1}
+                                                    marks={{
+                                                        1: {
+                                                            label: 1,
+                                                            style: {display: "none" }
+                                                        }
+                                                    }}
+                                                    value={this.state.values.rate}/>
+                                            </fieldset>
+                                            {/* Popout */}
+                                            <fieldset className="section-sub">
+                                                <legend className="font small space-nicely bottom short">
+                                                    Popout
+                                                </legend>
+                                                {/* Save position of popup */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-feature-savepositionpopup">
+                                                        Save Position: Popup
+                                                    </label>
+                                                    <input id="settings-popout-feature-savepositionpopup"
+                                                        name="settings-input-popout-feature-savepositionpopout"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}/>
+                                                </section>
+                                            </fieldset>
                                         </section>
                                     </section>
                                 </section>

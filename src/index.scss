@@ -60,6 +60,12 @@ z-index guide
     --clip-invert: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0 47.15%, 91.5% 47.15%, 91.5% 9.85%, 8% 9.85%, 8% 47.15%, 0 50%);
     --foil-brightness: 0.55;
     //#endregion
+    //#region Battery
+    --gradient-color-red: linear-gradient(90deg, hsl(7, 89%, 46%) 15%, hsl(11, 93%, 68%) 100%);
+    --gradient-color-orange: linear-gradient(90deg, hsl(22,89%,46%) 15%,hsl(54,90%,68%)100%);
+    --gradient-color-yellow: linear-gradient(90deg,hsl(54,89%,46%) 15%,hsl(92,90%,45%)100%);
+    --gradient-color-green: linear-gradient(90deg,hsl(92,89%,46%) 15%,hsl(92,90%,68%)100%);
+    //#endregion
 }
 
 body{
@@ -81,6 +87,12 @@ body{
 //#region Fonts
 .font{
     color: var(--randColor);
+    &.largerer{
+        font-size: 3.25em;
+    }
+    &.larger{
+        font-size: 2.5em;
+    }
     &.large{
         font-size: 1.75em;
     }
@@ -204,7 +216,6 @@ body{
 }
 
 .cut-scrollbar-corner-part-1{
-    max-width: 23.2em;
     overflow: hidden;
     border: 1px solid var(--randColor);
     border-radius: 15px;
@@ -213,11 +224,13 @@ body{
     }
     &.p{
         height: 8.5em;
+        &.area-large{
+            height: 15em;
+        }
     }
 }
 
 .cut-scrollbar-corner-part-2{
-    max-width: 30.1em;
     padding: 0rem;
     margin: 0rem;
     text-align: center;
@@ -233,13 +246,17 @@ body{
         outline: none;
     }
     &.p{
-        height: 9em;
+        height: 100%;
         max-width: 24.5em;
         width: calc(100vmin - 4.05em);
         word-wrap: break-word;
-        &.short{
+        outline: none;
+        &.area-short{
             height: 6.5em;
             width: unset;
+        }
+        &.area-large{
+            max-width: 40em;
         }
     }
 }
@@ -263,6 +280,9 @@ body{
     }
     &:active{
         transform: scale(0.98);
+    }
+    &:disabled{
+        background-color: rgba(var(--randColorOpacity), 0.2);
     }
     &.option{
         padding: 0.2rem 0.4rem;
@@ -304,14 +324,36 @@ body{
             color: white;
             background-color: rgba(var(--randColorOpacity), 0.5);
         }
-        &.inverse{
+        &.inversed{
             color: rgba(var(--randColorOpacity), 0.2);
             background-color: unset;
             &:hover{
                 color: rgba(var(--randColorOpacity), 0.5);
                 background-color: unset;
             }
+            &.inversed-active{
+                color: var(--randColor);
+            }
         }
+    }
+    &.with-input{
+        padding: 0.65rem;
+    }
+}
+
+.input-match{
+    height: 2.5em;
+    border: 1px solid var(--randColor);
+    border-radius: 5px;
+    padding-left: 0.8em;
+    &:focus{
+        outline: none;
+    }
+    &:hover{
+        border: 1px solid var(--randColorLight);
+    }
+    &::placeholder{
+        color: var(--randColor);
     }
 }
 
@@ -355,10 +397,54 @@ body{
             transform: scale(0.98);
         }
     }
+    &.inverse{
+        label{
+            color: var(--randColor);
+            opacity: 0.2;
+            background-color: transparent;
+            padding: 0rem 0.35rem;
+            width: unset;
+            display: unset;
+            &:hover{
+                opacity: 0.5;
+            }
+        }
+        &:active{
+            transform: scale(0.93);
+        }
+    }
+}
+
+.color-input-match{
+    border: 1px solid rgba(var(--randColorOpacity), 0.4);
+    border-radius: 50%;
+    inline-size: 2em;
+    block-size: 2em;
+    padding: 3px;
+    background-color: white;
+    &::-webkit-color-swatch-wrapper{
+        padding: 1px;
+    }
+    &::-webkit-color-swatch{
+        border-radius: 50%;
+    }
+}
+
+.color-input-button{
+    position: relative;
+    input[type="color"]{
+        cursor: pointer;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
 }
 
 /// Space between elements | []-----[]
 .element-ends{
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -404,6 +490,9 @@ body{
         }
         &.large{
             gap: 2em;
+        }
+        &.larger{
+            gap: 3em;
         }
     }
 }
@@ -509,6 +598,9 @@ body{
     }
     &.col-3{
         grid-template-columns: repeat(3, 2.225em);
+        &.spread-long{
+            grid-template-columns: repeat(3, 9.38em);
+        }
     }
     &.col-4{
         grid-template-columns: repeat(4, 2.225em);
@@ -520,6 +612,9 @@ body{
         margin: 0.9rem 0rem 0.3rem;
         &.medium{
             margin-top: 0.5rem;
+        }
+        &.not-bottom{
+            margin-bottom: 0rem;
         }
     }
     &.right{
@@ -598,37 +693,27 @@ body{
     }
 }
 
-.overlay{
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-.grid-cell{
-    box-sizing: border-box;
-    &--food{
-    }
-    &--snake{
-        background-color: var(--randColor);
-    }
-}
-
 /// Floating positions for elements
 .float{
+    position: absolute;
+    &.bottom{
+        width: 21.3em;
+        margin-left: 0.5em;
+        bottom: 2.1em;
+    }
+    &.middle-left{
+        left: 0.3em;
+    }
     &.bottom-left{
-        position: absolute;
         bottom: 2.8em;
         left: 2.8em;
     }
-    &.middle-left{
-        position: absolute;
-        left: 0.3em;
+    &.bottom-middle{
+        bottom: 2.8em;
+        left: 50%;
+        transform: translate(-50%);
     }
     &.bottom-right{
-        position: absolute;
         bottom: 2.8em;
         right: 3.8em;
     }
@@ -768,6 +853,34 @@ body{
         &.water{
             @include circle-color(#0476bd);
         }
+    }
+}
+
+.box{
+    border: 1px solid var(--randColor);
+    border-radius: 7.5px;
+    margin-top: 0.9rem;
+    padding: 1rem;
+    &.dimmed{
+        background-color: rgba(var(--randColorOpacity), 0.08);
+    }
+}
+
+.text-above{
+    position: absolute;
+    margin-bottom: 10em;
+}
+
+.overlay{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    &.rounded{
+        border-radius: 25.4px;
     }
 }
 
@@ -2248,6 +2361,24 @@ body{
 }
 //#endregion
 
+//#region Battery
+.gradient-color-red, .green-color-red::after{
+    background: var(--gradient-color-red);
+}
+
+.gradient-color-green, .green-color-green::after{
+    background: var(--gradient-color-green);
+}
+
+.gradient-color-orange, .green-color-orange::after{
+    background: var(--gradient-color-orange);
+}
+
+.gradient-color-yellow, .green-color-yellow::after{
+    background: var(--gradient-color-yellow);
+}
+//#endregion
+
 //#region Backgrounds
 .background-default{
     background-color: var(--randColor);
@@ -3000,6 +3131,17 @@ body{
 }
 //#endregion
 
+/// Snake grid cells
+.grid-cell{
+    box-sizing: border-box;
+    &--food{
+        background-color: red;
+    }
+    &--snake{
+        background-color: var(--randColor);
+    }
+}
+
 /// Cursor trail
 .trail{
     position: absolute;
@@ -3251,68 +3393,71 @@ body{
 }
 
 #weather-widget{
-    max-width: 22.1em;
-    width: 100vh;
+    #weather-temperature{
+        margin-right: 1em;
+    }
+    #weather-condition{
+        margin-bottom: 2em;
+    }
+    #weather-search-input{
+        position: relative;
+        #weather-search-help-button{
+            position: absolute;
+            top: 50%;
+            right: 0.5em;
+            transform: translate(0, -50%);
+        }
+    }
     #weather-help-popout{
-        padding: 0.5em 0em 1em;
         ul{
             height: 12.64em;
             width: 18em;    
             margin: .7rem 2.35rem;
-            padding: 0rem;
+            padding: 0.2rem;
         }
-    }
-    #weather-info-container{
-        max-height: 12.47em;
-        height: 100vmin;
-        border: 1px solid var(--randColor);
-        border-radius: 7.5px;
-        margin: 0.9rem 0rem 0rem;
-        #weather-info-icon-temp{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            #weather-info-temp-c-container{
-                display: flex;
-                flex-direction: column;
-                margin-right: 1.9rem;
-            }
-            #weather-info-temp-f-container{
-                display: flex;
-                flex-direction: column;
-            }
-        }
-        #weather-info-cond-local-time{
-            display: flex;
-            flex-direction: row;
-            gap: 1.8em;
-            margin: 0rem 0.76rem;
-        }
-        #weather-info-wind{
-            display: flex;
-            flex-direction: row;
-            gap: 2em;
-            margin: 0.6rem 0.76rem 0rem;
-        }
-        #weather-info-location{
-            width: 18.23em;
-            position: absolute;
-            bottom: 2.4em;
-            right: 2.4em;
-            word-wrap: break-word;
-            text-align: right;
-        }
-    }
-    #weather-last-updated{
-        position: absolute;
-        bottom: 0.7em;
-        left: 2.4em;
     }
 }
 
 #timeconversion-widget{
     max-width: 40em;
     width: 100vmin;
+}
+
+#battery-widget{
+    #battery-pill{
+        position: relative;
+        width: 4.7em;
+        height: 11.4em;
+        background-color: #222;
+        box-shadow: inset 20px 0 48px hsl(0, 0%, 16%), inset -4px 12px 48px hsl(0, 0%, 56%);
+        border: 1px solid var(--randColor);
+        border-radius: 3rem;
+    }
+    #battery-level{
+        position: absolute;
+        inset: 2px;
+        border-radius: 3rem;
+        overflow: hidden;    
+    }
+    #battery-liquid{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        box-shadow: inset -10px 0 12px hsla(0, 0%, 0%, 0.1), inset 12px 0 12px hsla(0, 0%, 0%, 0.15);
+        transition: 0.3s;
+        &::after{
+            content: "";
+            position: absolute;
+            height: 8px;
+            box-shadow: inset 0 -3px 6px hsla(0, 0%, 0%, 0.2);
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            top: -4px;
+            border-radius: 50%;           
+        }
+    }
 }
 //#endregion
 
@@ -3541,6 +3686,25 @@ body{
     }
     #pokemonsearch-popout-setting{
         padding: 0.4rem;
+    }
+}
+
+#pickerwheel-widget{
+    #pickerwheel-overlay-winner{
+        span{
+            margin: 1em;
+        }
+    }
+    #pickerwheel-button-spin{
+        opacity: 0;
+        position: absolute;
+        width: 6em;
+        height: 6em;
+        top: 54.5%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: none;
     }
 }
 //#endregion

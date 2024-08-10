@@ -1,7 +1,6 @@
 import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
-/// Widgets: Utility
 import WidgetSetting from './Widgets/Utility/Setting.js';
 import WidgetQuote from './Widgets/Utility/Quote.js';
 import WidgetTranslator from './Widgets/Utility/Translator.js';
@@ -10,10 +9,13 @@ import WidgetCalculator from './Widgets/Utility/Calculator.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
 import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
 import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
-/// Widgets: Games
 import WidgetSnake from './Widgets/Games/Snake.js';
 import WidgetTypingTest from './Widgets/Games/TypingTest.js';
 import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
+import WidgetNotepad from './Widgets/Utility/Notepad.js';
+import WidgetQRCode from './Widgets/Utility/QRCode.js';
+import WidgetBattery from './Widgets/Utility/Battery.js';
+import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
 
 
 //////////////////// Variables ////////////////////
@@ -70,7 +72,7 @@ const quotes = [
         , author: ""
     },
     {
-        quote: "Just becauthorse it's taking time, doesn't mean it's not happening."
+        quote: "Just because it's taking time, doesn't mean it's not happening."
         , author: ""
     },
     {
@@ -160,6 +162,18 @@ const quotes = [
     {
         quote: "When people go back in time in movies or books they are often afraid of doing any small thing because it might drastically change the future. Yet people in the present don't realize the small things they do will change the future in ways they can't even imagine."
         , author: "/u/Reichukey"
+    },
+    {
+        quote: "People believe in ghost they never saw, but don't believe in themselves they see everyday."
+        , author: ""
+    },
+    {
+        quote: "Once you've accepted your flaws, no one can use them against you."
+        , author: "George R.R. Martin"
+    },
+    {
+        quote: "Yet it is far better to light the candle than to curse the darkness."
+        , author: "W. L. Watkinson"
     }
 ];
 const sentences = [
@@ -524,7 +538,10 @@ class Widgets extends Component{
                 authorNames: false,
                 fullscreen: false,
                 resetPosition: false,
-                shadow: false
+                shadow: false,
+                voice: {},
+                pitch: 0,
+                rate: 0
             },
             prevPosition: {
                 prevX: 0,
@@ -637,7 +654,37 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
-                    }
+                    },
+                    notepad: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    qrcode: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    battery: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 games: {
                     snake: {
@@ -663,6 +710,16 @@ class Widgets extends Component{
                 },
                 fun: {
                     pokemonsearch: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    pickerwheel: {
                         active: false,
                         position: {
                             x: 0,
@@ -756,6 +813,9 @@ class Widgets extends Component{
                     }
                 }));
             };
+        };
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
         };
     };
     handleShowHidePopout(popout, visible, button, inverse){
@@ -1111,7 +1171,10 @@ class Widgets extends Component{
                                 authorNames: localStorageValues["authorNames"],
                                 fullscreen: localStorageValues["fullscreen"],
                                 resetPosition: localStorageValues["resetPosition"],
-                                shadow: localStorageValues["shadow"]
+                                shadow: localStorageValues["shadow"],
+                                voice: localStorageValues["voice"],
+                                pitch: localStorageValues["pitch"],
+                                rate: localStorageValues["rate"]
                             },
                         });
                         break;
@@ -1192,9 +1255,13 @@ class Widgets extends Component{
                         weather: this.state.widgets.utility.weather.active,
                         timeconversion: this.state.widgets.utility.timeconversion.active,
                         spreadsheet: this.state.widgets.utility.spreadsheet.active,
+                        notepad: this.state.widgets.utility.notepad.active,
+                        qrcode: this.state.widgets.utility.qrcode.active,
+                        battery: this.state.widgets.utility.battery.active,
                         snake: this.state.widgets.games.snake.active,
                         typingtest: this.state.widgets.games.typingtest.active,
-                        pokemonsearch: this.state.widgets.fun.pokemonsearch.active
+                        pokemonsearch: this.state.widgets.fun.pokemonsearch.active,
+                        pickerwheel: this.state.widgets.fun.pickerwheel.active
                     }}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
@@ -1239,6 +1306,9 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.quote.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.quote.drag.disabled}
+                        voice={this.state.values.voice}
+                        pitch={this.state.values.pitch}
+                        rate={this.state.values.rate}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.translator.active === true
@@ -1261,6 +1331,10 @@ class Widgets extends Component{
                         uwuEmoticons={uwuEmoticons}
                         emojifyDictionary={emojifyDictionary}
                         matchAll={matchAll}
+                        punctuation={punctuation}
+                        voice={this.state.values.voice}
+                        pitch={this.state.values.pitch}
+                        rate={this.state.values.rate}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         smallIcon={smallIcon}
@@ -1278,6 +1352,9 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
                         languages={languages}
+                        voice={this.state.values.voice}
+                        pitch={this.state.values.pitch}
+                        rate={this.state.values.rate}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         smallIcon={smallIcon}
@@ -1316,6 +1393,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.weather.drag.disabled}
                         smallIcon={smallIcon}
+                        smallMedIcon={smallMedIcon}
                         medIcon={medIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1343,6 +1421,44 @@ class Widgets extends Component{
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.notepad.active
+                    ? <WidgetNotepad
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.notepad.position.x,
+                            y: this.state.widgets.utility.notepad.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.notepad.drag.disabled}
+                        formatGroupLabel={formatGroupLabel}
+                        selectStyleSmall={selectStyleSmall}
+                        selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.qrcode.active
+                    ? <WidgetQRCode
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.qrcode.position.x,
+                            y: this.state.widgets.utility.qrcode.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.qrcode.drag.disabled}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.battery.active
+                    ? <WidgetBattery
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.battery.position.x,
+                            y: this.state.widgets.utility.battery.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.battery.drag.disabled}
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1381,64 +1497,79 @@ class Widgets extends Component{
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.fun.pickerwheel.active === true
+                    ? <WidgetPickerWheel
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.pickerwheel.position.x,
+                            y: this.state.widgets.fun.pickerwheel.position.y
+                        }}
+                        dragDisabled={this.state.widgets.fun.pickerwheel.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
             </div>
         );
     };
 };
-/// Widget template
-/*
-class Widget[] extends Component{
-    render(){
-        return(
-            <Draggable 
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
-                disabled={this.props.dragDisabled}
-                onStart={() => this.props.defaultProps.dragStart("[]")}
-                onStop={() => this.props.defaultProps.dragStop("[]")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y)}
-                cancel=""
-                bounds="parent">
-                <div id="[]-widget"
-                    className="widget">
-                    <div id="[]-widget-animation"
-                        className="widget-animation">
-                        {/* Drag Handle *
-                        <span id="[]-widget-draggable"
-                            className="draggable">
-                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
-                                <FaGripHorizontal/>
-                            </IconContext.Provider>
-                        </span>
-                        {/* Hotbar *
-                        <section className="hotbar">
-                            {/* Reset Position *
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "resetPosition", "[WIDGET TYPE]")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen *
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                        </section>
-                        {/* Author *
-                        {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by [AUTHOR NAME]</span>
-                            : <></>}
-                    </div>
-                </div>
-            </Draggable>
-        );
-    };
-};
-*/
+//#region Widget template
+// import { React, Component } from 'react';
+// import { FaGripHorizontal } from 'react-icons/fa';
+// import { FaExpand, Fa0 } from 'react-icons/fa6';
+// import { IconContext } from 'react-icons';
+// import Draggable from 'react-draggable';
+
+// class Widget[] extends Component{
+//     render(){
+//         return(
+//             <Draggable
+//                 position={{
+//                     x: this.props.position.x,
+//                     y: this.props.position.y}}
+//                 disabled={this.props.dragDisabled}
+//                 onStart={() => this.props.defaultProps.dragStart("[]")}
+//                 onStop={() => this.props.defaultProps.dragStop("[]")}
+//                 onDrag={(event, data) => this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y)}
+//                 cancel=""
+//                 bounds="parent">
+//                 <div id="[]-widget"
+//                     className="widget">
+//                     <div id="[]-widget-animation"
+//                         className="widget-animation">
+//                         {/* Drag Handle */}
+//                         <span id="[]-widget-draggable"
+//                             className="draggable">
+//                             <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+//                                 <FaGripHorizontal/>
+//                             </IconContext.Provider>
+//                         </span>
+//                         {/* Hotbar */}
+//                         <section className="hotbar">
+//                             {/* Reset Position */}
+//                             {(this.props.defaultProps.hotbar.resetPosition)
+//                                 ? <button className="btn-match inverse when-elements-are-not-straight"
+//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "resetPosition", "[WIDGET TYPE]")}>
+//                                     <Fa0/>
+//                                 </button>
+//                                 : <></>}
+//                             {/* Fullscreen */}
+//                             {(this.props.defaultProps.hotbar.fullscreen)
+//                                 ? <button className="btn-match inverse when-elements-are-not-straight"
+//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
+//                                     <FaExpand/>
+//                                 </button>
+//                                 : <></>}
+//                         </section>
+//                         {/* Author */}
+//                         {(this.props.defaultProps.values.authorNames)
+//                             ? <span className="font smaller transparent-normal author-name">Created by [AUTHOR NAME]</span>
+//                             : <></>}
+//                     </div>
+//                 </div>
+//             </Draggable>
+//         );
+//     };
+// };
+//#endregion
 
 
 //////////////////// Render to page ////////////////////

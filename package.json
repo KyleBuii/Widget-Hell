@@ -24,6 +24,7 @@
     "react-draggable": "^4.4.5",
     "react-icons": "^4.10.1",
     "react-native": "^0.72.4",
+    "react-qr-code": "^2.0.15",
     "react-redux": "^9.0.4",
     "react-scripts": "5.0.1",
     "react-select": "^5.8.0",

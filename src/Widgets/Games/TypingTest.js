@@ -192,7 +192,6 @@ class WidgetTypingTest extends Component{
                     )
                 ];
                 if(isOverLength){
-                    console.log(indexRandom, indexRandomMax, words.length)
                     sentence.push(
                         ...words.slice(
                             0,

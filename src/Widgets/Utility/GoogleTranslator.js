@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightFromBracket, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaArrowRightFromBracket, FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
@@ -8,6 +8,8 @@ import $ from 'jquery';
 import Select from "react-select";
 
 
+/// Variables
+let voices;
 /// Select option
 const optionsTranslate = [
     {
@@ -23,8 +25,8 @@ class WidgetGoogleTranslator extends Component{
         this.state = {
             input: "",
             converted: "",
-            from: "",
-            to: ""
+            from: {},
+            to: {}
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
@@ -37,6 +39,9 @@ class WidgetGoogleTranslator extends Component{
         this.setState({
             input: event.target.value
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     async handleTranslate(){
         if(this.state.input !== ""){
@@ -66,12 +71,18 @@ class WidgetGoogleTranslator extends Component{
         this.setState({
             from: event
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Handles the "to" language select
     handleTo(event){
         this.setState({
             to: event,
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
@@ -83,17 +94,40 @@ class WidgetGoogleTranslator extends Component{
                 to: prev
             }));
         };
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Handles random sentence button
     handleRandSentence(){
         this.setState({
             input: this.props.randSentence(),
-            from: "en"
+            from: {value: "en", label: "English"}
         }, () => {
             $("#translator-translate-from").val("en");
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
+    };
+    handleTalk(){
+        if(this.state.converted !== ""){
+            if(speechSynthesis.speaking){
+                speechSynthesis.cancel();
+            }else{
+                let utterance = new SpeechSynthesisUtterance(this.state.converted);
+                utterance.voice = voices[this.props.voice.value];
+                utterance.pitch = this.props.pitch;
+                utterance.rate = this.props.rate;
+                utterance.lang = this.state.from.value;
+                speechSynthesis.speak(utterance);
+            };
+        };
     };
     componentDidMount(){
+        speechSynthesis.addEventListener("voiceschanged", () => {
+            voices = window.speechSynthesis.getVoices();
+        }, { once: true });
         /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.languages.length; curr+=2){
             optionsTranslate[0]["options"].push(
@@ -215,17 +249,32 @@ class WidgetGoogleTranslator extends Component{
                                 onChange={this.handleChange}
                                 value={this.state.input}></textarea>
                         </div>
+                        {/* Display */}
                         <div id="googletranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
-                            <button className="float bottom-right btn-match fadded"
+                        </div>
+                        {/* Buttons */}
+                        <div className="element-ends float bottom">
+                            <div className="flex-center row">
+                                {/* Clipboard */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.props.copyToClipboard(this.state.converted)}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaRegPaste/>
+                                    </IconContext.Provider>
+                                </button>
+                                {/* Talk */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.handleTalk()}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaVolumeHigh/>
+                                    </IconContext.Provider>
+                                </button>
+                            </div>
+                            {/* Random Sentence */}
+                            <button className="btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
-                            <button className="float bottom-left btn-match fadded inverse"
-                                onClick={() => this.props.copyToClipboard(this.state.converted)}>
-                                <IconContext.Provider value={{ className: "global-class-name" }}>
-                                    <FaRegPaste/>
-                                </IconContext.Provider>
-                            </button>
                         </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

@@ -452,14 +452,14 @@ class WidgetCalculator extends Component{
                         </div>
                         {/* Utility Bar */}
                         <div className="font smaller flex-center space-nicely bottom short">
-                            <button className="btn-match fadded inverse"
+                            <button className="btn-match fadded inversed"
                                 onClick={() => this.props.copyToClipboard(this.state.input)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
                             </button>
                             <button id="calculator-btn-input-expand" 
-                                className="btn-match fadded inverse"
+                                className="btn-match fadded inversed"
                                 onClick={() => this.handlePressableBtn("input-expand")}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <BiExpand/>
@@ -593,7 +593,7 @@ class WidgetCalculator extends Component{
                                 <section id="calculator-input-expand-popout-animation"
                                     className="popout-animation">
                                     <p id="calculator-input-expand-text"
-                                        className="cut-scrollbar-corner-part-2 p short font medium break-word space-nicely all long">
+                                        className="cut-scrollbar-corner-part-2 p area-short font medium break-word space-nicely all long">
                                         {this.state.input}
                                     </p>
                                 </section>

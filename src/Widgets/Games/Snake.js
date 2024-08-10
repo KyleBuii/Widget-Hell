@@ -7,6 +7,7 @@ import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 
+
 //////////////////// Functions ////////////////////
 function shallowEquals(arr1, arr2) {
     if (!arr1 || !arr2 || arr1.length !== arr2.length)
@@ -41,19 +42,22 @@ function GridCell(props) {
     );
 };
 
-/// Main view
-class SnakeGame extends Component{
+
+class WidgetSnake extends Component{
     constructor(props){
         super(props);
         this.state = {
+            size: 24,
             settings: false,
             startMoving: false,
             snake: [],
             food: [],
+            highscore: 0,
             status: 0,          /// 0 = not started, 1 = in progress, 2= finished
             direction: 0,       /// Using keycodes to indicate direction
             speed: 130
         };
+        this.resizer = this.resizer.bind(this);
         this.moveFood = this.moveFood.bind(this);
         this.checkIfAteFood = this.checkIfAteFood.bind(this);
         this.startGame = this.startGame.bind(this);
@@ -64,6 +68,17 @@ class SnakeGame extends Component{
         this.removeTimers = this.removeTimers.bind(this);
         this.changeSpeed = this.changeSpeed.bind(this);
         this.resetSpeed = this.resetSpeed.bind(this);
+    };
+    resizer(){
+        if(window.innerWidth < 450){
+            this.setState({
+                size: (window.innerWidth / 16) - 4
+            });
+        }else{
+            this.setState({
+                size: 24
+            });
+        };
     };
     /// Randomly place snake food
     moveFood(){
@@ -194,7 +209,7 @@ class SnakeGame extends Component{
             document.getElementById("snake-btn-settings").style.opacity = "0.5";
             document.getElementById("snake-popout-settings").style.visibility = "hidden";
         };
-        const cells = Math.floor((this.props.size / 0.9375)/2);
+        const cells = Math.floor((this.state.size / 0.9375)/2);
         this.removeTimers();
         this.moveFood(); 
         this.setState({
@@ -208,7 +223,10 @@ class SnakeGame extends Component{
         this.removeTimers();
         this.setState({
             status: 2,
-            direction: 0
+            direction: 0,
+            highscore: (this.state.snake.length - 1 > this.state.highscore)
+                ? this.state.snake.length - 1
+                : this.state.highscore
         });
     };
     removeTimers(){
@@ -249,6 +267,16 @@ class SnakeGame extends Component{
                 break;
         };
     };
+    storeData(){
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            dataLocalStorage["games"]["snake"] = {
+                ...dataLocalStorage["games"]["snake"],
+                highscore: this.state.highscore
+            };
+            localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
+        };
+    };
     componentDidUpdate(){
         const overlay = document.getElementById("snake-overlay");
         if(this.state.status === 1){
@@ -257,13 +285,30 @@ class SnakeGame extends Component{
             overlay.style.visibility = "visible";
         };
     };
+    componentDidMount(){
+        window.addEventListener("resize", this.resizer);
+        window.addEventListener("beforeunload", this.storeData);
+        /// Load widget's data from local storage
+        if(localStorage.getItem("widgets") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            let localStorageSnake = dataLocalStorage["games"]["snake"];
+            if(localStorageSnake["highscore"] !== undefined){
+                this.setState({
+                    highscore: localStorageSnake["highscore"]
+                });
+            };
+        };
+    };
     componentWillUnmount(){
+        window.removeEventListener("resize", this.resizer);
+        window.removeEventListener("beforeunload", this.storeData);
         this.removeTimers();
+        this.storeData();
     };
     render(){
         /// Each cell should be approximately 0.9375em wide, so calculate how many we need
-        this.numCells = Math.floor(this.props.size / 0.9375);
-        const cellSize = this.props.size / this.numCells;
+        this.numCells = Math.floor(this.state.size / 0.9375);
+        const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
         const cells = cellIndexes.map(y => {
             return cellIndexes.map(x => {
@@ -278,105 +323,6 @@ class SnakeGame extends Component{
                 );
             });
         });
-        return(
-            <div id="snake-display"
-                onKeyDown={this.setDirection}
-                style={{
-                    width: this.props.size + "em",
-                    height: this.props.size + "em"
-                }}
-                ref={el => (this.el = el)}
-                tabIndex={-1}>
-                <div id="snake-display-grid"
-                    style={{
-                        width: this.props.size + "em",
-                        height: this.props.size + "em"
-                    }}>
-                    {cells}
-                </div>
-                <div id="snake-overlay"
-                    className="overlay flex-center column">
-                    {(this.state.status === 2) ? <div className="font medium bold"><b>GAME OVER!</b></div>
-                        : ""}
-                    {(this.state.status === 2) ? <div className="font medium bold space-nicely top bottom">Score: {this.state.snake.length}</div>
-                        : ""}
-                    <button id="snake-btn-start-game"
-                        className="btn-match"
-                        onClick={this.startGame}>Start game</button>
-                    <button id="snake-btn-settings"
-                        className="btn-match inverse disabled-option space-nicely top medium"
-                        onClick={() => this.handlePressableBtn("settings")}>
-                        <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
-                            <AiOutlineSetting/>
-                        </IconContext.Provider>
-                    </button>
-                </div>
-                {/* Settings Popout */}
-                <Draggable
-                    cancel="span, .slider, button"
-                    defaultPosition={{x: 120, y: -25}}
-                    bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
-                    <section id="snake-popout-settings"
-                        className="popout">
-                        <section className="font large-medium flex-center column gap space-nicely all">
-                            {/* Gameplay Settings */}
-                            <section className="section-group">
-                                <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                    <b>Gameplay</b>
-                                </span>
-                                <section className="flex-center row gap">
-                                    <span className="font small">
-                                        Speed
-                                    </span>
-                                    <button className="btn-match inverse when-elements-are-not-straight"
-                                        onClick={this.resetSpeed}>
-                                        <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
-                                            <BsArrowCounterclockwise/>
-                                        </IconContext.Provider>
-                                    </button>
-                                </section>
-                                <Slider className="slider space-nicely top medium"
-                                    onChange={this.changeSpeed}
-                                    value={this.state.speed}
-                                    min={50}
-                                    max={130}
-                                    defaultValue={130}
-                                    reverse/>
-                            </section>
-                        </section>
-                    </section>
-                </Draggable>
-            </div>
-        );
-    };
-};
-
-class WidgetSnake extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            size: 24
-        };
-        this.resizer = this.resizer.bind(this);
-    };
-    resizer(){
-        if(window.innerWidth < 450){
-            this.setState({
-                size: (window.innerWidth / 16) - 4
-            });
-        }else{
-            this.setState({
-                size: 24
-            });
-        };
-    };
-    componentDidMount(){
-        window.addEventListener("resize", this.resizer);
-    };
-    componentWillUnmount(){
-        window.removeEventListener("resize", this.resizer);
-    };
-    render(){
         return(
             <Draggable
                 position={{
@@ -416,8 +362,81 @@ class WidgetSnake extends Component{
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Game */}
                         <section>
-                            <SnakeGame size={this.state.size}/>
+                            <div id="snake-display"
+                                onKeyDown={this.setDirection}
+                                style={{
+                                    width: this.state.size + "em",
+                                    height: this.state.size + "em"
+                                }}
+                                ref={el => (this.el = el)}
+                                tabIndex={-1}>
+                                <div id="snake-display-grid"
+                                    style={{
+                                        width: this.state.size + "em",
+                                        height: this.state.size + "em"
+                                    }}>
+                                    {cells}
+                                </div>
+                                <div id="snake-overlay"
+                                    className="overlay flex-center column gap">
+                                    {(this.state.status === 2) ? <div className="font medium bold"><b>GAME OVER!</b></div>
+                                        : ""}
+                                    {(this.state.status === 2) ? <div className="font medium bold">Score: {this.state.snake.length - 1}</div>
+                                        : ""}
+                                    {(this.state.status === 2) ? <div className="font medium bold space-nicely bottom">Highscore: {this.state.highscore}</div>
+                                        : ""}
+                                    <button id="snake-btn-start-game"
+                                        className="btn-match"
+                                        onClick={this.startGame}>Start game</button>
+                                    <button id="snake-btn-settings"
+                                        className="btn-match inverse disabled-option space-nicely top medium"
+                                        onClick={() => this.handlePressableBtn("settings")}>
+                                        <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
+                                            <AiOutlineSetting/>
+                                        </IconContext.Provider>
+                                    </button>
+                                </div>
+                                {/* Settings Popout */}
+                                <Draggable
+                                    cancel="span, .slider, button"
+                                    defaultPosition={{x: 120, y: -25}}
+                                    bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                                    <section id="snake-popout-settings"
+                                        className="popout">
+                                        <section id="snake-popout-animation-settings"
+                                            className="popout-animation">
+                                            <section className="font large-medium flex-center column gap space-nicely all">
+                                                {/* Gameplay Settings */}
+                                                <section className="section-group">
+                                                    <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                        <b>Gameplay</b>
+                                                    </span>
+                                                    <section className="element-ends">
+                                                        <span className="font small">
+                                                            Speed
+                                                        </span>
+                                                        <button className="btn-match inverse when-elements-are-not-straight"
+                                                            onClick={this.resetSpeed}>
+                                                            <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                                                <BsArrowCounterclockwise/>
+                                                            </IconContext.Provider>
+                                                        </button>
+                                                    </section>
+                                                    <Slider className="slider space-nicely top medium"
+                                                        onChange={this.changeSpeed}
+                                                        value={this.state.speed}
+                                                        min={50}
+                                                        max={130}
+                                                        defaultValue={130}
+                                                        reverse/>
+                                                </section>
+                                            </section>
+                                        </section>
+                                    </section>
+                                </Draggable>
+                            </div>
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

@@ -1,6 +1,6 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightLong, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaArrowRightLong, FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
@@ -10,6 +10,7 @@ import Select from "react-select";
 
 /// Variables
 let regexPopouts = new RegExp(/replace|reverse|case-transform/);
+var voices;
 /// Select options
 const optionsTranslateFrom = [
     {
@@ -102,7 +103,10 @@ class WidgetTranslator extends Component{
         const translatedText = document.getElementById("translator-translated-text");
         if(translatedText.scrollHeight > translatedText.clientHeight){
             translatedText.scrollTop = translatedText.scrollHeight;
-        }
+        };
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Convert the "from" language to english
     convertFromText(){
@@ -165,11 +169,9 @@ class WidgetTranslator extends Component{
                 }));
                 break;
             case "uwu":
-                const reUwuDictionary = new RegExp(Object.keys(this.props.uwuDictionary)
-                    .map((key) => {
-                        return "\\b" + key + "\\b";
-                    })
-                    .join("|"));
+                let wordsUwu = Object.keys(this.props.uwuDictionary)
+                    .join("|");
+                let regexUwuDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsUwu})(?![\\w${this.props.punctuation}])`, "i");
                 this.setState(prevState => ({
                     converted: this.props.grep(prevState.convert
                         .toString()
@@ -178,7 +180,7 @@ class WidgetTranslator extends Component{
                         .map((word) => {
                             return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
                                 : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
-                                : (reUwuDictionary.test(word)) ? word.replace(reUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
+                                : (regexUwuDictionary.test(word)) ? word.replace(regexUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
                                 : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, "ww")
                                 : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, "ww")
                                 : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
@@ -222,16 +224,16 @@ class WidgetTranslator extends Component{
                 }));
                 break;
             case "emojify":
-                const reEmojifyDictionary = new RegExp(Object.keys(this.props.emojifyDictionary)
-                    .map((key) => {
-                        return "\\b" + key + "\\b";
-                    })
-                    .join("|"), "i");
+                let wordsEmojify = Object.keys(this.props.emojifyDictionary)
+                    .join("|");
+                let regexEmojifyDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsEmojify})(?![\\w${this.props.punctuation}])`, "i");
                 this.setState(prevState => ({
                     converted: this.props.mergePunctuation(this.props.grep(prevState.convert
                         .split(this.props.matchAll)
                         .map((word) => {
-                            return (reEmojifyDictionary.test(word)) ? word.replace(reEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)]) : word;
+                            return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][
+                                Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)
+                            ]) : word;
                         })))
                         .join(" ")
                 }), () => {
@@ -380,6 +382,9 @@ class WidgetTranslator extends Component{
                 this.convertFromText();
             }
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Handles the "to" language select
     handleTo(event){
@@ -402,6 +407,9 @@ class WidgetTranslator extends Component{
                 this.convertToText();
             }
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Swaps "from" language and "to" language
     handleSwap(){
@@ -415,6 +423,9 @@ class WidgetTranslator extends Component{
                 this.convertFromText();
             });
         };
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     /// Saves "converted" text into "input" field
     handleSave(){
@@ -424,6 +435,19 @@ class WidgetTranslator extends Component{
         }), () => {
             this.convertToText();
         });
+    };
+    handleTalk(){
+        if(this.state.converted !== ""){
+            if(speechSynthesis.speaking){
+                speechSynthesis.cancel();
+            }else{
+                let utterance = new SpeechSynthesisUtterance(this.state.converted);
+                utterance.voice = voices[this.props.voice.value];
+                utterance.pitch = this.props.pitch;
+                utterance.rate = this.props.rate;
+                speechSynthesis.speak(utterance);
+            };
+        };
     };
     /// Handles "replace" from "translator-translate-to"
     handleReplaceFrom(event){
@@ -461,8 +485,14 @@ class WidgetTranslator extends Component{
         }, () => {
             this.convertFromText();
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
     };
     componentDidMount(){
+        speechSynthesis.addEventListener("voiceschanged", () => {
+            voices = window.speechSynthesis.getVoices();
+        }, { once: true });
         /// Sort the "translate-to" optgroups options alphabetically
         this.props.sortSelect(optionsTranslateFrom);
         this.props.sortSelect(optionsTranslateTo);
@@ -586,14 +616,25 @@ class WidgetTranslator extends Component{
                             </div>
                         </div>
                         {/* Buttons */}
-                        <div>
-                            <button className="float bottom-left btn-match fadded inverse"
-                                onClick={() => this.props.copyToClipboard(this.state.converted)}>
-                                <IconContext.Provider value={{ className: "global-class-name" }}>
-                                    <FaRegPaste/>
-                                </IconContext.Provider>
-                            </button>
-                            <button className="float bottom-right btn-match fadded"
+                        <div className="element-ends float bottom">
+                            <div className="flex-center row">
+                                {/* Clipboard */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.props.copyToClipboard(this.state.converted)}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaRegPaste/>
+                                    </IconContext.Provider>
+                                </button>
+                                {/* Talk */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.handleTalk()}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaVolumeHigh/>
+                                    </IconContext.Provider>
+                                </button>
+                            </div>
+                            {/* Random Sentence */}
+                            <button className="btn-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                         </div>
                         {/* Replace Popout */}

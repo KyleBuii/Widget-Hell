@@ -1,8 +1,12 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+
+
+/// Variables
+var voices;
 
 
 class WidgetQuote extends Component{
@@ -30,8 +34,27 @@ class WidgetQuote extends Component{
             quoteText.style.animation = "fadeIn 2s";
             quoteAuthor.style.animation = "fadeIn 2s";
         });
+        if(speechSynthesis.speaking){
+            speechSynthesis.cancel();
+        };
+    };
+    handleTalk(){
+        if(this.state.currentQuote !== ""){
+            if(speechSynthesis.speaking){
+                speechSynthesis.cancel();
+            }else{
+                let utterance = new SpeechSynthesisUtterance(this.state.currentQuote);
+                utterance.voice = voices[this.props.voice.value];
+                utterance.pitch = this.props.pitch;
+                utterance.rate = this.props.rate;
+                speechSynthesis.speak(utterance);
+            };
+        };
     };
     componentDidMount(){
+        speechSynthesis.addEventListener("voiceschanged", () => {
+            voices = window.speechSynthesis.getVoices();
+        }, { once: true });
         this.handleNewQuote();
     };
     render(){
@@ -83,13 +106,25 @@ class WidgetQuote extends Component{
                         </div>
                         <p id="author-container"
                             className="font-author">- {this.state.currentAuthor}</p>
-                        <div className="element-ends space-nicely left">
-                            <button className="btn-match fadded inverse"
-                                onClick={() => this.props.copyToClipboard(this.state.currentQuote)}>
-                                <IconContext.Provider value={{ className: "global-class-name" }}>
-                                    <FaRegPaste/>
-                                </IconContext.Provider>
-                            </button>
+                        {/* Bottom Bar */}
+                        <div className="element-ends">
+                            <div className="flex-center row space-nicely left">
+                                {/* Clipboard */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.props.copyToClipboard(this.state.currentQuote)}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaRegPaste/>
+                                    </IconContext.Provider>
+                                </button>
+                                {/* Talk */}
+                                <button className="btn-match fadded inversed"
+                                    onClick={() => this.handleTalk()}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <FaVolumeHigh/>
+                                    </IconContext.Provider>
+                                </button>
+                            </div>
+                            {/* New Quote */}
                             <button className="btn-match"
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
