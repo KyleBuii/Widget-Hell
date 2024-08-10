@@ -224,12 +224,16 @@ class WidgetPickerWheel extends Component{
             .visibility = "hidden";
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
-            this.setState({
-                segments: [...dataLocalStorage["fun"]["pickerwheel"].segments],
-                segmentsColor: [...dataLocalStorage["fun"]["pickerwheel"].segmentsColor]
-            }, () => {
-                this.draw();    
-            });
+            if(dataLocalStorage["fun"]["pickerwheel"].segments !== undefined){
+                this.setState({
+                    segments: [...dataLocalStorage["fun"]["pickerwheel"].segments],
+                    segmentsColor: [...dataLocalStorage["fun"]["pickerwheel"].segmentsColor]
+                }, () => {
+                    this.draw();    
+                });
+            }else{
+                this.draw();
+            };
         };
     };
     componentWillUnmount(){
