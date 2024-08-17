@@ -272,7 +272,8 @@ class WidgetSnake extends Component{
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             dataLocalStorage["games"]["snake"] = {
                 ...dataLocalStorage["games"]["snake"],
-                highscore: this.state.highscore
+                highscore: this.state.highscore,
+                speed: this.state.speed
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
         };
@@ -294,7 +295,8 @@ class WidgetSnake extends Component{
             let localStorageSnake = dataLocalStorage["games"]["snake"];
             if(localStorageSnake["highscore"] !== undefined){
                 this.setState({
-                    highscore: localStorageSnake["highscore"]
+                    highscore: localStorageSnake["highscore"],
+                    speed: localStorageSnake["speed"]
                 });
             };
         };
@@ -330,8 +332,10 @@ class WidgetSnake extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("snake")}
-                onStop={() => this.props.defaultProps.dragStop("snake")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("snake", "games", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("snake");
+                    this.props.defaultProps.updatePosition("snake", "games", data.x, data.y);
+                }}
                 cancel="button, section"
                 bounds="parent">
                 <div id="snake-widget"
@@ -362,82 +366,81 @@ class WidgetSnake extends Component{
                                 </button>
                                 : <></>}
                         </section>
-                        {/* Game */}
-                        <section>
-                            <div id="snake-display"
-                                onKeyDown={this.setDirection}
+                        {/* Game Container */}
+                        <section id="snake-display"
+                            onKeyDown={this.setDirection}
+                            style={{
+                                width: this.state.size + "em",
+                                height: this.state.size + "em"
+                            }}
+                            ref={el => (this.el = el)}
+                            tabIndex={-1}>
+                            <div id="snake-display-grid"
                                 style={{
                                     width: this.state.size + "em",
                                     height: this.state.size + "em"
-                                }}
-                                ref={el => (this.el = el)}
-                                tabIndex={-1}>
-                                <div id="snake-display-grid"
-                                    style={{
-                                        width: this.state.size + "em",
-                                        height: this.state.size + "em"
-                                    }}>
-                                    {cells}
-                                </div>
-                                <div id="snake-overlay"
-                                    className="overlay flex-center column gap">
-                                    {(this.state.status === 2) ? <div className="font medium bold"><b>GAME OVER!</b></div>
-                                        : ""}
-                                    {(this.state.status === 2) ? <div className="font medium bold">Score: {this.state.snake.length - 1}</div>
-                                        : ""}
-                                    {(this.state.status === 2) ? <div className="font medium bold space-nicely bottom">Highscore: {this.state.highscore}</div>
-                                        : ""}
-                                    <button id="snake-btn-start-game"
-                                        className="btn-match"
-                                        onClick={this.startGame}>Start game</button>
-                                    <button id="snake-btn-settings"
-                                        className="btn-match inverse disabled-option space-nicely top medium"
-                                        onClick={() => this.handlePressableBtn("settings")}>
-                                        <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
-                                            <AiOutlineSetting/>
-                                        </IconContext.Provider>
-                                    </button>
-                                </div>
-                                {/* Settings Popout */}
-                                <Draggable
-                                    cancel="span, .slider, button"
-                                    defaultPosition={{x: 120, y: -25}}
-                                    bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
-                                    <section id="snake-popout-settings"
-                                        className="popout">
-                                        <section id="snake-popout-animation-settings"
-                                            className="popout-animation">
-                                            <section className="font large-medium flex-center column gap space-nicely all">
-                                                {/* Gameplay Settings */}
-                                                <section className="section-group">
-                                                    <span className="font small when-elements-are-not-straight space-nicely bottom short">
-                                                        <b>Gameplay</b>
-                                                    </span>
-                                                    <section className="element-ends">
-                                                        <span className="font small">
-                                                            Speed
-                                                        </span>
-                                                        <button className="btn-match inverse when-elements-are-not-straight"
-                                                            onClick={this.resetSpeed}>
-                                                            <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
-                                                                <BsArrowCounterclockwise/>
-                                                            </IconContext.Provider>
-                                                        </button>
-                                                    </section>
-                                                    <Slider className="slider space-nicely top medium"
-                                                        onChange={this.changeSpeed}
-                                                        value={this.state.speed}
-                                                        min={50}
-                                                        max={130}
-                                                        defaultValue={130}
-                                                        reverse/>
-                                                </section>
-                                            </section>
-                                        </section>
-                                    </section>
-                                </Draggable>
+                                }}>
+                                {cells}
+                            </div>
+                            {/* Overlay */}
+                            <div id="snake-overlay"
+                                className="overlay flex-center column gap">
+                                {(this.state.status === 2) ? <div className="font large bold"><b>GAME OVER!</b></div>
+                                    : ""}
+                                {(this.state.status === 2) ? <div className="font medium">Score: {this.state.snake.length - 1}</div>
+                                    : ""}
+                                {(this.state.status === 2) ? <div className="font medium space-nicely bottom">Highscore: {this.state.highscore}</div>
+                                    : ""}
+                                <button id="snake-btn-start-game"
+                                    className="btn-match"
+                                    onClick={this.startGame}>Start Game</button>
+                                <button id="snake-btn-settings"
+                                    className="btn-match inverse disabled-option space-nicely top medium"
+                                    onClick={() => this.handlePressableBtn("settings")}>
+                                    <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
+                                        <AiOutlineSetting/>
+                                    </IconContext.Provider>
+                                </button>
                             </div>
                         </section>
+                        {/* Settings Popout */}
+                        <Draggable
+                            cancel="span, .slider, button"
+                            defaultPosition={{x: 120, y: -25}}
+                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                            <section id="snake-popout-settings"
+                                className="popout">
+                                <section id="snake-popout-animation-settings"
+                                    className="popout-animation">
+                                    <section className="font large-medium flex-center column gap space-nicely all">
+                                        {/* Gameplay Settings */}
+                                        <section className="section-group">
+                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                                <b>Gameplay</b>
+                                            </span>
+                                            <section className="element-ends">
+                                                <span className="font small">
+                                                    Speed
+                                                </span>
+                                                <button className="btn-match inverse when-elements-are-not-straight"
+                                                    onClick={this.resetSpeed}>
+                                                    <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
+                                                        <BsArrowCounterclockwise/>
+                                                    </IconContext.Provider>
+                                                </button>
+                                            </section>
+                                            <Slider className="slider space-nicely top medium"
+                                                onChange={this.changeSpeed}
+                                                value={this.state.speed}
+                                                min={50}
+                                                max={130}
+                                                defaultValue={130}
+                                                reverse/>
+                                        </section>
+                                    </section>
+                                </section>
+                            </section>
+                        </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by ?&emsp;Modified by Me</span>

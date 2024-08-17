@@ -401,8 +401,10 @@ class WidgetCalculator extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("calculator")}
-                onStop={() => this.props.defaultProps.dragStop("calculator")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y)}
+                onStop={(event, data) => { 
+                    this.props.defaultProps.dragStop("calculator");
+                    this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y);
+                }}
                 cancel="button, span, p, input, textarea, section"
                 bounds="parent">
                 <div id="calculator-widget"
@@ -586,7 +588,9 @@ class WidgetCalculator extends Component{
                             position={{
                                 x: this.props.positionPopout.expandinput.x,
                                 y: this.props.positionPopout.expandinput.y}}
-                            onDrag={(event, data) => this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput")}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput");
+                            }}
                             bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">

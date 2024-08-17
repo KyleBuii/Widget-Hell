@@ -170,7 +170,7 @@ class WidgetPickerWheel extends Component{
             ctx.translate(centerX, centerY);
             ctx.rotate((lastAngle + angle) / 2);
             ctx.fillStyle = "white";
-            ctx.font = "bold 1em proxima-nova";
+            ctx.font = "bold 1.4em proxima-nova";
             ctx.fillText(value.substring(0, 21), size / 2 + 20, 0);
             ctx.restore();    
             lastAngle = angle;
@@ -182,28 +182,29 @@ class WidgetPickerWheel extends Component{
         ctx.closePath();
         ctx.fillStyle = "black";
         ctx.lineWidth = 5;
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = this.props.color;
         ctx.fill();
         ctx.font = "bold 2em proxima-nova";
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.props.color;
         ctx.textAlign = "center";
         ctx.fillText("Spin", centerX, centerY + 3);
         ctx.stroke();
         //#endregion
+        //#region Draw outer circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, size, 0, PI2, false);
+        ctx.closePath();
+        ctx.lineWidth = 20;
+        ctx.strokeStyle = this.props.color;
+        ctx.stroke();
+        //#endregion
         //#region Draw needle
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "white";
-        ctx.fileStyle = "white";
         ctx.beginPath();
         ctx.moveTo(centerX + 10, centerY - 40);
         ctx.lineTo(centerX - 10, centerY - 40);
         ctx.lineTo(centerX, centerY - 60);
         ctx.closePath();
         ctx.fill();
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillStyle = "transparent";
-        ctx.font = "bold 1.5em proxima-nova";
         //#endregion
     };
     storeData(){
@@ -217,11 +218,13 @@ class WidgetPickerWheel extends Component{
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
         };
     };
+    componentDidUpdate(prevProps){
+        if(this.props.color !== prevProps.color){
+            this.draw();
+        };
+    };
     componentDidMount(){
         window.addEventListener("beforeunload", this.storeData);
-        document.getElementById("pickerwheel-overlay-winner")
-            .style
-            .visibility = "hidden";
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             if(dataLocalStorage["fun"]["pickerwheel"].segments !== undefined){
@@ -248,8 +251,10 @@ class WidgetPickerWheel extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("pickerwheel")}
-                onStop={() => this.props.defaultProps.dragStop("pickerwheel")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("pickerwheel", "fun", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("pickerwheel");
+                    this.props.defaultProps.updatePosition("pickerwheel", "fun", data.x, data.y);
+                }}
                 cancel="button, span, input"
                 bounds="parent">
                 <div id="pickerwheel-widget"

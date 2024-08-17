@@ -65,8 +65,10 @@ class WidgetQuote extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("quote")}
-                onStop={() => this.props.defaultProps.dragStop("quote")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("quote", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("quote");
+                    this.props.defaultProps.updatePosition("quote", "utility", data.x, data.y);
+                }}
                 cancel="button, span, p"
                 bounds="parent">
                 <div id="quote-widget" 

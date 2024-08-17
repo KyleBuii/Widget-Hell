@@ -62,8 +62,10 @@ class WidgetBattery extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("battery")}
-                onStop={() => this.props.defaultProps.dragStop("battery")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("battery", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("battery");
+                    this.props.defaultProps.updatePosition("battery", "utility", data.x, data.y);
+                }}
                 cancel=""
                 bounds="parent">
                 <div id="battery-widget"

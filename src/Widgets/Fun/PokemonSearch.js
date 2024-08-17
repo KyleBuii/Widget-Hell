@@ -291,8 +291,10 @@ class WidgetPokemonSearch extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("pokemonsearch")}
-                onStop={() => this.props.defaultProps.dragStop("pokemonsearch")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("pokemonsearch", "fun", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("pokemonsearch");
+                    this.props.defaultProps.updatePosition("pokemonsearch", "fun", data.x, data.y);
+                }}
                 cancel="input, button, .card, .popout"
                 bounds="parent">
                 <div id="pokemonsearch-widget"

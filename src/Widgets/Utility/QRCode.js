@@ -52,8 +52,10 @@ class WidgetQRCode extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("qrcode")}
-                onStop={() => this.props.defaultProps.dragStop("qrcode")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("qrcode", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("qrcode");
+                    this.props.defaultProps.updatePosition("qrcode", "utility", data.x, data.y);
+                }}
                 cancel="input, .select-match, button, #qrcode"
                 bounds="parent">
                 <div id="qrcode-widget"
@@ -110,7 +112,7 @@ class WidgetQRCode extends Component{
                                 })}/>
                         </div>
                         {/* QR Code Container */}
-                        <div className="box dimmed">
+                        <div className="box dimmed space-nicely top">
                             <div className="flex-center">
                                 <QRCode id="qrcode"
                                     value={this.state.input}

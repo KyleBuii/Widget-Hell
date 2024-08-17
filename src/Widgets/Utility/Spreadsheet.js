@@ -79,8 +79,10 @@ class WidgetSpreadsheet extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("spreadsheet")}
-                onStop={() => this.props.defaultProps.dragStop("spreadsheet")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("spreadsheet", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("spreadsheet");
+                    this.props.defaultProps.updatePosition("spreadsheet", "utility", data.x, data.y);
+                }}
                 cancel=".Spreadsheet, button, .select-match, input, label"
                 bounds="parent">
                 <div id="spreadsheet-widget"

@@ -227,8 +227,10 @@ class WidgetTypingTest extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("typingtest")}
-                onStop={() => this.props.defaultProps.dragStop("typingtest")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("typingtest", "games", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("typingtest");
+                    this.props.defaultProps.updatePosition("typingtest", "games", data.x, data.y);
+                }}
                 cancel="button, p"
                 bounds="parent">
                 <div id="typingtest-widget"

@@ -120,8 +120,10 @@ class WidgetWeather extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("weather")}
-                onStop={() => this.props.defaultProps.dragStop("weather")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("weather");
+                    this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y);
+                }}
                 cancel="button, span, input, section"
                 bounds="parent">
                 <div id="weather-widget"
@@ -180,7 +182,7 @@ class WidgetWeather extends Component{
                             position={{
                                 x: this.props.positionPopout.searchhelp.x,
                                 y: this.props.positionPopout.searchhelp.y}}
-                            onDrag={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
+                            onStop={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
                             bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
                             <section id="weather-help-popout"
                                 className="popout">

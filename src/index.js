@@ -1,6 +1,7 @@
 import './index.scss';
 import { React, Component } from 'react';
 import ReactDOM from 'react-dom/client';
+import { components } from 'react-select';
 import WidgetSetting from './Widgets/Utility/Setting.js';
 import WidgetQuote from './Widgets/Utility/Quote.js';
 import WidgetTranslator from './Widgets/Utility/Translator.js';
@@ -16,21 +17,29 @@ import WidgetNotepad from './Widgets/Utility/Notepad.js';
 import WidgetQRCode from './Widgets/Utility/QRCode.js';
 import WidgetBattery from './Widgets/Utility/Battery.js';
 import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
+import WidgetSimonGame from './Widgets/Games/SimonGame.js';
+import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
+import WidgetInventory from './Widgets/Inventory.js';
 
 
 //////////////////// Variables ////////////////////
-/// Mutable
+//#region
+//#region Icon
 const microIcon = "0.6em";
 const smallIcon = "0.88em";
 const smallMedIcon = "1.2em";
 const medIcon = "4em";
 const largeIcon = "5em";
+//#endregion
 const zIndexDefault = 2;
 const zIndexDrag = 5;
+let color;
 const colorRange = 200;
+//#region Data
 const tricks = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const quotes = [
+    //#region
     {
         quote: "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you."
         , author: "Some college professor"
@@ -171,6 +180,7 @@ const quotes = [
         quote: "Once you've accepted your flaws, no one can use them against you."
         , author: "George R.R. Martin"
     },
+    //#endregion
     {
         quote: "Yet it is far better to light the candle than to curse the darkness."
         , author: "W. L. Watkinson"
@@ -376,6 +386,48 @@ const emojifyDictionary = {
     "just": ["&#x261D;&#xFE0F;"],
     "phone": ["&#x1F4F1;"],
 };
+const items = {
+    "common": {
+        "nothing": {
+            descritpion: "Nothing..."
+        },
+        "gold": {
+            type: "currency",
+            description: "A bag containing a random amount of gold."
+        }
+    },
+    "rare": {
+        "creampuff": {
+            type: "stat",
+            stats: {
+                hp: 1
+            },
+            description: "Nothing like a cream puff after pumping iron.",
+            information: "Increases health by 1.",
+            image: "/images/items/creampuff.png"
+        }
+    },
+    "exotic": {
+        "grassblock": {
+            type: "ability",
+            description: "C418 - Sweden",
+            information: "Places a grass block.",
+            image: "/images/items/grassblock.png"
+        }
+    }
+};
+const itemRates = {
+    "common": {
+        rate: .75
+    },
+    "rare": {
+        rate: .15
+    },
+    "exotic": {
+        rate: .05
+    }
+};
+//#endregion
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
 const widgetsFunActive = [];
@@ -384,6 +436,7 @@ const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
     + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
 const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
+//#region Select
 const formatGroupLabel = (data) => (
     <div style={{
         display: "flex",
@@ -425,9 +478,39 @@ const selectStyleSmall = {
         padding: `0px`,
     })
 };
+const selectHideGroupHeading = (props) => {
+    return(
+        <div className="collapse-group-heading"
+            onClick={() => {
+                document.querySelector(`#${props.id}`)
+                    .parentElement
+                    .parentElement
+                    .classList
+                    .toggle("collapse-group");
+            }}>
+            <components.GroupHeading {...props}/>
+        </div>
+    );    
+};
+const selectHideGroupMenuList = (props) => {
+    let newProps = {
+        ...props,
+        children: (Array.isArray(props.children))
+            ? props.children.map((c, idx) =>
+                (idx === -1)
+                    ? c
+                    : { ...c, props: { ...c.props, className: "collapse-group" } }
+            )
+            : props.children
+    };
+    return <components.MenuList {...newProps} />;    
+};
+//#endregion
+//#endregion
 
 
 //////////////////// Functions ////////////////////
+//#region
 function randColor(){
     const r = document.documentElement;
     const colorR = Math.floor(Math.random() * colorRange);
@@ -439,6 +522,7 @@ function randColor(){
     r.style.setProperty("--randColor", randColor);
     r.style.setProperty("--randColorLight", randColorLight);
     r.style.setProperty("--randColorOpacity", randColorOpacity);
+    color = randColor;
     /// Set react-select colors
     selectTheme.primary = randColor;    /// Currently selected option background color
     selectTheme.primary25 = `rgba(${randColorOpacity}, 0.3)`;   /// Hover option background color
@@ -525,6 +609,80 @@ function copyToClipboard(what){
     };
 };
 
+function formatNumber(number, digits, shouldRound = false){
+    const lookup = [
+        { value: 1,    symbol: ""  },
+        { value: 1e3,  symbol: "K" },
+        { value: 1e6,  symbol: "M" },
+        { value: 1e9,  symbol: "G" },
+        { value: 1e12, symbol: "T" },
+        { value: 1e15, symbol: "P" },
+        { value: 1e18, symbol: "E" }
+    ];
+    const regexDecimals = new RegExp(`^-?\\d+(?:\\.\\d{0,${digits}})?`);
+    const regex = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
+    const item = lookup.findLast(item => number >= item.value);
+    if(shouldRound){
+        return (item)
+            ? (number / item.value)
+                .toFixed(digits)
+                .replace(regex, "")
+                .concat(item.symbol)
+            : "0";
+    }else{
+        return (item)
+            ? (number / item.value)
+                .toString()
+                .match(regexDecimals)[0]
+                .replace(regex, "")
+                .concat(item.symbol)
+            : "0";
+    };
+};
+
+function randomItem(){
+    let randomRarity = Math.random() * itemRates.common.rate;
+    let keys;
+    let rarity;
+	if(randomRarity < itemRates.common.rate
+        && randomRarity > itemRates.rare.rate){
+        keys = Object.keys(items.common);
+        rarity = "common";
+    };
+    if(randomRarity < itemRates.rare.rate
+        && randomRarity > itemRates.exotic.rate){
+        keys = Object.keys(items.rare);
+        rarity = "rare";
+    };
+    if(randomRarity < itemRates.exotic.rate){
+        keys = Object.keys(items.exotic);
+        rarity = "exotic";
+    };
+    let randomItem = keys[Math.floor(Math.random() * keys.length)];
+    if(randomItem === "nothing"){
+        return;
+    };
+    let item = {
+        name: randomItem,
+        rarity: rarity
+    };
+    if(randomItem === "gold"){
+        let dataLocalStorageMoney = JSON.parse(localStorage.getItem("money"));
+        item.amount = Math.floor(Math.random() * 20 + 1);
+        localStorage.setItem("money", (dataLocalStorageMoney + item.amount));
+    }else{
+        localStorage.setItem("inventory", JSON.stringify(
+            [
+                ...JSON.parse(localStorage.getItem("inventory")),
+                item
+            ]
+        ));
+        window.dispatchEvent(new Event("new item"));
+    };
+    return item;
+};
+//#endregion
+
 
 //////////////////// Widgets ///////////////////////
 class Widgets extends Component{
@@ -567,6 +725,26 @@ class Widgets extends Component{
                                     y: -25
                                 }
                             }
+                        }
+                    },
+                    inventory: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    equipment: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
                         }
                     },
                     quote: {
@@ -698,6 +876,26 @@ class Widgets extends Component{
                         }
                     },
                     typingtest: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    simongame: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    minesweeper: {
                         active: false,
                         position: {
                             x: 0,
@@ -1132,6 +1330,8 @@ class Widgets extends Component{
                     data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
+            localStorage.setItem("money", 0);
+            localStorage.setItem("inventory", JSON.stringify([]));
         };
         localStorage.setItem("widgets", JSON.stringify(data));
     };
@@ -1249,6 +1449,8 @@ class Widgets extends Component{
                 <WidgetSetting
                     widgets={{
                         quote: this.state.widgets.utility.quote.active,
+                        inventory: this.state.widgets.utility.inventory.active,
+                        equipment: this.state.widgets.utility.equipment.active,
                         translator: this.state.widgets.utility.translator.active,
                         googletranslator: this.state.widgets.utility.googletranslator.active,
                         calculator: this.state.widgets.utility.calculator.active,
@@ -1261,7 +1463,9 @@ class Widgets extends Component{
                         snake: this.state.widgets.games.snake.active,
                         typingtest: this.state.widgets.games.typingtest.active,
                         pokemonsearch: this.state.widgets.fun.pokemonsearch.active,
-                        pickerwheel: this.state.widgets.fun.pickerwheel.active
+                        pickerwheel: this.state.widgets.fun.pickerwheel.active,
+                        simongame: this.state.widgets.games.simongame.active,
+                        minesweeper: this.state.widgets.games.minesweeper.active,
                     }}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
@@ -1294,8 +1498,23 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.setting.popouts.settings.position.y
                         }
                     }}
-                    microIcon={microIcon}/>
+                    microIcon={microIcon}
+                    smallMedIcon={smallMedIcon}/>
+                {this.state.widgets.utility.inventory.active === true
+                    ? <WidgetInventory
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.inventory.position.x,
+                            y: this.state.widgets.utility.inventory.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.inventory.drag.disabled}
+                        items={items}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 {/* Widgets: Utility */}
+                {
+                    //#region
+                }
                 {this.state.widgets.utility.quote.active === true
                     ? <WidgetQuote
                         defaultProps={defaultProps}
@@ -1337,6 +1556,8 @@ class Widgets extends Component{
                         rate={this.state.values.rate}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
+                        selectHideGroupHeading={selectHideGroupHeading}
+                        selectHideGroupMenuList={selectHideGroupMenuList}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1462,7 +1683,13 @@ class Widgets extends Component{
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {
+                    //#endregion
+                }
                 {/* Widgets: Games */}
+                {
+                    //#region
+                }
                 {this.state.widgets.games.snake.active === true
                     ? <WidgetSnake
                         defaultProps={defaultProps}
@@ -1484,7 +1711,37 @@ class Widgets extends Component{
                         randSentence={randSentence}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.games.simongame.active === true
+                    ? <WidgetSimonGame
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.games.simongame.position.x,
+                            y: this.state.widgets.games.simongame.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.simongame.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.minesweeper.active === true
+                    ? <WidgetMinesweeper
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.games.minesweeper.position.x,
+                            y: this.state.widgets.games.minesweeper.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.minesweeper.drag.disabled}
+                        formatNumber={formatNumber}
+                        items={items}
+                        randomItem={randomItem}
+                        smallIcon={smallIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                { 
+                    //#endregion
+                }
                 {/* Widgets: Fun */}
+                {
+                    //#region
+                }
                 {this.state.widgets.fun.pokemonsearch.active === true
                     ? <WidgetPokemonSearch
                         defaultProps={defaultProps}
@@ -1505,8 +1762,12 @@ class Widgets extends Component{
                             y: this.state.widgets.fun.pickerwheel.position.y
                         }}
                         dragDisabled={this.state.widgets.fun.pickerwheel.drag.disabled}
+                        color={color}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {
+                    //#endregion
+                }
             </div>
         );
     };
@@ -1527,8 +1788,10 @@ class Widgets extends Component{
 //                     y: this.props.position.y}}
 //                 disabled={this.props.dragDisabled}
 //                 onStart={() => this.props.defaultProps.dragStart("[]")}
-//                 onStop={() => this.props.defaultProps.dragStop("[]")}
-//                 onDrag={(event, data) => this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y)}
+//                 onStop={(event, data) => {
+//                     this.props.defaultProps.dragStop("[]");
+//                     this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y);
+//                 }}
 //                 cancel=""
 //                 bounds="parent">
 //                 <div id="[]-widget"

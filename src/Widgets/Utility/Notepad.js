@@ -85,8 +85,10 @@ class WidgetNotepad extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("notepad")}
-                onStop={() => this.props.defaultProps.dragStop("notepad")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("notepad", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("notepad");
+                    this.props.defaultProps.updatePosition("notepad", "utility", data.x, data.y);
+                }}
                 cancel="button, .select-match, input, label, p"
                 bounds="parent">
                 <div id="notepad-widget"

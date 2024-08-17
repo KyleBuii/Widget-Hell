@@ -1,6 +1,6 @@
 /*
 z-index guide
-0: 
+0: Sliders
 1: 
 2: DEFAULT
 3: Popout
@@ -212,9 +212,44 @@ body{
 }
 
 .slider{
+    z-index: 0;
     vertical-align: middle;
 }
 
+/// Makes element scrollable with no scrollbar
+.scrollable{
+    height: 42.5em;
+    overflow-y: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+.scrollable-arrow{
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 100%;
+    font-size: 1.4em;
+    color: rgba(var(--randColorOpacity), 0.5);
+    box-shadow: inset 0em 0em 0.1em 0em var(--randColor);
+    background-color: rgba(var(--randColorOpacity), 0.08);
+    transition: opacity 200ms;
+    &.top-arrow{
+        top: 0;
+        border-radius: 0.8em 0.8em 0em 0em;
+    }
+    &.bottom-arrow{
+        bottom: 0;
+        border-radius: 0em 0em 0.8em 0.8em;
+    }
+}
+
+/// 2-parter that rounds the scrollbar at the top and bottom right edges
 .cut-scrollbar-corner-part-1{
     overflow: hidden;
     border: 1px solid var(--randColor);
@@ -312,6 +347,13 @@ body{
         }
         &:active{
             transform: scale(0.93);
+        }
+        &.disabled{
+            color: rgba(var(--randColorOpacity), 0.2);
+            &:hover{
+                color: rgba(var(--randColorOpacity), 0.5);
+                background-color: unset;
+            }
         }
         &.inv-small{
             font-size: 0.95em;
@@ -604,6 +646,9 @@ body{
     }
     &.col-4{
         grid-template-columns: repeat(4, 2.225em);
+        &.spread-inventory{
+            grid-template-columns: repeat(4, 2.5em);
+        }
     }
 }
 
@@ -701,6 +746,11 @@ body{
         margin-left: 0.5em;
         bottom: 2.1em;
     }
+    &.middle{
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
     &.middle-left{
         left: 0.3em;
     }
@@ -764,7 +814,46 @@ body{
     }
 }
 
-/// Creates a line
+.table{
+    width: 100%;
+    border-collapse: collapse;
+    td, th{
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 0.5rem;
+    }
+    tr:nth-child(even){
+        background-color: #dddddd;
+    }
+}
+
+.text-above{
+    position: absolute;
+    margin-bottom: 10em;
+}
+
+.overlay{
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    &.rounded{
+        border-radius: 25.4px;
+    }
+}
+
+/// React select groups
+.collapse-group{
+    > div:not(.collapse-group-heading){
+        display: none;
+    }
+}
+
+//#region Shapes
 .line{
     width: 100%;
     &.above{
@@ -776,19 +865,6 @@ body{
         padding-bottom: 1em;
         margin-bottom: 1em;
         border-bottom: 2px solid rgba(var(--randColorOpacity), 0.08);
-    }
-}
-
-.table{
-    width: 100%;
-    border-collapse: collapse;
-    td, th{
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 0.5rem;
-    }
-    tr:nth-child(even){
-        background-color: #dddddd;
     }
 }
 
@@ -859,30 +935,15 @@ body{
 .box{
     border: 1px solid var(--randColor);
     border-radius: 7.5px;
-    margin-top: 0.9rem;
     padding: 1rem;
+    &.dimmed-border{
+        border: 1px solid rgba(var(--randColorOpacity), 0.2);
+    }
     &.dimmed{
         background-color: rgba(var(--randColorOpacity), 0.08);
     }
 }
-
-.text-above{
-    position: absolute;
-    margin-bottom: 10em;
-}
-
-.overlay{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    &.rounded{
-        border-radius: 25.4px;
-    }
-}
+//#endregion
 
 //#region Cards
 .card{
@@ -3142,6 +3203,89 @@ body{
     }
 }
 
+/// Minesweeper cell
+.cell{
+    display: flex;
+    min-width: 30px;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.4em;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    &:focus{
+        outline: none;
+    }
+    &.minesweeper{
+        background-color: var(--randColorLight);
+        border-bottom: 2px solid #7B7B7B;
+        border-left: 2px solid #ffffff;
+        border-top: 2px solid #ffffff;
+        border-right: 2px solid #7B7B7B;
+        &.hidden{
+            background-color: var(--randColor);
+            &:hover{
+                background-color: rgba(var(--randColorOpacity), 0.9);
+            }
+        }
+        /// Flagged incorrectly
+        &.cell.flag:not(.mine):not(.hidden){
+            background-color: rgb(175, 62, 77);
+        }
+        /// Flagged correctly
+        &.cell.flag.mine:not(.hidden){
+            background-color: #4f8755;
+        }
+        /// Clicked on a mine
+        &.cell.mine.clicked{
+            background-color: rgb(175, 62, 77);
+        }
+        /// Empty revealed cells
+        &.cell.empty:not(.hidden):not(.mine){
+            background-color: var(--randColorLight);
+        }
+        /// Numbers
+        &.cell-1{
+            color: #0100fe;
+        }
+        &.cell-2{
+            color: #008301;
+        }
+        &.cell-3{
+            color: #fb0005
+        }
+        &.cell-4{
+            color: #000185;
+        }
+        &.cell-5{
+            color: #7e0202;
+        }
+        &.cell-6{
+            color: #018086;
+        }
+        &.cell-7{
+            color: #7e0482;
+        }
+        &.cell-8{
+            color: #747475;
+        }
+    }
+}
+
+.inventory{
+    button{
+        cursor: pointer;
+        height: 40px;
+        width: 40px;
+        background-size: 35px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: rgba(var(--randColorOpacity), 0.08);
+        border: 1px solid rgba(var(--randColorOpacity), 0.2);
+    }
+}
+
 /// Cursor trail
 .trail{
     position: absolute;
@@ -3287,18 +3431,22 @@ body{
     z-index: 4;
     max-width: 100vmin;
     max-height: 26.46em;
-    #settings-widget-animation{
-        #show-hide-widgets-popout-animation{
-            padding: 0.6rem;
-            #show-hide-widgets-popout-search{
+    #show-hide-widgets-popout-animation{
+        padding: 0.6rem;
+        #show-hide-widgets-popout-tabs{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            button{
+                display: inline-flex;
+            }
+            input{
                 width: 8em;
-                margin: 0.2rem 0.6rem 0rem;
-                float: right;
             }
         }
-        #settings-popout-animation{
-            padding: 0.4rem;
-        }
+    }
+    #settings-popout-animation{
+        padding: 0.4rem;
     }
 }
 
@@ -3514,6 +3662,53 @@ body{
                     border-bottom: 3px solid var(--randColor);
                 }
             }
+        }
+    }
+}
+
+#simongame-widget{
+    #simongame-container{
+        background-color: black;
+        border-radius: 50%;
+        div{
+            cursor: pointer;
+            height: 8em;
+            width: 8em;
+            margin: 0.2em;
+            border: none;
+            &:nth-child(1){
+                background-color: #3edd4b;
+                border-radius: 100% 0 0 0;
+            }
+            &:nth-child(2){
+                background-color: #dd4b3e;
+                border-radius: 0 100% 0 0;
+            }
+            &:nth-child(3){
+                background-color: #ffea37;
+                border-radius: 0 0 0 100%;
+            }
+            &:nth-child(4){
+                background-color: #4b3edd;
+                border-radius: 0 0 100% 0;
+            }
+        }
+    }
+    #simongame-counter-light{
+        height: 4em;
+        width: 4em;
+        background-color: black;
+        span:first-of-type{
+            top: 25%;
+            background-color: red;
+        }
+    }
+}
+
+#minesweeper-widget{
+    #minesweeper-container-controller{
+        button{
+            width: 100%;
         }
     }
 }

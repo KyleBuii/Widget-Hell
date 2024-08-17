@@ -231,8 +231,10 @@ class WidgetTimeConversion extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("timeconversion")}
-                onStop={() => this.props.defaultProps.dragStop("timeconversion")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("timeconversion", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("timeconversion");
+                    this.props.defaultProps.updatePosition("timeconversion", "utility", data.x, data.y);
+                }}
                 cancel="input, label, button, .select-match, .react-calendar, .react-time-picker, .react-clock"
                 bounds="parent">
                 <div id="timeconversion-widget"

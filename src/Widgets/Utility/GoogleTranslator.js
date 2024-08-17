@@ -166,8 +166,10 @@ class WidgetGoogleTranslator extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("googletranslator")}
-                onStop={() => this.props.defaultProps.dragStop("googletranslator")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("googletranslator", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("googletranslator");
+                    this.props.defaultProps.updatePosition("googletranslator", "utility", data.x, data.y);
+                }}
                 cancel="button, span, p, textarea, .select-match"
                 bounds="parent">
                 <div id="googletranslator-widget"

@@ -1,6 +1,8 @@
 import { React, Component } from 'react';
 import Draggable from 'react-draggable';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { BiBriefcase } from "react-icons/bi";
+import { GiAxeSword } from "react-icons/gi";
 import { IconContext } from 'react-icons';
 import Switch from 'react-switch';
 import Slider from 'rc-slider';
@@ -118,7 +120,9 @@ class WidgetSetting extends Component{
                 },
                 widgetsBtnGames: {
                     snakeBtn: true,
-                    typingTestBtn: true
+                    typingTestBtn: true,
+                    simonGameBtn: true,
+                    minesweeperBtn: true
                 },
                 widgetsBtnFun: {
                     pokemonSearchBtn: true,
@@ -129,6 +133,8 @@ class WidgetSetting extends Component{
             gamesTab: false,
             funTab: false,
             settings: false,
+            inventory: false,
+            equipment: false,
             values: {
                 screenDimmer: false,
                 screenDimmerSlider: false,
@@ -216,21 +222,28 @@ class WidgetSetting extends Component{
                 break;
             case "settings":
                 const btnSettings = document.getElementById("settings-btn-settings");
-                const settingsPopout = document.getElementById("settings-popout");
-                if(this.state.settings === false){
-                    this.setState({
-                        settings: true
-                    });
-                    btnSettings.style.opacity = "1";
-                    settingsPopout.style.visibility = "visible";
-                    settingsPopout.style.display = "block";
-                }else{
-                    this.setState({
-                        settings: false
-                    });
-                    btnSettings.style.opacity = "0.5";
-                    settingsPopout.style.display = "none";
-                };
+                const settingsPopoutAnimation = document.getElementById("settings-popout-animation");
+                this.setState({
+                    settings: !this.state.settings
+                });
+                this.props.showHidePopout(settingsPopoutAnimation, !this.state.settings, btnSettings);
+                break;
+            case "inventory":
+            case "equipment":
+                let elementButton = document.getElementById(`show-hide-widgets-popout-button-${what}`);
+                this.props.showHide(what, where);
+                this.setState({
+                    [what]: !this.state[what]
+                }, () => {
+                    if(this.state[what]){
+                        elementButton.classList.remove("disabled");
+                        this.props.updateWidgetsActive(what, where);
+                    }else{
+                        elementButton.classList.add("disabled");
+                        const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
+                        this.unorderedRemove(this.props.widgetsUtilityActive, widgetUtilityIndex);
+                    };
+                });
                 break;
             default:
                 const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
@@ -403,8 +416,15 @@ class WidgetSetting extends Component{
         switch(what){
             case "utility":
                 for(var currUtilityWidget in this.props.widgetsUtilityActive){
-                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsUtilityActive[currUtilityWidget]);
-                    btn.style.opacity = "1";
+                    switch(this.props.widgetsUtilityActive[currUtilityWidget]){
+                        case "inventory":
+                        case "equipment":
+                            break;
+                        default:
+                            const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsUtilityActive[currUtilityWidget]);
+                            btn.style.opacity = "1";
+                            break;
+                    };
                 };
                 break;
             case "games":
@@ -492,6 +512,46 @@ class WidgetSetting extends Component{
             clearInterval(intervalTimeBased);
         };
     };
+    handleScroll(){
+        let element = document.getElementById("settings-popout-animation");
+        let arrowTop = document.getElementById("settings-popout-arrow-top");
+        let arrowBottom = document.getElementById("settings-popout-arrow-bottom");
+        /// Scrolled to bottom
+        if((element.offsetHeight + element.scrollTop) >= element.scrollHeight){
+            arrowBottom.style.opacity = "0";
+        /// Scrolled to top
+        }else if(element.scrollTop === 0){
+            arrowTop.style.opacity = "0";
+        }else{
+            arrowBottom.style.opacity = "unset";
+            arrowTop.style.opacity = "unset";
+        };
+    };
+    handleMouse(what){
+        let element = document.getElementById("settings-popout-animation");
+        let arrowTop = document.getElementById("settings-popout-arrow-top");
+        let arrowBottom = document.getElementById("settings-popout-arrow-bottom");
+        switch(what){
+            case "enter":
+                if((element.offsetHeight + element.scrollTop) >= element.scrollHeight){
+                    arrowTop.style.opacity = "1";
+                    arrowBottom.style.opacity = "0";
+                }else if(element.scrollTop === 0){
+                    arrowTop.style.opacity = "0"; 
+                    arrowBottom.style.opacity = "1"; 
+                }else{
+                    arrowTop.style.opacity = "1";
+                    arrowBottom.style.opacity = "1";
+                };       
+                break;
+            case "leave":
+                arrowTop.style.opacity = "0";
+                arrowBottom.style.opacity = "0";
+                break;
+            default:
+                break;
+        };
+    };
     updateScreenDimmer(){
         /// Triggers a new screen dim every 30 minutes based on time
         /// 24-6 = 40% brightness
@@ -572,8 +632,20 @@ class WidgetSetting extends Component{
             let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
             for(let i in dataLocalStorage.utility){
                 if(dataLocalStorage.utility[i].active === true){
-                    let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
-                    btn.style.opacity = "1";
+                    switch(i){
+                        case "inventory":
+                        case "equipment":
+                            let button = document.getElementById(`show-hide-widgets-popout-button-${i}`);
+                            button.classList.remove("disabled");
+                            this.setState({
+                                [i]: dataLocalStorage.utility[i].active
+                            });
+                            break;
+                        default:
+                            let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
+                            btn.style.opacity = "1";
+                            break;
+                    };
                 };
                 switch(i){
                     case "setting":
@@ -636,8 +708,10 @@ class WidgetSetting extends Component{
                     x: this.props.position.x,
                     y: this.props.position.y}}
                 onStart={() => this.props.dragStart("settings")}
-                onStop={() => this.props.dragStop("settings")}
-                onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.dragStop("settings");
+                    this.props.updatePosition("setting", "utility", data.x, data.y);
+                }}
                 cancel="button, span, p, section"
                 bounds="parent">
                 <div id="settings-widget"
@@ -670,7 +744,7 @@ class WidgetSetting extends Component{
                             position={{
                                 x: this.props.positionPopout.showhidewidgets.x,
                                 y: this.props.positionPopout.showhidewidgets.y}}
-                            onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
+                            onStop={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
                             bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
@@ -678,16 +752,37 @@ class WidgetSetting extends Component{
                                     className="popout-animation">
                                     <Tabs defaultIndex={0}>
                                         <TabList id="show-hide-widgets-popout-tabs">
-                                            <Tab onClick={() => this.handleTabSwitch("utility")}>Utility</Tab>
-                                            <Tab onClick={() => this.handleTabSwitch("games")}>Games</Tab>
-                                            <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
-                                            <input id="show-hide-widgets-popout-search"
-                                                className="input-typable all-side"
-                                                name="settings-input-show-hide-widgets-search"
-                                                type="text"
-                                                placeholder="Search"
-                                                value={this.state.search}
-                                                onChange={this.handleSearch}></input>
+                                            {/* Tabs */}
+                                            <div>
+                                                <Tab onClick={() => this.handleTabSwitch("utility")}>Utility</Tab>
+                                                <Tab onClick={() => this.handleTabSwitch("games")}>Games</Tab>
+                                                <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
+                                            </div>
+                                            {/* Other Stuff */}
+                                            <div className="flex-center">
+                                                {/* <button id="show-hide-widgets-popout-button-inventory"
+                                                    className="btn-match inverse disabled"
+                                                    type="button"
+                                                    onClick={() => this.handlePressableBtn("inventory", "utility")}>
+                                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
+                                                        <BiBriefcase/>
+                                                    </IconContext.Provider>
+                                                </button>
+                                                <button id="show-hide-widgets-popout-button-equipment" 
+                                                    className="btn-match inverse disabled"
+                                                    type="button"
+                                                    onClick={() => this.handlePressableBtn("equipment", "utility")}>
+                                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
+                                                        <GiAxeSword/>
+                                                    </IconContext.Provider> 
+                                                </button> */}
+                                                <input className="input-typable all-side"
+                                                    name="settings-input-show-hide-widgets-search"
+                                                    type="text"
+                                                    placeholder="Search"
+                                                    value={this.state.search}
+                                                    onChange={this.handleSearch}></input>
+                                            </div>
                                         </TabList>
                                         {/* Utility */}
                                         <TabPanel>
@@ -748,7 +843,7 @@ class WidgetSetting extends Component{
                                         {/* Games */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-btn-games"
-                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
                                                 {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
                                                     ? <button id="show-hide-widgets-popout-btn-snake"
                                                         className="btn-match option opt-medium disabled-option"
@@ -759,12 +854,22 @@ class WidgetSetting extends Component{
                                                         className="btn-match option opt-medium disabled-option"
                                                         onClick={() => this.handlePressableBtn("typingtest", "games")}>Typing Test</button>
                                                     : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnGames["simonGameBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-simongame"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("simongame", "games")}>Simon Game</button>
+                                                    : <></>}
+                                                {(this.state.widgetsBtn.widgetsBtnGames["minesweeperBtn"] === true)
+                                                    ? <button id="show-hide-widgets-popout-btn-minesweeper"
+                                                        className="btn-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableBtn("minesweeper", "games")}>Minesweeper</button>
+                                                    : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-btn-fun"
-                                                className="font large-medium no-color grid col-2 spread-long space-nicely all">
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
                                                 {(this.state.widgetsBtn.widgetsBtnFun["pokemonSearchBtn"] === true)
                                                     ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
                                                         className="btn-match option opt-medium disabled-option"
@@ -787,12 +892,15 @@ class WidgetSetting extends Component{
                             position={{
                                 x: this.props.positionPopout.settings.x,
                                 y: this.props.positionPopout.settings.y}}
-                            onDrag={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
+                            onStop={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
                             bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
                             <section id="settings-popout"
                                 className="popout">
                                 <section id="settings-popout-animation"
-                                    className="popout-animation">
+                                    className="popout-animation scrollable"
+                                    onScroll={this.handleScroll}
+                                    onMouseEnter={() => this.handleMouse("enter")}
+                                    onMouseLeave={() => this.handleMouse("leave")}>
                                     <section className="font large-medium flex-center column gap space-nicely all">
                                         {/* Display Settings */}
                                         <section className="section-group">
@@ -1089,6 +1197,11 @@ class WidgetSetting extends Component{
                                             </fieldset>
                                         </section>
                                     </section>
+                                    {/* Scrollable Arrow */}
+                                    <section id="settings-popout-arrow-top"
+                                        className="scrollable-arrow top-arrow">&#x2BC5;</section>
+                                    <section id="settings-popout-arrow-bottom"
+                                        className="scrollable-arrow bottom-arrow">&#x2BC6;</section>
                                 </section>
                             </section>
                         </Draggable>

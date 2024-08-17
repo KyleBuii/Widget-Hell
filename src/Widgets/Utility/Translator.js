@@ -530,8 +530,10 @@ class WidgetTranslator extends Component{
                     y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("translator")}
-                onStop={() => this.props.defaultProps.dragStop("translator")}
-                onDrag={(event, data) => this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y)}
+                onStop={(event, data) => {
+                    this.props.defaultProps.dragStop("translator");
+                    this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y);
+                }}
                 cancel="button, span, p, textarea, section, .select-match"
                 bounds="parent">
                 <div id="translator-widget"
@@ -572,6 +574,10 @@ class WidgetTranslator extends Component{
                                 onChange={this.handleFrom}
                                 options={optionsTranslateFrom}
                                 formatGroupLabel={this.props.formatGroupLabel}
+                                components={{
+                                    GroupHeading: this.props.selectHideGroupHeading,
+                                    MenuList: this.props.selectHideGroupMenuList
+                                }}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {
@@ -593,6 +599,10 @@ class WidgetTranslator extends Component{
                                 onChange={this.handleTo}
                                 options={optionsTranslateTo}
                                 formatGroupLabel={this.props.formatGroupLabel}
+                                components={{
+                                    GroupHeading: this.props.selectHideGroupHeading,
+                                    MenuList: this.props.selectHideGroupMenuList
+                                }}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {
