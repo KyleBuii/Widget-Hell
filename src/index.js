@@ -20,6 +20,7 @@ import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
 import WidgetSimonGame from './Widgets/Games/SimonGame.js';
 import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
 import WidgetInventory from './Widgets/Inventory.js';
+import WidgetEquipment from './Widgets/Equipment.js';
 
 
 //////////////////// Variables ////////////////////
@@ -184,6 +185,14 @@ const quotes = [
     {
         quote: "Yet it is far better to light the candle than to curse the darkness."
         , author: "W. L. Watkinson"
+    },
+    {
+        quote: "Creativity is allowing yourself to make mistakes. Art is knowing which ones to keep."
+        , author: "Scott Adams"
+    },
+    {
+        quote: "Monkeys can climb. Crickets can leap. Horses can race. Owls can seek. Cheetahs can run. Eagles can fly. People can try. But that’s about it."
+        , author: "Natsuki"
     }
 ];
 const sentences = [
@@ -221,6 +230,9 @@ const sentences = [
     , "Oh look, it's another VTuber trying to make waves in the vast ocean of content creators. Your 'slice of life sea fox' gimmick is about as fresh as week-old sushi. But hey, at least you're consistent - consistently blending into the background like the beige t-shirt of the VTuber world. Your streams are probably as deep as a puddle, but I'm sure your 'deep blue' location makes you feel profound. Keep riding that mediocrity wave, sweetie. Maybe one day you'll actually make a splash."
     , "Hey guys, did you know that in terms of male human and female Pokemon breeding, Vaporeon is the most compatible Pokemon for humans? Not only are they in the field egg group, which is mostly comprised of mammals, Vaporeon are an average of 3”03’ tall and 63.9 pounds, this means they’re large enough to be able handle human dicks, and with their impressive Base Stats for HP and access to Acid Armor, you can be rough with one. Due to their mostly water based biology, there’s no doubt in my mind that an aroused Vaporeon would be incredibly wet, so wet that you could easily have sex with one for hours without getting sore. They can also learn the moves Attract, Baby-Doll Eyes, Captivate, Charm, and Tail Whip, along with not having fur to hide nipples, so it’d be incredibly easy for one to get you in the mood. With their abilities Water Absorb and Hydration, they can easily recover from fatigue with enough water. No other Pokemon comes close to this level of compatibility. Also, fun fact, if you pull out enough, you can make your Vaporeon turn white. Vaporeon is literally built for human dick. Ungodly defense stat+high HP pool+Acid Armor means it can take cock all day, all shapes and sizes and still come for more."
     , "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon? While their maximum temperature is likely too much for most, they are capable of controlling it, so they can set themselves to the perfect temperature for you. Along with that, they have a lot of fluff, making them undeniably incredibly soft to touch. But that's not all, they have a very respectable special defense stat of 110, which means that they are likely very calm and resistant to emotional damage. Because of this, if you have a bad day, you can vent to it while hugging it, and it won't mind. It can make itself even more endearing with moves like Charm and Baby Doll Eyes, ensuring that you never have a prolonged bout of depression ever again."
+    , "Nani the fuck did you just fucking iimasu about watashi, you chiisai bitch desuka? Watashi'll have anata know that watashi graduated top of my class in Nihongo 3, and watashi've been involved in iroirona Nihongo tutoring sessions, and watashi have over sanbyaku perfect test scores. Watashi am trained in kanji, and watashi is the top letter writer in all of southern California. Anata are nothing to watashi but just another weeaboo. Watashi will korosu anata the fuck out with vocabulary the likes of which has neber meen mimasu'd before on this continent, mark watashino fucking words. Anata thinks that anata can get away with hanashimasing that kuso to watashi over the intaaneto? Omou again, fucker. As we hanashimasu, watashi am contacting watashino secret netto of otakus accross the USA, and anatano IP is being traced right now so you better junbishimasu for the ame, ujimushi. The ame that korosu's the pathetic chiisai thing anata calls anatano life. You're fucking shinimashita'd, akachan."
+    , "Super Hyper Ultra Ultimate Deluxe Perfect Amazing Shining God Master Ginga Victory Strong Cute Beautiful Galaxy Baby Nenechi, with 5 Hololive auditions, 43 wives, 400k husbands, neverending IQ, Perfect Japanglish, and Spanish, and Portuguese, running on a 3080x Asacoco Antenna and wearing the new ultra rare 5-Star Isekai Princess skin, cofounder of world-famous Polka Hologram Circus, with infinite source of water and surprising gaming skills while able to sing La Lion and set herself on fire in Craftopia after having become the eternal CEO of Nenepro who punches and kicks every employee, after having disconnected while singing Connect with Kiara, as well as having her name flipped into ƎИƎИ and turned into a 3D cardboard decoy, unlocked the power of God from absorbing Matsuri’s snot on her body while I wearing a sexy bikini and having eaten Haachama's tarantula-spicy-noodles while convincing Ame to trast her and having mastered singing Shiny Smiley Story in 11 different languages at the same time, right after marathoning iCarly and VICTORIOUS twice in a row, great Idol, the Ina-perishable, ƎNƎN, The Great CEO of ƎNƎN, CEO of CEOs, Opener of the Nether, Wielder of the Divine Lava, Punisher of Chat, The Great Unifier, Commander of the Golden Dumpling, Sacred of Appearance, Bringer of Light, O'Riend of Chicken, Builder of Cities, Protector of the Two Streams, Keeper of the Hours, Chosen of Aloe, High Stewardess of the Horizon, Sailor of the Great Sea, Sentinel of the Holo Servers, The Undisputed, Everconductor of The Momotaro Nenechi."
+    , "I pop off my scalp like the lid of a cookie jar. It's the secret place where I keep all my dreams. Little balls of sunshine, all rubbing together like a bundle of kittens. I reach inside with my thumb and forefinger and pluck one out. It's warm and tingly. But there’s no time to waste! I put it in a bottle to keep it safe. And I put the bottle on the shelf with all of the other bottles. Happy thoughts, happy thoughts, happy thoughts in bottles, all in a row. My collection makes me lots of friends. Each bottle a starlight to make amends. Sometimes my friend feels a certain way. Down comes a bottle to save the day. Night after night, more dreams. Friend after friend, more bottles. Deeper and deeper my fingers go. Like exploring a dark cave, discovering the secrets hiding in the nooks and crannies. Digging and digging. Scraping and scraping. I blow dust off my bottle caps. It doesn’t feel like time elapsed. My empty shelf could use some more. My friends look through my locked front door. Finally, all done. I open up, and in come my friends. In they come, in such a hurry. Do they want my bottles that much? I frantically pull them from the shelf, one after the other. Holding them out to each and every friend. Each and every bottle. But every time I let one go, it shatters against the tile between my feet. Happy thoughts, happy thoughts, happy thoughts in shards, all over the floor. They were supposed to be for my friends, my friends who aren't smiling. They're all shouting, pleading. Something. But all I hear is echo, echo, echo, echo, echo. Inside my head."
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -387,6 +399,7 @@ const emojifyDictionary = {
     "phone": ["&#x1F4F1;"],
 };
 const items = {
+    /// Mainly currency and cosmetic items (asthetics)
     "common": {
         "nothing": {
             descritpion: "Nothing..."
@@ -394,37 +407,63 @@ const items = {
         "gold": {
             type: "currency",
             description: "A bag containing a random amount of gold."
+        },
+        "Sensei Mask": {
+            slot: "eyewear",
+            type: "cosmetic",
+            description: `Uohhhhhhhhh! \uD83D\uDE2D`,
+            image: "/images/items/senseimask.png",
+            source: "Blue Archive"
         }
     },
+    /// Items with basic properties (stat increases)
     "rare": {
-        "creampuff": {
+        "Creampuff": {
+            slot: "hidden",
             type: "stat",
             stats: {
-                hp: 1
+                health: 1
             },
             description: "Nothing like a cream puff after pumping iron.",
-            information: "Increases health by 1.",
-            image: "/images/items/creampuff.png"
+            image: "/images/items/creampuff.png",
+            source: "Mashle"
         }
     },
+    /// Items with unique properties (modifies the game)
     "exotic": {
-        "grassblock": {
+        "Grass Block": {
+            slot: "main",
             type: "ability",
+            information: "Place a grass block.",
             description: "C418 - Sweden",
-            information: "Places a grass block.",
-            image: "/images/items/grassblock.png"
+            image: "/images/items/grassblock.png",
+            source: "Minecraft"
+        }
+    },
+    /// Items for fun (modifies the application)
+    "meme": {
+        "Demon Lord's Ring": {
+            slot: "ring",
+            type: "ability",
+            information: "Reflects all magic.",
+            description: "Most powerful accessory in Cross Reverie.",
+            image: "/images/items/demonlordsring.png",
+            source: "How Not to Summon a Demon Lord"
         }
     }
 };
 const itemRates = {
     "common": {
-        rate: .75
+        rate: .80
     },
     "rare": {
         rate: .15
     },
     "exotic": {
-        rate: .05
+        rate: .04
+    },
+    "meme": {
+        rate: .01
     }
 };
 //#endregion
@@ -436,6 +475,10 @@ const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
     + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
 const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
+var mouse = {
+    x: 0,
+    y: 0
+};
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -606,6 +649,60 @@ function randSentence(){
 function copyToClipboard(what){
     if(what !== ""){
         navigator.clipboard.writeText(what);
+        createPopup("Copied!");
+    };
+};
+
+function createPopup(text, type = "normal", randomPosition = false){
+    let widgetContainer = document.getElementById("widget-container");
+    let popup = document.createElement("div");
+    let elementText = document.createElement("span");
+    let timeoutAnimation, timeoutRemove;
+    popup.className = "popup flex-center";
+    if(randomPosition){
+        popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
+        popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
+    }else{
+        popup.style.left = `${mouse.x - 50}px`;
+        popup.style.top = `${mouse.y + 10}px`;
+    };
+    elementText.className = "font medium bold white flex-center column";
+    switch(type){
+        case "gold":
+            let elementAmount = document.createElement("span");
+            popup.className += " gold";
+            elementAmount.innerHTML = `&#x1F4B0;+${text}`;
+            elementText.innerText = "Gold bag found!";
+            elementText.appendChild(elementAmount);
+            break;
+        case "item":
+            let itemImage = document.createElement("img");
+            popup.className += ` ${text.rarity}`;
+            itemImage.src = items[text.rarity][text.name].image;
+            elementText.innerText = "Item acquired!";
+            elementText.appendChild(itemImage);
+            break;
+        default:
+            elementText.innerText = text;
+            break;
+    };
+    popup.appendChild(elementText);
+    widgetContainer.append(popup);
+    window.requestAnimationFrame(() => {
+        popup.style.animation = "fadeIn 1s";
+    });
+    timeoutAnimation = setTimeout(() => {
+        window.requestAnimationFrame(() => {
+            popup.style.animation = "fadeOut 1s";
+        });
+        timeoutRemove = setTimeout(() => {
+            widgetContainer.removeChild(popup);
+        }, 1000);
+    }, 1000);
+    popup.onclick = () => {
+        clearTimeout(timeoutAnimation);
+        clearTimeout(timeoutRemove);
+        widgetContainer.removeChild(popup);
     };
 };
 
@@ -640,36 +737,42 @@ function formatNumber(number, digits, shouldRound = false){
     };
 };
 
-function randomItem(){
-    let randomRarity = Math.random() * itemRates.common.rate;
-    let keys;
-    let rarity;
-	if(randomRarity < itemRates.common.rate
-        && randomRarity > itemRates.rare.rate){
-        keys = Object.keys(items.common);
-        rarity = "common";
+function randomItem(rarity){
+    let randomRarity = Math.random();
+    var itemKeys;
+    var itemRarity;
+    var randomItem;
+    if(rarity){
+        itemKeys = Object.keys(items[rarity]);
+        itemRarity = rarity;
+    }else{
+        if(randomRarity < itemRates.common.rate){
+            itemKeys = Object.keys(items.common);
+            itemRarity = "common";
+        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate)){
+            itemKeys = Object.keys(items.rare);
+            itemRarity = "rare";
+        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate)){
+            itemKeys = Object.keys(items.exotic);
+            itemRarity = "exotic";
+        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate + itemRates.meme.rate)){
+            itemKeys = Object.keys(items.meme);
+            itemRarity = "meme";
+        };
     };
-    if(randomRarity < itemRates.rare.rate
-        && randomRarity > itemRates.exotic.rate){
-        keys = Object.keys(items.rare);
-        rarity = "rare";
-    };
-    if(randomRarity < itemRates.exotic.rate){
-        keys = Object.keys(items.exotic);
-        rarity = "exotic";
-    };
-    let randomItem = keys[Math.floor(Math.random() * keys.length)];
+    randomItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
     if(randomItem === "nothing"){
         return;
     };
     let item = {
         name: randomItem,
-        rarity: rarity
+        rarity: itemRarity
     };
     if(randomItem === "gold"){
         let dataLocalStorageMoney = JSON.parse(localStorage.getItem("money"));
         item.amount = Math.floor(Math.random() * 20 + 1);
         localStorage.setItem("money", (dataLocalStorageMoney + item.amount));
+        createPopup(item.amount, "gold", true);
     }else{
         localStorage.setItem("inventory", JSON.stringify(
             [
@@ -678,6 +781,7 @@ function randomItem(){
             ]
         ));
         window.dispatchEvent(new Event("new item"));
+        createPopup(item, "item", true);
     };
     return item;
 };
@@ -689,6 +793,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
+            developer: false,
             values: {
                 animation: {},
                 customBorder: {},
@@ -928,6 +1033,22 @@ class Widgets extends Component{
                         }
                     }
                 }
+            },
+            money: 0,
+            stats: {
+                level: 1,
+                exp: 0,
+                health: 1,
+                mana: 1,
+                attack: 1,
+                defense: 1,
+                strength: 1,
+                agility: 1,
+                vitality: 1,
+                resilience: 1,
+                intelligence: 1,
+                dexterity: 1,
+                luck: 1
             }
         };
         this.handleShowHide = this.handleShowHide.bind(this);
@@ -937,6 +1058,7 @@ class Widgets extends Component{
         this.updateValue = this.updateValue.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
         this.storeData = this.storeData.bind(this);
+        this.updateMoney = this.updateMoney.bind(this);
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
@@ -1108,6 +1230,12 @@ class Widgets extends Component{
                 break;
         };
     };
+    handleMouseMove(event){
+        mouse = {
+            x: event.clientX,
+            y: event.clientY
+        };
+    };
     updateDesign(what, value, where){
         let widget, popout, combine;
         if(where !== undefined){
@@ -1263,6 +1391,11 @@ class Widgets extends Component{
                 break;
         };
     };
+    updateMoney(value){
+        this.setState({
+            money: this.state.money + value
+        });
+    };
     storeData(){
         let data = {
             utility: {},
@@ -1334,6 +1467,7 @@ class Widgets extends Component{
             localStorage.setItem("inventory", JSON.stringify([]));
         };
         localStorage.setItem("widgets", JSON.stringify(data));
+        localStorage.setItem("money", this.state.money);
     };
     componentDidMount(){
         randColor();
@@ -1423,6 +1557,11 @@ class Widgets extends Component{
         }else{
             this.storeData();
         };
+        if(localStorage.getItem("money") !== null){
+            this.setState({
+                money: JSON.parse(localStorage.getItem("money"))
+            });
+        };
         /// Store widget's data in local storage when the website closes/refreshes
         window.addEventListener("beforeunload", this.storeData);
     };
@@ -1431,10 +1570,10 @@ class Widgets extends Component{
     };
     render(){
         const defaultProps = {
-            dragStart:dragStart,
-            dragStop:dragStop,
-            updatePosition:this.updatePosition,
-            handleHotbar:this.handleHotbar,
+            dragStart: dragStart,
+            dragStop: dragStop,
+            updatePosition: this.updatePosition,
+            handleHotbar: this.handleHotbar,
             showHidePopout: this.handleShowHidePopout,
             values: {
                 authorNames: this.state.values.authorNames
@@ -1444,8 +1583,37 @@ class Widgets extends Component{
                 resetPosition: this.state.values.resetPosition
             }
         };
+        const gameProps = {
+            money: this.state.money,
+            updateMoney: this.updateMoney,
+            formatNumber: formatNumber,
+            randomItem: randomItem
+        };
         return(
-            <div id="widget-container">
+            <div id="widget-container"
+                onMouseMove={(event) => this.handleMouseMove(event)}>
+                {/* For Developers */}
+                {(this.state.developer)
+                    ? <section style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0}}>
+                        <button onClick={() => {
+                            randomItem("meme");}}>
+                            Add item: meme
+                        </button>
+                        <button onClick={() => {
+                            randomItem();}}>
+                            Add item
+                        </button>
+                        <button onClick={() => {
+                            localStorage.setItem("inventory", JSON.stringify([]));}}>
+                            Reset inventory
+                        </button>
+                    </section>
+                    : <></>}
                 <WidgetSetting
                     widgets={{
                         quote: this.state.widgets.utility.quote.active,
@@ -1508,6 +1676,17 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.inventory.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.inventory.drag.disabled}
+                        items={items}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.equipment.active === true
+                    ? <WidgetEquipment
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.equipment.position.x,
+                            y: this.state.widgets.utility.equipment.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.equipment.drag.disabled}
                         items={items}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1698,6 +1877,7 @@ class Widgets extends Component{
                             y: this.state.widgets.games.snake.position.y
                         }}
                         dragDisabled={this.state.widgets.games.snake.drag.disabled}
+                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.typingtest.active === true
@@ -1709,6 +1889,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.games.typingtest.drag.disabled}
                         randSentence={randSentence}
+                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.simongame.active === true
@@ -1719,6 +1900,7 @@ class Widgets extends Component{
                             y: this.state.widgets.games.simongame.position.y
                         }}
                         dragDisabled={this.state.widgets.games.simongame.drag.disabled}
+                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.minesweeper.active === true
@@ -1729,9 +1911,7 @@ class Widgets extends Component{
                             y: this.state.widgets.games.minesweeper.position.y
                         }}
                         dragDisabled={this.state.widgets.games.minesweeper.drag.disabled}
-                        formatNumber={formatNumber}
-                        items={items}
-                        randomItem={randomItem}
+                        gameProps={gameProps}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}

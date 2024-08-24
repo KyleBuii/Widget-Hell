@@ -425,7 +425,7 @@ class WidgetPokemonSearch extends Component{
                                 </div>
                             </div>
                             {/* Extra Information */}
-                            <table className="table">
+                            <table className="table font">
                                 <thead>
                                     <tr>
                                         <th>Base</th>

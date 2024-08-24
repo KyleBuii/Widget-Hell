@@ -3,9 +3,10 @@ import Slider from 'rc-slider';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
+import { TbMoneybag } from "react-icons/tb";
 
 
 //////////////////// Functions ////////////////////
@@ -43,20 +44,27 @@ function GridCell(props) {
 };
 
 
+/// Variables
+let intervalTimer;
+
+
 class WidgetSnake extends Component{
     constructor(props){
         super(props);
         this.state = {
+            moneyEarned: 0,
+            timer: 0,
             size: 24,
             settings: false,
             startMoving: false,
             snake: [],
             food: [],
             highscore: 0,
-            status: 0,          /// 0 = not started, 1 = in progress, 2= finished
+            status: 0,          /// 0 = not started, 1 = in progress, 2 = finished
             direction: 0,       /// Using keycodes to indicate direction
             speed: 130
         };
+        this.storeData = this.storeData.bind(this);
         this.resizer = this.resizer.bind(this);
         this.moveFood = this.moveFood.bind(this);
         this.checkIfAteFood = this.checkIfAteFood.bind(this);
@@ -89,26 +97,33 @@ class WidgetSnake extends Component{
         });
     };
     setDirection({keyCode}){
-        const re = new RegExp("\\b83|40|87|38|68|39|65|37\\b");
-        if(this.state.startMoving === true
-            && re.test(keyCode)){
-            this.moveSnakeInterval = setInterval(this.moveSnake, this.state.speed);
-            this.setState({
-                startMoving: false
-            });
-        };
-        /// Ignore if same direction or reverse
-        let changeDirection = true;
-        [[83, 40, 87, 38], [68, 39, 65, 37]].forEach(dir => {
-            if(dir.indexOf(this.state.direction) > -1 && dir.indexOf(keyCode) > -1){
-                changeDirection = false;
+        if(this.state.status !== 0 || this.state.status !== 2){
+            const re = new RegExp("\\b83|40|87|38|68|39|65|37\\b");
+            if(this.state.startMoving === true
+                && re.test(keyCode)){
+                this.moveSnakeInterval = setInterval(this.moveSnake, this.state.speed);
+                intervalTimer = setInterval(() => {
+                    this.setState({
+                        timer: this.state.timer + 1
+                    });
+                }, 1000);
+                this.setState({
+                    startMoving: false
+                });
             };
-        });
-        if(re.test(keyCode)
-            && changeDirection){
-            this.setState({
-                direction: keyCode
+            /// Ignore if same direction or reverse
+            let changeDirection = true;
+            [[83, 40, 87, 38], [68, 39, 65, 37]].forEach(dir => {
+                if(dir.indexOf(this.state.direction) > -1 && dir.indexOf(keyCode) > -1){
+                    changeDirection = false;
+                };
             });
+            if(re.test(keyCode)
+                && changeDirection){
+                this.setState({
+                    direction: keyCode
+                });
+            };
         };
     };
     moveSnake(){
@@ -180,6 +195,7 @@ class WidgetSnake extends Component{
             };
         };
         this.setState({
+            moneyEarned: this.state.moneyEarned + 1,
             snake: newSnake.concat([newSnakeSegment]),
             food: []
         });
@@ -213,6 +229,9 @@ class WidgetSnake extends Component{
         this.removeTimers();
         this.moveFood(); 
         this.setState({
+            timer: 0,
+            moneyEarned: 0,
+            direction: 0,
             startMoving: true,
             status: 1,
             snake: [[cells, cells]]
@@ -221,9 +240,13 @@ class WidgetSnake extends Component{
     };
     endGame(){
         this.removeTimers();
+        clearInterval(intervalTimer);
+        if((this.state.snake.length - 1) >= 10){
+            this.props.gameProps.randomItem();
+        };
+        this.props.gameProps.updateMoney(this.state.moneyEarned);
         this.setState({
             status: 2,
-            direction: 0,
             highscore: (this.state.snake.length - 1 > this.state.highscore)
                 ? this.state.snake.length - 1
                 : this.state.highscore
@@ -296,10 +319,14 @@ class WidgetSnake extends Component{
             if(localStorageSnake["highscore"] !== undefined){
                 this.setState({
                     highscore: localStorageSnake["highscore"],
-                    speed: localStorageSnake["speed"]
+                    speed: localStorageSnake["speed"],
+                    money: localStorage.getItem("money")
                 });
             };
         };
+        document.getElementById("snake-overlay")
+            .style
+            .visibility = "visible";
     };
     componentWillUnmount(){
         window.removeEventListener("resize", this.resizer);
@@ -365,6 +392,31 @@ class WidgetSnake extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                        </section>
+                        {/* Information Container */}
+                        <section className="element-ends space-nicely bottom font medium bold">
+                            {/* Money Earned */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                <span className="font small bold">+</span>
+                                {this.state.moneyEarned}
+                            </span>
+                            {/* Total Money */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                            </span>
+                            {/* Timer */}
+                            <span className="flex-center row gap">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
+                                    <FaRegClock/>
+                                </IconContext.Provider>
+                                {this.state.timer}
+                            </span>
                         </section>
                         {/* Game Container */}
                         <section id="snake-display"

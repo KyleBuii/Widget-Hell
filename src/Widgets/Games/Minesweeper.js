@@ -19,7 +19,6 @@ class WidgetMinesweeper extends Component{
             grid: [],
             mines: 10,
             minesLeft: 10,
-            money: 0,
             moneyEarned: 0,
             width: 8,
             height: 8,
@@ -112,7 +111,8 @@ class WidgetMinesweeper extends Component{
             moneyEarned: 0,
             minesLeft: this.state.mines,
             timer: 0,
-            started: false
+            started: false,
+            disabled: false
         });
         clearInterval(intervalTimer);
     };
@@ -139,12 +139,6 @@ class WidgetMinesweeper extends Component{
         if(revealed >= this.state.height * this.state.width - this.state.mines){
             this.gameOver("win");
         };
-    };
-    updateMoney(){
-        let dataLocalStorageMoney = JSON.parse(localStorage.getItem("money"));
-        this.setState({
-            money: dataLocalStorageMoney
-        });
     };
     getRevealed(){
         return this.state.grid
@@ -229,21 +223,13 @@ class WidgetMinesweeper extends Component{
             disabled: false
         });
         if(type === "win"){
-            let dataLocalStorageMoney = JSON.parse(localStorage.getItem("money"));
-            let randomItem = this.props.randomItem();
-            let goldBag = 0;
-            if(randomItem !== undefined
-                && randomItem.name !== undefined){
-                if(randomItem.name === "gold"){
-                    goldBag = randomItem.amount;
-                };
+            if(this.state.mines >= 10){
+                this.props.gameProps.randomItem();
             };
             this.setState({
-                moneyEarned: (this.state.mines + goldBag),
-            }, () => {
-                localStorage.setItem("money", (dataLocalStorageMoney + this.state.moneyEarned));
-                this.updateMoney();
+                moneyEarned: this.state.mines
             });
+            this.props.gameProps.updateMoney(this.state.mines);
         };
     };
     storeData(){
@@ -301,8 +287,7 @@ class WidgetMinesweeper extends Component{
                 mines: localStorageMinesweeper["mines"],
                 minesLeft: localStorageMinesweeper["mines"],
                 width: localStorageMinesweeper["width"],
-                height: localStorageMinesweeper["height"],
-                money: localStorage.getItem("money")
+                height: localStorageMinesweeper["height"]
             }, () => {
                 this.setState({
                     grid: this.createBoard()
@@ -381,7 +366,7 @@ class WidgetMinesweeper extends Component{
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
-                                {this.props.formatNumber(this.state.money, 1)}
+                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
                             </span>
                             {/* Timer */}
                             <span className="flex-center row gap">

@@ -1,6 +1,7 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -14,6 +15,7 @@ class WidgetTypingTest extends Component{
     constructor(props){
         super(props);
         this.state = {
+            moneyEarned: 0,
             time: timeMax,
             mistakes: 0,
             wrongStrokes: 0,
@@ -24,6 +26,7 @@ class WidgetTypingTest extends Component{
         };
         this.handleTyping = this.handleTyping.bind(this);
         this.handleResetGame = this.handleResetGame.bind(this);
+        this.gameOver = this.gameOver.bind(this);
     };
     handleLoadText(what){
         let text;
@@ -72,7 +75,7 @@ class WidgetTypingTest extends Component{
                         });
                     }else{
                         textField.style.opacity = "0.5";
-                        clearInterval(timer);
+                        this.gameOver();
                     };
                 }, 1000);
                 this.setState({
@@ -127,8 +130,8 @@ class WidgetTypingTest extends Component{
                 });
                 /// End of sentence
                 if(this.state.characterIndex + 1 === characters.length){
-                    clearInterval(timer);
-                    inputField.value = "";    
+                    inputField.value = "";
+                    this.gameOver();
                 }else{;
                     characters[this.state.characterIndex + 1].classList
                         .add("active");
@@ -150,11 +153,22 @@ class WidgetTypingTest extends Component{
             });
         };  
     };
+    gameOver(){
+        if(this.state.wpm >= 40){
+            this.props.gameProps.randomItem();
+        };
+        clearInterval(timer);
+        this.setState({
+            moneyEarned: this.state.wpm
+        });
+        this.props.gameProps.updateMoney(this.state.wpm);
+    };
     handleResetGame(){
         clearInterval(timer);
         document.getElementById("typingtest-text").style.opacity = "1";
         document.getElementById("typingtest-input-field").value = "";
         this.setState({
+            moneyEarned: 0,
             time: timeMax,
             mistakes: 0,
             wpm: 0,
@@ -260,6 +274,24 @@ class WidgetTypingTest extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                        </section>
+                        {/* Information Container */}
+                        <section className="element-ends space-nicely bottom font medium bold">
+                            {/* Money Earned */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                <span className="font small bold">+</span>
+                                {this.state.moneyEarned}
+                            </span>
+                            {/* Total Money */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                            </span>
                         </section>
                         {/* Input */}
                         <input id="typingtest-input-field"

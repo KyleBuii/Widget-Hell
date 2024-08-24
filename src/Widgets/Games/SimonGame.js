@@ -1,8 +1,9 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
+import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
@@ -16,12 +17,15 @@ let colors = {
     4: { current: "#4b3edd", new: "#171160" }
 };
 let colorsPath = [];
+let intervalTimer;
 
 
 class WidgetSimonGame extends Component{
     constructor(props){
         super(props);
         this.state = {
+            moneyEarned: 0,
+            timer: 0,
             score: 0,
             highscore: 0,
             counter: 0,
@@ -73,6 +77,8 @@ class WidgetSimonGame extends Component{
             .style
             .visibility = "hidden";
         this.setState({
+            moneyEarned: 0,
+            timer: 0,
             score: 0,
             clickCounter: 0,
             pathGenerating: false,
@@ -80,8 +86,18 @@ class WidgetSimonGame extends Component{
         });
         colorsPath = [];
         this.randomPath();
+        intervalTimer = setInterval(() => {
+            this.setState({
+                timer: this.state.timer + 1
+            });
+        }, 1000);
     };
     gameover(){
+        clearInterval(intervalTimer);
+        if(this.state.score >= 7){
+            this.props.gameProps.randomItem();
+        };
+        this.props.gameProps.updateMoney(this.state.moneyEarned);
         this.setState({
             highscore: (this.state.highscore > this.state.score)
                 ? this.state.highscore
@@ -101,6 +117,7 @@ class WidgetSimonGame extends Component{
             await this.delay(100);
             event.target.style.backgroundColor = colors[colorsPath[this.state.clickCounter]].current;
             this.setState({
+                moneyEarned: this.state.moneyEarned + 1,
                 clickCounter: this.state.clickCounter + 1
             }, () => {
                 if(this.state.clickCounter === this.state.score){
@@ -226,6 +243,31 @@ class WidgetSimonGame extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                        </section>
+                        {/* Information Container */}
+                        <section className="element-ends space-nicely bottom font medium bold">
+                            {/* Money Earned */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                <span className="font small bold">+</span>
+                                {this.state.moneyEarned}
+                            </span>
+                            {/* Total Money */}
+                            <span className="flex-center row">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                            </span>
+                            {/* Timer */}
+                            <span className="flex-center row gap">
+                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
+                                    <FaRegClock/>
+                                </IconContext.Provider>
+                                {this.state.timer}
+                            </span>
                         </section>
                         {/* Game Container */}
                         <section id="simongame-container"

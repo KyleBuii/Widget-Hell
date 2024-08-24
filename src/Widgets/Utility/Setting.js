@@ -172,25 +172,29 @@ class WidgetSetting extends Component{
         arr.length -= 1;
         return arr;
     };
-    /// Choose random option in select
-    randomOption(select){
-        let rand;
-        switch(select){
+    /// Choose random option
+    randomOption(what, element, min, max){
+        let random;
+        switch(what){
+            case "slider":
+                random = Math.random() * max + min;
+                this.handleSlider(random, `slider-${element}`);
+                break;
             case "animation":
-                rand = optionsAnimation[0].options[Math.floor(Math.random() * (optionsAnimation[0].options.length - 1)) + 1];
-                this.handleSelect(rand, "animation");
+                random = optionsAnimation[0].options[Math.floor(Math.random() * (optionsAnimation[0].options.length - 1)) + 1];
+                this.handleSelect(random, "animation");
                 break;
             case "background":
-                rand = optionsBackground[0].options[Math.floor(Math.random() * (optionsBackground[0].options.length - 1)) + 1];
-                this.handleSelect(rand, "background");
+                random = optionsBackground[0].options[Math.floor(Math.random() * (optionsBackground[0].options.length - 1)) + 1];
+                this.handleSelect(random, "background");
                 break;
             case "customBorder":
-                rand = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
-                this.handleSelect(rand, "customBorder");
+                random = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
+                this.handleSelect(random, "customBorder");
                 break;
             case "voice":
-                rand = optionsVoice[0].options[Math.floor(Math.random() * (optionsVoice[0].options.length - 1)) + 1];
-                this.handleSelect(rand, "voice");
+                random = optionsVoice[0].options[Math.floor(Math.random() * (optionsVoice[0].options.length - 1)) + 1];
+                this.handleSelect(random, "voice");
                 break;
             default:
                 break;
@@ -760,7 +764,7 @@ class WidgetSetting extends Component{
                                             </div>
                                             {/* Other Stuff */}
                                             <div className="flex-center">
-                                                {/* <button id="show-hide-widgets-popout-button-inventory"
+                                                <button id="show-hide-widgets-popout-button-inventory"
                                                     className="btn-match inverse disabled"
                                                     type="button"
                                                     onClick={() => this.handlePressableBtn("inventory", "utility")}>
@@ -775,7 +779,7 @@ class WidgetSetting extends Component{
                                                     <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                                         <GiAxeSword/>
                                                     </IconContext.Provider> 
-                                                </button> */}
+                                                </button>
                                                 <input className="input-typable all-side"
                                                     name="settings-input-show-hide-widgets-search"
                                                     type="text"
@@ -1146,9 +1150,17 @@ class WidgetSetting extends Component{
                                                         }
                                                     })}/>
                                                 {/* Pitch */}
-                                                <span className="font small">
-                                                    Pitch
-                                                </span>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Pitch
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("slider", "voice-pitch", 0, 2)}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
                                                 <Slider className="slider space-nicely top medium"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-pitch")}
                                                     min={0}
@@ -1162,9 +1174,17 @@ class WidgetSetting extends Component{
                                                     }}
                                                     value={this.state.values.pitch}/>
                                                 {/* Rate */}
-                                                <span className="font small">
-                                                    Rate
-                                                </span>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Rate
+                                                    </span>
+                                                    <button className="btn-match inverse"
+                                                        onClick={() => this.randomOption("slider", "voice-rate", 0.1, 10)}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
                                                 <Slider className="slider space-nicely top medium"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-rate")}
                                                     min={0.1}
