@@ -73,14 +73,14 @@ class WidgetQRCode extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("qrcode", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("qrcode", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
@@ -112,16 +112,17 @@ class WidgetQRCode extends Component{
                                 })}/>
                         </div>
                         {/* QR Code Container */}
-                        <div className="box dimmed space-nicely top">
+                        <div className="box dimmed space-nicely space-top">
                             <div className="flex-center">
                                 <QRCode id="qrcode"
+                                    className="aesthetic-scale scale-self"
                                     value={this.state.input}
                                     size={this.state.size}
                                     bgColor={this.state.backgroundColor}
                                     fgColor={this.state.foregroundColor}/>
                             </div>
                             {/* Bottom Bar */}
-                            <div className="element-ends space-nicely top medium not-bottom">
+                            <div className="element-ends space-nicely space-top length-medium not-bottom">
                                 {/* Color Chosers */}
                                 <div className="flex-center row gap">
                                     <input className="color-input-match"
@@ -134,7 +135,7 @@ class WidgetQRCode extends Component{
                                         onBlur={(event) => this.handleColorPicker(event, "foreground")}></input>
                                 </div>
                                 {/* Download Button */}
-                                <button className="btn-match inverse"
+                                <button className="button-match inverse"
                                     onClick={() => {
                                         let svg = document.getElementById("qrcode");
                                         let svgData = new XMLSerializer().serializeToString(svg);

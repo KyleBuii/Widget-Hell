@@ -1,8 +1,11 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal, FaRegArrowAltCircleLeft, FaRegArrowAltCircleRight } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { MdOutlineInventory2 } from "react-icons/md";
+import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 
 /// Variables
@@ -13,8 +16,9 @@ class WidgetInventory extends Component{
     constructor(props){
         super(props);
         this.state = {
-            items: [],
             item: {name: "Creampuff", rarity: "rare"},
+            count: 0,
+            inventorySlots: [],
             page: 0,
             pageMax: 0
         };
@@ -49,66 +53,63 @@ class WidgetInventory extends Component{
             }));
         };
     };
-    addItem(){
-        let dataLocalStorage = JSON.parse(localStorage.getItem("inventory"));
-        let arrayItems = [...this.state.items];
-        arrayItems[dataLocalStorage.length - 1] = (
-            <button
-                onClick={() => this.viewItem(dataLocalStorage[dataLocalStorage.length - 1])}
-                style={{
-                    backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[dataLocalStorage[dataLocalStorage.length - 1].rarity][dataLocalStorage[dataLocalStorage.length - 1].name].image})`
-                }}>
-            </button>
-        );
+    addItem(event){
         this.setState({
-            items: [...arrayItems]
-        });
-        /// If the added item is on the next page, update the inventory
-        if(((dataLocalStorage.length - 1) % 16) === 0){
-            this.updateInventory();
-        };
-    };
-    updateInventory(){
-        var itemSlots;
-        if(JSON.parse(localStorage.getItem("inventory")).length !== 0){
-            let dataLocalStorage = JSON.parse(localStorage.getItem("inventory"));
-            /// Prefill inventory
-            if(dataLocalStorage.length % 16 !== 0){
-                let amountSlots = dataLocalStorage.length + (16 - (dataLocalStorage.length % 16));
-                itemSlots = new Array(amountSlots);
-                for(let i = 0; i < amountSlots; i++){
-                    itemSlots[i] = (
-                        <button></button>
-                    );
-                };
-            }else{
-                itemSlots = new Array(dataLocalStorage.length);
-            };
-            /// Fill inventory with items
-            for(let i = 0; i < dataLocalStorage.length; i++){
-                itemSlots[i] = (
+            count: this.state.count + event.detail.length
+        }, () => {
+            let arrayItemSlots = [...this.state.inventorySlots];
+            let nextPage = false;
+            for(let i = 0; i < event.detail.length; i++){
+                arrayItemSlots[(this.state.count - event.detail.length) + i] = (
                     <button
-                        onClick={() => this.viewItem(dataLocalStorage[i])}
+                        onClick={() => this.viewItem(event.detail[i])}
                         style={{
-                            backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[dataLocalStorage[i].rarity][dataLocalStorage[i].name].image})`
+                            backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
                         }}>
                     </button>
                 );
+                if((((this.state.count - event.detail.length) + i) >= 16)
+                    && ((((this.state.count - event.detail.length) + i) % 16) === 0)
+                    && !nextPage){
+                    nextPage = true;
+                };
             };
             this.setState({
-                pageMax: Math.ceil(itemSlots.length / 16) - 1
+                inventorySlots: [...arrayItemSlots]
             });
-        }else{
-            /// Prefill inventory
-            itemSlots = new Array(16);
-            for(let i = 0; i < 16; i++){
-                itemSlots[i] = (
+            if(nextPage){
+                this.updateInventory();
+            };
+        });
+    };
+    updateInventory(){
+        var slots;
+        /// Prefill inventory with empty slots
+        if(this.state.count % 16 !== 0){
+            let amountSlots = this.state.count + (16 - (this.state.count % 16));
+            slots = new Array(amountSlots);
+            for(let i = 0; i < amountSlots; i++){
+                slots[i] = (
                     <button></button>
                 );
             };
+        }else{
+            slots = new Array(this.state.count);
+        };
+        /// Fill inventory with items
+        for(let i = 0; i < this.state.count; i++){
+            slots[i] = (
+                <button
+                    onClick={() => this.viewItem(this.props.inventory[i])}
+                    style={{
+                        backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[this.props.inventory[i].rarity][this.props.inventory[i].name].image})`
+                    }}>
+                </button>
+            );
         };
         this.setState({
-            items: [...itemSlots]
+            inventorySlots: [...slots],
+            pageMax: Math.ceil(slots.length / 16) - 1
         });
     };
     handlePages(direction){
@@ -127,7 +128,26 @@ class WidgetInventory extends Component{
     };
     componentDidMount(){
         window.addEventListener("new item", this.addItem);
-        this.updateInventory();
+        if(this.props.inventory.length === 0){
+            let slots = new Array(16);
+            for(let i = 0; i < 16; i++){
+                slots[i] = (
+                    <button></button>
+                );
+            };
+            this.setState({
+                inventorySlots: [...slots]
+            });
+        }else{
+            this.setState({
+                count: this.props.inventory.length
+            }, () => {
+                this.updateInventory();
+            });
+        };
+    };
+    componentWillUnmount(){
+        window.removeEventListener("new item", this.addItem);
     };
     render(){
         return(
@@ -141,7 +161,7 @@ class WidgetInventory extends Component{
                     this.props.defaultProps.dragStop("inventory");
                     this.props.defaultProps.updatePosition("inventory", "utility", data.x, data.y);
                 }}
-                cancel="button, .overlay"
+                cancel="button, span, .overlay, #inventory-tabs"
                 bounds="parent">
                 <div id="inventory-widget"
                     className="widget">
@@ -158,14 +178,14 @@ class WidgetInventory extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("inventory", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("inventory", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
@@ -177,16 +197,16 @@ class WidgetInventory extends Component{
                             <section className="flex-center column">
                                 {/* Slots */}
                                 <div id="inventory-slots" 
-                                    className="grid col-4 spread-inventory slot box dimmed">
-                                    {this.state.items.slice(0 + (16 * this.state.page), 16 + (16 * this.state.page)).map((item, index) => {
+                                    className="aesthetic-scale scale-div grid col-4 spread-inventory slot box dimmed">
+                                    {this.state.inventorySlots.slice(0 + (16 * this.state.page), 16 + (16 * this.state.page)).map((item, index) => {
                                         return <div key={`slot-${index}`}>
                                             {item}
                                         </div>
                                     })}
                                 </div>
-                                {/* Pages */}
+                                {/* Pages Buttons */}
                                 <div id="inventory-pages">
-                                    <button className="btn-match inverse flex-center"
+                                    <button className="button-match inverse flex-center"
                                         onClick={() => this.handlePages("left")}>
                                         <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
                                             <FaRegArrowAltCircleLeft color={
@@ -196,7 +216,7 @@ class WidgetInventory extends Component{
                                             }/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse flex-center"
+                                    <button className="button-match inverse flex-center"
                                         onClick={() => this.handlePages("right")}>
                                         <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
                                             <FaRegArrowAltCircleRight color={
@@ -209,6 +229,45 @@ class WidgetInventory extends Component{
                                 </div>
                             </section>
                         </section>
+                        {/* Inventory Bar */}
+                        <section style={{
+                            marginTop: "0.4em"
+                        }}>
+                            <div className="aesthetic-scale scale-div element-ends font bold">
+                                {/* Item Count */}
+                                <div className="flex-center row gap">
+                                    <IconContext.Provider value={{ size: "1em", color: "#ba6600", className: "global-class-name" }}>
+                                        <MdOutlineInventory2/>
+                                    </IconContext.Provider>
+                                    <span>{this.state.count}</span>
+                                </div>
+                                {/* Page Count */}
+                                <div className="float middle"
+                                    style={{
+                                        // marginTop: "0.2em"
+                                    }}>
+                                    <span>{this.state.page + 1}/{this.state.pageMax + 1}</span>
+                                </div>
+                                {/* Gold */}
+                                <div>
+                                    <IconContext.Provider value={{ size: "1em", color: "#f9d700", className: "global-class-name" }}>
+                                        <TbMoneybag/>
+                                    </IconContext.Provider>
+                                    <span>{this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}</span>
+                                </div>
+                            </div>
+                        </section>
+                        {/* Inventory Information */}
+                        {/* <Tabs id="inventory-tabs">
+                            <TabList>
+                                <Tab>Currency</Tab>
+                            </TabList>
+                            <TabPanel>
+                                <section id="inventory-currency"
+                                    className="grid col-inventory font bold">
+                                </section>
+                            </TabPanel>
+                        </Tabs> */}
                         {/* View Item Popout */}
                         <section id="inventory-popout-view-item"
                             className="overlay rounded flex-center column gap font no-highlight"
@@ -216,7 +275,7 @@ class WidgetInventory extends Component{
                                 document.getElementById("inventory-popout-view-item").style.visibility = "hidden";
                             }}>
                             <span className="font bold large-medium">{this.state.item.name}</span>
-                            <div className="flex-center row gap medium space-nicely all">
+                            <div className="flex-center row gap medium space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"/>
                                 <table className="flex-center column font small">
@@ -244,17 +303,24 @@ class WidgetInventory extends Component{
                                 </table>
                             </div>
                             <span>{this.props.items[this.state.item.rarity][this.state.item.name].description}</span>
+                            {(this.props.items[this.state.item.rarity][this.state.item.name].requirement)
+                                ? <span className="font micro"
+                                    style={{
+                                        color: "red",
+                                        opacity: "0.5"
+                                    }}>Requirement: {this.props.items[this.state.item.rarity][this.state.item.name].requirement}</span>
+                                : <></>}
                             <span className="font micro transparent-normal">Source: {this.props.items[this.state.item.rarity][this.state.item.name].source}</span>
                             {(regexItemsLeftAndRight.test(this.props.items[this.state.item.rarity][this.state.item.name].slot))
                                 ? <div className="flex-center row gap">
-                                    <button className="btn-match space-nicely top not-bottom"
+                                    <button className="button-match space-nicely space-top not-bottom"
                                         onClick={() => this.equipItem(
                                             this.state.item.name,
                                             this.state.item.rarity,
                                             this.props.items[this.state.item.rarity][this.state.item.name].slot,
                                             "left"
                                         )}>Equip Left</button>
-                                    <button className="btn-match space-nicely top not-bottom"
+                                    <button className="button-match space-nicely space-top not-bottom"
                                         onClick={() => this.equipItem(
                                             this.state.item.name,
                                             this.state.item.rarity,
@@ -262,7 +328,7 @@ class WidgetInventory extends Component{
                                             "right"
                                         )}>Equip Right</button>
                                 </div>
-                                : <button className="btn-match space-nicely top not-bottom"
+                                : <button className="button-match space-nicely space-top not-bottom"
                                     onClick={() => this.equipItem(
                                         this.state.item.name,
                                         this.state.item.rarity,

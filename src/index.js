@@ -21,6 +21,10 @@ import WidgetSimonGame from './Widgets/Games/SimonGame.js';
 import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
 import WidgetInventory from './Widgets/Inventory.js';
 import WidgetEquipment from './Widgets/Equipment.js';
+import WidgetCharacter from './Widgets/Character.js';
+import WidgetBreakout from './Widgets/Games/Breakout.js';
+import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.js';
+import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.js';
 
 
 //////////////////// Variables ////////////////////
@@ -39,6 +43,7 @@ const colorRange = 200;
 //#region Data
 const tricks = ["spin", "flip", "hinge"];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
+const moneyConversions = ["AED", "AE", "AFN", "AF", "XCD", "AG", "ALL", "AL", "AMD", "AM", "ANG", "AN", "AOA", "AO", "AQD", "AQ", "ARS", "AR", "AUD", "AU", "AZN", "AZ", "BAM", "BA", "BBD", "BB", "BDT", "BD", "XOF", "BE", "BGN", "BG", "BHD", "BH", "BIF", "BI", "BMD", "BM", "BND", "BN", "BOB", "BO", "BRL", "BR", "BSD", "BS", "NOK", "BV", "BWP", "BW", "BYR", "BY", "BZD", "BZ", "CAD", "CA", "CDF", "CD", "XAF", "CF", "CHF", "CH", "CLP", "CL", "CNY", "CN", "COP", "CO", "CRC", "CR", "CUP", "CU", "CVE", "CV", "CYP", "CY", "CZK", "CZ", "DJF", "DJ", "DKK", "DK", "DOP", "DO", "DZD", "DZ", "ECS", "EC", "EEK", "EE", "EGP", "EG", "ETB", "ET", "EUR", "FR", "FJD", "FJ", "FKP", "FK", "GBP", "GB", "GEL", "GE", "GGP", "GG", "GHS", "GH", "GIP", "GI", "GMD", "GM", "GNF", "GN", "GTQ", "GT", "GYD", "GY", "HKD", "HK", "HNL", "HN", "HRK", "HR", "HTG", "HT", "HUF", "HU", "IDR", "ID", "ILS", "IL", "INR", "IN", "IQD", "IQ", "IRR", "IR", "ISK", "IS", "JMD", "JM", "JOD", "JO", "JPY", "JP", "KES", "KE", "KGS", "KG", "KHR", "KH", "KMF", "KM", "KPW", "KP", "KRW", "KR", "KWD", "KW", "KYD", "KY", "KZT", "KZ", "LAK", "LA", "LBP", "LB", "LKR", "LK", "LRD", "LR", "LSL", "LS", "LTL", "LT", "LVL", "LV", "LYD", "LY", "MAD", "MA", "MDL", "MD", "MGA", "MG", "MKD", "MK", "MMK", "MM", "MNT", "MN", "MOP", "MO", "MRO", "MR", "MTL", "MT", "MUR", "MU", "MVR", "MV", "MWK", "MW", "MXN", "MX", "MYR", "MY", "MZN", "MZ", "NAD", "NA", "XPF", "NC", "NGN", "NG", "NIO", "NI", "NPR", "NP", "NZD", "NZ", "OMR", "OM", "PAB", "PA", "PEN", "PE", "PGK", "PG", "PHP", "PH", "PKR", "PK", "PLN", "PL", "PYG", "PY", "QAR", "QA", "RON", "RO", "RSD", "RS", "RUB", "RU", "RWF", "RW", "SAR", "SA", "SBD", "SB", "SCR", "SC", "SDG", "SD", "SEK", "SE", "SGD", "SG", "SKK", "SK", "SLL", "SL", "SOS", "SO", "SRD", "SR", "STD", "ST", "SVC", "SV", "SYP", "SY", "SZL", "SZ", "THB", "TH", "TJS", "TJ", "TMT", "TM", "TND", "TN", "TOP", "TO", "TRY", "TR", "TTD", "TT", "TWD", "TW", "TZS", "TZ", "UAH", "UA", "UGX", "UG", "USD", "US", "UYU", "UY", "UZS", "UZ", "VEF", "VE", "VND", "VN", "VUV", "VU", "YER", "YE", "ZAR", "ZA", "ZMK", "ZM", "ZWD", "ZW"];
 const quotes = [
     //#region
     {
@@ -200,15 +205,15 @@ const sentences = [
     , "So I (74M) was recently hit by a car (2014 Honda) and died. My wife (5F) organized me a funeral (cost $2747) without asking me (74M) at all. I (74M) was unable to make it because I (74M) was dead (17 days). At the funeral I heard my dad (15M) and other family members talking about how they wish I could be there and now I feel bad for not showing up."
     , "I think fortnite should add a pregnant female skin. Every kill she gets she slowly gives birth. When in water blood comes out. At 10 kills she gives birth and the baby can be your pet."
     , "PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP PLAP GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT GET PREGNANT"    
-    , 'Twitch should ban the term "live-streaming." It’s offensive to dead people. My great grandparents are dead and I would like to show them some respect and have twitch ban the term “live-streaming”. It’s a slur used against dead people.'
-    , 'I, an atheist, accidentally said “oh my g*d” instead of “oh my science”'
+    , `Twitch should ban the term "live-streaming." It's offensive to dead people. My great grandparents are dead and I would like to show them some respect and have twitch ban the term “live-streaming”. It's a slur used against dead people.`
+    , 'I, an atheist, accidentally said "oh my g*d" instead of "oh my science"'
     , "Darkness blacker than black and darker than dark, I beseech thee, combine with my deep crimson. The time of awakening cometh. Justice, fallen upon the infallible boundary, appear now as an intangible distortions! I desire for my torrent of power a destructive force: a destructive force without equal! Return all creation to cinders, and come from the abyss! Explosion!"    
     , "Oh, blackness shrouded in light, Frenzied blaze clad in night, In the name of the crimson demons, let the collapse of thine origin manifest. Summon before me the root of thy power hidden within the lands of the kingdom of demise! Explosion!"
     , "Crimson-black blaze, king of myriad worlds, though I promulgate the laws of nature, I am the alias of destruction incarnate in accordance with the principles of all creation. Let the hammer of eternity descend unto me! Explosion!"    
     , "O crucible which melts my soul, scream forth from the depths of the abyss and engulf my enemies in a crimson wave! Pierce trough, EXPLOSION!"    
     , 'If you ask Rick Astley for a copy of the movie "UP", he cannot give you it as he can never give you up. But, by doing that, he is letting you down, and thus, is creating something known as the Astley Paradox.'
     , "Reddit should rename 'share' to 'spreddit', 'delete' to 'shreddit' and 'karma' to 'creddit'. Yet they haven't. I don't geddit."
-    , "The tower of rebellion creeps upon man’s world... The unspoken faith displayed before me... The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
+    , "The tower of rebellion creeps upon man's world... The unspoken faith displayed before me... The time has come! Now, awaken from your slumber, and by my madness, be wrought! Strike forth, Explosion!"    
     , "Glasses are really versatile. First, you can have glasses-wearing girls take them off and suddenly become beautiful, or have girls wearing glasses flashing those cute grins, or have girls stealing the protagonist's glasses and putting them on like, \"Haha, got your glasses!\" That's just way too cute! Also, boys with glasses! I really like when their glasses have that suspicious looking gleam, and it's amazing how it can look really cool or just be a joke. I really like how it can fulfill all those abstract needs. Being able to switch up the styles and colors of glasses based on your mood is a lot of fun too! It's actually so much fun! You have those half rim glasses, or the thick frame glasses, everything! It's like you're enjoying all these kinds of glasses at a buffet. I really want Luna to try some on or Marine to try some on to replace her eyepatch. We really need glasses to become a thing in hololive and start selling them for HoloComi. Don't. You. Think. We. Really. Need. To. Officially. Give. Everyone. Glasses?"
     , "Eggs, Bacon, Grist, Sausage. The cockroaches in your bedroom held you hostage."
     , "As a man who has a daughter, you are LITERALLY dedicating at least 20 years of your life simply to raise a girl for another man to enjoy. It is the ULTIMATE AND FINAL SIMP. Think about it logically."
@@ -228,11 +233,12 @@ const sentences = [
     , `I bet these hetero's kiss girls General Gravicius grunts, his hips rapidly slamming his erect donger deep into Shadow's lean muscled frame. Sweat drips from his brow as he moans a quiet prayer before both nuts erupt, turning him into a fountain of cum, launching Shadow at least 5 meters onto the floor. Gravicius smirks at the sight, "I fuck for God, Exile. Who do you fuck for?`
     , "Sticking out your gyatt for Nerizzler. You're so bau bau. You're so Biboo tax. I just wanna be your Shiori."
     , "Oh look, it's another VTuber trying to make waves in the vast ocean of content creators. Your 'slice of life sea fox' gimmick is about as fresh as week-old sushi. But hey, at least you're consistent - consistently blending into the background like the beige t-shirt of the VTuber world. Your streams are probably as deep as a puddle, but I'm sure your 'deep blue' location makes you feel profound. Keep riding that mediocrity wave, sweetie. Maybe one day you'll actually make a splash."
-    , "Hey guys, did you know that in terms of male human and female Pokemon breeding, Vaporeon is the most compatible Pokemon for humans? Not only are they in the field egg group, which is mostly comprised of mammals, Vaporeon are an average of 3”03’ tall and 63.9 pounds, this means they’re large enough to be able handle human dicks, and with their impressive Base Stats for HP and access to Acid Armor, you can be rough with one. Due to their mostly water based biology, there’s no doubt in my mind that an aroused Vaporeon would be incredibly wet, so wet that you could easily have sex with one for hours without getting sore. They can also learn the moves Attract, Baby-Doll Eyes, Captivate, Charm, and Tail Whip, along with not having fur to hide nipples, so it’d be incredibly easy for one to get you in the mood. With their abilities Water Absorb and Hydration, they can easily recover from fatigue with enough water. No other Pokemon comes close to this level of compatibility. Also, fun fact, if you pull out enough, you can make your Vaporeon turn white. Vaporeon is literally built for human dick. Ungodly defense stat+high HP pool+Acid Armor means it can take cock all day, all shapes and sizes and still come for more."
+    , "Hey guys, did you know that in terms of male human and female Pokemon breeding, Vaporeon is the most compatible Pokemon for humans? Not only are they in the field egg group, which is mostly comprised of mammals, Vaporeon are an average of 3”03’ tall and 63.9 pounds, this means they’re large enough to be able handle human dicks, and with their impressive Base Stats for HP and access to Acid Armor, you can be rough with one. Due to their mostly water based biology, there’s no doubt in my mind that an aroused Vaporeon would be incredibly wet, so wet that you could easily have sex with one for hours without getting sore. They can also learn the moves Attract, Baby-Doll Eyes, Captivate, Charm, and Tail Whip, along with not having fur to hide nipples, so it'd be incredibly easy for one to get you in the mood. With their abilities Water Absorb and Hydration, they can easily recover from fatigue with enough water. No other Pokemon comes close to this level of compatibility. Also, fun fact, if you pull out enough, you can make your Vaporeon turn white. Vaporeon is literally built for human dick. Ungodly defense stat+high HP pool+Acid Armor means it can take cock all day, all shapes and sizes and still come for more."
     , "Hey guys, did you know that in terms of human companionship, Flareon is objectively the most huggable Pokemon? While their maximum temperature is likely too much for most, they are capable of controlling it, so they can set themselves to the perfect temperature for you. Along with that, they have a lot of fluff, making them undeniably incredibly soft to touch. But that's not all, they have a very respectable special defense stat of 110, which means that they are likely very calm and resistant to emotional damage. Because of this, if you have a bad day, you can vent to it while hugging it, and it won't mind. It can make itself even more endearing with moves like Charm and Baby Doll Eyes, ensuring that you never have a prolonged bout of depression ever again."
     , "Nani the fuck did you just fucking iimasu about watashi, you chiisai bitch desuka? Watashi'll have anata know that watashi graduated top of my class in Nihongo 3, and watashi've been involved in iroirona Nihongo tutoring sessions, and watashi have over sanbyaku perfect test scores. Watashi am trained in kanji, and watashi is the top letter writer in all of southern California. Anata are nothing to watashi but just another weeaboo. Watashi will korosu anata the fuck out with vocabulary the likes of which has neber meen mimasu'd before on this continent, mark watashino fucking words. Anata thinks that anata can get away with hanashimasing that kuso to watashi over the intaaneto? Omou again, fucker. As we hanashimasu, watashi am contacting watashino secret netto of otakus accross the USA, and anatano IP is being traced right now so you better junbishimasu for the ame, ujimushi. The ame that korosu's the pathetic chiisai thing anata calls anatano life. You're fucking shinimashita'd, akachan."
-    , "Super Hyper Ultra Ultimate Deluxe Perfect Amazing Shining God Master Ginga Victory Strong Cute Beautiful Galaxy Baby Nenechi, with 5 Hololive auditions, 43 wives, 400k husbands, neverending IQ, Perfect Japanglish, and Spanish, and Portuguese, running on a 3080x Asacoco Antenna and wearing the new ultra rare 5-Star Isekai Princess skin, cofounder of world-famous Polka Hologram Circus, with infinite source of water and surprising gaming skills while able to sing La Lion and set herself on fire in Craftopia after having become the eternal CEO of Nenepro who punches and kicks every employee, after having disconnected while singing Connect with Kiara, as well as having her name flipped into ƎИƎИ and turned into a 3D cardboard decoy, unlocked the power of God from absorbing Matsuri’s snot on her body while I wearing a sexy bikini and having eaten Haachama's tarantula-spicy-noodles while convincing Ame to trast her and having mastered singing Shiny Smiley Story in 11 different languages at the same time, right after marathoning iCarly and VICTORIOUS twice in a row, great Idol, the Ina-perishable, ƎNƎN, The Great CEO of ƎNƎN, CEO of CEOs, Opener of the Nether, Wielder of the Divine Lava, Punisher of Chat, The Great Unifier, Commander of the Golden Dumpling, Sacred of Appearance, Bringer of Light, O'Riend of Chicken, Builder of Cities, Protector of the Two Streams, Keeper of the Hours, Chosen of Aloe, High Stewardess of the Horizon, Sailor of the Great Sea, Sentinel of the Holo Servers, The Undisputed, Everconductor of The Momotaro Nenechi."
-    , "I pop off my scalp like the lid of a cookie jar. It's the secret place where I keep all my dreams. Little balls of sunshine, all rubbing together like a bundle of kittens. I reach inside with my thumb and forefinger and pluck one out. It's warm and tingly. But there’s no time to waste! I put it in a bottle to keep it safe. And I put the bottle on the shelf with all of the other bottles. Happy thoughts, happy thoughts, happy thoughts in bottles, all in a row. My collection makes me lots of friends. Each bottle a starlight to make amends. Sometimes my friend feels a certain way. Down comes a bottle to save the day. Night after night, more dreams. Friend after friend, more bottles. Deeper and deeper my fingers go. Like exploring a dark cave, discovering the secrets hiding in the nooks and crannies. Digging and digging. Scraping and scraping. I blow dust off my bottle caps. It doesn’t feel like time elapsed. My empty shelf could use some more. My friends look through my locked front door. Finally, all done. I open up, and in come my friends. In they come, in such a hurry. Do they want my bottles that much? I frantically pull them from the shelf, one after the other. Holding them out to each and every friend. Each and every bottle. But every time I let one go, it shatters against the tile between my feet. Happy thoughts, happy thoughts, happy thoughts in shards, all over the floor. They were supposed to be for my friends, my friends who aren't smiling. They're all shouting, pleading. Something. But all I hear is echo, echo, echo, echo, echo. Inside my head."
+    , "Super Hyper Ultra Ultimate Deluxe Perfect Amazing Shining God Master Ginga Victory Strong Cute Beautiful Galaxy Baby Nenechi, with 5 Hololive auditions, 43 wives, 400k husbands, neverending IQ, Perfect Japanglish, and Spanish, and Portuguese, running on a 3080x Asacoco Antenna and wearing the new ultra rare 5-Star Isekai Princess skin, cofounder of world-famous Polka Hologram Circus, with infinite source of water and surprising gaming skills while able to sing La Lion and set herself on fire in Craftopia after having become the eternal CEO of Nenepro who punches and kicks every employee, after having disconnected while singing Connect with Kiara, as well as having her name flipped into ƎИƎИ and turned into a 3D cardboard decoy, unlocked the power of God from absorbing Matsuri's snot on her body while I wearing a sexy bikini and having eaten Haachama's tarantula-spicy-noodles while convincing Ame to trast her and having mastered singing Shiny Smiley Story in 11 different languages at the same time, right after marathoning iCarly and VICTORIOUS twice in a row, great Idol, the Ina-perishable, ƎNƎN, The Great CEO of ƎNƎN, CEO of CEOs, Opener of the Nether, Wielder of the Divine Lava, Punisher of Chat, The Great Unifier, Commander of the Golden Dumpling, Sacred of Appearance, Bringer of Light, O'Riend of Chicken, Builder of Cities, Protector of the Two Streams, Keeper of the Hours, Chosen of Aloe, High Stewardess of the Horizon, Sailor of the Great Sea, Sentinel of the Holo Servers, The Undisputed, Everconductor of The Momotaro Nenechi."
+    , "I pop off my scalp like the lid of a cookie jar. It's the secret place where I keep all my dreams. Little balls of sunshine, all rubbing together like a bundle of kittens. I reach inside with my thumb and forefinger and pluck one out. It's warm and tingly. But there’s no time to waste! I put it in a bottle to keep it safe. And I put the bottle on the shelf with all of the other bottles. Happy thoughts, happy thoughts, happy thoughts in bottles, all in a row. My collection makes me lots of friends. Each bottle a starlight to make amends. Sometimes my friend feels a certain way. Down comes a bottle to save the day. Night after night, more dreams. Friend after friend, more bottles. Deeper and deeper my fingers go. Like exploring a dark cave, discovering the secrets hiding in the nooks and crannies. Digging and digging. Scraping and scraping. I blow dust off my bottle caps. It doesn't feel like time elapsed. My empty shelf could use some more. My friends look through my locked front door. Finally, all done. I open up, and in come my friends. In they come, in such a hurry. Do they want my bottles that much? I frantically pull them from the shelf, one after the other. Holding them out to each and every friend. Each and every bottle. But every time I let one go, it shatters against the tile between my feet. Happy thoughts, happy thoughts, happy thoughts in shards, all over the floor. They were supposed to be for my friends, my friends who aren't smiling. They're all shouting, pleading. Something. But all I hear is echo, echo, echo, echo, echo. Inside my head."
+    , "Aw, yeah. Here's your superstar tonight (yeah). Yeah, you know who this is. It's your one and only Pippa in the house. You know how it's gonna go down with me. I'ma 'bout to tell you, so listen good. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. I was a kid, who dreamed to become. Somebody awesome in this world. But fate really sucked, I had to give up. It's how I lost my way. Then came along a way I could shine. A virtual space where I can belong. You may laugh at me but that's how things unfolded. In this crazy life of mine. I must watch out, there are many rivals. Waiting to eat me alive. I will not give the stage to anyone. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. And even if the darkness gets a hold of you. I'll be by your side. I'll be the shining star to light the way. We all have scars inside and nights of tears and that's okay. You're not alone, yeah, you're a part of me. Eternally. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. So don't let go and just be awesome. Just be awesome. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!"
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -399,7 +405,7 @@ const emojifyDictionary = {
     "phone": ["&#x1F4F1;"],
 };
 const items = {
-    /// Mainly currency and cosmetic items (asthetics)
+    /// Mainly currency and cosmetic items (aesthetics)
     "common": {
         "nothing": {
             descritpion: "Nothing..."
@@ -414,7 +420,28 @@ const items = {
             description: `Uohhhhhhhhh! \uD83D\uDE2D`,
             image: "/images/items/senseimask.png",
             source: "Blue Archive"
-        }
+        },
+        "Carla's Hat": {
+            slot: "helmet",
+            type: "cosmetic",
+            description: `\uD83D\uDE09\u270C`,
+            image: "/images/items/carlashat.png",
+            source: "Don't Hurt Me, My Healer!"
+        },
+        "Nina's Good Luck Charm": {
+            slot: "undershirt",
+            type: "cosmetic",
+            description: "I'm perfectly prepared. I am fully and completely ready for this.",
+            image: "/images/items/ninasgoodluckcharm.png",
+            source: "Cautious Hero: The Hero Is Overpowered but Overly Cautious"
+        },
+        "Creamy": {
+            slot: "undershirt",
+            type: "cosmetic",
+            description: "Lemon's good luck charm.",
+            image: "/images/items/creamy.png",
+            source: "Mashle"
+        },
     },
     /// Items with basic properties (stat increases)
     "rare": {
@@ -427,9 +454,19 @@ const items = {
             description: "Nothing like a cream puff after pumping iron.",
             image: "/images/items/creampuff.png",
             source: "Mashle"
-        }
+        },
+        "Chunchunmaru": {
+            slot: "main",
+            type: "stat",
+            stats: {
+                luck: 99
+            },
+            description: "Yes, I'm Kazuma.",
+            image: "/images/items/chunchunmaru.png",
+            source: "Konosuba"
+        },
     },
-    /// Items with unique properties (modifies the game)
+    /// Items with unique properties (abilities)
     "exotic": {
         "Grass Block": {
             slot: "main",
@@ -438,7 +475,24 @@ const items = {
             description: "C418 - Sweden",
             image: "/images/items/grassblock.png",
             source: "Minecraft"
-        }
+        },
+        "Hestia Knife": {
+            slot: "wrist",
+            type: "ability",
+            information: "Becomes stronger according to the wielder's status.",
+            description: "A special knife created by Hephaestus with help from Hestia.",
+            requirement: "Member of Hestia Familia",
+            image: "/images/items/hestiaknife.png",
+            source: "Danmachi"
+        },
+        "Code of Hammurabi": {
+            slot: "offhand",
+            type: "ability",
+            information: "Redirects every attack against the user back to the attacker.",
+            description: "An eye for an eye, a tooth for a tooth.",
+            image: "/images/items/codeofhammurabi.png",
+            source: "Tomb Raider King"
+        },
     },
     /// Items for fun (modifies the application)
     "meme": {
@@ -466,6 +520,70 @@ const itemRates = {
         rate: .01
     }
 };
+const breakoutPatterns = [
+    //#region Color guide
+    /*
+        0 = empty space
+        1 = black
+        b = blue
+        g = green
+        o = orange
+        p = pink
+        r = red
+        v = violet
+        y = yellow
+    */
+    //#endregion
+    /// Template
+    // `
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    //     0 0 0 0 0 0 0 0 0 0
+    // `,
+    `
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1 1
+    `,
+    `
+        0 0 0 0 0 0 0 0 0 0
+        0 1 0 0 1 0 1 1 1 0
+        0 1 0 0 1 0 0 1 0 0
+        0 1 0 0 1 0 0 1 0 0
+        0 1 1 1 1 0 0 1 0 0
+        0 1 0 0 1 0 0 1 0 0
+        0 1 0 0 1 0 0 1 0 0
+        0 1 0 0 1 0 0 1 0 0
+        0 1 0 0 1 0 1 1 1 0
+        0 0 0 0 0 0 0 0 0 0
+    `,
+    `
+        0 0 r r 0 0 r r 0 0
+        0 r 0 0 r r 0 0 r 0
+        r 0 0 0 0 0 0 0 0 r
+        r 0 0 0 0 0 0 0 0 r
+        r 0 0 0 0 0 0 0 0 r
+        r 0 0 0 0 0 0 0 0 r
+        0 r 0 0 0 0 0 0 r 0
+        0 0 r 0 0 0 0 r 0 0
+        0 0 0 r 0 0 r 0 0 0
+        0 0 0 0 r r 0 0 0 0
+    `,
+];
 //#endregion
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
@@ -485,7 +603,7 @@ const formatGroupLabel = (data) => (
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between"}}>
-        <span className="font transparent-bold">{data.label}</span>
+        <span className="aesthetic-scale scale-self font transparent-bold">{data.label}</span>
         <span style={{
             backgroundColor: `rgba(${getComputedStyle(document.documentElement).getPropertyValue("--randColorOpacity")}, 0.3)`,
             borderRadius: "2em",
@@ -606,7 +724,7 @@ function dragStop(what){
 function sortSelect(what){
     what.forEach((value) => {
         value.options.sort((a, b) => {
-            return ["Default"].indexOf(b.label) - ["Default"].indexOf(a.label)
+            return ["Default", "Auto"].indexOf(b.label) - ["Default", "Auto"].indexOf(a.label)
                 || a.label.localeCompare(b.label);
         });
     });
@@ -737,53 +855,56 @@ function formatNumber(number, digits, shouldRound = false){
     };
 };
 
-function randomItem(rarity){
-    let randomRarity = Math.random();
-    var itemKeys;
-    var itemRarity;
-    var randomItem;
-    if(rarity){
-        itemKeys = Object.keys(items[rarity]);
-        itemRarity = rarity;
-    }else{
-        if(randomRarity < itemRates.common.rate){
-            itemKeys = Object.keys(items.common);
-            itemRarity = "common";
-        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate)){
-            itemKeys = Object.keys(items.rare);
-            itemRarity = "rare";
-        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate)){
-            itemKeys = Object.keys(items.exotic);
-            itemRarity = "exotic";
-        }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate + itemRates.meme.rate)){
-            itemKeys = Object.keys(items.meme);
-            itemRarity = "meme";
+function randomItem(amount = 1, rarity){
+    var item, itemKeys, itemRarity, randomItem, randomRarity;
+    var totalGold = 0;
+    var allItems = [];
+    for(let i = 0; i < amount; i++){
+        randomRarity = Math.random();
+        if(rarity){
+            itemKeys = Object.keys(items[rarity]);
+            itemRarity = rarity;
+        }else{
+            if(randomRarity < itemRates.common.rate){
+                itemKeys = Object.keys(items.common);
+                itemRarity = "common";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate)){
+                itemKeys = Object.keys(items.rare);
+                itemRarity = "rare";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate)){
+                itemKeys = Object.keys(items.exotic);
+                itemRarity = "exotic";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate + itemRates.meme.rate)){
+                itemKeys = Object.keys(items.meme);
+                itemRarity = "meme";
+            };
+        };
+        randomItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+        if(randomItem !== "nothing"){
+            item = {
+                name: randomItem,
+                rarity: itemRarity
+            };
+            if(randomItem === "gold"){
+                item.amount = Math.floor(Math.random() * 20 + 1);
+                totalGold += item.amount;
+                createPopup(item.amount, "gold", true);
+            }else{
+                allItems.push(item);
+                createPopup(item, "item", true);
+            };
         };
     };
-    randomItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-    if(randomItem === "nothing"){
-        return;
+    if(totalGold !== 0){
+        window.dispatchEvent(new CustomEvent("gold bag", {
+            "detail": totalGold
+        }));
     };
-    let item = {
-        name: randomItem,
-        rarity: itemRarity
+    if(allItems.length !== 0){
+        window.dispatchEvent(new CustomEvent("new item", {
+            "detail": allItems
+        }));
     };
-    if(randomItem === "gold"){
-        let dataLocalStorageMoney = JSON.parse(localStorage.getItem("money"));
-        item.amount = Math.floor(Math.random() * 20 + 1);
-        localStorage.setItem("money", (dataLocalStorageMoney + item.amount));
-        createPopup(item.amount, "gold", true);
-    }else{
-        localStorage.setItem("inventory", JSON.stringify(
-            [
-                ...JSON.parse(localStorage.getItem("inventory")),
-                item
-            ]
-        ));
-        window.dispatchEvent(new Event("new item"));
-        createPopup(item, "item", true);
-    };
-    return item;
 };
 //#endregion
 
@@ -793,7 +914,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: false,
+            developer: true,
             values: {
                 animation: {},
                 customBorder: {},
@@ -843,6 +964,16 @@ class Widgets extends Component{
                         }
                     },
                     equipment: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    character: {
                         active: false,
                         position: {
                             x: 0,
@@ -968,6 +1099,16 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    currencyconverter: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 games: {
                     snake: {
@@ -1009,7 +1150,17 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
-                    }
+                    },
+                    breakout: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 fun: {
                     pokemonsearch: {
@@ -1031,10 +1182,127 @@ class Widgets extends Component{
                         drag: {
                             disabled: false
                         }
+                    },
+                    donutanimation: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                }
+            },
+            inventory: [],
+            equipment: {
+                headband: {
+                    name: "",
+                    rarity: ""
+                },
+                helmet: {
+                    name: "",
+                    rarity: ""
+                },
+                eyewear: {
+                    name: "",
+                    rarity: ""
+                },
+                necklace: {
+                    name: "",
+                    rarity: ""
+                },
+                undershirt: {
+                    name: "",
+                    rarity: ""
+                },
+                chestplate: {
+                    name: "",
+                    rarity: ""
+                },
+                cape: {
+                    name: "",
+                    rarity: ""
+                },
+                bracelet: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
+                    }
+                },
+                wrist: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
+                    }
+                },
+                belt: {
+                    name: "",
+                    rarity: ""
+                },
+                main: {
+                    name: "",
+                    rarity: ""
+                },
+                glove: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
+                    }
+                },
+                ring: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
+                    }
+                },
+                legging: {
+                    name: "",
+                    rarity: ""
+                },
+                offhand: {
+                    name: "",
+                    rarity: ""
+                },
+                hidden: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
+                    }
+                },
+                boot: {
+                    left: {
+                        name: "",
+                        rarity: ""
+                    },
+                    right: {
+                        name: "",
+                        rarity: ""
                     }
                 }
             },
-            money: 0,
+            gold: 0,
             stats: {
                 level: 1,
                 exp: 0,
@@ -1049,7 +1317,8 @@ class Widgets extends Component{
                 intelligence: 1,
                 dexterity: 1,
                 luck: 1
-            }
+            },
+            abilities: []
         };
         this.handleShowHide = this.handleShowHide.bind(this);
         this.handleShowHidePopout = this.handleShowHidePopout.bind(this);
@@ -1058,7 +1327,10 @@ class Widgets extends Component{
         this.updateValue = this.updateValue.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
         this.storeData = this.storeData.bind(this);
-        this.updateMoney = this.updateMoney.bind(this);
+        this.addGoldBag = this.addGoldBag.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.equipItem = this.equipItem.bind(this);
+        this.updateGameValue = this.updateGameValue.bind(this);
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
@@ -1391,10 +1663,103 @@ class Widgets extends Component{
                 break;
         };
     };
-    updateMoney(value){
+    addGoldBag(event){
         this.setState({
-            money: this.state.money + value
+            gold: this.state.gold + event.detail
         });
+    };
+    addItem(event){
+        this.setState({
+            inventory: [...this.state.inventory, ...event.detail]
+        });
+    };
+    equipItem(event){
+        const itemData = {
+            "name": event.detail.name,
+            "rarity": event.detail.rarity
+        };
+        let newEquipment;
+        if(event.detail.side){
+            if(this.state.equipment[event.detail.slot][event.detail.side].name !== event.detail.name
+                && this.state.equipment[event.detail.slot][event.detail.side].name === ""){
+                newEquipment = {
+                    ...this.state.equipment,
+                    [event.detail.slot]: {
+                        ...this.state.equipment[event.detail.slot],
+                        [event.detail.side]: {
+                            ...itemData
+                        } 
+                    }
+                };
+                this.updateGameValue("equipment", newEquipment);
+                let item = items[itemData.rarity][itemData.name];
+                if(item.type === "stat"){
+                    let itemStats = Object.keys(item.stats);
+                    let newStats = {};
+                    for(let i in itemStats){
+                        newStats[itemStats[i]] = item.stats[itemStats] + this.state.stats[itemStats];
+                    };
+                    this.updateGameValue("stats", newStats);
+                };
+                if(item.type === "ability"){
+                    let newAbilities = [...this.state.abilities, item.information];
+                    this.updateGameValue("abilities", newAbilities);
+                };
+            };
+        }else{
+            if(this.state.equipment[event.detail.slot].name !== event.detail.name
+                && this.state.equipment[event.detail.slot].name === ""){
+                newEquipment = {
+                    ...this.state.equipment,
+                    [event.detail.slot]: {
+                        ...itemData
+                    }
+                };
+                this.updateGameValue("equipment", newEquipment);
+                let item = items[itemData.rarity][itemData.name];
+                if(item.type === "stat"){
+                    let itemStats = Object.keys(item.stats);
+                    let newStats = {};
+                    for(let i in itemStats){
+                        newStats[itemStats[i]] = item.stats[itemStats] + this.state.stats[itemStats];
+                    };
+                    this.updateGameValue("stats", newStats);
+                };
+                if(item.type === "ability"){
+                    let newAbilities = [...this.state.abilities, item.information];
+                    this.updateGameValue("abilities", newAbilities);
+                };
+            };
+        };
+    };
+    updateGameValue(what, value){
+        switch(what){
+            case "equipment":
+                this.setState({
+                    equipment: value
+                });        
+                break;
+            case "gold":
+                this.setState({
+                    gold: this.state.gold + value
+                });        
+                break;
+            case "stats":
+                this.setState({
+                    stats: {
+                        ...this.state.stats,
+                        ...value
+                    }
+                });        
+                break;
+            case "abilities":
+                this.setState({
+                    abilities: [...value]
+                });        
+                break;
+            default:
+                break;
+        };
     };
     storeData(){
         let data = {
@@ -1463,14 +1828,22 @@ class Widgets extends Component{
                     data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
-            localStorage.setItem("money", 0);
+            localStorage.setItem("gold", 0);
             localStorage.setItem("inventory", JSON.stringify([]));
         };
         localStorage.setItem("widgets", JSON.stringify(data));
-        localStorage.setItem("money", this.state.money);
+        localStorage.setItem("inventory", JSON.stringify(this.state.inventory));
+        localStorage.setItem("equipment", JSON.stringify(this.state.equipment));
+        localStorage.setItem("gold", this.state.gold);
+        localStorage.setItem("stats", JSON.stringify(this.state.stats));
+        localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
     };
     componentDidMount(){
         randColor();
+        window.addEventListener("beforeunload", this.storeData);
+        window.addEventListener("new item", this.addItem);
+        window.addEventListener("gold bag", this.addGoldBag);
+        window.addEventListener("equip item", this.equipItem);
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -1557,16 +1930,43 @@ class Widgets extends Component{
         }else{
             this.storeData();
         };
-        if(localStorage.getItem("money") !== null){
+        if(localStorage.getItem("inventory") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("inventory"));
             this.setState({
-                money: JSON.parse(localStorage.getItem("money"))
+                inventory: [...dataLocalStorage]
             });
         };
-        /// Store widget's data in local storage when the website closes/refreshes
-        window.addEventListener("beforeunload", this.storeData);
+        if(localStorage.getItem("equipment") !== null){
+            let dataLocalStorage = JSON.parse(localStorage.getItem("equipment"));
+            this.setState({
+                equipment: dataLocalStorage
+            });
+        };
+        if(localStorage.getItem("gold") !== null){
+            this.setState({
+                gold: JSON.parse(localStorage.getItem("gold"))
+            });
+        };
+        if(localStorage.getItem("stats") !== null){
+            let dataLocalStorageStats = JSON.parse(localStorage.getItem("stats"));
+            this.setState({
+                stats: {
+                    ...dataLocalStorageStats
+                }
+            });
+        };
+        if(localStorage.getItem("abilities") !== null){
+            let dataLocalStorageAbilities = JSON.parse(localStorage.getItem("abilities"));
+            this.setState({
+                abilities: [...dataLocalStorageAbilities]
+            });
+        };
     };
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
+        window.removeEventListener("new item", this.addItem);
+        window.removeEventListener("gold bag", this.addGoldBag);
+        window.removeEventListener("equip item", this.equipItem);
     };
     render(){
         const defaultProps = {
@@ -1584,8 +1984,8 @@ class Widgets extends Component{
             }
         };
         const gameProps = {
-            money: this.state.money,
-            updateMoney: this.updateMoney,
+            gold: this.state.gold,
+            updateGameValue: this.updateGameValue,
             formatNumber: formatNumber,
             randomItem: randomItem
         };
@@ -1601,15 +2001,19 @@ class Widgets extends Component{
                         bottom: 0,
                         right: 0}}>
                         <button onClick={() => {
-                            randomItem("meme");}}>
+                            randomItem(1, "meme");}}>
                             Add item: meme
+                        </button>
+                        <button onClick={() => {
+                            randomItem(16);}}>
+                            Add item: 16
                         </button>
                         <button onClick={() => {
                             randomItem();}}>
                             Add item
                         </button>
                         <button onClick={() => {
-                            localStorage.setItem("inventory", JSON.stringify([]));}}>
+                            this.setState({inventory: []});}}>
                             Reset inventory
                         </button>
                     </section>
@@ -1619,6 +2023,7 @@ class Widgets extends Component{
                         quote: this.state.widgets.utility.quote.active,
                         inventory: this.state.widgets.utility.inventory.active,
                         equipment: this.state.widgets.utility.equipment.active,
+                        character: this.state.widgets.utility.character.active,
                         translator: this.state.widgets.utility.translator.active,
                         googletranslator: this.state.widgets.utility.googletranslator.active,
                         calculator: this.state.widgets.utility.calculator.active,
@@ -1634,6 +2039,9 @@ class Widgets extends Component{
                         pickerwheel: this.state.widgets.fun.pickerwheel.active,
                         simongame: this.state.widgets.games.simongame.active,
                         minesweeper: this.state.widgets.games.minesweeper.active,
+                        breakout: this.state.widgets.games.breakout.active,
+                        donutanimation: this.state.widgets.fun.donutanimation.active,
+                        currencyconverter: this.state.widgets.utility.currencyconverter.active,
                     }}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
@@ -1671,11 +2079,13 @@ class Widgets extends Component{
                 {this.state.widgets.utility.inventory.active === true
                     ? <WidgetInventory
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.utility.inventory.position.x,
                             y: this.state.widgets.utility.inventory.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.inventory.drag.disabled}
+                        inventory={this.state.inventory}
                         items={items}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -1687,7 +2097,23 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.equipment.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.equipment.drag.disabled}
+                        updateGameValue={this.updateGameValue}
+                        equipment={this.state.equipment}
                         items={items}
+                        stats={this.state.stats}
+                        abilities={this.state.abilities}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.character.active === true
+                    ? <WidgetCharacter
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.character.position.x,
+                            y: this.state.widgets.utility.character.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.character.drag.disabled}
+                        punctuation={punctuation}
+                        equipment={this.state.equipment}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {/* Widgets: Utility */}
@@ -1862,6 +2288,20 @@ class Widgets extends Component{
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.utility.currencyconverter.active
+                    ? <WidgetCurrencyConverter
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.currencyconverter.position.x,
+                            y: this.state.widgets.utility.currencyconverter.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.currencyconverter.drag.disabled}
+                        moneyConversions={moneyConversions}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        randColor={randColor}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 {
                     //#endregion
                 }
@@ -1872,47 +2312,59 @@ class Widgets extends Component{
                 {this.state.widgets.games.snake.active === true
                     ? <WidgetSnake
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.games.snake.position.x,
                             y: this.state.widgets.games.snake.position.y
                         }}
                         dragDisabled={this.state.widgets.games.snake.drag.disabled}
-                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.typingtest.active === true
                     ? <WidgetTypingTest
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.games.typingtest.position.x,
                             y: this.state.widgets.games.typingtest.position.y
                         }}
                         dragDisabled={this.state.widgets.games.typingtest.drag.disabled}
                         randSentence={randSentence}
-                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.simongame.active === true
                     ? <WidgetSimonGame
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.games.simongame.position.x,
                             y: this.state.widgets.games.simongame.position.y
                         }}
                         dragDisabled={this.state.widgets.games.simongame.drag.disabled}
-                        gameProps={gameProps}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.minesweeper.active === true
                     ? <WidgetMinesweeper
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.games.minesweeper.position.x,
                             y: this.state.widgets.games.minesweeper.position.y
                         }}
                         dragDisabled={this.state.widgets.games.minesweeper.drag.disabled}
-                        gameProps={gameProps}
                         smallIcon={smallIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.breakout.active === true
+                    ? <WidgetBreakout
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.breakout.position.x,
+                            y: this.state.widgets.games.breakout.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.breakout.drag.disabled}
+                        patterns={breakoutPatterns}
                         largeIcon={largeIcon}/>
                     : <></>}
                 { 
@@ -1943,6 +2395,16 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.fun.pickerwheel.drag.disabled}
                         color={color}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.fun.donutanimation.active === true
+                    ? <WidgetDonutAnimation
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.donutanimation.position.x,
+                            y: this.state.widgets.fun.donutanimation.position.y
+                        }}
+                        dragDisabled={this.state.widgets.fun.donutanimation.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {
@@ -1989,14 +2451,14 @@ class Widgets extends Component{
 //                         <section className="hotbar">
 //                             {/* Reset Position */}
 //                             {(this.props.defaultProps.hotbar.resetPosition)
-//                                 ? <button className="btn-match inverse when-elements-are-not-straight"
+//                                 ? <button className="button-match inverse when-elements-are-not-straight"
 //                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "resetPosition", "[WIDGET TYPE]")}>
 //                                     <Fa0/>
 //                                 </button>
 //                                 : <></>}
 //                             {/* Fullscreen */}
 //                             {(this.props.defaultProps.hotbar.fullscreen)
-//                                 ? <button className="btn-match inverse when-elements-are-not-straight"
+//                                 ? <button className="button-match inverse when-elements-are-not-straight"
 //                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
 //                                     <FaExpand/>
 //                                 </button>

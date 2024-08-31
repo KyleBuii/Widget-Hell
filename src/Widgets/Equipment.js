@@ -9,132 +9,11 @@ class WidgetEquipment extends Component{
     constructor(props){
         super(props);
         this.state = {
-            equipped: {
-                headband: {
-                    name: "",
-                    rarity: ""
-                },
-                helmet: {
-                    name: "",
-                    rarity: ""
-                },
-                eyewear: {
-                    name: "",
-                    rarity: ""
-                },
-                necklace: {
-                    name: "",
-                    rarity: ""
-                },
-                undershirt: {
-                    name: "",
-                    rarity: ""
-                },
-                chestplate: {
-                    name: "",
-                    rarity: ""
-                },
-                cape: {
-                    name: "",
-                    rarity: ""
-                },
-                bracelet: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                },
-                wrist: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                },
-                belt: {
-                    name: "",
-                    rarity: ""
-                },
-                main: {
-                    name: "",
-                    rarity: ""
-                },
-                glove: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                },
-                ring: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                },
-                legging: {
-                    name: "",
-                    rarity: ""
-                },
-                offhand: {
-                    name: "",
-                    rarity: ""
-                },
-                hidden: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                },
-                boot: {
-                    left: {
-                        name: "",
-                        rarity: ""
-                    },
-                    right: {
-                        name: "",
-                        rarity: ""
-                    }
-                }
-            },
             item: {name: "Creampuff", rarity: "rare", slot: "hidden"},
-            stats: {
-                level: 1,
-                exp: 0,
-                health: 1,
-                mana: 1,
-                attack: 1,
-                defense: 1,
-                strength: 1,
-                agility: 1,
-                vitality: 1,
-                resilience: 1,
-                intelligence: 1,
-                dexterity: 1,
-                luck: 1
-            },
             abilities: []
         };
         this.updateEquipment = this.updateEquipment.bind(this);
-        this.updateStats = this.updateStats.bind(this);
+        this.removeStats = this.removeStats.bind(this);
         this.updateAbilities = this.updateAbilities.bind(this);
     };
     viewItem(item){
@@ -147,36 +26,45 @@ class WidgetEquipment extends Component{
     };
     unequipItem(){
         var itemSlot;
+        let newEquipment;
         if(this.state.item.side){
             itemSlot = document.getElementById(`equipment-slot-${this.state.item.slot}-${this.state.item.side}`);
-            this.setState({
-                equipped: {
-                    ...this.state.equipped,
-                    [this.state.item.slot]: {
-                        ...this.state.equipped[this.state.item.slot],
-                        [this.state.item.side]: {
-                            name: "",
-                            rarity: ""
-                        }
-                    }
-                }
-            });
-        }else{
-            itemSlot = document.getElementById(`equipment-slot-${this.state.item.slot}`);
-            this.setState({
-                equipped: {
-                    ...this.state.equipped,
-                    [this.state.item.slot]: {
+            newEquipment = {
+                ...this.props.equipment,
+                [this.state.item.slot]: {
+                    ...this.props.equipment[this.state.item.slot],
+                    [this.state.item.side]: {
                         name: "",
                         rarity: ""
                     }
                 }
-            });
+            };
+            window.dispatchEvent(new CustomEvent("unequip item", {
+                "detail": {
+                    "slot": this.state.item.slot,
+                    "side": this.state.item.side
+                }
+            }));
+        }else{
+            itemSlot = document.getElementById(`equipment-slot-${this.state.item.slot}`);
+            newEquipment = {
+                ...this.props.equipment,
+                [this.state.item.slot]: {
+                    name: "",
+                    rarity: ""
+                }
+            };
+            window.dispatchEvent(new CustomEvent("unequip item", {
+                "detail": {
+                    "slot": this.state.item.slot
+                }
+            }));
         };
         itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/${this.state.item.slot}.png)`;
         itemSlot.style.opacity = "0.5";
         itemSlot.onclick = null;
-        this.updateStats(this.state.item, true);
+        this.props.updateGameValue("equipment", newEquipment);
+        this.removeStats(this.state.item);
     };
     updateEquipment(event){
         const itemData = {
@@ -185,21 +73,15 @@ class WidgetEquipment extends Component{
         };
         var itemSlot;
         if(event.detail.side){
-            if(this.state.equipped[event.detail.slot][event.detail.side].name !== event.detail.name
-                && this.state.equipped[event.detail.slot][event.detail.side].name === ""){
+            if(this.props.equipment[event.detail.slot][event.detail.side].name !== event.detail.name
+                && this.props.equipment[event.detail.slot][event.detail.side].name === ""){
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}-${event.detail.side}`);
-                this.setState({
-                    equipped: {
-                        ...this.state.equipped,
-                        [event.detail.slot]: {
-                            ...this.state.equipped[event.detail.slot],
-                            [event.detail.side]: {
-                                ...itemData
-                            } 
-                        }
-                    }
-                });
                 itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[itemData.rarity][itemData.name].image})`;
+                if(event.detail.side === "left"){
+                    itemSlot.style.transform = "scaleX(-1)";
+                }else{
+                    itemSlot.style.transform = "scaleX(1)";
+                };
                 itemSlot.style.opacity = "1";
                 itemSlot.onclick = () => {
                     this.viewItem({
@@ -208,20 +90,11 @@ class WidgetEquipment extends Component{
                         "side": event.detail.side
                     });
                 };
-                this.updateStats(itemData);
             };
         }else{
-            if(this.state.equipped[event.detail.slot].name !== event.detail.name
-                && this.state.equipped[event.detail.slot].name === ""){
+            if(this.props.equipment[event.detail.slot].name !== event.detail.name
+                && this.props.equipment[event.detail.slot].name === ""){
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}`);
-                this.setState({
-                    equipped: {
-                        ...this.state.equipped,
-                        [event.detail.slot]: {
-                            ...itemData
-                        }
-                    }
-                });
                 itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[itemData.rarity][itemData.name].image})`;
                 itemSlot.style.opacity = "1";
                 itemSlot.onclick = () => {
@@ -230,68 +103,33 @@ class WidgetEquipment extends Component{
                         "slot": event.detail.slot
                     });
                 };
-                this.updateStats(itemData);
             };
         };
     };
-    updateStats(itemData, remove = false){
+    removeStats(itemData){
         let item = this.props.items[itemData.rarity][itemData.name];
-        if(remove){
-            if(item.type === "ability"){
-                let indexRemove = this.state.abilities.indexOf(item.information);
-                if(indexRemove === 0){
-                    this.setState({
-                        abilities: [...this.state.abilities.slice(1)]
-                    }, () => {
-                        this.updateAbilities();
-                    });
-                }else{
-                    this.setState({
-                        abilities: [...this.state.abilities.slice(0, indexRemove), ...this.state.abilities.slice(indexRemove + 1)]
-                    }, () => {
-                        this.updateAbilities();
-                    });
-                };
+        let newAbilities;
+        if(item.type === "ability"){
+            let indexRemove = this.props.abilities.indexOf(item.information);
+            if(indexRemove === 0){
+                newAbilities = [...this.props.abilities.slice(1)];
+            }else{
+                newAbilities = [...this.props.abilities.slice(0, indexRemove), ...this.props.abilities.slice(indexRemove + 1)];
             };
-            if(item.type === "stat"){
-                let itemStats = Object.keys(item.stats);
-                let newStats = {};
-                for(let i in itemStats){
-                    newStats[itemStats[i]] = this.state.stats[itemStats] - item.stats[itemStats];
-                };
-                this.setState({
-                    stats: {
-                        ...this.state.stats,
-                        ...newStats
-                    }
-                });
+            this.props.updateGameValue("abilities", newAbilities);
+        };
+        if(item.type === "stat"){
+            let itemStats = Object.keys(item.stats);
+            let newStats = {};
+            for(let i in itemStats){
+                newStats[itemStats[i]] = this.props.stats[itemStats] - item.stats[itemStats];
             };
-        }else{
-            if(item.type === "ability"){
-                this.setState({
-                    abilities: [...this.state.abilities, item.information]
-                }, () => {
-                    this.updateAbilities();
-                });
-            };
-            if(item.type === "stat"){
-                let itemStats = Object.keys(item.stats);
-                let newStats = {};
-                for(let i in itemStats){
-                    newStats[itemStats[i]] = item.stats[itemStats] + this.state.stats[itemStats];
-                };
-                this.setState({
-                    stats: {
-                        ...this.state.stats,
-                        ...newStats
-                    }
-                });
-            };
+            this.props.updateGameValue("stats", newStats);
         };
     };
     updateAbilities(){
         let elementAbilities = document.getElementById("equipment-abilities");
-        if(this.state.abilities.length === 0){
+        if(this.props.abilities.length === 0){
             elementAbilities.innerHTML = `
                 <tr>
                     <td>Nothing here...</td>
@@ -299,98 +137,77 @@ class WidgetEquipment extends Component{
         }else{
             let abilityCounts = {};
             elementAbilities.innerHTML = "";
-            this.state.abilities.forEach((value) => {
+            this.props.abilities.forEach((value) => {
                 abilityCounts[value] = (abilityCounts[value] || 0) + 1;
             });
             let abilityKeys = Object.keys(abilityCounts);
             for(let i in abilityKeys){
                 let abilityRow = document.createElement("tr");
                 let ability = document.createElement("td");
-                ability.innerText = `${abilityKeys[i]} ${(abilityCounts[abilityKeys[i]] === 1) ? "" : `x${abilityCounts[abilityKeys[i]]}`}`;
+                ability.innerText = `${abilityKeys[i].replace(/\S(?!\S)/, (char) => (char === "s") ? "" : char)} ${(abilityCounts[abilityKeys[i]] === 1) ? "" : `x${abilityCounts[abilityKeys[i]]}`}`;
                 abilityRow.appendChild(ability);
                 elementAbilities.appendChild(abilityRow);
             };
         };
     };
+    componentDidUpdate(prevProps){
+        if(this.props.abilities !== prevProps.abilities){
+            this.updateAbilities();
+        };
+    };
     componentDidMount(){
-        window.addEventListener("equip item", (event) => this.updateEquipment(event));
-        window.addEventListener("beforeunload", () => {
-            localStorage.setItem("equipment", JSON.stringify(this.state.equipped));
-            localStorage.setItem("stats", JSON.stringify(this.state.stats));
-            localStorage.setItem("abilities", JSON.stringify(this.state.abilities));    
-        });
-        if(localStorage.getItem("equipment") !== null){
-            let dataLocalStorageEquipment = JSON.parse(localStorage.getItem("equipment"));
-            var itemSlot;
-            this.setState({
-                equipped: dataLocalStorageEquipment
-            });
-            /// Fill equipment slots with image of equipped item
-            for(let i in dataLocalStorageEquipment){
-                if(dataLocalStorageEquipment[i].name !== ""){
-                    /// Equipped items with no left and right
-                    if(dataLocalStorageEquipment[i].name !== undefined){
-                        itemSlot = document.getElementById(`equipment-slot-${i}`);
-                        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[dataLocalStorageEquipment[i].rarity][dataLocalStorageEquipment[i].name].image})`;
+        window.addEventListener("equip item", this.updateEquipment);
+        var itemSlot;
+        /// Fill equipment slots with image of equipped item
+        for(let i in this.props.equipment){
+            if(this.props.equipment[i].name !== ""){
+                /// Equipped items with no left and right
+                if(this.props.equipment[i].name !== undefined){
+                    itemSlot = document.getElementById(`equipment-slot-${i}`);
+                    itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].rarity][this.props.equipment[i].name].image})`;
+                    itemSlot.style.opacity = "1";
+                    itemSlot.onclick = () => {
+                        this.viewItem({
+                            ...this.props.equipment[i],
+                            "slot": i
+                        });
+                    };
+                }else{
+                    /// Left equipped item
+                    if(this.props.equipment[i].left.name !== ""){
+                        itemSlot = document.getElementById(`equipment-slot-${i}-left`);
+                        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].left.rarity][this.props.equipment[i].left.name].image})`;
+                        itemSlot.style.transform = "scaleX(-1)";
                         itemSlot.style.opacity = "1";
                         itemSlot.onclick = () => {
                             this.viewItem({
-                                ...dataLocalStorageEquipment[i],
-                                "slot": i
+                                ...this.props.equipment[i].left,
+                                "slot": i,
+                                "side": "left"
                             });
                         };  
-                    }else{
-                        /// Left equipped item
-                        if(dataLocalStorageEquipment[i].left.name !== ""){
-                            itemSlot = document.getElementById(`equipment-slot-${i}-left`);
-                            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[dataLocalStorageEquipment[i].left.rarity][dataLocalStorageEquipment[i].left.name].image})`;
-                            itemSlot.style.opacity = "1";
-                            itemSlot.onclick = () => {
-                                this.viewItem({
-                                    ...dataLocalStorageEquipment[i].left,
-                                    "slot": i,
-                                    "side": "left"
-                                });
-                            };          
-                        };
-                        /// Right equipped item
-                        if(dataLocalStorageEquipment[i].right.name !== ""){
-                            itemSlot = document.getElementById(`equipment-slot-${i}-right`);
-                            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[dataLocalStorageEquipment[i].right.rarity][dataLocalStorageEquipment[i].right.name].image})`;
-                            itemSlot.style.opacity = "1";
-                            itemSlot.onclick = () => {
-                                this.viewItem({
-                                    ...dataLocalStorageEquipment[i].right,
-                                    "slot": i,
-                                    "side": "right"
-                                });
-                            };         
-                        };
+                    };
+                    /// Right equipped item
+                    if(this.props.equipment[i].right.name !== ""){
+                        itemSlot = document.getElementById(`equipment-slot-${i}-right`);
+                        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].right.rarity][this.props.equipment[i].right.name].image})`;
+                        itemSlot.style.transform = "scaleX(1)";
+                        itemSlot.style.opacity = "1";
+                        itemSlot.onclick = () => {
+                            this.viewItem({
+                                ...this.props.equipment[i].right,
+                                "slot": i,
+                                "side": "right"
+                            });
+                        };         
                     };
                 };
             };
         };
-        if(localStorage.getItem("stats") !== null){
-            let dataLocalStorageStats = JSON.parse(localStorage.getItem("stats"));
-            this.setState({
-                stats: {
-                    ...dataLocalStorageStats
-                }
-            });
-        };
-        if(localStorage.getItem("abilities") !== null){
-            let dataLocalStorageAbilities = JSON.parse(localStorage.getItem("abilities"));
-            this.setState({
-                abilities: [...dataLocalStorageAbilities]
-            }, () => {
-                this.updateAbilities();    
-            });
-        };
+        this.updateAbilities();
     };
     componentWillUnmount(){
-        localStorage.setItem("equipment", JSON.stringify(this.state.equipped));
-        localStorage.setItem("stats", JSON.stringify(this.state.stats));
-        localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
+        window.removeEventListener("equip item", this.updateEquipment);
     };
     render(){
         return(
@@ -421,14 +238,14 @@ class WidgetEquipment extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("equipment", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("equipment", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
@@ -441,13 +258,13 @@ class WidgetEquipment extends Component{
                                 {/* Slots */}
                                 <section className="flex-center column gap medium">
                                     {/* Level */}
-                                    <div className="flex-center column">
-                                        <span className="font medium bold">Level {this.state.stats.level}</span>
-                                        <span className="font micro transparent-normal">EXP: {this.state.stats.exp}</span>
+                                    <div className="aesthetic-scale scale-span flex-center column">
+                                        <span className="font medium bold">Level {this.props.stats.level}</span>
+                                        <span className="font micro transparent-normal">EXP: {this.props.stats.exp}</span>
                                     </div>
                                     {/* Armor Slots */}
                                     <div id="equipment-slots-armor"
-                                        className="slot flex-center column gap">
+                                        className="aesthetic-scale scale-button slot flex-center column gap">
                                         {/* Helmet Container */}
                                         <div className="flex-center row gap">
                                             {/* Headband */}
@@ -629,7 +446,8 @@ class WidgetEquipment extends Component{
                                     </div>
                                 </section>
                                 {/* Stats */}
-                                <table className="table font">
+                                <table id="equipment-table-stats" 
+                                    className="aesthetic-scale scale-table table font">
                                     <thead>
                                         <tr>
                                             <th>Stat</th>
@@ -639,47 +457,47 @@ class WidgetEquipment extends Component{
                                     <tbody>
                                         <tr>
                                             <td>Health:</td>
-                                            <td>{this.state.stats.health}</td>
+                                            <td>{this.props.stats.health}</td>
                                         </tr>
                                         <tr>
                                             <td>Mana:</td>
-                                            <td>{this.state.stats.mana}</td>
+                                            <td>{this.props.stats.mana}</td>
                                         </tr>
                                         <tr>
                                             <td>Attack:</td>
-                                            <td>{this.state.stats.attack}</td>
+                                            <td>{this.props.stats.attack}</td>
                                         </tr>
                                         <tr>
                                             <td>Defense:</td>
-                                            <td>{this.state.stats.defense}</td>
+                                            <td>{this.props.stats.defense}</td>
                                         </tr>
                                         <tr>
                                             <td>Strength:</td>
-                                            <td>{this.state.stats.strength}</td>
+                                            <td>{this.props.stats.strength}</td>
                                         </tr>
                                         <tr>
                                             <td>Agility:</td>
-                                            <td>{this.state.stats.agility}</td>
+                                            <td>{this.props.stats.agility}</td>
                                         </tr>
                                         <tr>
                                             <td>Vitality:</td>
-                                            <td>{this.state.stats.vitality}</td>
+                                            <td>{this.props.stats.vitality}</td>
                                         </tr>
                                         <tr>
                                             <td>Resilience:</td>
-                                            <td>{this.state.stats.resilience}</td>
+                                            <td>{this.props.stats.resilience}</td>
                                         </tr>
                                         <tr>
                                             <td>Intelligence:</td>
-                                            <td>{this.state.stats.intelligence}</td>
+                                            <td>{this.props.stats.intelligence}</td>
                                         </tr>
                                         <tr>
                                             <td>Dexterity:</td>
-                                            <td>{this.state.stats.dexterity}</td>
+                                            <td>{this.props.stats.dexterity}</td>
                                         </tr>
                                         <tr>
                                             <td>Luck:</td>
-                                            <td>{this.state.stats.luck}</td>
+                                            <td>{this.props.stats.luck}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -701,7 +519,7 @@ class WidgetEquipment extends Component{
                                 document.getElementById("equipment-popout-view-item").style.visibility = "hidden";
                             }}>
                             <span className="font bold large-medium">{this.state.item.name}</span>
-                            <div className="flex-center row gap medium space-nicely all">
+                            <div className="flex-center row gap medium space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"/>
                                 <table className="flex-center column font small">
@@ -729,8 +547,15 @@ class WidgetEquipment extends Component{
                                 </table>
                             </div>
                             <span>{this.props.items[this.state.item.rarity][this.state.item.name].description}</span>
+                            {(this.props.items[this.state.item.rarity][this.state.item.name].requirement)
+                                ? <span className="font micro"
+                                    style={{
+                                        color: "red",
+                                        opacity: "0.5"
+                                    }}>Requirement: {this.props.items[this.state.item.rarity][this.state.item.name].requirement}</span>
+                                : <></>}
                             <span className="font micro transparent-normal">Source: {this.props.items[this.state.item.rarity][this.state.item.name].source}</span>
-                            <button className="btn-match space-nicely top not-bottom"
+                            <button className="button-match space-nicely space-top not-bottom"
                                 onClick={() => this.unequipItem()}>Unequip</button>
                         </section>
                         {/* Author */}

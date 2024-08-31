@@ -19,7 +19,7 @@ class WidgetMinesweeper extends Component{
             grid: [],
             mines: 10,
             minesLeft: 10,
-            moneyEarned: 0,
+            goldEarned: 0,
             width: 8,
             height: 8,
             timer: 0,
@@ -108,7 +108,7 @@ class WidgetMinesweeper extends Component{
     restartBoard(){
         this.setState({
             grid: this.createBoard(),
-            moneyEarned: 0,
+            goldEarned: 0,
             minesLeft: this.state.mines,
             timer: 0,
             started: false,
@@ -224,12 +224,13 @@ class WidgetMinesweeper extends Component{
         });
         if(type === "win"){
             if(this.state.mines >= 10){
-                this.props.gameProps.randomItem();
+                let amount = Math.floor(this.state.mines / 10);
+                this.props.gameProps.randomItem(amount);
             };
             this.setState({
-                moneyEarned: this.state.mines
+                goldEarned: this.state.mines
             });
-            this.props.gameProps.updateMoney(this.state.mines);
+            this.props.gameProps.updateGameValue("gold", this.state.mines);
         };
     };
     storeData(){
@@ -301,6 +302,7 @@ class WidgetMinesweeper extends Component{
     };
     componentWillUnmount(){
         this.storeData();
+        clearInterval(intervalTimer);
     };
     render(){
         return(
@@ -331,21 +333,21 @@ class WidgetMinesweeper extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("minesweeper", "resetPosition", "games")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("minesweeper", "fullscreen", "games")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Information Container */}
-                        <section className="element-ends space-nicely bottom font medium bold">
+                        <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Mines Left */}
                             <span className="flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "black", className: "global-class-name" }}>
@@ -353,20 +355,20 @@ class WidgetMinesweeper extends Component{
                                 </IconContext.Provider>
                                 {this.state.minesLeft}
                             </span>
-                            {/* Money Earned */}
-                            <span className="flex-center row">
+                            {/* Gold Earned */}
+                            <span className="flex-center row float middle-left">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 <span className="font small bold">+</span>
-                                {this.state.moneyEarned}
+                                {this.state.goldEarned}
                             </span>
-                            {/* Total Money */}
-                            <span className="flex-center row">
+                            {/* Total Gold */}
+                            <span className="flex-center row float middle-right">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
-                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                                {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
                             <span className="flex-center row gap">
@@ -381,15 +383,15 @@ class WidgetMinesweeper extends Component{
                             className="flex-center column">{this.renderBoard()}</section>
                         {/* Controller Container */}
                         <section id="minesweeper-container-controller"
-                            className="space-nicely top">
-                            <button className="btn-match space-nicely bottom"
+                            className="space-nicely space-top">
+                            <button className="button-match fill-width space-nicely space-bottom"
                                 type="button"
                                 onClick={this.restartBoard}>Reset Game</button>
                             {/* Sliders */}
                             <div className="font bold box dimmed dimmed-border">
                                 {/* Height */}
                                 <span>Height</span>
-                                <Slider className="slider space-nicely top medium"
+                                <Slider className="slider space-nicely space-top length-medium"
                                     onChange={(value) => this.handleSlider("height", value)}
                                     min={5}
                                     max={18}
@@ -404,7 +406,7 @@ class WidgetMinesweeper extends Component{
                                     disabled={this.state.disabled}/>
                                 {/* Width */}
                                 <span>Width</span>
-                                <Slider className="slider space-nicely top medium"
+                                <Slider className="slider space-nicely space-top length-medium"
                                     onChange={(value) => this.handleSlider("width", value)}
                                     min={5}
                                     max={30}
@@ -419,7 +421,7 @@ class WidgetMinesweeper extends Component{
                                     disabled={this.state.disabled}/>
                                 {/* Mines */}
                                 <span>Mines</span>
-                                <Slider className="slider space-nicely top medium"
+                                <Slider className="slider space-nicely space-top length-medium"
                                     onChange={(value) => this.handleSlider("mines", value)}
                                     min={1}
                                     max={Math.floor((this.state.height * this.state.width) / 3)}

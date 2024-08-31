@@ -24,7 +24,7 @@ class WidgetSimonGame extends Component{
     constructor(props){
         super(props);
         this.state = {
-            moneyEarned: 0,
+            goldEarned: 0,
             timer: 0,
             score: 0,
             highscore: 0,
@@ -77,7 +77,7 @@ class WidgetSimonGame extends Component{
             .style
             .visibility = "hidden";
         this.setState({
-            moneyEarned: 0,
+            goldEarned: 0,
             timer: 0,
             score: 0,
             clickCounter: 0,
@@ -95,9 +95,10 @@ class WidgetSimonGame extends Component{
     gameover(){
         clearInterval(intervalTimer);
         if(this.state.score >= 7){
-            this.props.gameProps.randomItem();
+            let amount = Math.floor(this.state.score / 7);
+            this.props.gameProps.randomItem(amount);
         };
-        this.props.gameProps.updateMoney(this.state.moneyEarned);
+        this.props.gameProps.updateGameValue("gold", this.state.goldEarned);
         this.setState({
             highscore: (this.state.highscore > this.state.score)
                 ? this.state.highscore
@@ -117,7 +118,7 @@ class WidgetSimonGame extends Component{
             await this.delay(100);
             event.target.style.backgroundColor = colors[colorsPath[this.state.clickCounter]].current;
             this.setState({
-                moneyEarned: this.state.moneyEarned + 1,
+                goldEarned: this.state.goldEarned + 1,
                 clickCounter: this.state.clickCounter + 1
             }, () => {
                 if(this.state.clickCounter === this.state.score){
@@ -201,6 +202,7 @@ class WidgetSimonGame extends Component{
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
         this.storeData();
+        clearInterval(intervalTimer);
     };
     render(){
         return(
@@ -231,35 +233,36 @@ class WidgetSimonGame extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("simongame", "resetPosition", "games")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("simongame", "fullscreen", "games")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Information Container */}
-                        <section className="element-ends space-nicely bottom font medium bold">
-                            {/* Money Earned */}
+                        <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold"
+                            style={{zIndex: 300}}>
+                            {/* Gold Earned */}
                             <span className="flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 <span className="font small bold">+</span>
-                                {this.state.moneyEarned}
+                                {this.state.goldEarned}
                             </span>
-                            {/* Total Money */}
-                            <span className="flex-center row">
+                            {/* Total Gold */}
+                            <span className="flex-center row float middle">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
-                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                                {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
                             <span className="flex-center row gap">
@@ -287,28 +290,28 @@ class WidgetSimonGame extends Component{
                         </section>
                         {/* Counter and Light Indicator */}
                         <div id="simongame-counter-light"
-                            className="float middle font large bold circle">
-                            <span className="float middle circle"
+                            className="float center font large bold circle">
+                            <span className="float center circle"
                                 style={{
                                     backgroundColor: (this.state.pathGenerating) ? "red" : "green"
                                 }}></span>
-                            <span className="float middle">{this.state.score}</span>
+                            <span className="aesthetic-scale scale-self float center">{this.state.score}</span>
                         </div>
                         {/* Gameover Overlay */}
                         <section id="simongame-overlay-gameover"
-                            className="overlay rounded flex-center column gap">
+                            className="aesthetic-scale scale-span overlay rounded flex-center column gap">
                             {(this.state.gameover)
                                 ? <div className="flex-center column gap">
                                     <span className="font large bold">GAME OVER!</span>
                                     <span className="font medium">Score: {this.state.score}</span>
-                                    <span className="font medium space-nicely bottom">Highscore: {this.state.highscore}</span>
+                                    <span className="font medium space-nicely space-bottom">Highscore: {this.state.highscore}</span>
                                 </div>
                                 : <></>}
-                            <button className="btn-match" 
+                            <button className="button-match" 
                                 type="button"
                                 onClick={() => this.start()}>Start Game</button>
                             <button id="simongame-button-settings"
-                                className="btn-match inverse disabled-option space-nicely top medium"
+                                className="button-match inverse disabled-option space-nicely space-top length-medium"
                                 onClick={() => this.handlePressableButton()}>
                                 <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
                                     <AiOutlineSetting/>
@@ -324,23 +327,23 @@ class WidgetSimonGame extends Component{
                                 className="popout">
                                 <section id="simongame-popout-animation-settings"
                                     className="popout-animation">
-                                    <section className="font large-medium flex-center column gap space-nicely all">
+                                    <section className="aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all">
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Gameplay</b>
                                             </span>
                                             <section className="element-ends">
                                                 <span className="font small">
                                                     Speed
                                                 </span>
-                                                <button className="btn-match inverse when-elements-are-not-straight"
+                                                <button className="button-match inverse when-elements-are-not-straight"
                                                     onClick={() => this.handleSetting("speed", "reset")}>
                                                     <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
                                                         <BsArrowCounterclockwise/>
                                                     </IconContext.Provider>
                                                 </button>
                                             </section>
-                                            <Slider className="slider space-nicely top medium"
+                                            <Slider className="slider space-nicely space-top length-medium"
                                                 onChange={(event) => this.handleSetting("speed", "change", event)}
                                                 value={this.state.speed}
                                                 min={1}

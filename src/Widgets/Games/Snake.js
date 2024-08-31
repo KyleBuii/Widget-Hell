@@ -52,7 +52,7 @@ class WidgetSnake extends Component{
     constructor(props){
         super(props);
         this.state = {
-            moneyEarned: 0,
+            goldEarned: 0,
             timer: 0,
             size: 24,
             settings: false,
@@ -195,7 +195,7 @@ class WidgetSnake extends Component{
             };
         };
         this.setState({
-            moneyEarned: this.state.moneyEarned + 1,
+            goldEarned: this.state.goldEarned + 1,
             snake: newSnake.concat([newSnakeSegment]),
             food: []
         });
@@ -222,7 +222,7 @@ class WidgetSnake extends Component{
             this.setState({
                 settings: false
             });
-            document.getElementById("snake-btn-settings").style.opacity = "0.5";
+            document.getElementById("snake-button-settings").style.opacity = "0.5";
             document.getElementById("snake-popout-settings").style.visibility = "hidden";
         };
         const cells = Math.floor((this.state.size / 0.9375)/2);
@@ -230,7 +230,7 @@ class WidgetSnake extends Component{
         this.moveFood(); 
         this.setState({
             timer: 0,
-            moneyEarned: 0,
+            goldEarned: 0,
             direction: 0,
             startMoving: true,
             status: 1,
@@ -242,9 +242,10 @@ class WidgetSnake extends Component{
         this.removeTimers();
         clearInterval(intervalTimer);
         if((this.state.snake.length - 1) >= 10){
-            this.props.gameProps.randomItem();
+            let amount = Math.floor((this.state.snake.length - 1) / 10);
+            this.props.gameProps.randomItem(amount);
         };
-        this.props.gameProps.updateMoney(this.state.moneyEarned);
+        this.props.gameProps.updateGameValue("gold", this.state.goldEarned);
         this.setState({
             status: 2,
             highscore: (this.state.snake.length - 1 > this.state.highscore)
@@ -253,8 +254,10 @@ class WidgetSnake extends Component{
         });
     };
     removeTimers(){
-        if(this.moveSnakeInterval)
+        if(this.moveSnakeInterval){
             clearInterval(this.moveSnakeInterval);
+        };
+        clearInterval(intervalTimer);
     };
     changeSpeed(value){
         this.setState({
@@ -267,22 +270,22 @@ class WidgetSnake extends Component{
         });
     };
     /// Handles all pressable buttons (opacity: 0.5 on click)
-    handlePressableBtn(what){
+    handlePressableButton(what){
         switch(what){
             case "settings":
-                const btnSettings = document.getElementById("snake-btn-settings");
+                const buttonSettings = document.getElementById("snake-button-settings");
                 const popoutSettings = document.getElementById("snake-popout-settings");
                 if(this.state.settings === false){
                     this.setState({
                         settings: true
                     });
-                    btnSettings.style.opacity = "1";
+                    buttonSettings.style.opacity = "1";
                     popoutSettings.style.visibility = "visible";
                 }else{
                     this.setState({
                         settings: false
                     });
-                    btnSettings.style.opacity = "0.5";
+                    buttonSettings.style.opacity = "0.5";
                     popoutSettings.style.visibility = "hidden";
                 };
                 break;
@@ -319,8 +322,7 @@ class WidgetSnake extends Component{
             if(localStorageSnake["highscore"] !== undefined){
                 this.setState({
                     highscore: localStorageSnake["highscore"],
-                    speed: localStorageSnake["speed"],
-                    money: localStorage.getItem("money")
+                    speed: localStorageSnake["speed"]
                 });
             };
         };
@@ -380,35 +382,35 @@ class WidgetSnake extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("snake", "resetPosition", "games")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("snake", "fullscreen", "games")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Information Container */}
-                        <section className="element-ends space-nicely bottom font medium bold">
-                            {/* Money Earned */}
+                        <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
+                            {/* Gold Earned */}
                             <span className="flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 <span className="font small bold">+</span>
-                                {this.state.moneyEarned}
+                                {this.state.goldEarned}
                             </span>
-                            {/* Total Money */}
-                            <span className="flex-center row">
+                            {/* Total Gold */}
+                            <span className="flex-center row float middle">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
-                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                                {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
                             <span className="flex-center row gap">
@@ -436,19 +438,19 @@ class WidgetSnake extends Component{
                             </div>
                             {/* Overlay */}
                             <div id="snake-overlay"
-                                className="overlay flex-center column gap">
-                                {(this.state.status === 2) ? <div className="font large bold"><b>GAME OVER!</b></div>
+                                className="aesthetic-scale scale-span overlay flex-center column gap">
+                                {(this.state.status === 2) ? <span className="font large bold">GAME OVER!</span>
                                     : ""}
-                                {(this.state.status === 2) ? <div className="font medium">Score: {this.state.snake.length - 1}</div>
+                                {(this.state.status === 2) ? <span className="font medium">Score: {this.state.snake.length - 1}</span>
                                     : ""}
-                                {(this.state.status === 2) ? <div className="font medium space-nicely bottom">Highscore: {this.state.highscore}</div>
+                                {(this.state.status === 2) ? <span className="font medium space-nicely space-bottom">Highscore: {this.state.highscore}</span>
                                     : ""}
-                                <button id="snake-btn-start-game"
-                                    className="btn-match"
+                                <button id="snake-button-start-game"
+                                    className="button-match"
                                     onClick={this.startGame}>Start Game</button>
-                                <button id="snake-btn-settings"
-                                    className="btn-match inverse disabled-option space-nicely top medium"
-                                    onClick={() => this.handlePressableBtn("settings")}>
+                                <button id="snake-button-settings"
+                                    className="button-match inverse disabled-option space-nicely space-top length-medium"
+                                    onClick={() => this.handlePressableButton("settings")}>
                                     <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
                                         <AiOutlineSetting/>
                                     </IconContext.Provider>
@@ -464,24 +466,24 @@ class WidgetSnake extends Component{
                                 className="popout">
                                 <section id="snake-popout-animation-settings"
                                     className="popout-animation">
-                                    <section className="font large-medium flex-center column gap space-nicely all">
+                                    <section className="aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all">
                                         {/* Gameplay Settings */}
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Gameplay</b>
                                             </span>
                                             <section className="element-ends">
                                                 <span className="font small">
                                                     Speed
                                                 </span>
-                                                <button className="btn-match inverse when-elements-are-not-straight"
+                                                <button className="button-match inverse when-elements-are-not-straight"
                                                     onClick={this.resetSpeed}>
                                                     <IconContext.Provider value={{ size: "1em", className: "global-class-name" }}>
                                                         <BsArrowCounterclockwise/>
                                                     </IconContext.Provider>
                                                 </button>
                                             </section>
-                                            <Slider className="slider space-nicely top medium"
+                                            <Slider className="slider space-nicely space-top length-medium"
                                                 onChange={this.changeSpeed}
                                                 value={this.state.speed}
                                                 min={50}

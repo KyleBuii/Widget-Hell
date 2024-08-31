@@ -22,7 +22,7 @@ class WidgetCalculator extends Component{
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-        this.handlePressableBtn = this.handlePressableBtn.bind(this);
+        this.handlePressableButton = this.handlePressableButton.bind(this);
         this.handleKeypress = this.handleKeypress.bind(this);
     };
     handleChange(event){
@@ -155,7 +155,7 @@ class WidgetCalculator extends Component{
                 };
                 break;
             case "MC":
-                let contianerMemory = document.getElementById("calculator-btn-memory-container");
+                let contianerMemory = document.getElementById("calculator-button-memory-container");
                 if(where !== undefined){
                     if(where === 0){
                         this.setState({
@@ -198,7 +198,7 @@ class WidgetCalculator extends Component{
                         this.setState({
                             memory: [...this.state.memory.slice(0, where), add, ...this.state.memory.slice(where + 1)]
                         });
-                        document.getElementById("calculator-btn-memory-container")
+                        document.getElementById("calculator-button-memory-container")
                             .children[where]
                             .children[0]
                             .innerHTML = add;
@@ -207,7 +207,7 @@ class WidgetCalculator extends Component{
                         this.setState({
                             memory: [add, ...this.state.memory.slice(1)]
                         });
-                        document.getElementById("calculator-btn-memory-container")
+                        document.getElementById("calculator-button-memory-container")
                             .children[0]
                             .children[0]
                             .innerHTML = add;
@@ -224,7 +224,7 @@ class WidgetCalculator extends Component{
                         this.setState({
                             memory: [...this.state.memory.slice(0, where), subtract, ...this.state.memory.slice(where + 1)]
                         });
-                        document.getElementById("calculator-btn-memory-container")
+                        document.getElementById("calculator-button-memory-container")
                             .children[where]
                             .children[0]
                             .innerHTML = subtract;
@@ -233,7 +233,7 @@ class WidgetCalculator extends Component{
                         this.setState({
                             memory: [subtract, ...this.state.memory.slice(1)]
                         });
-                        document.getElementById("calculator-btn-memory-container")
+                        document.getElementById("calculator-button-memory-container")
                             .children[0]
                             .children[0]
                             .innerHTML = subtract;
@@ -254,10 +254,10 @@ class WidgetCalculator extends Component{
                 };
                 break;
             case "Mv":
-                document.getElementById("calculator-btn-memory-display").style.visibility = "visible";
+                document.getElementById("calculator-button-memory-display").style.visibility = "visible";
                 break;
             case "memory-close":
-                document.getElementById("calculator-btn-memory-display").style.visibility = "hidden";
+                document.getElementById("calculator-button-memory-display").style.visibility = "hidden";
                 break;
             default:
                 this.setState(prevState => ({
@@ -274,12 +274,12 @@ class WidgetCalculator extends Component{
         this.setState({
             memory: []
         });
-        document.getElementById("calculator-btn-memory-container")
+        document.getElementById("calculator-button-memory-container")
             .innerHTML = "";
     };
     /// Handles all buttons that are pressable
-    handlePressableBtn(what){
-        let button = document.getElementById(`calculator-btn-${what}`);
+    handlePressableButton(what){
+        let button = document.getElementById(`calculator-button-${what}`);
         let popoutAnimation = document.getElementById(`calculator-${what}-popout-animation`);
         let whatState = what
             .replace(/-(.)/, (all, char) => char.toUpperCase()); 
@@ -290,7 +290,7 @@ class WidgetCalculator extends Component{
     };
     /// Handles keyboard shortcuts
     handleKeypress(event){
-        const btnEqual = document.getElementById("calculator-btn-equal");
+        const buttonEqual = document.getElementById("calculator-button-equal");
         const reWords = new RegExp("\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b");
         switch(event.key){
             case "Enter":
@@ -300,7 +300,7 @@ class WidgetCalculator extends Component{
                     });
                 }else{
                     event.preventDefault();
-                    btnEqual.click();
+                    buttonEqual.click();
                 };
                 break;
             case "Backspace":
@@ -331,9 +331,11 @@ class WidgetCalculator extends Component{
         spanLabel.innerHTML = what;
         divLabel.appendChild(spanLabel);
         /// Buttons
-        divButtons.className = "flex-center row gap only-flex float middle-left";
+        divButtons.className = "flex-center row gap only-flex";
+        divButtons.style.position = "absolute";
+        divButtons.style.left = "0.3em";
         /// Button: MC
-        buttonClear.className = "btn-match fadded option";
+        buttonClear.className = "button-match fadded option";
         buttonClear.value = "MC";
         buttonClear.onclick = (event) => {
             this.handleClick(event, index);
@@ -341,7 +343,7 @@ class WidgetCalculator extends Component{
         buttonClear.appendChild(document.createTextNode("MC"));
         divButtons.appendChild(buttonClear);
         /// Button: M+
-        buttonAdd.className = "btn-match fadded option";
+        buttonAdd.className = "button-match fadded option";
         buttonAdd.value = "M+";
         buttonAdd.onclick = (event) => {
             this.handleClick(event, index);
@@ -349,7 +351,7 @@ class WidgetCalculator extends Component{
         buttonAdd.appendChild(document.createTextNode("M+"));
         divButtons.appendChild(buttonAdd);
         /// Button: M-
-        buttonSubtract.className = "btn-match fadded option";
+        buttonSubtract.className = "button-match fadded option";
         buttonSubtract.value = "M-";
         buttonSubtract.onclick = (event) => {
             this.handleClick(event, index);
@@ -357,12 +359,12 @@ class WidgetCalculator extends Component{
         buttonSubtract.appendChild(document.createTextNode("M\u2212"));
         divButtons.appendChild(buttonSubtract);
         divLabel.appendChild(divButtons);
-        document.getElementById("calculator-btn-memory-container")
+        document.getElementById("calculator-button-memory-container")
             .appendChild(divLabel);
     };
     /// Updates memory labels
     updateLabelMemory(){
-        document.getElementById("calculator-btn-memory-container")
+        document.getElementById("calculator-button-memory-container")
             .innerHTML = "";
         this.state.memory.forEach((value, index) => {
             this.createLabelMemory(value, index);    
@@ -422,14 +424,14 @@ class WidgetCalculator extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("calculator", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("calculator", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
@@ -438,7 +440,7 @@ class WidgetCalculator extends Component{
                         {/* Display */}
                         <div id="calculator-display-container"
                             className="flex-center column">
-                            <input className="font small input-typable no-side space-nicely right short bottom short"
+                            <input className="font small input-typable no-side space-nicely space-right length-short space-bottom length-short"
                                 name="calculator-input-question"
                                 type="text"
                                 value={this.state.question}
@@ -453,132 +455,132 @@ class WidgetCalculator extends Component{
                             </input>
                         </div>
                         {/* Utility Bar */}
-                        <div className="font smaller flex-center space-nicely bottom short">
-                            <button className="btn-match fadded inversed"
+                        <div className="font smaller flex-center space-nicely space-bottom length-short">
+                            <button className="button-match fadded inversed"
                                 onClick={() => this.props.copyToClipboard(this.state.input)}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>
                             </button>
-                            <button id="calculator-btn-input-expand" 
-                                className="btn-match fadded inversed"
-                                onClick={() => this.handlePressableBtn("input-expand")}>
+                            <button id="calculator-button-input-expand" 
+                                className="button-match fadded inversed"
+                                onClick={() => this.handlePressableButton("input-expand")}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <BiExpand/>
                                 </IconContext.Provider>
                             </button>
                         </div>
                         {/* Memory Bar */}
-                        <div className="font smaller flex-center space-nicely bottom short">
-                            <button id="calculator-btn-MC"
-                                className="btn-match inverse inv-small"
+                        <div className="font smaller flex-center space-nicely space-bottom length-short">
+                            <button id="calculator-button-MC"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MC">MC</button>
-                            <button id="calculator-btn-MR"
-                                className="btn-match inverse inv-small"
+                            <button id="calculator-button-MR"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MR">MR</button>
-                            <button id="calculator-btn-M+"
-                                className="btn-match inverse inv-small"
+                            <button id="calculator-button-M+"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="M+">M+</button>
-                            <button id="calculator-btn-M-"
-                                className="btn-match inverse inv-small"
+                            <button id="calculator-button-M-"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="M-">M&minus;</button>
-                            <button id="calculator-btn-MS"
-                                className="btn-match inverse inv-small"
+                            <button id="calculator-button-MS"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="MS">MS</button>
-                            <button id="calculator-btn-Mv"
-                                className="btn-match inverse inv-small"
+                            <button id="calculator-button-Mv"
+                                className="button-match inverse inv-small"
                                 onClick={this.handleClick}
                                 value="Mv">M&#709;</button>
                         </div>
                         {/* Buttons */}
                         <section className="grid col-4">
                             {/* Memory Display */}
-                            <div id="calculator-btn-memory-display">
-                                <div id="calculator-btn-memory-container"></div>
-                                <button id="calculator-btn-memory-display-close"
+                            <div id="calculator-button-memory-display">
+                                <div id="calculator-button-memory-container"></div>
+                                <button id="calculator-button-memory-display-close"
                                     onClick={this.handleClick}
                                     value="memory-close"></button>
-                                <button id="calculator-btn-trash"
-                                    className="btn-match inverse"
+                                <button id="calculator-button-trash"
+                                    className="button-match inverse"
                                     onClick={this.handleDelete}
-                                    value="trash"><FaRegTrashCan id="calculator-btn-trash-icon"/></button>
+                                    value="trash"><FaRegTrashCan id="calculator-button-trash-icon"/></button>
                             </div>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="%">%</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="clear-entry">CE</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="clear">C</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="delete"><FiDelete className="pointer-events-none"/></button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="1/x">1/x</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="x^2">x&sup2;</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="sqrt(x)">&#8730;x</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="/">&divide;</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="7">7</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="8">8</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="9">9</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="*">&times;</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="4">4</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="5">5</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="6">6</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="-">&minus;</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="1">1</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="2">2</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="3">3</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="+">+</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="negate"><BsPlusSlashMinus className="pointer-events-none"/></button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value="0">0</button>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleClick}
                                 value=".">.</button>
-                            <button id="calculator-btn-equal"
-                                className="btn-match"
+                            <button id="calculator-button-equal"
+                                className="button-match"
                                 onClick={this.handleClick}
                                 value="=">=</button>
                         </section>
@@ -597,7 +599,7 @@ class WidgetCalculator extends Component{
                                 <section id="calculator-input-expand-popout-animation"
                                     className="popout-animation">
                                     <p id="calculator-input-expand-text"
-                                        className="cut-scrollbar-corner-part-2 p area-short font medium break-word space-nicely all long">
+                                        className="cut-scrollbar-corner-part-2 p area-short font medium break-word space-nicely space-all length-long">
                                         {this.state.input}
                                     </p>
                                 </section>

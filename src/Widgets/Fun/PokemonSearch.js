@@ -312,22 +312,22 @@ class WidgetPokemonSearch extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "resetPosition", "fun")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "fullscreen", "fun")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Pokemon Search */}
-                        <div className="flex-center column gap space-nicely bottom longer">
-                            <label className="font medium bold"
+                        <div className="flex-center column gap space-nicely space-bottom length-longer">
+                            <label className="aesthetic-scale scale-self font medium bold"
                                 htmlFor="pokemonsearch-input-search">Search for Pokémon Name or ID:</label>
                             <div className="flex-center row gap">
                                 <div className="input-with-button-inside">
@@ -340,7 +340,7 @@ class WidgetPokemonSearch extends Component{
                                             input: e.target.value.toLowerCase()
                                         })}/>
                                     {/* Random Button */}
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         type="button"
                                         onClick={() => this.handleButton("random")}>
                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
@@ -350,12 +350,12 @@ class WidgetPokemonSearch extends Component{
                                 </div>
                                 {/* Search Button */}
                                 <button id="pokemonsearch-button-search" 
-                                    className="btn-match option"
+                                    className="button-match option"
                                     type="button"
                                     onClick={() => this.handleButton("search")}>Search</button>
                                 {/* Setting Button */}
                                 <button id="pokemonsearch-button-setting"
-                                    className="btn-match inverse disabled-option space-nicely top medium"
+                                    className="button-match inverse disabled-option space-nicely space-top length-medium"
                                     onClick={() => this.handleButton("setting")}>
                                     <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                         <AiOutlineSetting/>
@@ -425,7 +425,7 @@ class WidgetPokemonSearch extends Component{
                                 </div>
                             </div>
                             {/* Extra Information */}
-                            <table className="table font">
+                            <table className="aesthetic-scale scale-table table font">
                                 <thead>
                                     <tr>
                                         <th>Base</th>
@@ -465,12 +465,12 @@ class WidgetPokemonSearch extends Component{
                                 className="popout">
                                 <section id="pokemonsearch-popout-animation-setting"
                                     className="popout-animation">
-                                    <section className="grid space-nicely all long font medium">
+                                    <section className="grid space-nicely space-all length-long font medium">
                                         <button id="pokemonsearch-popout-setting-button-shiny"
-                                            className="btn-match option opt-long disabled-option"
+                                            className="button-match option opt-long disabled-option"
                                             onClick={() => this.handleButtonPressable("shiny")}>Shiny</button>
                                         <button id="pokemonsearch-popout-setting-button-flipped"
-                                            className="btn-match option opt-long disabled-option"
+                                            className="button-match option opt-long disabled-option"
                                             onClick={() => this.handleButtonPressable("flipped")}>Flipped</button>
                                         <section className="flex-center row gap">
                                             <div className="radio-match">

@@ -58,16 +58,22 @@ class WidgetTimeConversion extends Component{
                 });        
                 break;
             case "time":
-                this.setState({
-                    date: new Date(`${this.state.date.toLocaleString().slice(0, 9)} ${what}`),
-                    time: what
-                });
+                if(what !== null){
+                    this.setState({
+                        date: new Date(`${this.state.date.toLocaleString().slice(0, 9)} ${what}`),
+                        time: what
+                    });
+                }else{
+                    this.setState({
+                        time: what
+                    });
+                };
                 break;
             default:
                 break;
         };
     };
-    handleBtn(what){
+    handleButton(what){
         switch(what){
             case "12hr":
                 this.setState({
@@ -252,19 +258,20 @@ class WidgetTimeConversion extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Time Conversion Container */}
                         <section className="flex-center row gap medium">
                             <section className="flex-center column gap">
                                 {/* Original date and time */}
@@ -328,16 +335,16 @@ class WidgetTimeConversion extends Component{
                                             locale={this.state.timeformat}/>
                                     </section>
                                     <section className="flex-center row gap">
-                                        <button id="time-conversion-btn-twelvehr"
-                                            className="btn-match option opt-small"
-                                            onClick={() => this.handleBtn("12hr")}>12hr</button>
-                                        <button id="time-conversion-btn-twentyfourhr" 
-                                            className="btn-match option opt-small"
-                                            onClick={() => this.handleBtn("24hr")}>24hr</button>
+                                        <button id="time-conversion-button-twelvehr"
+                                            className="button-match option opt-small"
+                                            onClick={() => this.handleButton("12hr")}>12hr</button>
+                                        <button id="time-conversion-button-twentyfourhr" 
+                                            className="button-match option opt-small"
+                                            onClick={() => this.handleButton("24hr")}>24hr</button>
                                     </section>
                                 </section>
                                 {/* Convert */}
-                                <section className="flex-center row gap space-nicely all">
+                                <section className="flex-center row gap space-nicely space-all">
                                     <IconContext.Provider value={{ size: "1.8em", className: "global-class-name" }}>
                                         <FaArrowDownLong/>
                                     </IconContext.Provider>
@@ -361,21 +368,17 @@ class WidgetTimeConversion extends Component{
                                 </section>
                                 {/* Converted date */}
                                 <section className="flex-center column gap">
-                                    <label htmlFor="timeconversion-input-month"
-                                        className="font medium">
+                                    <span className="aesthetic-scale scale-self font medium">
                                         {this.state.date.toLocaleString("en-US", {
                                             hour12: this.state.hour12,
                                             timeZone: this.state.timezone.value
                                         })}
-                                    </label>
+                                    </span>
                                 </section>
                             </section>
-                            {/* Calendar */}
-                            <div>
-                                <Calendar
-                                    onChange={(val) => this.handleChange("date", val)}
-                                    value={this.state.date}/>
-                            </div>
+                            <Calendar
+                                onChange={(val) => this.handleChange("date", val)}
+                                value={this.state.date}/>
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

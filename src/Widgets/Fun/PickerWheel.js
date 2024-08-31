@@ -242,6 +242,7 @@ class WidgetPickerWheel extends Component{
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
         this.storeData();
+        clearInterval(intervalSpin);
     };
     render(){
         return(
@@ -272,30 +273,30 @@ class WidgetPickerWheel extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "resetPosition", "fun")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "fullscreen", "fun")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Input */}
-                        <section className="flex-center row gap space-nicely bottom longer">
+                        <section className="flex-center row gap space-nicely space-bottom length-longer">
                             <input id="pickerwheel-input"
                                 className="input-match"/>
-                            <button className="btn-match with-input"
+                            <button className="button-match with-input"
                                 onClick={() => this.handleClick("add")}
                                 disabled={!this.state.finished}>Add</button>
-                            <button className="btn-match with-input"
+                            <button className="button-match with-input"
                                 onClick={() => this.handleClick("remove")}
                                 disabled={!this.state.finished}>Remove</button>
-                            <button className="btn-match with-input"
+                            <button className="button-match with-input"
                                 onClick={() => this.handleClick("removeAll")}
                                 disabled={!this.state.finished}>Remove All</button>
                         </section>
@@ -309,7 +310,7 @@ class WidgetPickerWheel extends Component{
                         {/* Winner Overlay */}
                         <section id="pickerwheel-overlay-winner"
                             className="overlay rounded flex-center">
-                            <span className="font largerer bold break-word"
+                            <span className="aesthetic-scale scale-self font largerer bold break-word"
                                onClick={this.handleOverlay}>{this.state.winner}</span>
                         </section>
                         {/* Author */}

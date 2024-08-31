@@ -86,40 +86,41 @@ class WidgetQuote extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("quote", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("quote", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Quote */}
-                        <div id="quote-container">
+                        <div id="quote-container"
+                            className="aesthetic-scale scale-self">
                             <span className="font-quote large">"</span>
                             <span id="quote-text"
                                 className="font large normal">{this.state.currentQuote}</span>
                             <span className="font-quote large">"</span>
                         </div>
                         <p id="author-container"
-                            className="font-author">- {this.state.currentAuthor}</p>
+                            className="aesthetic-scale scale-self font-author">- {this.state.currentAuthor}</p>
                         {/* Bottom Bar */}
                         <div className="element-ends">
-                            <div className="flex-center row space-nicely left">
+                            <div className="flex-center row space-nicely space-left">
                                 {/* Clipboard */}
-                                <button className="btn-match fadded inversed"
+                                <button className="button-match fadded inversed"
                                     onClick={() => this.props.copyToClipboard(this.state.currentQuote)}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>
                                 </button>
                                 {/* Talk */}
-                                <button className="btn-match fadded inversed"
+                                <button className="button-match fadded inversed"
                                     onClick={() => this.handleTalk()}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaVolumeHigh/>
@@ -127,7 +128,7 @@ class WidgetQuote extends Component{
                                 </button>
                             </div>
                             {/* New Quote */}
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
                         {/* Author */}

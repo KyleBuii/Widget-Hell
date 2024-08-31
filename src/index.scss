@@ -163,10 +163,94 @@ body{
 
 .font-author{
     font-size: 0.9em;
-    text-align: right;
+    float: right;
     font-style: italic;
     margin: 0.6rem 1.85rem 0.94rem 0rem;
     color: var(--randColor);
+}
+//#endregion
+
+//#region Aesthetics
+.aesthetic-scale{
+    &.scale-self{
+        transition: scale 0.3s;
+        will-change: scale;
+        &:hover{
+            scale: 1.03;
+        }
+    }
+    &.scale-all{
+        *:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-span{
+        span:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-li{
+        li:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-div{
+        div:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-table{
+        td:not(.leave-me-alone), th:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-button{
+        button:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-label{
+        label:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
+    &.scale-legend{
+        legend:not(.leave-me-alone){
+            transition: scale 0.3s;
+            will-change: scale;
+            &:hover{
+                scale: 1.03;
+            }
+        }
+    }
 }
 //#endregion
 
@@ -340,7 +424,7 @@ body{
 }
 
 /// Matches the color to the corresponding element
-.btn-match{
+.button-match{
     padding: 0.47rem;
     border: none;
     border-radius: 9px;
@@ -348,16 +432,18 @@ body{
     background-color: var(--randColor);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    transition-property: background-color;
+    transition-duration: 0.3s;
     &:hover{
         cursor: pointer;
         background-color: rgba(var(--randColorOpacity), 0.8);
     }
     &:active{
-        transform: scale(0.98);
+        scale: 0.98;
     }
     &:disabled{
         background-color: rgba(var(--randColorOpacity), 0.2);
@@ -410,6 +496,8 @@ body{
             background-color: rgba(var(--randColorOpacity), 0.5);
         }
         &.inversed{
+            transition-property: color;
+            transition-duration: 0.3s;
             color: rgba(var(--randColorOpacity), 0.2);
             background-color: unset;
             &:hover{
@@ -617,7 +705,7 @@ body{
         padding: 0.05rem 0.15rem;
         border-right: none;
         border-radius: 5.6px 0px 0px 5.6px;
-        &.with-help-btn{
+        &.with-help-button{
             height: 2.05em;
             max-width: 15.5em;
             width: 100vmin;
@@ -638,9 +726,20 @@ body{
     opacity: 0;
     position: absolute;
 }
+
+.input-floating{
+    font-size: 1em;
+    width: 1em;
+    border: none;
+    text-align: right;
+    padding: 0;
+    &:focus{
+        outline: none;
+    }
+}
 //#endregion
 
-.help-btn{
+.help-button{
     height: 2.3em;
     max-width: 2.1em;
     width: 100vmin;
@@ -693,44 +792,47 @@ body{
             grid-template-columns: repeat(4, 2.5em);
         }
     }
+    &.col-inventory{
+        grid-template-columns: repeat(2, 2.225em);
+    }
 }
 
 .space-nicely{
-    &.top{
+    &.space-top{
         margin: 0.9rem 0rem 0.3rem;
-        &.medium{
+        &.length-medium{
             margin-top: 0.5rem;
         }
         &.not-bottom{
             margin-bottom: 0rem;
         }
     }
-    &.right{
-        &.short{
+    &.space-right{
+        &.length-short{
             margin-right: 0.15rem;
         }
     }
-    &.bottom{
+    &.space-bottom{
         margin-bottom: 0.6rem;
-        &.short{
+        &.length-short{
             margin-bottom: 0.25rem;
         }
-        &.long{
+        &.length-long{
             margin-bottom: 1rem;
         }
-        &.longer{
+        &.length-longer{
             margin-bottom: 2rem;
         }
     }
-    &.left{
+    &.space-left{
         margin-left: 1.5rem;
-        &.short{
+        &.length-short{
             margin-left: 0.15rem;
         }
     }
-    &.all{
+    &.space-all{
         margin: 0.6rem;
-        &.long{
+        &.length-long{
             margin: 1rem;
         }
     }
@@ -766,6 +868,9 @@ body{
     background-color: rgba(var(--randColorOpacity), 0.15);
     border-radius: 20px;
     padding: 1rem;
+    &.group-medium{
+        max-width: 22.5em;
+    }
     &.group-large{
         max-width: 45em;
     }
@@ -789,27 +894,36 @@ body{
         margin-left: 0.5em;
         bottom: 2.1em;
     }
-    &.middle{
+    &.center{
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
+    &.middle{
+        left: 50%;
+        transform: translate(-50%);
+    }
     &.middle-left{
-        left: 0.3em;
+        left: 40%;
+        transform: translateX(-50%);
+    }
+    &.middle-right{
+        left: 60%;
+        transform: translateX(-50%);
     }
     &.bottom-left{
         bottom: 2.8em;
         left: 2.8em;
     }
-    &.bottom-middle{
-        bottom: 2.8em;
-        left: 50%;
-        transform: translate(-50%);
-    }
     &.bottom-right{
         bottom: 2.8em;
         right: 3.8em;
     }
+}
+
+.fill-width{
+    box-sizing: border-box;
+    width: 100%;
 }
 
 /// Position for the author's name
@@ -3494,6 +3608,11 @@ body{
 }
 
 #inventory-widget{
+    #inventory-slots{
+        button:hover{
+            background-color: rgba(var(--randColorOpacity), 0.18);
+        }
+    }
     #inventory-pages{
         button{
             padding: 0;
@@ -3517,6 +3636,12 @@ body{
             text-align: center;
         }
     }
+    #inventory-currency{
+        margin-top: 2em;
+    }
+    #inventory-tabs{
+        margin-top: 1em;
+    }
 }
 
 #equipment-widget{
@@ -3526,6 +3651,9 @@ body{
             opacity: 0.5;
             background-color: rgba(var(--randColorOpacity), 0.13);
             border: 1px solid rgba(var(--randColorOpacity), 0.25);
+            &:hover{
+                background-color: rgba(var(--randColorOpacity), 0.18);
+            }
         }
     }
     #equipment-popout-view-item{
@@ -3536,6 +3664,71 @@ body{
         top: 6em;
         left: 0;
         transform: none;
+        span{
+            text-align: center;
+        }
+    }
+    #equipment-table-stats{
+        tbody{
+            tr{
+                /// Health
+                &:nth-child(1){
+                    color: red;
+                }
+                /// Mana
+                &:nth-child(2){
+                    color: blue;
+                }
+                /// Attack
+                &:nth-child(3){
+                    color: #cb47dd;
+                }
+                /// Defense
+                &:nth-child(4){
+                    color: #010000;
+                }
+                /// Strength
+                &:nth-child(5){
+                    color: #ab0000;
+                }
+                /// Agility
+                &:nth-child(6){
+                    color: #2dd16c;
+                }
+                /// Vitality
+                &:nth-child(7){
+                    color: #be0011;
+                }
+                /// Resilience
+                &:nth-child(8){
+                    color: #808080;
+                }
+                /// Intelligence
+                &:nth-child(9){
+                    color: #337de9;
+                }
+                /// Dexterity
+                &:nth-child(10){
+                    color: #e86801;
+                }
+                /// Luck
+                &:nth-child(11){
+                    color: #b5af00;
+                }
+            }
+        }
+    }
+}
+
+#character-widget{
+    #character-container{
+        height: 22em;
+        width: 22em;
+        img, div{
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     }
 }
 
@@ -3579,16 +3772,16 @@ body{
     #calculator-display-container{
         margin: 0rem 0rem 0.3rem;
     }
-    #calculator-btn-memory-display{
+    #calculator-button-memory-display{
         visibility: hidden;
         position: absolute;
-        top: 34%;
+        top: 8em;
         left: 1%;
         width: 12.5em;
         height: 12.7em;
         background-color: white;
         border-radius: 0px 0px 23px 23px;
-        #calculator-btn-memory-container{
+        #calculator-button-memory-container{
             display: flex;
             flex-direction: column;
             width: 90%;
@@ -3605,18 +3798,18 @@ body{
                 }
             }
         }
-        #calculator-btn-memory-display-close{
+        #calculator-button-memory-display-close{
             position: absolute;
-            top: -54.4%;
+            top: -10.6em;
             left: -0.5%;
-            width: 16.74em;
-            height: 55%;
+            width: 16.75em;
+            height: 11em;
             border: none;
             border-radius: 23px 23px 0px 0px;
             background-color: rgba(0, 0, 0, 0.2);
             cursor: pointer;
         }
-        #calculator-btn-trash{
+        #calculator-button-trash{
             position: absolute;
             bottom: 0.7em;
             right: 0.3em;
@@ -3693,6 +3886,28 @@ body{
             margin: 0 auto;
             top: -4px;
             border-radius: 50%;           
+        }
+    }
+    #battery-information{
+        bottom: 2.8em;
+    }
+}
+
+#currencyconverter-widget{
+    #currencyconverter-container{
+        #currencyconverter-select-from, #currencyconverter-select-to{
+            width: 12em;
+        }
+        #currencyconverter-result{
+            min-height: 8em;
+            max-width: 20em;
+            background: linear-gradient(
+                rgba(255, 255, 255, .8),
+                rgba(255, 255, 255, .8)),
+                url(../public/images/singles/dollar.jpg);
+            background-position: center;
+            background-size: cover;
+            word-break: break-all;
         }
     }
 }
@@ -3790,14 +4005,6 @@ body{
         span:first-of-type{
             top: 25%;
             background-color: red;
-        }
-    }
-}
-
-#minesweeper-widget{
-    #minesweeper-container-controller{
-        button{
-            width: 100%;
         }
     }
 }
@@ -3989,6 +4196,12 @@ body{
         transform: translate(-50%, -50%);
         border-radius: 50%;
         border: none;
+    }
+}
+
+#donutanimation-widget{
+    #donutanimation-donut{
+        position: absolute;
     }
 }
 //#endregion

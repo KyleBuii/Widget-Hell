@@ -19,10 +19,134 @@
 ### Restrictions
 | Game | Requirement |
 | --- | --- |
-| Minesweeper | Atleast 10 mines |
-| Snake | Atleast 10 food eaten |
-| Simon Game | Atleast 7 guesses |
-| Typing Test | Atleast 40 wpm |
+| Minesweeper | Every 10 mines |
+| Snake | Every 10 food eaten |
+| Simon Game | Every 7 guesses |
+| Typing Test | Every 40 wpm |
+| Breakout | Every 100 bricks destroyed |
+
+## **Stats guide [WIP]**
+<details>
+    <summary>Health</summary>
+
+| Game |  |
+| --- | --- |
+| Minesweeper | Allows tanking a mine for every 10 |
+| Snake | Allows tanking the wall for every 10 |
+| Simon Game | Allows surviving an incorrect guess for every 10 |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Mana</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Attack</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Defense</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Strength</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Agility</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Vitality</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Resilience</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Intelligence</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Dexterity</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
+<details>
+    <summary>Luck</summary>
+
+| Game | Requirement |
+| --- | --- |
+| Minesweeper | N/A |
+| Snake | N/A |
+| Simon Game | N/A |
+| Typing Test | N/A |
+| Breakout | N/A |
+</details>
 
 ## **Plans**
 - Allow contributors and users to make their own widget with high customizabilitiy

@@ -62,11 +62,21 @@ class WidgetWeather extends Component{
             try{
                 const response = await fetch(url, options);
                 const result = await response.json();
+                let dateLastUpdated = new Date(result.current.last_updated);
+                let dateOptions = {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour12: false,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                };
                 this.setState({
                     name: result.location.name,
                     region: result.location.region,
                     localTime: result.location.localtime,
-                    lastUpdated: result.current.last_updated,
+                    lastUpdated: dateLastUpdated.toLocaleString("en-US", dateOptions),
                     tempC: result.current.temp_c,
                     tempF: result.current.temp_f,
                     feelsLikeC: result.current.feelslike_c,
@@ -141,21 +151,21 @@ class WidgetWeather extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("weather", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("weather", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Search */}
-                        <div className="flex-center row gap small space-nicely bottom">
+                        <div className="flex-center row gap small space-nicely space-bottom">
                             <div id="weather-search-input">
                                 <input className="input-match"
                                     name="weather-input-search"
@@ -164,14 +174,14 @@ class WidgetWeather extends Component{
                                     value={this.state.input}>
                                 </input>
                                 <button id="weather-search-help-button"
-                                    className="btn-match inverse"
+                                    className="button-match inverse"
                                     onClick={() => this.handlePressableButton("help")}>
                                     <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                         <FaRegCircleQuestion/>
                                     </IconContext.Provider>
                                 </button>
                             </div>
-                            <button className="btn-match with-input"
+                            <button className="button-match with-input"
                                 onClick={this.handleUpdate}>
                                 Update
                             </button>
@@ -188,7 +198,7 @@ class WidgetWeather extends Component{
                                 className="popout">
                                 <section id="weather-help-popout-animation"
                                     className="popout-animation">
-                                    <ul className="font medium">
+                                    <ul className="aesthetic-scale scale-li font medium">
                                         <li>Latitude and Longitude <br/><span className="font small transparent-normal">e.g: 48.8567,2.3508</span></li>
                                         <li>City name <span className="font small transparent-normal">e.g.: Paris</span></li>
                                         <li>US zip <span className="font small transparent-normal">e.g.: 10001</span></li>
@@ -203,14 +213,14 @@ class WidgetWeather extends Component{
                             </section>
                         </Draggable>
                         {/* Location */}
-                        <div className="flex-center row gap only-align-items">
+                        <div className="aesthetic-scale scale-self flex-center row gap only-align-items">
                             <IconContext.Provider value={{ size: "1em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                 <FaLocationDot/>
                             </IconContext.Provider>
                             <span className="font medium bold">{this.state.name}, {this.state.region}</span>
                         </div>
                         {/* Weather Information */}
-                        <section className="flex-center column gap">
+                        <section className="aesthetic-scale scale-span flex-center column gap">
                             {/* Image */}
                             <img className="no-highlight"
                                 src={this.state.weatherIcon}

@@ -11,7 +11,15 @@ import Select from "react-select";
 /// Variables
 let voices;
 /// Select option
-const optionsTranslate = [
+var optionsTranslateFrom = [
+    {
+        label: "Languages",
+        options: [
+            {value: "auto", label: "Detect language"}
+        ]
+    }
+];
+var optionsTranslateTo = [
     {
         label: "Languages",
         options: []
@@ -45,19 +53,24 @@ class WidgetGoogleTranslator extends Component{
     };
     async handleTranslate(){
         if(this.state.input !== ""){
-            const url = 'https://translated-mymemory---translation-memory.p.rapidapi.com/get?langpair=' + this.state.from.value + '%7C' + this.state.to.value + '&q=' + this.state.input + '&mt=1&onlyprivate=0&de=a%40b.c';
+            const url = 'https://translate281.p.rapidapi.com/';
+            const data = new FormData();
+            data.append('text', this.state.input);
+            data.append('from', this.state.from.value);
+            data.append('to', this.state.to.value);
             const options = {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
                     'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
-                }
+                },
+                body: data      
             };
             try{
                 const response = await fetch(url, options);
                 const result = await response.json();
                 this.setState({
-                    converted: result.responseData.translatedText
+                    converted: result.response
                 });
             }catch(err){
                 this.setState({
@@ -102,7 +115,7 @@ class WidgetGoogleTranslator extends Component{
     handleRandSentence(){
         this.setState({
             input: this.props.randSentence(),
-            from: {value: "en", label: "English"}
+            from: {value: "auto", label: "Detect language"}
         }, () => {
             $("#translator-translate-from").val("en");
         });
@@ -130,14 +143,15 @@ class WidgetGoogleTranslator extends Component{
         }, { once: true });
         /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.languages.length; curr+=2){
-            optionsTranslate[0]["options"].push(
+            optionsTranslateTo[0]["options"].push(
                 {value: this.props.languages[curr+1], label: this.props.languages[curr]}
             );
         };
+        optionsTranslateFrom[0]["options"] = [...optionsTranslateFrom[0]["options"], ...optionsTranslateTo[0]["options"]];
         /// Default values
         if(sessionStorage.getItem("googletranslator") === null){
             this.setState({
-                from: {value: "en", label: "English"},
+                from: {value: "auto", label: "Detect language"},
                 to: {value: "en", label: "English"}
             });
         }else{
@@ -187,28 +201,28 @@ class WidgetGoogleTranslator extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Select */}
-                        <div className="flex-center space-nicely bottom">
+                        <div className="flex-center space-nicely space-bottom">
                             {/* Select From */}
                             <Select id="googletranslator-translate-from"
                                 className="select-match"
                                 value={this.state.from}
-                                defaultValue={optionsTranslate[0]["options"][0]}
+                                defaultValue={optionsTranslateFrom[0]["options"][0]}
                                 onChange={this.handleFrom}
-                                options={optionsTranslate}
+                                options={optionsTranslateFrom}
                                 formatGroupLabel={this.props.formatGroupLabel}
                                 theme={(theme) => ({
                                     ...theme,
@@ -217,7 +231,7 @@ class WidgetGoogleTranslator extends Component{
                                         ...this.props.selectTheme
                                     }
                                 })}/>
-                            <button className="btn-match inverse"
+                            <button className="button-match inverse"
                                 onClick={this.handleSwap}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <BsArrowLeftRight/>
@@ -227,9 +241,9 @@ class WidgetGoogleTranslator extends Component{
                             <Select id="googletranslator-translate-to"
                                 className="select-match"
                                 value={this.state.to}
-                                defaultValue={optionsTranslate[0]["options"][0]}
+                                defaultValue={optionsTranslateTo[0]["options"][0]}
                                 onChange={this.handleTo}
-                                options={optionsTranslate}
+                                options={optionsTranslateTo}
                                 formatGroupLabel={this.props.formatGroupLabel}
                                 theme={(theme) => ({
                                     ...theme,
@@ -238,7 +252,7 @@ class WidgetGoogleTranslator extends Component{
                                         ...this.props.selectTheme
                                     }
                                 })}/>
-                            <button className="btn-match inverse"
+                            <button className="button-match inverse"
                                 onClick={this.handleTranslate}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
@@ -260,14 +274,14 @@ class WidgetGoogleTranslator extends Component{
                         <div className="element-ends float bottom">
                             <div className="flex-center row">
                                 {/* Clipboard */}
-                                <button className="btn-match fadded inversed"
+                                <button className="button-match fadded inversed"
                                     onClick={() => this.props.copyToClipboard(this.state.converted)}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>
                                 </button>
                                 {/* Talk */}
-                                <button className="btn-match fadded inversed"
+                                <button className="button-match fadded inversed"
                                     onClick={() => this.handleTalk()}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaVolumeHigh/>
@@ -275,7 +289,7 @@ class WidgetGoogleTranslator extends Component{
                                 </button>
                             </div>
                             {/* Random Sentence */}
-                            <button className="btn-match fadded"
+                            <button className="button-match fadded"
                                 onClick={this.handleRandSentence}>Random sentence</button>
                         </div>
                         {/* Author */}

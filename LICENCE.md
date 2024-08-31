@@ -14,3 +14,5 @@ https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/
 https://opengameart.org/content/98-pixel-art-rpg-icons
 
 https://alexs-assets.itch.io/16x16-rpg-item-pack
+
+https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/

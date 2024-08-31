@@ -83,14 +83,14 @@ class WidgetBattery extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("battery", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("battery", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
@@ -103,7 +103,8 @@ class WidgetBattery extends Component{
                             </div>
                         </div>
                         {/* Battery Information */}
-                        <div className="flex-center column float bottom-middle">
+                        <div id="battery-information"
+                            className="flex-center column float middle">
                             {(this.state.charging)
                                 ? <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}><RiBattery2ChargeLine/></IconContext.Provider>
                                 : <></>}

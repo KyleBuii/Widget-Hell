@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { BiBriefcase } from "react-icons/bi";
 import { GiAxeSword } from "react-icons/gi";
+import { IoBodyOutline } from "react-icons/io5";
 import { IconContext } from 'react-icons';
 import Switch from 'react-switch';
 import Slider from 'rc-slider';
@@ -105,28 +106,31 @@ class WidgetSetting extends Component{
         this.state = {
             showHideWidgets: false,
             search: "",
-            widgetsBtn: {
-                widgetsBtnUtility: {
-                    quoteBtn: true,
-                    translatorBtn: true,
-                    googleTranslatorBtn: true,
-                    calculatorBtn: true,
-                    weatherBtn: true,
-                    timeConversionBtn: true,
-                    spreadsheetBtn: true,
-                    notepadBtn: true,
-                    qrCodeBtn: true,
-                    batteryBtn: true,
+            widgetsButton: {
+                widgetsButtonUtility: {
+                    quoteButton: true,
+                    translatorButton: true,
+                    googleTranslatorButton: true,
+                    calculatorButton: true,
+                    weatherButton: true,
+                    timeConversionButton: true,
+                    spreadsheetButton: true,
+                    notepadButton: true,
+                    qrCodeButton: true,
+                    batteryButton: true,
+                    currencyConverterButton: true,
                 },
-                widgetsBtnGames: {
-                    snakeBtn: true,
-                    typingTestBtn: true,
-                    simonGameBtn: true,
-                    minesweeperBtn: true
+                widgetsButtonGames: {
+                    snakeButton: true,
+                    typingTestButton: true,
+                    simonGameButton: true,
+                    minesweeperButton: true,
+                    breakoutButton: true,
                 },
-                widgetsBtnFun: {
-                    pokemonSearchBtn: true,
-                    pickerWheelBtn: true
+                widgetsButtonFun: {
+                    pokemonSearchButton: true,
+                    pickerWheelButton: true,
+                    donutAnimationButton: true,
                 }
             },
             utilityTab: true,
@@ -135,6 +139,7 @@ class WidgetSetting extends Component{
             settings: false,
             inventory: false,
             equipment: false,
+            character: false,
             values: {
                 screenDimmer: false,
                 screenDimmerSlider: false,
@@ -154,8 +159,8 @@ class WidgetSetting extends Component{
             }
         };
         this.handleTrick = this.handleTrick.bind(this);
-        this.handlePressableBtn = this.handlePressableBtn.bind(this);
-        this.handleToggleableBtn = this.handleToggleableBtn.bind(this);
+        this.handlePressableButton = this.handlePressableButton.bind(this);
+        this.handleToggleableButton = this.handleToggleableButton.bind(this);
         this.handleSlider = this.handleSlider.bind(this);
         this.handleTabSwitch = this.handleTabSwitch.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
@@ -214,26 +219,27 @@ class WidgetSetting extends Component{
         };
     };
     /// Handles all pressable buttons (opacity: 0.5 on click)
-    handlePressableBtn(what, where){
+    handlePressableButton(what, where){
         switch(what){
             case "showHideWidgets":
-                const btnShowHideWidgets = document.getElementById("settings-btn-show-hide-widgets");
+                const buttonShowHideWidgets = document.getElementById("settings-button-show-hide-widgets");
                 const showHideWidgetsPopoutAnimation = document.getElementById("show-hide-widgets-popout-animation");
                 this.setState({
                     showHideWidgets: !this.state.showHideWidgets
                 });
-                this.props.showHidePopout(showHideWidgetsPopoutAnimation, !this.state.showHideWidgets, btnShowHideWidgets);
+                this.props.showHidePopout(showHideWidgetsPopoutAnimation, !this.state.showHideWidgets, buttonShowHideWidgets);
                 break;
             case "settings":
-                const btnSettings = document.getElementById("settings-btn-settings");
+                const buttonSettings = document.getElementById("settings-button-settings");
                 const settingsPopoutAnimation = document.getElementById("settings-popout-animation");
                 this.setState({
                     settings: !this.state.settings
                 });
-                this.props.showHidePopout(settingsPopoutAnimation, !this.state.settings, btnSettings);
+                this.props.showHidePopout(settingsPopoutAnimation, !this.state.settings, buttonSettings);
                 break;
             case "inventory":
             case "equipment":
+            case "character":
                 let elementButton = document.getElementById(`show-hide-widgets-popout-button-${what}`);
                 this.props.showHide(what, where);
                 this.setState({
@@ -250,13 +256,13 @@ class WidgetSetting extends Component{
                 });
                 break;
             default:
-                const btn = document.getElementById("show-hide-widgets-popout-btn-" + what);
+                const button = document.getElementById("show-hide-widgets-popout-button-" + what);
                 this.props.showHide(what, where);
                 if(this.props.widgets[what] === false){
-                    btn.style.opacity = "1";
+                    button.style.opacity = "1";
                     this.props.updateWidgetsActive(what, where);
                 }else{
-                    btn.style.opacity = "0.5";
+                    button.style.opacity = "0.5";
                     switch(where){
                         case "utility":
                             const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
@@ -278,9 +284,9 @@ class WidgetSetting extends Component{
         };
     };
     /// Handles all toggleable buttons (switch)
-    handleToggleableBtn(value, what){
+    handleToggleableButton(value, what){
         switch(what){
-            case "btn-screen-dimmer":
+            case "button-screen-dimmer":
                 const bg = document.getElementById("App");
                 this.setState({
                     values: {
@@ -425,22 +431,22 @@ class WidgetSetting extends Component{
                         case "equipment":
                             break;
                         default:
-                            const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsUtilityActive[currUtilityWidget]);
-                            btn.style.opacity = "1";
+                            const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsUtilityActive[currUtilityWidget]);
+                            button.style.opacity = "1";
                             break;
                     };
                 };
                 break;
             case "games":
                 for(var currGamesWidget in this.props.widgetsGamesActive){
-                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsGamesActive[currGamesWidget]);
-                    btn.style.opacity = "1";
+                    const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsGamesActive[currGamesWidget]);
+                    button.style.opacity = "1";
                 };
                 break;
             case "fun":
                 for(var currFunWidget in this.props.widgetsFunActive){
-                    const btn = document.getElementById("show-hide-widgets-popout-btn-" + this.props.widgetsFunActive[currFunWidget]);
-                    btn.style.opacity = "1";
+                    const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsFunActive[currFunWidget]);
+                    button.style.opacity = "1";
                 };
                 break;
             default:
@@ -455,45 +461,45 @@ class WidgetSetting extends Component{
         });
     };
     updateSearch(what){
-        var widgetsBtnKeys, widgetsBtnUpdate, widgetsBtnType, currTab;
+        var widgetsButtonKeys, widgetsButtonUpdate, widgetsButtonType, currTab;
         var widgetsMatch = [];
         if(this.state.utilityTab === true){
-            widgetsBtnKeys = Object.keys(this.state.widgetsBtn.widgetsBtnUtility);
-            widgetsBtnUpdate = this.state.widgetsBtn.widgetsBtnUtility;
-            widgetsBtnType = "widgetsBtnUtility";
+            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonUtility);
+            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonUtility;
+            widgetsButtonType = "widgetsButtonUtility";
             currTab = "utility";
         }else if(this.state.gamesTab === true){
-            widgetsBtnKeys = Object.keys(this.state.widgetsBtn.widgetsBtnGames);
-            widgetsBtnUpdate = this.state.widgetsBtn.widgetsBtnGames;
-            widgetsBtnType = "widgetsBtnGames";
+            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonGames);
+            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonGames;
+            widgetsButtonType = "widgetsButtonGames";
             currTab = "games";
         }else if(this.state.funTab === true){
-            widgetsBtnKeys = Object.keys(this.state.widgetsBtn.widgetsBtnFun);
-            widgetsBtnUpdate = this.state.widgetsBtn.widgetsBtnFun;
-            widgetsBtnType = "widgetsBtnFun";
+            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonFun);
+            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonFun;
+            widgetsButtonType = "widgetsButtonFun";
             currTab = "fun";
         };
         if(what.length <= 2){
-            for(const i in widgetsBtnKeys){
-                widgetsBtnUpdate[widgetsBtnKeys[i]] = true;
+            for(const i in widgetsButtonKeys){
+                widgetsButtonUpdate[widgetsButtonKeys[i]] = true;
             };
             widgetsMatch.length = 0;
         }else if(what.length >= 3){
             const reSearch = new RegExp("(" + what + ")", "i");
-            for(const i in widgetsBtnKeys){
-                const slicedKey = widgetsBtnKeys[i].slice(0, widgetsBtnKeys[i].length-3);
+            for(const i in widgetsButtonKeys){
+                const slicedKey = widgetsButtonKeys[i].slice(0, widgetsButtonKeys[i].length-3);
                 if(reSearch.test(slicedKey)){
-                    widgetsBtnUpdate[widgetsBtnKeys[i]] = true;
+                    widgetsButtonUpdate[widgetsButtonKeys[i]] = true;
                     widgetsMatch.push(slicedKey);
                 }else{
-                    widgetsBtnUpdate[widgetsBtnKeys[i]] = false;
+                    widgetsButtonUpdate[widgetsButtonKeys[i]] = false;
                 };
             };
         };
         this.setState(prevState => ({
-            widgetsBtn: {
-                ...prevState.widgetsBtn,
-                [widgetsBtnType]: widgetsBtnUpdate
+            widgetsButton: {
+                ...prevState.widgetsButton,
+                [widgetsButtonType]: widgetsButtonUpdate
             }
         }), () => {
             if(what.length <= 2){
@@ -639,15 +645,16 @@ class WidgetSetting extends Component{
                     switch(i){
                         case "inventory":
                         case "equipment":
-                            let button = document.getElementById(`show-hide-widgets-popout-button-${i}`);
-                            button.classList.remove("disabled");
+                        case "character":
+                            let buttonRPG = document.getElementById(`show-hide-widgets-popout-button-${i}`);
+                            buttonRPG.classList.remove("disabled");
                             this.setState({
                                 [i]: dataLocalStorage.utility[i].active
                             });
                             break;
                         default:
-                            let btn = document.getElementById("show-hide-widgets-popout-btn-" + i);
-                            btn.style.opacity = "1";
+                            let button = document.getElementById("show-hide-widgets-popout-button-" + i);
+                            button.style.opacity = "1";
                             break;
                     };
                 };
@@ -704,6 +711,7 @@ class WidgetSetting extends Component{
     };
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
+        clearInterval(intervalTimeBased);
     };
     render(){
         return(
@@ -731,14 +739,14 @@ class WidgetSetting extends Component{
                         </span>
                         {/* Buttons */}
                         <section className="font large-medium no-color flex-center column gap">
-                            <button id="settings-btn-show-hide-widgets"
-                                className="btn-match option opt-long disabled-option"
-                                onClick={() => this.handlePressableBtn("showHideWidgets")}>Show/Hide Widgets</button>
-                            <button id="settings-btn-settings"
-                                className="btn-match option opt-long disabled-option"
-                                onClick={() => this.handlePressableBtn("settings")}>Settings</button>
+                            <button id="settings-button-show-hide-widgets"
+                                className="button-match option opt-long disabled-option"
+                                onClick={() => this.handlePressableButton("showHideWidgets")}>Show/Hide Widgets</button>
+                            <button id="settings-button-settings"
+                                className="button-match option opt-long disabled-option"
+                                onClick={() => this.handlePressableButton("settings")}>Settings</button>
                             <section className="flex-center row gap">
-                                <button className="btn-match option opt-medium"
+                                <button className="button-match option opt-medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
                             </section>
                         </section>
@@ -765,19 +773,27 @@ class WidgetSetting extends Component{
                                             {/* Other Stuff */}
                                             <div className="flex-center">
                                                 <button id="show-hide-widgets-popout-button-inventory"
-                                                    className="btn-match inverse disabled"
+                                                    className="button-match inverse disabled"
                                                     type="button"
-                                                    onClick={() => this.handlePressableBtn("inventory", "utility")}>
+                                                    onClick={() => this.handlePressableButton("inventory", "utility")}>
                                                     <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                                         <BiBriefcase/>
                                                     </IconContext.Provider>
                                                 </button>
                                                 <button id="show-hide-widgets-popout-button-equipment" 
-                                                    className="btn-match inverse disabled"
+                                                    className="button-match inverse disabled"
                                                     type="button"
-                                                    onClick={() => this.handlePressableBtn("equipment", "utility")}>
+                                                    onClick={() => this.handlePressableButton("equipment", "utility")}>
                                                     <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                                         <GiAxeSword/>
+                                                    </IconContext.Provider> 
+                                                </button>
+                                                <button id="show-hide-widgets-popout-button-character" 
+                                                    className="button-match inverse disabled"
+                                                    type="button"
+                                                    onClick={() => this.handlePressableButton("character", "utility")}>
+                                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
+                                                        <IoBodyOutline/>
                                                     </IconContext.Provider> 
                                                 </button>
                                                 <input className="input-typable all-side"
@@ -790,99 +806,114 @@ class WidgetSetting extends Component{
                                         </TabList>
                                         {/* Utility */}
                                         <TabPanel>
-                                            <section id="show-hide-widgets-popout-btn-utility"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["quoteBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-quote"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("quote", "utility")}>Quote</button>
+                                            <section id="show-hide-widgets-popout-button-utility"
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                {(this.state.widgetsButton.widgetsButtonUtility["quoteButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-quote"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("quote", "utility")}>Quote</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["translatorBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-translator"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("translator", "utility")}>Translator</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["translatorButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-translator"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("translator", "utility")}>Translator</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["googleTranslatorBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-googletranslator"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("googletranslator", "utility")}>Google Translator</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["googleTranslatorButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-googletranslator"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("googletranslator", "utility")}>Google Translator</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["calculatorBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-calculator"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("calculator", "utility")}>Calculator</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["calculatorButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-calculator"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("calculator", "utility")}>Calculator</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["weatherBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-weather"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("weather", "utility")}>Weather</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["weatherButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-weather"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("weather", "utility")}>Weather</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["timeConversionBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-timeconversion"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("timeconversion", "utility")}>Time Conversion</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["timeConversionButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-timeconversion"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("timeconversion", "utility")}>Time Conversion</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["spreadsheetBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-spreadsheet"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("spreadsheet", "utility")}>Spreadsheet</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["spreadsheetButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-spreadsheet"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("spreadsheet", "utility")}>Spreadsheet</button>
                                                     : <></>}
-                                                {/* {(this.state.widgetsBtn.widgetsBtnUtility["notepadBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-notepad"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("notepad", "utility")}>Notepad</button>
+                                                {/* {(this.state.widgetsButton.widgetsButtonUtility["notepadButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-notepad"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("notepad", "utility")}>Notepad</button>
                                                     : <></>} */}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["qrCodeBtn"])
-                                                    ? <button id="show-hide-widgets-popout-btn-qrcode"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("qrcode", "utility")}>QR Code Generator</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["qrCodeButton"])
+                                                    ? <button id="show-hide-widgets-popout-button-qrcode"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("qrcode", "utility")}>QR Code Generator</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnUtility["batteryBtn"])
-                                                    ? <button id="show-hide-widgets-popout-btn-battery"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("battery", "utility")}>Device Battery</button>
+                                                {(this.state.widgetsButton.widgetsButtonUtility["batteryButton"])
+                                                    ? <button id="show-hide-widgets-popout-button-battery"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("battery", "utility")}>Device Battery</button>
+                                                    : <></>}
+                                                {(this.state.widgetsButton.widgetsButtonUtility["currencyConverterButton"])
+                                                    ? <button id="show-hide-widgets-popout-button-currencyconverter"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("currencyconverter", "utility")}>Currency Converter</button>
                                                     : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
-                                            <section id="show-hide-widgets-popout-btn-games"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
-                                                {(this.state.widgetsBtn.widgetsBtnGames["snakeBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-snake"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("snake", "games")}>Snake</button>
+                                            <section id="show-hide-widgets-popout-button-games"
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                {(this.state.widgetsButton.widgetsButtonGames["snakeButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-snake"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("snake", "games")}>Snake</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnGames["typingTestBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-typingtest"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("typingtest", "games")}>Typing Test</button>
+                                                {(this.state.widgetsButton.widgetsButtonGames["typingTestButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-typingtest"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("typingtest", "games")}>Typing Test</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnGames["simonGameBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-simongame"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("simongame", "games")}>Simon Game</button>
+                                                {(this.state.widgetsButton.widgetsButtonGames["simonGameButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-simongame"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("simongame", "games")}>Simon Game</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnGames["minesweeperBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-minesweeper"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("minesweeper", "games")}>Minesweeper</button>
+                                                {(this.state.widgetsButton.widgetsButtonGames["minesweeperButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-minesweeper"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("minesweeper", "games")}>Minesweeper</button>
+                                                    : <></>}
+                                                {(this.state.widgetsButton.widgetsButtonGames["breakoutButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-breakout"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("breakout", "games")}>Breakout</button>
                                                     : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
-                                            <section id="show-hide-widgets-popout-btn-fun"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely all">
-                                                {(this.state.widgetsBtn.widgetsBtnFun["pokemonSearchBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-pokemonsearch"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("pokemonsearch", "fun")}>Pokemon Search</button>
+                                            <section id="show-hide-widgets-popout-button-fun"
+                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                {(this.state.widgetsButton.widgetsButtonFun["pokemonSearchButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-pokemonsearch"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("pokemonsearch", "fun")}>Pokemon Search</button>
                                                     : <></>}
-                                                {(this.state.widgetsBtn.widgetsBtnFun["pickerWheelBtn"] === true)
-                                                    ? <button id="show-hide-widgets-popout-btn-pickerwheel"
-                                                        className="btn-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableBtn("pickerwheel", "fun")}>Picker Wheel</button>
+                                                {(this.state.widgetsButton.widgetsButtonFun["pickerWheelButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-pickerwheel"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("pickerwheel", "fun")}>Picker Wheel</button>
+                                                    : <></>}
+                                                {(this.state.widgetsButton.widgetsButtonFun["donutAnimationButton"] === true)
+                                                    ? <button id="show-hide-widgets-popout-button-donutanimation"
+                                                        className="button-match option opt-medium disabled-option"
+                                                        onClick={() => this.handlePressableButton("donutanimation", "fun")}>Donut Animation</button>
                                                     : <></>}
                                             </section>
                                         </TabPanel>
@@ -905,10 +936,10 @@ class WidgetSetting extends Component{
                                     onScroll={this.handleScroll}
                                     onMouseEnter={() => this.handleMouse("enter")}
                                     onMouseLeave={() => this.handleMouse("leave")}>
-                                    <section className="font large-medium flex-center column gap space-nicely all">
+                                    <section className="aesthetic-scale scale-span scale-label scale-legend font large-medium flex-center column gap space-nicely space-all">
                                         {/* Display Settings */}
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Display</b>
                                             </span>
                                             {/* Screen Dimmer */}
@@ -919,7 +950,7 @@ class WidgetSetting extends Component{
                                                 <Switch className="toggleable"
                                                     name="settings-switch-screen-dimmer"
                                                     checked={this.state.values.screenDimmer}
-                                                    onChange={(value) => this.handleToggleableBtn(value, "btn-screen-dimmer")}
+                                                    onChange={(value) => this.handleToggleableButton(value, "button-screen-dimmer")}
                                                     onColor="#86d3ff"
                                                     onHandleColor="#2693e6"
                                                     handleDiameter={15}
@@ -930,7 +961,7 @@ class WidgetSetting extends Component{
                                                     height={15}
                                                     width={30}/>
                                             </section>
-                                            <Slider className="slider space-nicely top medium"
+                                            <Slider className="slider space-nicely space-top length-medium"
                                                 onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
                                                 min={5}
                                                 max={130}
@@ -956,7 +987,7 @@ class WidgetSetting extends Component{
                                         </section>
                                         {/* Design Settings */}
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Design</b>
                                             </span>
                                             {/* Animation */}
@@ -965,7 +996,7 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Animation
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("animation")}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
@@ -973,7 +1004,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-animation"
-                                                    className="select-match space-nicely top medium"
+                                                    className="select-match space-nicely space-top length-medium"
                                                     value={this.state.values.animation}
                                                     defaultValue={optionsAnimation[0]["options"][0]}
                                                     isDisabled={!this.state.settings}
@@ -995,7 +1026,7 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Background
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("background")}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
@@ -1003,7 +1034,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-background"
-                                                    className="select-match space-nicely top medium"
+                                                    className="select-match space-nicely space-top length-medium"
                                                     value={this.state.values.background}
                                                     defaultValue={optionsBackground[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "background")}
@@ -1024,7 +1055,7 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Custom Border
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("customBorder")}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
@@ -1032,7 +1063,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-custom-border"
-                                                    className="select-match space-nicely top medium"
+                                                    className="select-match space-nicely space-top length-medium"
                                                     value={this.state.values.customBorder}
                                                     defaultValue={optionsCustomBorder[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "customBorder")}
@@ -1064,12 +1095,12 @@ class WidgetSetting extends Component{
                                         </section>
                                         {/* Feature Settings */}
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Feature</b>
                                             </span>
                                             {/* General Sub Section */}
                                             <fieldset className="section-sub">
-                                                <legend className="font small space-nicely bottom short">
+                                                <legend className="font small space-nicely space-bottom length-short">
                                                     General
                                                 </legend>
                                                 {/* Display author names */}
@@ -1086,7 +1117,7 @@ class WidgetSetting extends Component{
                                             </fieldset>
                                             {/* Hotbar Sub Section */}
                                             <fieldset className="section-sub">
-                                                <legend className="font small space-nicely bottom short">
+                                                <legend className="font small space-nicely space-bottom length-short">
                                                     Hotbar
                                                 </legend>
                                                 {/* Fullscreen */}
@@ -1115,12 +1146,12 @@ class WidgetSetting extends Component{
                                         </section>
                                         {/* Misc Settings */}
                                         <section className="section-group">
-                                            <span className="font small when-elements-are-not-straight space-nicely bottom short">
+                                            <span className="font small when-elements-are-not-straight space-nicely space-bottom length-short">
                                                 <b>Misc</b>
                                             </span>
                                             {/* Voice */}
                                             <fieldset className="section-sub">
-                                                <legend className="font small space-nicely bottom short">
+                                                <legend className="font small space-nicely space-bottom length-short">
                                                     Voice
                                                 </legend>
                                                 {/* Voice Change */}
@@ -1128,14 +1159,14 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Type
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("voice")}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Select className="select-match space-nicely top medium"
+                                                <Select className="select-match space-nicely space-top length-medium"
                                                     value={this.state.values.voice}
                                                     defaultValue={optionsVoice[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "voice")}
@@ -1154,14 +1185,14 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Pitch
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("slider", "voice-pitch", 0, 2)}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely top medium"
+                                                <Slider className="slider space-nicely space-top length-medium"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-pitch")}
                                                     min={0}
                                                     max={2}
@@ -1178,14 +1209,14 @@ class WidgetSetting extends Component{
                                                     <span className="font small">
                                                         Rate
                                                     </span>
-                                                    <button className="btn-match inverse"
+                                                    <button className="button-match inverse"
                                                         onClick={() => this.randomOption("slider", "voice-rate", 0.1, 10)}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely top medium"
+                                                <Slider className="slider space-nicely space-top length-medium"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-rate")}
                                                     min={0.1}
                                                     max={10}
@@ -1200,7 +1231,7 @@ class WidgetSetting extends Component{
                                             </fieldset>
                                             {/* Popout */}
                                             <fieldset className="section-sub">
-                                                <legend className="font small space-nicely bottom short">
+                                                <legend className="font small space-nicely space-bottom length-short">
                                                     Popout
                                                 </legend>
                                                 {/* Save position of popup */}

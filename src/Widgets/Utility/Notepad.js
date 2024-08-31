@@ -54,7 +54,7 @@ class WidgetNotepad extends Component{
         for(let i = 1; i <= 7; i++){
             let button = document.createElement("button");
             let span = document.createElement("span");
-            button.className = "btn-match inverse";
+            button.className = "button-match inverse";
             button.onclick = () => {
                 this.handleText("fontSize", i);
             };
@@ -106,27 +106,27 @@ class WidgetNotepad extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("notepad", "resetPosition", "utility")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("notepad", "fullscreen", "utility")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Utility Bar */}
-                        <section className="flex-center row gap small space-nicely bottom">
+                        <section className="flex-center row gap small space-nicely space-bottom">
                             {/* Buttons */}
                             <section className="flex-center column">
                                 {/* General */}
                                 <section className="flex-center row">
                                     <button id="notepad-button-bold" 
-                                        className="btn-match fadded inversed"
+                                        className="button-match fadded inversed"
                                         onClick={() => this.handleButton("bold")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaBold/>
@@ -156,31 +156,31 @@ class WidgetNotepad extends Component{
                                             </IconContext.Provider>
                                         </label>
                                     </div>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("insertOrderedList")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaListOl/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("insertUnorderedList")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaListUl/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("undo")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaRotateLeft/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("redo")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaRotateRight/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => {
                                             let link = prompt("Enter a URL");
                                             if(!/http/i.test(link)){
@@ -192,43 +192,43 @@ class WidgetNotepad extends Component{
                                             <FaLink/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("unlink")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaLinkSlash/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("justifyLeft")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaAlignLeft/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("justifyCenter")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaAlignCenter/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("justifyRight")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaAlignRight/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("justifyFull")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaAlignJustify/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("indent")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaIndent/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("outdent")}>
                                         <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                             <FaOutdent/>
@@ -236,7 +236,7 @@ class WidgetNotepad extends Component{
                                     </button>
                                     {/* Font Color */}
                                     <div className="color-input-button">
-                                        <button className="btn-match inverse">
+                                        <button className="button-match inverse">
                                             <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                                 <MdFormatColorText/>
                                             </IconContext.Provider>
@@ -246,7 +246,7 @@ class WidgetNotepad extends Component{
                                     </div>
                                     {/* Highlight Color */}
                                     <div className="color-input-button">
-                                        <button className="btn-match inverse">
+                                        <button className="button-match inverse">
                                             <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
                                                 <FaHighlighter/>
                                             </IconContext.Provider>
@@ -257,31 +257,31 @@ class WidgetNotepad extends Component{
                                 </section>
                                 {/* Font Name */}
                                 <section className="flex-center row">
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Arial")}>
                                         <span className="font bold">Arial</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Verdana")}>
                                         <span className="font bold">Verdana</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Times New Roman")}>
                                         <span className="font bold">Times New Roman</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Garamond")}>
                                         <span className="font bold">Garamond</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Georgia")}>
                                         <span className="font bold">Georgia</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Courier New")}>
                                         <span className="font bold">Courier New</span>
                                     </button>
-                                    <button className="btn-match inverse"
+                                    <button className="button-match inverse"
                                         onClick={() => this.handleText("fontName", "Cursive")}>
                                         <span className="font bold">Cursive</span>
                                     </button>
@@ -290,27 +290,27 @@ class WidgetNotepad extends Component{
                                 <section id="notepad-section-header-and-font-size" 
                                     className="flex-center row gap small">
                                     <section>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H1")}>
                                             <span className="font bold">H1</span>
                                         </button>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H2")}>
                                             <span className="font bold">H2</span>
                                         </button>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H3")}>
                                             <span className="font bold">H3</span>
                                         </button>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H4")}>
                                             <span className="font bold">H4</span>
                                         </button>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H5")}>
                                             <span className="font bold">H5</span>
                                         </button>
-                                        <button className="btn-match inverse"
+                                        <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H6")}>
                                             <span className="font bold">H6</span>
                                         </button>

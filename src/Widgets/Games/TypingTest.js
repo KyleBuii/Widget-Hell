@@ -8,6 +8,7 @@ import Draggable from 'react-draggable';
 
 /// Variables
 const timeMax = 60;
+const wordLimit = 100;
 let timer;
 
 
@@ -15,29 +16,50 @@ class WidgetTypingTest extends Component{
     constructor(props){
         super(props);
         this.state = {
-            moneyEarned: 0,
+            goldEarned: 0,
             time: timeMax,
-            mistakes: 0,
+            mistakes: [],
+            mistakesCount: 0,
             wrongStrokes: 0,
             wpm: 0,
             cpm: 0,
+            characterCount: 0,
             characterIndex: 0,
-            isTyping: false
+            text: [],
+            isTyping: false,
+            preset: "",
+            modifications: {
+                fontSmall: false
+            }
         };
+        this.handleLoadText = this.handleLoadText.bind(this);
         this.handleTyping = this.handleTyping.bind(this);
         this.handleResetGame = this.handleResetGame.bind(this);
         this.gameOver = this.gameOver.bind(this);
     };
-    handleLoadText(what){
-        let text;
+    handleLoadText(what = ""){
         let textField = document.querySelector("#typingtest-text p");
+        let loadedText;
         textField.innerHTML = "";
-        if(what !== undefined){
-            text = what;
+        this.setState({
+            characterIndex: 0
+        });
+        if(this.state.text.length === 0){
+            if(what !== ""){
+                loadedText = what;
+            }else{
+                loadedText = this.props.randSentence();
+            };
+            loadedText = loadedText.split(" ");    
+            this.setState({
+                text: [...loadedText]
+            });
         }else{
-            text = this.props.randSentence();
+            loadedText = this.state.text;
         };
-        text.split("")
+        loadedText.slice(0, wordLimit)
+            .join(" ")
+            .split("")
             .forEach((character) => {
                 let span = `<span>${character}</span>`;
                 textField.innerHTML += span;
@@ -58,12 +80,12 @@ class WidgetTypingTest extends Component{
             if(!this.state.isTyping){
                 timer = setInterval(() => {
                     if(this.state.time > 0){
-                        let wpm = Math.round(((this.state.characterIndex - this.state.mistakes) / 5) / (timeMax - this.state.time) * 60);
+                        let wpm = Math.round(((this.state.characterCount - this.state.mistakesCount) / 5) / (timeMax - this.state.time) * 60);
                         wpm = wpm < 0
                             || !wpm
                             || wpm === Infinity ? 0
                             : wpm;
-                        let cpm = (this.state.characterIndex - this.state.mistakes - 1) * (60 / (timeMax - this.state.time));
+                        let cpm = (this.state.characterCount - this.state.mistakesCount - 1) * (60 / (timeMax - this.state.time));
                         cpm = cpm < 0
                             || !cpm
                             || cpm === Infinity ? 0
@@ -85,11 +107,12 @@ class WidgetTypingTest extends Component{
             if(characterTyped == null){
                 if(this.state.characterIndex > 0){
                     this.setState({
+                        characterCount: this.state.characterCount - 1,
                         characterIndex: this.state.characterIndex - 1
                     }, () => {
                         if(characters[this.state.characterIndex].classList.contains("incorrect")){
                             this.setState({
-                                mistakes: this.state.mistakes - 1
+                                mistakesCount: this.state.mistakesCount - 1
                             });
                         };
                         characters[this.state.characterIndex]
@@ -100,14 +123,6 @@ class WidgetTypingTest extends Component{
                 characters.forEach((span) => {
                     span.classList.remove("active");
                 });
-                /// End of sentence
-                if(this.state.characterIndex + 1 === characters.length){
-                    clearInterval(timer);
-                    inputField.value = "";    
-                }else{;
-                    characters[this.state.characterIndex - 1].classList
-                        .add("active");
-                };    
             }else{
                 if(characters[this.state.characterIndex].innerText === characterTyped){
                     characters[this.state.characterIndex]
@@ -115,7 +130,7 @@ class WidgetTypingTest extends Component{
                         .add("correct");
                 }else{
                     this.setState({
-                        mistakes: this.state.mistakes + 1,
+                        mistakesCount: this.state.mistakesCount + 1,
                         wrongStrokes: this.state.wrongStrokes + 1
                     });
                     characters[this.state.characterIndex]
@@ -123,6 +138,7 @@ class WidgetTypingTest extends Component{
                         .add("incorrect");
                 };
                 this.setState({
+                    characterCount: this.state.characterCount + 1,
                     characterIndex: this.state.characterIndex + 1
                 });
                 characters.forEach((span) => {
@@ -131,18 +147,26 @@ class WidgetTypingTest extends Component{
                 /// End of sentence
                 if(this.state.characterIndex + 1 === characters.length){
                     inputField.value = "";
-                    this.gameOver();
+                    this.setState({
+                        text: [...this.state.text.slice(wordLimit)]
+                    }, () => {
+                        if(this.state.preset !== ""){
+                            this.handleLoadText(this.state.preset);
+                        }else{
+                            this.handleLoadText();
+                        };
+                    });
                 }else{;
                     characters[this.state.characterIndex + 1].classList
                         .add("active");
                 };    
             };
-            let wpm = Math.round(((this.state.characterIndex - this.state.mistakes) / 5) / (timeMax - this.state.time) * 60);
+            let wpm = Math.round(((this.state.characterCount - this.state.mistakesCount) / 5) / (timeMax - this.state.time) * 60);
             wpm = wpm < 0
                 || !wpm
                 || wpm === Infinity ? 0
                 : wpm;
-            let cpm = (this.state.characterIndex - this.state.mistakes - 1) * (60 / (timeMax - this.state.time));
+            let cpm = (this.state.characterCount - this.state.mistakesCount - 1) * (60 / (timeMax - this.state.time));
             cpm = cpm < 0
                 || !cpm
                 || cpm === Infinity ? 0
@@ -155,41 +179,56 @@ class WidgetTypingTest extends Component{
     };
     gameOver(){
         if(this.state.wpm >= 40){
-            this.props.gameProps.randomItem();
+            let amount = Math.floor(this.state.wpm / 40);
+            this.props.gameProps.randomItem(amount);
         };
         clearInterval(timer);
         this.setState({
-            moneyEarned: this.state.wpm
+            goldEarned: this.state.wpm
         });
-        this.props.gameProps.updateMoney(this.state.wpm);
+        this.props.gameProps.updateGameValue("gold", this.state.wpm);
     };
-    handleResetGame(){
+    handleResetGame(preset){
         clearInterval(timer);
         document.getElementById("typingtest-text").style.opacity = "1";
         document.getElementById("typingtest-input-field").value = "";
         this.setState({
-            moneyEarned: 0,
+            goldEarned: 0,
             time: timeMax,
-            mistakes: 0,
+            mistakesCount: 0,
+            wrongStrokes: 0,
             wpm: 0,
             cpm: 0,
+            characterCount: 0,
             characterIndex: 0,
-            isTyping: false
+            isTyping: false,
+            text: [],
+            preset: ""
+        }, () => {
+            if(preset){
+                this.handleLoadText(preset);
+                this.setState({
+                    preset: preset
+                });
+            }else{
+                this.handleLoadText();
+            };    
         });
     };
-    handleButton(what, amount){
+    handlePresets(what, amount){
+        let chosenPreset = "";
         switch(what){
             case "AZ":
-                this.handleLoadText("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                chosenPreset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 break;
             case "az":
-                this.handleLoadText("abcdefghijklmnopqrstuvwxyz");
+                chosenPreset = "abcdefghijklmnopqrstuvwxyz";
                 break;
             case "ZA":
-                this.handleLoadText("ZYXWVUTSRQPONMLKJIHGFEDCBA");
+                chosenPreset = "ZYXWVUTSRQPONMLKJIHGFEDCBA";
                 break;
             case "za":
-                this.handleLoadText("zyxwvutsrqponmlkjihgfedcba");
+                chosenPreset = "zyxwvutsrqponmlkjihgfedcba";
                 break;
             case "brainrot":
                 let words = "skibidi gyatt rizz only in ohio duke dennis did you pray today livvy dunne rizzing up baby gronk sussy imposter pibby glitch in real life sigma alpha omega male grindset andrew tate goon cave freddy fazbear colleen ballinger smurf cat vs strawberry elephant blud dawg shmlawg ishowspeed a whole bunch of turbulence ambatukam bro really thinks he's carti literally hitting the griddy the ocky way kai cenat fanum tax garten of banban no edging in class not the mosquito again bussing axel in harlem whopper whopper whopper whopper 1 2 buckle my shoe goofy ahh aiden ross sin city monday left me broken quirked up white boy busting it down sexual style goated with the sauce john pork grimace shake kiki do you love me huggy wuggy nathaniel b lightskin stare biggest bird omar the referee amogus uncanny wholesome reddit chungus keanu reeves pizza tower zesty poggers kumalala savesta quandale dingle glizzy rose toy ankha zone thug shaker morbin time dj khaled sisyphus oceangate shadow wizard money gang ayo the pizza here PLUH nair butthole waxing t-pose ugandan knuckles family guy funny moments compilation with subway surfers gameplay at the bottom nickeh30 ratio uwu delulu opium bird cg5 mewing fortnite battle pass all my fellas gta 6 backrooms gigachad based cringe kino redpilled no nut november pokénut november wojak literally 1984 foot fetish F in the chat i love lean looksmaxxing gassy incredible theodore john kaczynski social credit bing chilling xbox live mrbeast kid named finger better caul saul i am a surgeon one in a krillion hit or miss i guess they never miss huh i like ya cut g ice spice we go gym kevin james josh hutcherson edit coffin of andy and leyley metal pipe falling"
@@ -213,19 +252,37 @@ class WidgetTypingTest extends Component{
                         )
                     )
                 };
-                this.handleLoadText(sentence.join(" "));
+                chosenPreset = sentence.join(" ");
                 break;
             case "numbers":
                 let stringNumber = "";
                 for(let i = 0; i < amount; i++){
                     stringNumber += (Math.random() * 10).toString().replace(".", "");
                 };
-                this.handleLoadText(stringNumber);
+                chosenPreset = stringNumber;
                 break;
             default:
                 break;
         };
-        this.handleResetGame();
+        this.handleResetGame(chosenPreset);
+    };
+    handleModifications(what){
+        const elementText = document.querySelector("#typingtest-text p");
+        const elementButton = document.getElementById(`typingtest-modifications-button-${what}`);
+        this.setState({
+            modifications: {
+                ...this.state.modifications,
+                [what]: !this.state.modifications[what]
+            }
+        }, () => {
+            if(this.state.modifications[what]){
+                elementButton.style.opacity = "1";
+                elementText.className = what.replace(/([A-Z])/g, " $1").toLowerCase();
+            }else{
+                elementButton.style.opacity = "0.5";
+                elementText.className = "";
+            };
+        });
     };
     componentDidMount(){
         this.handleLoadText();
@@ -245,7 +302,7 @@ class WidgetTypingTest extends Component{
                     this.props.defaultProps.dragStop("typingtest");
                     this.props.defaultProps.updatePosition("typingtest", "games", data.x, data.y);
                 }}
-                cancel="button, p"
+                cancel="button, p, span"
                 bounds="parent">
                 <div id="typingtest-widget"
                     className="widget">
@@ -262,35 +319,35 @@ class WidgetTypingTest extends Component{
                         <section className="hotbar">
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("typingtest", "resetPosition", "games")}>
                                     <Fa0/>
                                 </button>
                                 : <></>}
                             {/* Fullscreen */}
                             {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="btn-match inverse when-elements-are-not-straight"
+                                ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("typingtest", "fullscreen", "games")}>
                                     <FaExpand/>
                                 </button>
                                 : <></>}
                         </section>
                         {/* Information Container */}
-                        <section className="element-ends space-nicely bottom font medium bold">
-                            {/* Money Earned */}
+                        <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
+                            {/* Gold Earned */}
                             <span className="flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 <span className="font small bold">+</span>
-                                {this.state.moneyEarned}
+                                {this.state.goldEarned}
                             </span>
-                            {/* Total Money */}
+                            {/* Total Gold */}
                             <span className="flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
-                                {this.props.gameProps.formatNumber(this.props.gameProps.money, 1)}
+                                {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                         </section>
                         {/* Input */}
@@ -304,14 +361,14 @@ class WidgetTypingTest extends Component{
                             <p></p>
                         </div>
                         {/* Information */}
-                        <div className="element-ends space-nicely bottom">
+                        <div className="aesthetic-scale scale-div element-ends space-nicely space-bottom">
                             <div className="flex-center row gap">
                                 <span className="font medium bold">Time Left: </span>
                                 <span className="font medium">{this.state.time}</span>
                             </div>
                             <div className="flex-center row gap">
                                 <span className="font medium bold">Mistakes: </span>
-                                <span className="font medium">{this.state.mistakes} | {this.state.wrongStrokes}</span>
+                                <span className="font medium">{this.state.mistakesCount} | {this.state.wrongStrokes}</span>
                             </div>
                             <div className="flex-center row gap">
                                 <span className="font medium bold">WPM: </span>
@@ -321,46 +378,60 @@ class WidgetTypingTest extends Component{
                                 <span className="font medium bold">CPM: </span>
                                 <span className="font medium">{this.state.cpm}</span>
                             </div>
-                            <button className="btn-match"
+                            <button className="button-match"
                                 onClick={() => {
-                                    this.handleLoadText()
-                                    this.handleResetGame()
+                                    this.handleResetGame();
                                 }}>Try Again</button>
                         </div>
-                        {/* Presets */}
-                        <div className="flex-center column section-group group-large space-nicely top">
-                            <span className="font medium bold line bellow">Presets</span>
-                            <div className="flex-center column gap medium">
-                                <div className="flex-center row gap medium">
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("AZ")}>A-Z</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("az")}>a-z</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("ZA")}>Z-A</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("za")}>z-a</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("brainrot")}>Brainrot</button>
-                                </div>
-                                <div className="flex-center row gap medium">
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("numbers", 1)}>1-9: 16</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("numbers", 2)}>1-9: 32</button>
-                                    <button className="btn-match option opt-small"
-                                        type="button"
-                                        onClick={() => this.handleButton("numbers", 3)}>1-9: 48</button>
+                        {/* Settings */}
+                        <section className="flex-center column only-flex gap medium section-group group-large space-nicely space-top">
+                            {/* Presets */}
+                            <div className="flex-center column">
+                                <span className="font medium bold line bellow">Presets</span>
+                                <div className="flex-center column gap medium">
+                                    <div className="flex-center row gap medium">
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("AZ")}>A-Z</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("az")}>a-z</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("ZA")}>Z-A</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("za")}>z-a</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("brainrot")}>Brainrot</button>
+                                    </div>
+                                    <div className="flex-center row gap medium">
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("numbers", 1)}>1-9: 16</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("numbers", 2)}>1-9: 32</button>
+                                        <button className="button-match option opt-small"
+                                            type="button"
+                                            onClick={() => this.handlePresets("numbers", 3)}>1-9: 48</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            {/* Modifications */}
+                            <div className="flex-center column">
+                                <span className="font medium bold line bellow">Modifications</span>
+                                <div className="flex-center column gap medium">
+                                    <div className="flex-center row gap medium">
+                                        <button id="typingtest-modifications-button-fontSmall"
+                                            className="button-match option opt-small disabled-option"
+                                            type="button"
+                                            onClick={() => this.handleModifications("fontSmall")}>Font: Small</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>
