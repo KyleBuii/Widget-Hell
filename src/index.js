@@ -198,6 +198,10 @@ const quotes = [
     {
         quote: "Monkeys can climb. Crickets can leap. Horses can race. Owls can seek. Cheetahs can run. Eagles can fly. People can try. But that’s about it."
         , author: "Natsuki"
+    },
+    {
+        quote: "It takes only one step to overcome your fears. You just need to take one step forward. The rest will come naturally."
+        , author: "Vincent Adenka"
     }
 ];
 const sentences = [
@@ -914,7 +918,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: true,
+            developer: false,
             values: {
                 animation: {},
                 customBorder: {},
