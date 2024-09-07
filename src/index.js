@@ -1004,7 +1004,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: true,
+            developer: false,
             values: {
                 animation: {},
                 customBorder: {},
