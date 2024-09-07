@@ -5,6 +5,7 @@ import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Select from "react-select";
 import { BsArrowLeftRight } from 'react-icons/bs';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -24,7 +25,8 @@ class WidgetCurrencyConverter extends Component{
             from: {value: "US", label: "USD"},
             to: {value: "US", label: "USD"},
             rate: "?",
-            result: "?"
+            result: "?",
+            running: false
         };
         this.handleInput = this.handleInput.bind(this);
         this.handleSwap = this.handleSwap.bind(this);
@@ -63,6 +65,9 @@ class WidgetCurrencyConverter extends Component{
             && /^\d*\.?\d*$/.test(this.state.input)){
             const url = `https://v6.exchangerate-api.com/v6/${process.env.REACT_APP_CURRENCY_CONVERTER_API_KEY}/latest/${this.state.from.label}`;
             try{
+                this.setState({
+                    running: true
+                });
                 const response = await fetch(url);
                 const result = await response.json();
                 const exchangeRate = result.conversion_rates[this.state.to.label];
@@ -74,7 +79,12 @@ class WidgetCurrencyConverter extends Component{
             }catch(err){
                 this.setState({
                     result: "?",
-                    rate: "?"
+                    rate: "?",
+                    running: false
+                });
+            }finally{
+                this.setState({
+                    running: false
                 });
             };
         }else{
@@ -130,6 +140,13 @@ class WidgetCurrencyConverter extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("currencyconverter", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -147,7 +164,7 @@ class WidgetCurrencyConverter extends Component{
                         </section>
                         {/* Currency Converter Container */}
                         <section id="currencyconverter-container"
-                            className="flex-center column gap small">
+                            className="flex-center column gap small-gap">
                             <div id="currencyconverter-result"
                                 className="aesthetic-scale scale-span flex-center column fill-width">
                                 <span className="font large">{this.state.input} {this.state.from.label} = {this.state.result} {this.state.to.label}</span>
@@ -196,7 +213,8 @@ class WidgetCurrencyConverter extends Component{
                             </div>
                             <button className="button-match fill-width"
                                 type="button"
-                                onClick={() => this.fetchExchangeRate()}>Exchange</button>
+                                onClick={() => this.fetchExchangeRate()}
+                                disabled={this.state.running}>Exchange</button>
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

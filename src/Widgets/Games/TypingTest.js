@@ -4,6 +4,7 @@ import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -317,6 +318,13 @@ class WidgetTypingTest extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("typingtest", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -352,7 +360,6 @@ class WidgetTypingTest extends Component{
                         </section>
                         {/* Input */}
                         <input id="typingtest-input-field"
-                            className="input-invisible"
                             onChange={this.handleTyping}
                             autoComplete="off"></input>
                         {/* Text */}
@@ -384,12 +391,12 @@ class WidgetTypingTest extends Component{
                                 }}>Try Again</button>
                         </div>
                         {/* Settings */}
-                        <section className="flex-center column only-flex gap medium section-group group-large space-nicely space-top">
+                        <section className="flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top">
                             {/* Presets */}
                             <div className="flex-center column">
                                 <span className="font medium bold line bellow">Presets</span>
-                                <div className="flex-center column gap medium">
-                                    <div className="flex-center row gap medium">
+                                <div className="flex-center column gap medium-gap">
+                                    <div className="flex-center row gap medium-gap">
                                         <button className="button-match option opt-small"
                                             type="button"
                                             onClick={() => this.handlePresets("AZ")}>A-Z</button>
@@ -406,7 +413,7 @@ class WidgetTypingTest extends Component{
                                             type="button"
                                             onClick={() => this.handlePresets("brainrot")}>Brainrot</button>
                                     </div>
-                                    <div className="flex-center row gap medium">
+                                    <div className="flex-center row gap medium-gap">
                                         <button className="button-match option opt-small"
                                             type="button"
                                             onClick={() => this.handlePresets("numbers", 1)}>1-9: 16</button>
@@ -422,8 +429,8 @@ class WidgetTypingTest extends Component{
                             {/* Modifications */}
                             <div className="flex-center column">
                                 <span className="font medium bold line bellow">Modifications</span>
-                                <div className="flex-center column gap medium">
-                                    <div className="flex-center row gap medium">
+                                <div className="flex-center column gap medium-gap">
+                                    <div className="flex-center row gap medium-gap">
                                         <button id="typingtest-modifications-button-fontSmall"
                                             className="button-match option opt-small disabled-option"
                                             type="button"

@@ -16,3 +16,5 @@ https://opengameart.org/content/98-pixel-art-rpg-icons
 https://alexs-assets.itch.io/16x16-rpg-item-pack
 
 https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/
+
+https://opengameart.org/content/2d-heart-2-animations

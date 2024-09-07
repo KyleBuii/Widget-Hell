@@ -25,6 +25,13 @@ import WidgetCharacter from './Widgets/Character.js';
 import WidgetBreakout from './Widgets/Games/Breakout.js';
 import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.js';
 import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.js';
+import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.js';
+import WidgetChess from './Widgets/Games/Chess.js';
+import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
+import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.js';
+import WidgetSticker from './Widgets/Fun/Sticker.js';
+import Widget2048 from './Widgets/Games/2048.js';
+import WidgetTrivia from './Widgets/Games/Trivia.js';
 
 
 //////////////////// Variables ////////////////////
@@ -243,6 +250,7 @@ const sentences = [
     , "Super Hyper Ultra Ultimate Deluxe Perfect Amazing Shining God Master Ginga Victory Strong Cute Beautiful Galaxy Baby Nenechi, with 5 Hololive auditions, 43 wives, 400k husbands, neverending IQ, Perfect Japanglish, and Spanish, and Portuguese, running on a 3080x Asacoco Antenna and wearing the new ultra rare 5-Star Isekai Princess skin, cofounder of world-famous Polka Hologram Circus, with infinite source of water and surprising gaming skills while able to sing La Lion and set herself on fire in Craftopia after having become the eternal CEO of Nenepro who punches and kicks every employee, after having disconnected while singing Connect with Kiara, as well as having her name flipped into ƎИƎИ and turned into a 3D cardboard decoy, unlocked the power of God from absorbing Matsuri's snot on her body while I wearing a sexy bikini and having eaten Haachama's tarantula-spicy-noodles while convincing Ame to trast her and having mastered singing Shiny Smiley Story in 11 different languages at the same time, right after marathoning iCarly and VICTORIOUS twice in a row, great Idol, the Ina-perishable, ƎNƎN, The Great CEO of ƎNƎN, CEO of CEOs, Opener of the Nether, Wielder of the Divine Lava, Punisher of Chat, The Great Unifier, Commander of the Golden Dumpling, Sacred of Appearance, Bringer of Light, O'Riend of Chicken, Builder of Cities, Protector of the Two Streams, Keeper of the Hours, Chosen of Aloe, High Stewardess of the Horizon, Sailor of the Great Sea, Sentinel of the Holo Servers, The Undisputed, Everconductor of The Momotaro Nenechi."
     , "I pop off my scalp like the lid of a cookie jar. It's the secret place where I keep all my dreams. Little balls of sunshine, all rubbing together like a bundle of kittens. I reach inside with my thumb and forefinger and pluck one out. It's warm and tingly. But there’s no time to waste! I put it in a bottle to keep it safe. And I put the bottle on the shelf with all of the other bottles. Happy thoughts, happy thoughts, happy thoughts in bottles, all in a row. My collection makes me lots of friends. Each bottle a starlight to make amends. Sometimes my friend feels a certain way. Down comes a bottle to save the day. Night after night, more dreams. Friend after friend, more bottles. Deeper and deeper my fingers go. Like exploring a dark cave, discovering the secrets hiding in the nooks and crannies. Digging and digging. Scraping and scraping. I blow dust off my bottle caps. It doesn't feel like time elapsed. My empty shelf could use some more. My friends look through my locked front door. Finally, all done. I open up, and in come my friends. In they come, in such a hurry. Do they want my bottles that much? I frantically pull them from the shelf, one after the other. Holding them out to each and every friend. Each and every bottle. But every time I let one go, it shatters against the tile between my feet. Happy thoughts, happy thoughts, happy thoughts in shards, all over the floor. They were supposed to be for my friends, my friends who aren't smiling. They're all shouting, pleading. Something. But all I hear is echo, echo, echo, echo, echo. Inside my head."
     , "Aw, yeah. Here's your superstar tonight (yeah). Yeah, you know who this is. It's your one and only Pippa in the house. You know how it's gonna go down with me. I'ma 'bout to tell you, so listen good. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. I was a kid, who dreamed to become. Somebody awesome in this world. But fate really sucked, I had to give up. It's how I lost my way. Then came along a way I could shine. A virtual space where I can belong. You may laugh at me but that's how things unfolded. In this crazy life of mine. I must watch out, there are many rivals. Waiting to eat me alive. I will not give the stage to anyone. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. And even if the darkness gets a hold of you. I'll be by your side. I'll be the shining star to light the way. We all have scars inside and nights of tears and that's okay. You're not alone, yeah, you're a part of me. Eternally. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. So don't let go and just be awesome. Just be awesome. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!"
+    , "Hi, I'm Isabella from Indeed USA. Can I recommend a job for you? It's a data generation job that accepts beginners with no experience (part-time/full-time) and pays between $80 and $300 per hour. The company offers free training - pay during training - no location restrictions! If you are interested, please contact the person in charge (Emily) through RCS by sending a text message to the following number:  ###########"
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -253,7 +261,8 @@ const uwuDictionary = {
     "epic": ["ebic"],
     "worse": ["wose"],
     "you": ["uwu", "u"],
-    "of": ["ob"]
+    "of": ["ob"],
+    "love": ["wuv"]
 };
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
     , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)", "=w="];
@@ -524,6 +533,21 @@ const itemRates = {
         rate: .01
     }
 };
+const heartValues = {
+    heart1: 1,
+    heart2: 5,
+    heart3: 10,
+    heart4: 15,
+    heart5: 20,
+    heart6: 25,
+    heart7: 30,
+    heart8: 35,
+    heart9: 40,
+    heart10: 45,
+    heart11: 50,
+    heart12: 55,
+    heart13: 60,
+};
 const breakoutPatterns = [
     //#region Color guide
     /*
@@ -601,6 +625,7 @@ var mouse = {
     x: 0,
     y: 0
 };
+var healthDisplay;
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -623,7 +648,7 @@ const formatGroupLabel = (data) => (
         </span>
     </div>
 );
-const selectTheme = {};
+var selectTheme = {};
 const selectStyleSmall = {
     control: (base) => ({
         ...base,
@@ -676,26 +701,35 @@ const selectHideGroupMenuList = (props) => {
 
 //////////////////// Functions ////////////////////
 //#region
-function randColor(){
+function randColor(forcedColorR, forcedColorG, forcedColorB){
     const r = document.documentElement;
-    const colorR = Math.floor(Math.random() * colorRange);
-    const colorG = Math.floor(Math.random() * colorRange);
-    const colorB = Math.floor(Math.random() * colorRange);
-    const randColorOpacity = `${colorR},${colorG},${colorB}`;
-    const randColor = `rgb(${randColorOpacity})`;
-    const randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
+    var randColorOpacity, randColor, randColorLight;
+    if(forcedColorR){
+        randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
+        randColor = `rgb(${randColorOpacity})`;
+        randColorLight = `rgb(${forcedColorR + 50},${forcedColorG + 50},${forcedColorB + 50})`;
+    }else{
+        const colorR = Math.floor(Math.random() * colorRange);
+        const colorG = Math.floor(Math.random() * colorRange);
+        const colorB = Math.floor(Math.random() * colorRange);
+        randColorOpacity = `${colorR},${colorG},${colorB}`;
+        randColor = `rgb(${randColorOpacity})`;
+        randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
+    };
     r.style.setProperty("--randColor", randColor);
     r.style.setProperty("--randColorLight", randColorLight);
     r.style.setProperty("--randColorOpacity", randColorOpacity);
     color = randColor;
     /// Set react-select colors
-    selectTheme.primary = randColor;    /// Currently selected option background color
-    selectTheme.primary25 = `rgba(${randColorOpacity}, 0.3)`;   /// Hover option background color
-    selectTheme.neutral20 = randColor;   /// Border color of select
-    selectTheme.neutral30 = randColorLight;  /// Hover border color
-    selectTheme.neutral40 = randColorLight;  /// Hover arrow color
-    selectTheme.neutral60 = randColorLight;  /// Active arrow color
-    selectTheme.neutral80 = randColor;  /// Placeholder text color
+    selectTheme = {
+        primary: randColor,         /// Currently selected option background color
+        primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
+        neutral20: randColor,       /// Border color of select
+        neutral30: randColorLight,  /// Hover border color
+        neutral40: randColorLight,  /// Hover arrow color
+        neutral60: randColorLight,  /// Active arrow color
+        neutral80: randColor        /// Placeholder text color
+    };
 };
 
 function dragStart(what){
@@ -728,7 +762,7 @@ function dragStop(what){
 function sortSelect(what){
     what.forEach((value) => {
         value.options.sort((a, b) => {
-            return ["Default", "Auto"].indexOf(b.label) - ["Default", "Auto"].indexOf(a.label)
+            return ["Default", "Auto", "Any"].indexOf(b.label) - ["Default", "Auto", "Any"].indexOf(a.label)
                 || a.label.localeCompare(b.label);
         });
     });
@@ -910,6 +944,58 @@ function randomItem(amount = 1, rarity){
         }));
     };
 };
+
+function renderHearts(health){
+    let elementHearts = [];
+    if(healthDisplay.value !== "none"){
+        let currentHealth = health;
+        let calculateHearts = [];
+        let heartKeys = Object.keys(heartValues);
+        let heartIndex = heartKeys.length;
+        let currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        let amount;
+        calculating: while(Math.floor(currentHealth) > 0){
+            if(Math.max(currentHealth, currentHeartValue) === currentHealth){
+                switch(healthDisplay.value){
+                    case "limit5":
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
+                        if(calculateHearts.length === 5){
+                            break calculating;
+                        };
+                        if(amount > 5 && calculateHearts.length === 0){
+                            amount = 5;
+                        }else if(amount > 5){
+                            amount = 5 - calculateHearts.length;
+                        };
+                        for(let i = amount; i > 0; i--){
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;
+                    default:
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
+                        for(let i = amount; i > 0; i--){
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;        
+                };
+            };
+            heartIndex--;
+            currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        };
+        for(let i = 0; i < calculateHearts.length; i++){
+            if((calculateHearts[i] === 1) && (healthDisplay.value === "noredheart")){
+            break; 
+            };
+            elementHearts.push(<img src={`/images/hearts/heart${calculateHearts[i]}.png`}
+                alt={`heart${calculateHearts[i]} ${i + 1}`}
+                key={`heart${calculateHearts[i]} ${i + 1}`}
+                draggable={false}/>);
+        };
+    };
+    return elementHearts;
+};
 //#endregion
 
 
@@ -918,7 +1004,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: false,
+            developer: true,
             values: {
                 animation: {},
                 customBorder: {},
@@ -929,7 +1015,9 @@ class Widgets extends Component{
                 shadow: false,
                 voice: {},
                 pitch: 0,
-                rate: 0
+                rate: 0,
+                health: {},
+                close: false
             },
             prevPosition: {
                 prevX: 0,
@@ -1113,6 +1201,26 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    urlshortner: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    imagecolorpicker: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 games: {
                     snake: {
@@ -1165,6 +1273,36 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    chess: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    twentyfortyeight: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    trivia: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 fun: {
                     pokemonsearch: {
@@ -1197,8 +1335,37 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    aiimagegenerator: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        popouts: {
+                            prompthelp: {
+                                position: {
+                                    x: 0,
+                                    y: 0
+                                }
+                            }
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    sticker: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 }
             },
+            stickers: [],
             inventory: [],
             equipment: {
                 headband: {
@@ -1327,6 +1494,7 @@ class Widgets extends Component{
         this.handleShowHide = this.handleShowHide.bind(this);
         this.handleShowHidePopout = this.handleShowHidePopout.bind(this);
         this.handleHotbar = this.handleHotbar.bind(this);
+        this.updateStickers = this.updateStickers.bind(this);
         this.updateCustomBorder = this.updateCustomBorder.bind(this);
         this.updateValue = this.updateValue.bind(this);
         this.updatePosition = this.updatePosition.bind(this);
@@ -1355,12 +1523,34 @@ class Widgets extends Component{
                 }
             }), () => {
                 let e = document.getElementById(`${what}-widget-animation`);
+                let elementSelects = e.querySelectorAll(".select-match");
+                /// Show react-selects
+                for(let i of elementSelects){
+                    i.style.display = "block";
+                };
                 /// Add animation if it exists
                 if(this.state.values.animation.value !== "default"){
                     e.style.animation = "none";
                     window.requestAnimationFrame(() => {
-                        e.style.animation = this.state.values.animation.value + "In 2s";
+                        switch(this.state.values.animation.value){
+                            case "rendering":
+                                e.style.clipPath = "inset(0 0 100% 0)";
+                                e.style.animation = this.state.values.animation.value + "In 2s steps(11)";
+                                break;
+                            default:
+                                e.style.animation = this.state.values.animation.value + "In 2s";
+                                break;
+                        };
                     });
+                    e.addEventListener("animationend", (event) => {
+                        switch(this.state.values.animation.value){
+                            case "rendering":
+                                e.style.clipPath = "unset";
+                                break;
+                            default:
+                                break;
+                        };
+                    });    
                 };
                 /// Add custom border if it exists
                 if(this.state.values.customBorder.value !== "default"){
@@ -1373,14 +1563,34 @@ class Widgets extends Component{
             });
         }else{
             let e = document.getElementById(`${what}-widget-animation`);
+            let elementSelects = e.querySelectorAll(".select-match");
             e.style.visibility = "hidden";
             if(this.state.values.animation.value !== "default"){
                 e.style.animation = "none";
                 window.requestAnimationFrame(() => {
-                    e.style.animation = this.state.values.animation.value + "Out 2s";
+                    switch(this.state.values.animation.value){
+                        case "rendering":
+                            e.style.clipPath = "inset(0 0 100% 0)";
+                            e.style.animation = this.state.values.animation.value + "Out 2s steps(11)";
+                            break;
+                        default:
+                            e.style.animation = this.state.values.animation.value + "Out 2s";
+                            break;
+                    };
                 });
                 e.addEventListener("animationend", (event) => {
-                    if(event.animationName.slice(event.animationName.length-3) === "Out"){
+                    if(event.animationName.slice(event.animationName.length - 3) === "Out"){
+                        switch(this.state.values.animation.value){
+                            case "rendering":
+                                e.style.clipPath = "unset";
+                                break;
+                            default:
+                                break;
+                        };
+                        /// Hide react-selects (prevents flashing)
+                        for(let i of elementSelects){
+                            i.style.display = "none";
+                        };
                         this.setState(prevState => ({
                             widgets: {
                                 ...prevState.widgets,
@@ -1396,6 +1606,10 @@ class Widgets extends Component{
                     };
                 });
             }else{
+                /// Hide react-selects (prevents flashing)
+                for(let i of elementSelects){
+                    i.style.display = "none";
+                };
                 this.setState(prevState => ({
                     widgets: {
                         ...prevState.widgets,
@@ -1416,6 +1630,10 @@ class Widgets extends Component{
     };
     handleShowHidePopout(popout, visible, button, inverse){
         if(visible){
+            let elementSelects = popout.querySelectorAll(".select-match");
+            for(let i of elementSelects){
+                i.style.display = "block";
+            };
             if(button !== undefined){
                 if(inverse){
                     button.style.color = "rgba(var(--randColorOpacity), 1)";
@@ -1427,10 +1645,28 @@ class Widgets extends Component{
             if(this.state.values.animation.value !== "default"){
                 popout.style.animation = "none";
                 window.requestAnimationFrame(() => {
-                    popout.style.animation = this.state.values.animation.value + "In 2s";
+                    switch(this.state.values.animation.value){
+                        case "rendering":
+                            popout.style.clipPath = "inset(0 0 100% 0)";
+                            popout.style.animation = this.state.values.animation.value + "In 2s steps(11)";
+                            break;
+                        default:
+                            popout.style.animation = this.state.values.animation.value + "In 2s";
+                            break;
+                    };
+                });
+                popout.addEventListener("animationend", (event) => {
+                    switch(this.state.values.animation.value){
+                        case "rendering":
+                            popout.style.clipPath = "unset";
+                            break;
+                        default:
+                            break;
+                    };
                 });
             };
         }else{
+            let elementSelects = popout.querySelectorAll(".select-match");
             if(button !== undefined){
                 if(inverse){
                     button.style.color = "rgba(var(--randColorOpacity), 0.2)";
@@ -1442,8 +1678,35 @@ class Widgets extends Component{
             if(this.state.values.animation.value !== "default"){
                 popout.style.animation = "none";
                 window.requestAnimationFrame(() => {
-                    popout.style.animation = this.state.values.animation.value + "Out 2s";
+                    switch(this.state.values.animation.value){
+                        case "rendering":
+                            popout.style.clipPath = "inset(0 0 100% 0)";
+                            popout.style.animation = this.state.values.animation.value + "Out 2s steps(11)";
+                            break;
+                        default:
+                            popout.style.animation = this.state.values.animation.value + "Out 2s";
+                            break;
+                    };
                 });
+                popout.addEventListener("animationend", (event) => {
+                    if(event.animationName.slice(event.animationName.length - 3) === "Out"){
+                        switch(this.state.values.animation.value){
+                            case "rendering":
+                                popout.style.clipPath = "unset";
+                                break;
+                            default:
+                                break;
+                        };
+                        /// Hide react-selects (prevents flashing)
+                        for(let i of elementSelects){
+                            i.style.display = "none";
+                        };
+                    };
+                });
+            }else{
+                for(let i of elementSelects){
+                    i.style.display = "none";
+                };    
             };   
         };
     };
@@ -1502,6 +1765,15 @@ class Widgets extends Component{
                     }
                 }));
                 break;
+            case "close":
+                this.handleShowHide(element, where);
+                window.dispatchEvent(new CustomEvent("close", {
+                    "detail": {
+                        element: element,
+                        type: where
+                    }
+                }));
+                break;
             default:
                 break;
         };
@@ -1510,6 +1782,32 @@ class Widgets extends Component{
         mouse = {
             x: event.clientX,
             y: event.clientY
+        };
+    };
+    updateStickers(mutateType, stickerName, stickerImage){
+        switch(mutateType){
+            case "add":
+                this.setState({
+                    stickers: [...this.state.stickers, stickerName, stickerImage]
+                });        
+                break;
+            case "remove":
+                let indexRemove = this.state.stickers.indexOf(stickerName);
+                if(indexRemove === 0){
+                    this.setState({
+                        stickers: [...this.state.stickers.slice(2)]
+                    });
+                }else{
+                    this.setState({
+                        stickers: [...this.state.stickers.slice(0, indexRemove), ...this.state.stickers.slice(indexRemove + 2)]
+                    });
+                };
+                break;
+            default:
+                this.setState({
+                    stickers: []
+                },()=>{console.log(this.state.stickers)});
+                break;
         };
     };
     updateDesign(what, value, where){
@@ -1563,44 +1861,17 @@ class Widgets extends Component{
                 element.classList.add(`border-${this.state.values.customBorder.value}`);
             };
         };
-        // switch(this.state.values.customBorder.value){
-        //     case "diagonal":
-        //         for(const element of widgetAll){
-        //             element.style.border = "10px solid var(--randColor)";
-        //             element.style.borderImage = `
-        //                 repeating-linear-gradient(45deg,
-        //                     transparent,
-        //                     transparent 5px,
-        //                     var(--randColor) 6px,
-        //                     var(--randColor) 15px,
-        //                     transparent 16px,
-        //                     transparent 20px
-        //                 ) 20/1rem`;
-        //         };
-        //         break;
-        //     case "dashed":
-        //         for(const element of widgetAll){
-        //             element.style.border = "5px dashed var(--randColor)";
-        //         };
-        //         break;
-        //     case "double":
-        //         for(const element of widgetAll){
-        //             element.style.border = "10px double var(--randColor)";
-        //         };
-        //         break;
-        //     case "default":
-        //         for(const element of widgetAll){
-        //             element.style.border = "1px solid var(--randColor)";
-        //             element.style.borderImage = "none"
-        //         };
-        //         break;
-        //     default:
-        //         break;
-        // };
     };
     updateValue(what, where, type){
-        if(where === "customBorder"){
-            this.updateCustomBorder("", what);
+        switch(where){
+            case "customBorder":
+                this.updateCustomBorder("", what);
+                break;
+            case "health":
+                healthDisplay = what;
+                break;
+            default:
+                break;
         };
         this.setState(prevState => ({
             [type]: {
@@ -1885,9 +2156,13 @@ class Widgets extends Component{
                                 shadow: localStorageValues["shadow"],
                                 voice: localStorageValues["voice"],
                                 pitch: localStorageValues["pitch"],
-                                rate: localStorageValues["rate"]
+                                rate: localStorageValues["rate"],
+                                health: localStorageValues["health"],
+                                close: localStorageValues["close"]
                             },
                         });
+                        /// Setting global variables
+                        healthDisplay = localStorageValues["health"];
                         break;
                     default:
                         break;
@@ -1984,14 +2259,18 @@ class Widgets extends Component{
             },
             hotbar: {
                 fullscreen: this.state.values.fullscreen,
-                resetPosition: this.state.values.resetPosition
+                resetPosition: this.state.values.resetPosition,
+                close: this.state.values.close
             }
         };
         const gameProps = {
             gold: this.state.gold,
+            stats: this.state.stats,
             updateGameValue: this.updateGameValue,
             formatNumber: formatNumber,
-            randomItem: randomItem
+            randomItem: randomItem,
+            renderHearts: renderHearts,
+            healthDisplay: this.state.values.health.value
         };
         return(
             <div id="widget-container"
@@ -2046,6 +2325,13 @@ class Widgets extends Component{
                         breakout: this.state.widgets.games.breakout.active,
                         donutanimation: this.state.widgets.fun.donutanimation.active,
                         currencyconverter: this.state.widgets.utility.currencyconverter.active,
+                        aiimagegenerator: this.state.widgets.fun.aiimagegenerator.active,
+                        chess: this.state.widgets.games.chess.active,
+                        urlshortner: this.state.widgets.utility.urlshortner.active,
+                        imagecolorpicker: this.state.widgets.utility.imagecolorpicker.active,
+                        sticker: this.state.widgets.fun.sticker.active,
+                        twentyfortyeight: this.state.widgets.games.twentyfortyeight.active,
+                        trivia: this.state.widgets.games.trivia.active,
                     }}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
@@ -2060,6 +2346,7 @@ class Widgets extends Component{
                     widgetsGamesActive={widgetsGamesActive}
                     widgetsFunActive={widgetsFunActive}
                     tricks={tricks}
+                    randColor={randColor}
                     formatGroupLabel={formatGroupLabel}
                     selectTheme={selectTheme}
                     selectStyleSmall={selectStyleSmall}
@@ -2306,6 +2593,28 @@ class Widgets extends Component{
                         randColor={randColor}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.utility.urlshortner.active
+                    ? <WidgetURLShortner
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.urlshortner.position.x,
+                            y: this.state.widgets.utility.urlshortner.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.urlshortner.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.imagecolorpicker.active
+                    ? <WidgetImageColorPicker
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.imagecolorpicker.position.x,
+                            y: this.state.widgets.utility.imagecolorpicker.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.imagecolorpicker.drag.disabled}
+                        copyToClipboard={copyToClipboard}
+                        randColor={randColor}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 {
                     //#endregion
                 }
@@ -2371,6 +2680,42 @@ class Widgets extends Component{
                         patterns={breakoutPatterns}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.games.chess.active === true
+                    ? <WidgetChess
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.chess.position.x,
+                            y: this.state.widgets.games.chess.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.chess.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.twentyfortyeight.active === true
+                    ? <Widget2048
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.twentyfortyeight.position.x,
+                            y: this.state.widgets.games.twentyfortyeight.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.twentyfortyeight.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.trivia.active === true
+                    ? <WidgetTrivia
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.trivia.position.x,
+                            y: this.state.widgets.games.trivia.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.trivia.drag.disabled}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        sortSelect={sortSelect}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 { 
                     //#endregion
                 }
@@ -2411,6 +2756,38 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.fun.donutanimation.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.fun.aiimagegenerator.active === true
+                    ? <WidgetAiImageGenerator
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.aiimagegenerator.position.x,
+                            y: this.state.widgets.fun.aiimagegenerator.position.y
+                        }}
+                        positionPopout={{
+                            prompthelp: {
+                                x: this.state.widgets.fun.aiimagegenerator.popouts.prompthelp.position.x,
+                                y: this.state.widgets.fun.aiimagegenerator.popouts.prompthelp.position.y
+                            }
+                        }}
+                        dragDisabled={this.state.widgets.fun.aiimagegenerator.drag.disabled}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        smallIcon={smallIcon}
+                        smallMedIcon={smallMedIcon}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.fun.sticker.active === true
+                    ? <WidgetSticker
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.sticker.position.x,
+                            y: this.state.widgets.fun.sticker.position.y
+                        }}
+                        dragDisabled={this.state.widgets.fun.sticker.drag.disabled}
+                        stickers={this.state.stickers}
+                        updateStickers={this.updateStickers}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 {
                     //#endregion
                 }
@@ -2422,6 +2799,7 @@ class Widgets extends Component{
 // import { React, Component } from 'react';
 // import { FaGripHorizontal } from 'react-icons/fa';
 // import { FaExpand, Fa0 } from 'react-icons/fa6';
+// import { IoClose } from 'react-icons/io5';
 // import { IconContext } from 'react-icons';
 // import Draggable from 'react-draggable';
 
@@ -2465,6 +2843,13 @@ class Widgets extends Component{
 //                                 ? <button className="button-match inverse when-elements-are-not-straight"
 //                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
 //                                     <FaExpand/>
+//                                 </button>
+//                                 : <></>}
+//                             {/* Close */}
+//                             {(this.props.defaultProps.hotbar.close)
+//                                 ? <button className="button-match inverse when-elements-are-not-straight"
+//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "close", "[WIDGET TYPE]")}>
+//                                     <IoClose/>
 //                                 </button>
 //                                 : <></>}
 //                         </section>

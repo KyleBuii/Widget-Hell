@@ -5,6 +5,7 @@ import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Select from 'react-select';
 import QRCode from 'react-qr-code';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -71,6 +72,13 @@ class WidgetQRCode extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("qrcode", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -91,9 +99,10 @@ class WidgetQRCode extends Component{
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                         {/* Input Container */}
-                        <div className="flex-center row gap small">
-                            <input className="input-match" 
+                        <div className="flex-center row gap small-gap">
+                            <input className="input-match"
                                 type="text"
+                                name="qrcode-input-text"
                                 placeholder="Enter QR Text"
                                 value={this.state.input}
                                 onChange={(event) => this.handleChange(event.target.value, "input")}></input>

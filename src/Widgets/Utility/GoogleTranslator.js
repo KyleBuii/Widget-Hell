@@ -6,6 +6,7 @@ import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import $ from 'jquery';
 import Select from "react-select";
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -34,7 +35,8 @@ class WidgetGoogleTranslator extends Component{
             input: "",
             converted: "",
             from: {},
-            to: {}
+            to: {},
+            running: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFrom = this.handleFrom.bind(this);
@@ -67,6 +69,9 @@ class WidgetGoogleTranslator extends Component{
                 body: data      
             };
             try{
+                this.setState({
+                    running: true
+                });
                 const response = await fetch(url, options);
                 const result = await response.json();
                 this.setState({
@@ -74,8 +79,13 @@ class WidgetGoogleTranslator extends Component{
                 });
             }catch(err){
                 this.setState({
-                    converted: err
+                    converted: err,
+                    running: false
                 });
+            }finally{
+                this.setState({
+                    running: false
+                });   
             };
         };
     };
@@ -199,6 +209,13 @@ class WidgetGoogleTranslator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -214,7 +231,7 @@ class WidgetGoogleTranslator extends Component{
                                 </button>
                                 : <></>}
                         </section>
-                        {/* Select */}
+                        {/* Selects Container */}
                         <div className="flex-center space-nicely space-bottom">
                             {/* Select From */}
                             <Select id="googletranslator-translate-from"
@@ -253,7 +270,8 @@ class WidgetGoogleTranslator extends Component{
                                     }
                                 })}/>
                             <button className="button-match inverse"
-                                onClick={this.handleTranslate}>
+                                onClick={this.handleTranslate}
+                                disabled={this.state.running}>
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaArrowRightFromBracket/>
                                 </IconContext.Provider>
@@ -270,7 +288,7 @@ class WidgetGoogleTranslator extends Component{
                             className="cut-scrollbar-corner-part-1 p">
                             <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                         </div>
-                        {/* Buttons */}
+                        {/* Bottom Buttons */}
                         <div className="element-ends float bottom">
                             <div className="flex-center row">
                                 {/* Clipboard */}

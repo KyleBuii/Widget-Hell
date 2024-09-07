@@ -7,6 +7,7 @@ import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -33,7 +34,9 @@ class WidgetSimonGame extends Component{
             pathGenerating: false,
             gameover: false,
             settings: false,
-            speed: 600
+            speed: 600,
+            maxHealth: 1,
+            health: 1
         };
         this.handleColorClick = this.handleColorClick.bind(this);
         this.storeData = this.storeData.bind(this);
@@ -82,7 +85,8 @@ class WidgetSimonGame extends Component{
             score: 0,
             clickCounter: 0,
             pathGenerating: false,
-            gameover: false
+            gameover: false,
+            health: this.state.maxHealth
         });
         colorsPath = [];
         this.randomPath();
@@ -129,7 +133,13 @@ class WidgetSimonGame extends Component{
                 };
             });
         }else{
-            this.gameover();
+            this.setState({
+                health: this.state.health - 1
+            }, () => {
+                if(this.state.health <= 0){
+                    this.gameover();
+                };
+            });
         };
     };
     handlePressableButton(){
@@ -171,6 +181,13 @@ class WidgetSimonGame extends Component{
                 break;
         };
     };
+    calculateHealth(){
+        if(this.props.gameProps.stats.health < 10){
+            return 1;
+        }else{
+            return Math.floor(this.props.gameProps.stats.health / 10);
+        };
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -197,7 +214,13 @@ class WidgetSimonGame extends Component{
                     speed: localStorageSimonGame["speed"]
                 });
             };
-        };    
+        };
+        /// Set stats
+        let calculateMaxHealth = this.calculateHealth();
+        this.setState({
+            maxHealth: calculateMaxHealth,
+            health: calculateMaxHealth
+        });
     };
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
@@ -231,6 +254,13 @@ class WidgetSimonGame extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -297,6 +327,15 @@ class WidgetSimonGame extends Component{
                                 }}></span>
                             <span className="aesthetic-scale scale-self float center">{this.state.score}</span>
                         </div>
+                        {/* Hearts */}
+                        {(this.props.gameProps.healthDisplay !== "none")
+                            ? <section id="simongame-health"
+                                className="flex-center space-nicely space-top not-bottom">
+                                {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
+                                    return heart;
+                                })}
+                            </section>
+                            : <></>}
                         {/* Gameover Overlay */}
                         <section id="simongame-overlay-gameover"
                             className="aesthetic-scale scale-span overlay rounded flex-center column gap">

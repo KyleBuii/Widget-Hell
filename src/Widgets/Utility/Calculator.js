@@ -7,6 +7,7 @@ import { BiExpand } from 'react-icons/bi';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import { evaluate, round } from 'mathjs';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetCalculator extends Component{
@@ -422,6 +423,13 @@ class WidgetCalculator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"

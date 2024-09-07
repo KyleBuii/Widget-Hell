@@ -24,10 +24,30 @@
 | Simon Game | Every 7 guesses |
 | Typing Test | Every 40 wpm |
 | Breakout | Every 100 bricks destroyed |
+| Chess | Every 5 pieces captured |
+| 2048 | On getting 2048 |
+| Trivia | Every 5 correct answers |
 
 ## **Stats guide [WIP]**
 <details>
     <summary>Health</summary>
+
+Health rounds down.
+| Heart | Hits |
+| --- | --- |
+| ![heart 1](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart1.png) | 1 |
+| ![heart 2](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart2.png) | 5 |
+| ![heart 3](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart3.png) | 10 |
+| ![heart 4](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart4.png) | 15 |
+| ![heart 5](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart5.png) | 20|
+| ![heart 6](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart6.png) | 25 |
+| ![heart 7](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart7.png) | 30 |
+| ![heart 8](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart8.png) | 35 |
+| ![heart 9](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart9.png) | 40 |
+| ![heart 10](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart10.png) | 45 |
+| ![heart 11](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart11.png) | 50 |
+| ![heart 12](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart12.png) | 55 |
+| ![heart 13](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart13.png) | 60 |
 
 | Game |  |
 | --- | --- |
@@ -35,7 +55,10 @@
 | Snake | Allows tanking the wall for every 10 |
 | Simon Game | Allows surviving an incorrect guess for every 10 |
 | Typing Test | N/A |
-| Breakout | N/A |
+| Breakout | Allows the ball to bounce off the bottom for every 10 |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | Allows a wrong guess for every 10 |
 </details>
 <details>
     <summary>Mana</summary>
@@ -47,6 +70,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Attack</summary>
@@ -58,6 +84,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Defense</summary>
@@ -69,6 +98,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Strength</summary>
@@ -80,6 +112,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Agility</summary>
@@ -91,6 +126,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Vitality</summary>
@@ -102,6 +140,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Resilience</summary>
@@ -113,6 +154,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Intelligence</summary>
@@ -124,6 +168,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Dexterity</summary>
@@ -135,6 +182,9 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
+| Trivia | N/A |
 </details>
 <details>
     <summary>Luck</summary>
@@ -146,6 +196,8 @@
 | Simon Game | N/A |
 | Typing Test | N/A |
 | Breakout | N/A |
+| Chess | N/A |
+| 2048 | N/A |
 </details>
 
 ## **Plans**

@@ -1,10 +1,11 @@
 import { React, Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
-import { AiOutlineSetting } from 'react-icons/ai';
+// import { AiOutlineSetting } from 'react-icons/ai';
 import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -43,7 +44,9 @@ class WidgetBreakout extends Component{
             highscore: 0,
             goldEarned: 0,
             gameover: false,
-            timer: 0
+            timer: 0,
+            maxHealth: 1,
+            health: 1
         };
         this.handleMouse = this.handleMouse.bind(this);
         this.drawPaddle = this.drawPaddle.bind(this);
@@ -148,7 +151,15 @@ class WidgetBreakout extends Component{
         };
         /// Bottom wall (lose)
         if(this.state.ball.y + dy > elementCanvas.height - this.state.ball.radius || this.state.ball.y + dy < this.state.ball.radius){
-            this.gameOver();
+            this.setState({
+                health: this.state.health - 1
+            }, () => {
+                if(this.state.health <= 0){
+                    this.gameOver();
+                }else{
+                    dy = -dy;
+                };
+            });
         };
         /// Move Ball
         this.setState({
@@ -221,6 +232,13 @@ class WidgetBreakout extends Component{
             count: newBrickCount
         });
     };
+    calculateHealth(){
+        if(this.props.gameProps.stats.health < 10){
+            return 1;
+        }else{
+            return Math.floor(this.props.gameProps.stats.health / 10);
+        };
+    };
     start(){
         dx = 2;
         dy = -2;
@@ -233,7 +251,8 @@ class WidgetBreakout extends Component{
             },
             goldEarned: 0,
             timer: 0,
-            score: 0
+            score: 0,
+            health: this.state.maxHealth
         });
         this.generateBricks();
         intervalGame = setInterval(this.playing, 10);
@@ -293,6 +312,7 @@ class WidgetBreakout extends Component{
         };
         let elementCanvas = document.getElementById("breakout-canvas");
         let startingBricks = [];
+        let calculateMaxHealth = this.calculateHealth();
         for(let c = 0; c < this.state.brick.column; c++){
             startingBricks[c] = [];
             for(let r = 0; r < this.state.brick.row; r++){
@@ -306,7 +326,9 @@ class WidgetBreakout extends Component{
                 x: (elementCanvas.width - this.state.paddle.width) / 2,
                 y: (elementCanvas.height - 50) - this.state.paddle.height
             },
-            bricks: [...startingBricks]
+            bricks: [...startingBricks],
+            maxHealth: calculateMaxHealth,
+            health: calculateMaxHealth
         }, () => {
             this.drawPaddle();
             this.drawBricks();
@@ -348,6 +370,13 @@ class WidgetBreakout extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -393,6 +422,15 @@ class WidgetBreakout extends Component{
                             height={600}
                             width={700}
                             onMouseMove={this.handleMouse}/>
+                        {/* Hearts */}
+                        {(this.props.gameProps.healthDisplay !== "none") 
+                            ? <div id="breakout-health"
+                                className="flex-center space-nicely space-top not-bottom">
+                                {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
+                                    return heart;
+                                })}
+                            </div>
+                            : <></>}
                         {/* Gameover Overlay */}
                         <section id="breakout-overlay-gameover"
                             className="aesthetic-scale scale-span overlay rounded flex-center column gap">

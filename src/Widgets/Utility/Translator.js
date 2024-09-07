@@ -6,6 +6,7 @@ import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import sanitizeHtml from 'sanitize-html';
 import Select from "react-select";
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -555,6 +556,13 @@ class WidgetTranslator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"

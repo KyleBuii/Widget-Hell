@@ -5,6 +5,7 @@ import { MdWaves } from "react-icons/md";
 import { WiCloudyGusts } from "react-icons/wi";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetWeather extends Component{
@@ -30,7 +31,8 @@ class WidgetWeather extends Component{
             precipitationMm: 0,
             precipitationIn: 0,
             gustMPH: "",
-            gustKPH: ""
+            gustKPH: "",
+            running: false
         };
         this.handleUpdate = this.handleUpdate.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -60,6 +62,9 @@ class WidgetWeather extends Component{
                 }
             };
             try{
+                this.setState({
+                    running: true
+                });
                 const response = await fetch(url, options);
                 const result = await response.json();
                 let dateLastUpdated = new Date(result.current.last_updated);
@@ -94,7 +99,12 @@ class WidgetWeather extends Component{
                 });
             }catch(err){
                 this.setState({
-                    input: "N/A"
+                    input: "N/A",
+                    running: false
+                });
+            }finally{
+                this.setState({
+                    running: false
                 });
             };
         };
@@ -149,6 +159,13 @@ class WidgetWeather extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -164,8 +181,8 @@ class WidgetWeather extends Component{
                                 </button>
                                 : <></>}
                         </section>
-                        {/* Search */}
-                        <div className="flex-center row gap small space-nicely space-bottom">
+                        {/* Search Container */}
+                        <div className="flex-center row gap small-gap space-nicely space-bottom">
                             <div id="weather-search-input">
                                 <input className="input-match"
                                     name="weather-input-search"
@@ -182,7 +199,8 @@ class WidgetWeather extends Component{
                                 </button>
                             </div>
                             <button className="button-match with-input"
-                                onClick={this.handleUpdate}>
+                                onClick={this.handleUpdate}
+                                disabled={this.state.running}>
                                 Update
                             </button>
                         </div>
@@ -228,7 +246,7 @@ class WidgetWeather extends Component{
                                 style={{height: this.props.largeIcon, width: this.props.largeIcon}}></img>
                             {/* Temperature */}
                             <div id="weather-temperature"
-                                className="flex-center row gap larger">
+                                className="flex-center row gap larger-gap">
                                 <div className="flex-center column">
                                     <span className="font larger bold">
                                         <span>{this.state.tempC}</span>
@@ -247,10 +265,10 @@ class WidgetWeather extends Component{
                             {/* Condition */}
                             <span id="weather-condition"
                                 className="font medium">{this.state.weatherCondition}</span>
-                            <div className="flex-center column gap medium">
-                                <div className="flex-center row gap larger">
+                            <div className="flex-center column gap medium-gap">
+                                <div className="flex-center row gap larger-gap">
                                     {/* Humidity */}
-                                    <div className="flex-center row gap small">
+                                    <div className="flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <MdWaves/>
                                         </IconContext.Provider>
@@ -260,7 +278,7 @@ class WidgetWeather extends Component{
                                         </div>
                                     </div>
                                     {/* Wind */}
-                                    <div className="flex-center row gap small">
+                                    <div className="flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <FaWind style={{ transform: `rotate(${this.state.windDirection}deg)` }}/>
                                         </IconContext.Provider>
@@ -271,9 +289,9 @@ class WidgetWeather extends Component{
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex-center row gap small">
+                                <div className="flex-center row gap small-gap">
                                     {/* Percipitation */}
-                                    <div className="flex-center row gap small">
+                                    <div className="flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <FaDroplet/>
                                         </IconContext.Provider>
@@ -284,7 +302,7 @@ class WidgetWeather extends Component{
                                         </div>
                                     </div>
                                     {/* Gust */}
-                                    <div className="flex-center row gap small">
+                                    <div className="flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "2.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <WiCloudyGusts/>
                                         </IconContext.Provider>

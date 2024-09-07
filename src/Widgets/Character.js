@@ -3,6 +3,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetCharacter extends Component{
@@ -108,6 +109,13 @@ class WidgetCharacter extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("character", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"

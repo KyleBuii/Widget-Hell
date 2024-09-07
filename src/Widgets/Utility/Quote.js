@@ -3,6 +3,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -84,6 +85,13 @@ class WidgetQuote extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("quote", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"

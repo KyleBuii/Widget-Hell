@@ -3,6 +3,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetEquipment extends Component{
@@ -236,6 +237,13 @@ class WidgetEquipment extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -252,11 +260,11 @@ class WidgetEquipment extends Component{
                                 : <></>}
                         </section>
                         {/* Equipment Container */}
-                        <section className="flex-center column gap medium">
+                        <section className="flex-center column gap medium-gap">
                             {/* Slots and Stats */}
-                            <section className="flex-center row gap medium">
+                            <section className="flex-center row gap medium-gap">
                                 {/* Slots */}
-                                <section className="flex-center column gap medium">
+                                <section className="flex-center column gap medium-gap">
                                     {/* Level */}
                                     <div className="aesthetic-scale scale-span flex-center column">
                                         <span className="font medium bold">Level {this.props.stats.level}</span>
@@ -519,7 +527,7 @@ class WidgetEquipment extends Component{
                                 document.getElementById("equipment-popout-view-item").style.visibility = "hidden";
                             }}>
                             <span className="font bold large-medium">{this.state.item.name}</span>
-                            <div className="flex-center row gap medium space-nicely space-all">
+                            <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"/>
                                 <table className="flex-center column font small">

@@ -4,6 +4,7 @@ import { FaExpand, Fa0, FaBold, FaSuperscript, FaSubscript, FaListOl, FaListUl, 
 import { MdFormatColorText } from 'react-icons/md';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetNotepad extends Component{
@@ -104,6 +105,13 @@ class WidgetNotepad extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -120,7 +128,7 @@ class WidgetNotepad extends Component{
                                 : <></>}
                         </section>
                         {/* Utility Bar */}
-                        <section className="flex-center row gap small space-nicely space-bottom">
+                        <section className="flex-center row gap small-gap space-nicely space-bottom">
                             {/* Buttons */}
                             <section className="flex-center column">
                                 {/* General */}
@@ -288,7 +296,7 @@ class WidgetNotepad extends Component{
                                 </section>
                                 {/* Headers and Font Size */}
                                 <section id="notepad-section-header-and-font-size" 
-                                    className="flex-center row gap small">
+                                    className="flex-center row gap small-gap">
                                     <section>
                                         <button className="button-match inverse"
                                             onClick={() => this.handleText("formatBlock", "H1")}>

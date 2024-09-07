@@ -9,6 +9,7 @@ import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 import Select from "react-select";
+import { IoClose } from 'react-icons/io5';
 
 
 /// Select option
@@ -256,6 +257,13 @@ class WidgetTimeConversion extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -272,7 +280,7 @@ class WidgetTimeConversion extends Component{
                                 : <></>}
                         </section>
                         {/* Time Conversion Container */}
-                        <section className="flex-center row gap medium">
+                        <section className="flex-center row gap medium-gap">
                             <section className="flex-center column gap">
                                 {/* Original date and time */}
                                 <section className="flex-center column gap">

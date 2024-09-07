@@ -2,6 +2,7 @@ import { React, Component } from 'react';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
+import { IoClose } from 'react-icons/io5';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 
@@ -41,7 +42,8 @@ class WidgetPokemonSearch extends Component{
             setting: false,
             shiny: false,
             flipped: false,
-            previousValue: ""
+            previousValue: "",
+            running: false
         };
         this.handleButton = this.handleButton.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -134,6 +136,9 @@ class WidgetPokemonSearch extends Component{
     };
     async fetchPokemon(what){
         try{
+            this.setState({
+                running: true
+            });
             const data = await P.getPokemonByName(what);
             let divPokemonCard = document.getElementById("pokemonsearch-card-pokemon");
             let divPokemonName = document.querySelector("#pokemonsearch-div-name span");
@@ -199,6 +204,13 @@ class WidgetPokemonSearch extends Component{
             };
         }catch(err){
             console.error(err);
+            this.setState({
+                running: false
+            });
+        }finally{
+            this.setState({
+                running: false
+            });
         };
     };
     handleInteract(e){
@@ -310,6 +322,13 @@ class WidgetPokemonSearch extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "close", "fun")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -352,7 +371,8 @@ class WidgetPokemonSearch extends Component{
                                 <button id="pokemonsearch-button-search" 
                                     className="button-match option"
                                     type="button"
-                                    onClick={() => this.handleButton("search")}>Search</button>
+                                    onClick={() => this.handleButton("search")}
+                                    disabled={this.state.running}>Search</button>
                                 {/* Setting Button */}
                                 <button id="pokemonsearch-button-setting"
                                     className="button-match inverse disabled-option space-nicely space-top length-medium"
@@ -364,7 +384,7 @@ class WidgetPokemonSearch extends Component{
                             </div>
                         </div>
                         {/* Pokemon Information */}
-                        <div className="flex-center column gap large">
+                        <div className="flex-center column gap large-gap">
                             {/* Pokemon Card */}
                             <div className="card">
                                 <div className="card-translater">

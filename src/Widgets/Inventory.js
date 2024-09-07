@@ -5,7 +5,8 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import { TbMoneybag } from "react-icons/tb";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
-import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { IoClose } from 'react-icons/io5';
+// import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 
 /// Variables
@@ -176,6 +177,13 @@ class WidgetInventory extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -192,7 +200,7 @@ class WidgetInventory extends Component{
                                 : <></>}
                         </section>
                         {/* Inventory */}
-                        <section className="flex-center column gap medium">
+                        <section className="flex-center column gap medium-gap">
                             {/* Inventory Slots */}
                             <section className="flex-center column">
                                 {/* Slots */}
@@ -275,7 +283,7 @@ class WidgetInventory extends Component{
                                 document.getElementById("inventory-popout-view-item").style.visibility = "hidden";
                             }}>
                             <span className="font bold large-medium">{this.state.item.name}</span>
-                            <div className="flex-center row gap medium space-nicely space-all">
+                            <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"/>
                                 <table className="flex-center column font small">

@@ -7,6 +7,7 @@ import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { TbMoneybag } from "react-icons/tb";
+import { IoClose } from 'react-icons/io5';
 
 
 //////////////////// Functions ////////////////////
@@ -45,7 +46,8 @@ function GridCell(props) {
 
 
 /// Variables
-let intervalTimer;
+var intervalTimer;
+var timeoutInvulnerabilityFrames;
 
 
 class WidgetSnake extends Component{
@@ -62,7 +64,9 @@ class WidgetSnake extends Component{
             highscore: 0,
             status: 0,          /// 0 = not started, 1 = in progress, 2 = finished
             direction: 0,       /// Using keycodes to indicate direction
-            speed: 130
+            speed: 130,
+            maxHealth: 1,
+            health: 1
         };
         this.storeData = this.storeData.bind(this);
         this.resizer = this.resizer.bind(this);
@@ -163,13 +167,25 @@ class WidgetSnake extends Component{
                 return this.state.snake[i];
             })
         );
-        this.setState({
-            snake: newSnake
-        });
-        this.checkIfAteFood(newSnake);
-        if(!this.isValid(newSnake[0]) 
-            || !this.doesntOverlap(newSnake)){
-            this.endGame()
+        if((!this.isValid(newSnake[0]) 
+            || !this.doesntOverlap(newSnake))
+            && timeoutInvulnerabilityFrames === undefined){
+            this.setState({
+                health: this.state.health - 1
+            }, () => {
+                if(this.state.health <= 0){
+                    this.endGame()
+                }else{
+                    timeoutInvulnerabilityFrames = setTimeout(() => {
+                        timeoutInvulnerabilityFrames = undefined;
+                    }, 1000);
+                };
+            });
+        }else{
+            this.setState({
+                snake: newSnake
+            });
+            this.checkIfAteFood(newSnake);
         };
     };
     checkIfAteFood(newSnake){
@@ -234,7 +250,8 @@ class WidgetSnake extends Component{
             direction: 0,
             startMoving: true,
             status: 1,
-            snake: [[cells, cells]]
+            snake: [[cells, cells]],
+            health: this.state.maxHealth
         });
         this.el.focus();
     };
@@ -293,6 +310,13 @@ class WidgetSnake extends Component{
                 break;
         };
     };
+    calculateHealth(){
+        if(this.props.gameProps.stats.health < 10){
+            return 1;
+        }else{
+            return Math.floor(this.props.gameProps.stats.health / 10);
+        };
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -329,6 +353,12 @@ class WidgetSnake extends Component{
         document.getElementById("snake-overlay")
             .style
             .visibility = "visible";
+        /// Set stats
+        let calculateMaxHealth = this.calculateHealth();
+        this.setState({
+            maxHealth: calculateMaxHealth,
+            health: calculateMaxHealth
+        });
     };
     componentWillUnmount(){
         window.removeEventListener("resize", this.resizer);
@@ -380,6 +410,13 @@ class WidgetSnake extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -457,6 +494,15 @@ class WidgetSnake extends Component{
                                 </button>
                             </div>
                         </section>
+                        {/* Hearts */}
+                        {(this.props.gameProps.healthDisplay !== "none") 
+                            ? <section id="snake-health"
+                                className="flex-center space-nicely space-top not-bottom">
+                                {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
+                                    return heart;
+                                })}
+                            </section>
+                            : <></>}
                         {/* Settings Popout */}
                         <Draggable
                             cancel="span, .slider, button"

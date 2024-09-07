@@ -2,6 +2,7 @@ import { React, Component } from 'react';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
+import { IoClose } from 'react-icons/io5';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
@@ -126,6 +127,13 @@ class WidgetDonutAnimation extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("donutanimation", "close", "fun")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -142,7 +150,7 @@ class WidgetDonutAnimation extends Component{
                                 : <></>}
                         </section>
                         {/* Donut Container */}
-                        <section className="flex-center column gap large">
+                        <section className="flex-center column gap large-gap">
                             {/* Donut */}
                             <pre id="donutanimation-donut"
                                 className="no-highlight"></pre>

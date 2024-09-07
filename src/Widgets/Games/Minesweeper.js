@@ -6,6 +6,7 @@ import { PiFlagPennantFill } from "react-icons/pi";
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -24,7 +25,9 @@ class WidgetMinesweeper extends Component{
             height: 8,
             timer: 0,
             started: false,
-            disabled: false
+            disabled: false,
+            maxHealth: 1,
+            health: 1
         };
         this.createBoard = this.createBoard.bind(this);
         this.revealBoard = this.revealBoard.bind(this);
@@ -112,7 +115,8 @@ class WidgetMinesweeper extends Component{
             minesLeft: this.state.mines,
             timer: 0,
             started: false,
-            disabled: false
+            disabled: false,
+            health: this.state.maxHealth
         });
         clearInterval(intervalTimer);
     };
@@ -167,7 +171,13 @@ class WidgetMinesweeper extends Component{
             return false;
         };
         if(cell.isMine){
-            this.gameOver();
+            this.setState({
+                health: this.state.health - 1
+            }, () => {
+                if(this.state.health <= 0){
+                    this.gameOver();
+                };
+            });
             return false;
         };
         if(cell.isEmpty){
@@ -233,6 +243,13 @@ class WidgetMinesweeper extends Component{
             this.props.gameProps.updateGameValue("gold", this.state.mines);
         };
     };
+    calculateHealth(){
+        if(this.props.gameProps.stats.health < 10){
+            return 1;
+        }else{
+            return Math.floor(this.props.gameProps.stats.health / 10);
+        };
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -283,6 +300,7 @@ class WidgetMinesweeper extends Component{
     componentDidMount(){
         let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
         let localStorageMinesweeper = dataLocalStorage["games"]["minesweeper"];
+        /// Load data from local storage
         if(localStorageMinesweeper["mines"] !== undefined){
             this.setState({
                 mines: localStorageMinesweeper["mines"],
@@ -299,6 +317,12 @@ class WidgetMinesweeper extends Component{
                 grid: this.createBoard()
             });
         };
+        /// Set stats
+        let calculateMaxHealth = this.calculateHealth();
+        this.setState({
+            maxHealth: calculateMaxHealth,
+            health: calculateMaxHealth
+        });
     };
     componentWillUnmount(){
         this.storeData();
@@ -331,6 +355,13 @@ class WidgetMinesweeper extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("minesweeper", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -378,9 +409,23 @@ class WidgetMinesweeper extends Component{
                                 {this.state.timer}
                             </span>
                         </section>
-                        {/* Board */}
-                        <section id="minesweeper-board"
-                            className="flex-center column">{this.renderBoard()}</section>
+                        {/* Game Container */}
+                        <section className="flex-center row gap small-gap">
+                            {/* Board */}
+                            <div id="minesweeper-board"
+                                className="flex-center column">
+                                {this.renderBoard()}
+                            </div>
+                            {/* Hearts */}
+                            {(this.props.gameProps.healthDisplay !== "none") 
+                                ? <div id="minesweeper-health"
+                                    className="flex-center">
+                                    {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
+                                        return heart;
+                                    })}
+                                </div>
+                                : <></>}
+                        </section>
                         {/* Controller Container */}
                         <section id="minesweeper-container-controller"
                             className="space-nicely space-top">
