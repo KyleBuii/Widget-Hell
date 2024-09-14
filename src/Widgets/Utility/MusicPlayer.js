@@ -375,7 +375,7 @@ class WidgetMusicPlayer extends Component{
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             let dataMusicPlayer = dataLocalStorage["utility"]["musicplayer"];
-            if(dataMusicPlayer["urls"] !== null){
+            if(dataMusicPlayer["urls"] !== undefined){
                 this.setState({
                     urls: [...dataMusicPlayer["urls"]]
                 }, () => {
@@ -383,6 +383,8 @@ class WidgetMusicPlayer extends Component{
                         this.loadMusic();
                     };
                 });
+            }else{
+                this.loadMusic();
             };
         };
     };

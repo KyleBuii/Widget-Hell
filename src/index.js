@@ -2269,8 +2269,8 @@ class Widgets extends Component{
                     data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
-        /// First load
         }else{
+            /// First load
             for(let i in this.state.widgets.utility){
                 data.utility[i] = {
                     active: false,
@@ -2298,13 +2298,11 @@ class Widgets extends Component{
                     data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
-            localStorage.setItem("gold", 0);
-            localStorage.setItem("inventory", JSON.stringify([]));
         };
         localStorage.setItem("widgets", JSON.stringify(data));
+        localStorage.setItem("gold", this.state.gold);
         localStorage.setItem("inventory", JSON.stringify(this.state.inventory));
         localStorage.setItem("equipment", JSON.stringify(this.state.equipment));
-        localStorage.setItem("gold", this.state.gold);
         localStorage.setItem("stats", JSON.stringify(this.state.stats));
         localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
     };

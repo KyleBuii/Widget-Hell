@@ -133,7 +133,7 @@ class WidgetTetris extends Component{
 		intervalLoop = setInterval(this.loop, 1000 / 60);
 		if(localStorage.getItem("widgets") !== null){
 			let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
-			if(dataLocalStorage["games"]["tetris"]["highscore"] !== null){
+			if(dataLocalStorage["games"]["tetris"]["highscore"] !== undefined){
 				this.setState({
 					highscore: dataLocalStorage["games"]["tetris"]["highscore"]
 				});
