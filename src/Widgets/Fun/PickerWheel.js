@@ -1,9 +1,9 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -272,13 +272,6 @@ class WidgetPickerWheel extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -291,6 +284,13 @@ class WidgetPickerWheel extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "fullscreen", "fun")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "close", "fun")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -318,7 +318,7 @@ class WidgetPickerWheel extends Component{
                         {/* Winner Overlay */}
                         <section id="pickerwheel-overlay-winner"
                             className="overlay rounded flex-center">
-                            <span className="aesthetic-scale scale-self font largerer bold break-word"
+                            <span className="text-animation aesthetic-scale scale-self font largerer bold break-word"
                                onClick={this.handleOverlay}>{this.state.winner}</span>
                         </section>
                         {/* Author */}
@@ -332,4 +332,4 @@ class WidgetPickerWheel extends Component{
     };
 };
 
-export default WidgetPickerWheel;
+export default memo(WidgetPickerWheel);

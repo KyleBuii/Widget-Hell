@@ -1,13 +1,13 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
+import Slider from 'rc-slider';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
-import { TbMoneybag } from "react-icons/tb";
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
-import Slider from 'rc-slider';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { TbMoneybag } from "react-icons/tb";
 
 
 /// Variables
@@ -19,6 +19,7 @@ let colors = {
 };
 let colorsPath = [];
 let intervalTimer;
+let timeoutDelay;
 
 
 class WidgetSimonGame extends Component{
@@ -46,7 +47,9 @@ class WidgetSimonGame extends Component{
         return colorsKeys[Math.floor(Math.random() * colorsKeys.length)];
     };
     async delay(time){
-        return await new Promise((resolve) => setTimeout(resolve, time));
+        return await new Promise((resolve) => {
+            timeoutDelay = setTimeout(resolve, time)
+        });
     };
     async randomPath(){
         colorsPath.push(this.randomColor());
@@ -226,6 +229,7 @@ class WidgetSimonGame extends Component{
         window.removeEventListener("beforeunload", this.storeData);
         this.storeData();
         clearInterval(intervalTimer);
+        clearTimeout(timeoutDelay);
     };
     render(){
         return(
@@ -254,13 +258,6 @@ class WidgetSimonGame extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -275,12 +272,19 @@ class WidgetSimonGame extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold"
                             style={{zIndex: 300}}>
                             {/* Gold Earned */}
-                            <span className="flex-center row">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -288,14 +292,14 @@ class WidgetSimonGame extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle">
+                            <span className="text-animation flex-center row float middle">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
@@ -411,4 +415,4 @@ class WidgetSimonGame extends Component{
     };
 };
 
-export default WidgetSimonGame;
+export default memo(WidgetSimonGame);

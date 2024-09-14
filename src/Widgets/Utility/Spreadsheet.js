@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
-import Spreadsheet from 'react-spreadsheet';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import Spreadsheet from 'react-spreadsheet';
 
 
 class WidgetSpreadsheet extends Component{
@@ -99,13 +99,6 @@ class WidgetSpreadsheet extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("spreadsheet", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -118,6 +111,13 @@ class WidgetSpreadsheet extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("spreadsheet", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("spreadsheet", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -137,4 +137,4 @@ class WidgetSpreadsheet extends Component{
     };
 };
 
-export default WidgetSpreadsheet;
+export default memo(WidgetSpreadsheet);

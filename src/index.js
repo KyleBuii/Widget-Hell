@@ -1,37 +1,39 @@
-import './index.scss';
-import { React, Component } from 'react';
+import { Component, React } from 'react';
 import ReactDOM from 'react-dom/client';
 import { components } from 'react-select';
-import WidgetSetting from './Widgets/Utility/Setting.js';
-import WidgetQuote from './Widgets/Utility/Quote.js';
-import WidgetTranslator from './Widgets/Utility/Translator.js';
-import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.js';
-import WidgetCalculator from './Widgets/Utility/Calculator.js';
-import WidgetWeather from './Widgets/Utility/Weather.js';
-import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
-import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
-import WidgetSnake from './Widgets/Games/Snake.js';
-import WidgetTypingTest from './Widgets/Games/TypingTest.js';
-import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
-import WidgetNotepad from './Widgets/Utility/Notepad.js';
-import WidgetQRCode from './Widgets/Utility/QRCode.js';
-import WidgetBattery from './Widgets/Utility/Battery.js';
-import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
-import WidgetSimonGame from './Widgets/Games/SimonGame.js';
-import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
-import WidgetInventory from './Widgets/Inventory.js';
-import WidgetEquipment from './Widgets/Equipment.js';
+import './index.scss';
 import WidgetCharacter from './Widgets/Character.js';
-import WidgetBreakout from './Widgets/Games/Breakout.js';
-import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.js';
-import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.js';
+import WidgetEquipment from './Widgets/Equipment.js';
 import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.js';
-import WidgetChess from './Widgets/Games/Chess.js';
-import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
-import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.js';
+import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.js';
+import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
+import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
 import WidgetSticker from './Widgets/Fun/Sticker.js';
 import Widget2048 from './Widgets/Games/2048.js';
+import WidgetBreakout from './Widgets/Games/Breakout.js';
+import WidgetChess from './Widgets/Games/Chess.js';
+import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
+import WidgetSimonGame from './Widgets/Games/SimonGame.js';
+import WidgetSnake from './Widgets/Games/Snake.js';
+import WidgetTetris from './Widgets/Games/Tetris.js';
 import WidgetTrivia from './Widgets/Games/Trivia.js';
+import WidgetTypingTest from './Widgets/Games/TypingTest.js';
+import WidgetInventory from './Widgets/Inventory.js';
+import WidgetBattery from './Widgets/Utility/Battery.js';
+import WidgetCalculator from './Widgets/Utility/Calculator.js';
+import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.js';
+import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.js';
+import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.js';
+import WidgetNotepad from './Widgets/Utility/Notepad.js';
+import WidgetQRCode from './Widgets/Utility/QRCode.js';
+import WidgetQuote from './Widgets/Utility/Quote.js';
+import WidgetSetting from './Widgets/Utility/Setting.js';
+import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
+import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
+import WidgetTranslator from './Widgets/Utility/Translator.js';
+import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
+import WidgetWeather from './Widgets/Utility/Weather.js';
+import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.js';
 
 
 //////////////////// Variables ////////////////////
@@ -49,6 +51,12 @@ let color;
 const colorRange = 200;
 //#region Data
 const tricks = ["spin", "flip", "hinge"];
+const textAnimations = [
+    "textBobbling 1s 1 cubic-bezier(0.5,220,0.5,-220)",
+    "textErratic 1s 1",
+    "textGlitch 1s 1 cubic-bezier(0.5,-2000,0.5,2000)",
+    "textRotate 1s 1 cubic-bezier(.5,-150,.5,150)"
+];
 const languages = ["Afrikaans", "af", "Albanian", "sq", "Amharic", "am", "Arabic", "ar", "Armenian", "hy", "Assamese", "as", "Azerbaijani (Latin)", "az", "Bangla", "bn", "Bashkir", "ba", "Basque", "eu", "Bosnian (Latin)", "bs", "Bulgarian", "bg", "Cantonese (Traditional)", "yue", "Catalan", "ca", "Chinese (Literary)", "lzh", "Chinese Simplified", "zh-Hans", "Chinese Traditional", "zh-Hant", "Croatian", "hr", "Czech", "cs", "Danish", "da", "Dari", "prs", "Divehi", "dv", "Dutch", "nl", "English", "en", "Estonian", "et", "Faroese", "fo", "Fijian", "fj", "Filipino", "fil", "Finnish", "fi", "French", "fr", "French (Canada)", "fr-ca", "Galician", "gl", "Georgian", "ka", "German", "de", "Greek", "el", "Gujarati", "gu", "Haitian Creole", "ht", "Hebrew", "he", "Hindi", "hi", "Hmong Daw (Latin)", "mww", "Hungarian", "hu", "Icelandic", "is", "Indonesian", "id", "Inuinnaqtun", "ikt", "Inuktitut", "iu", "Inuktitut (Latin)", "iu-Latn", "Irish", "ga", "Italian", "it", "Japanese", "ja", "Kannada", "kn", "Kazakh", "kk", "Khmer", "km", "Klingon", "tlh-Latn", "Klingon (plqaD)", "tlh-Piqd", "Korean", "ko", "Kurdish (Central)", "ku", "Kurdish (Northern)", "kmr", "Kyrgyz (Cyrillic)", "ky", "Lao", "lo", "Latvian", "lv", "Lithuanian", "lt", "Macedonian", "mk", "Malagasy", "mg", "Malay (Latin)", "ms", "Malayalam", "ml", "Maltese", "mt", "Maori", "mi", "Marathi", "mr", "Mongolian (Cyrillic)", "mn-Cyrl", "Mongolian (Traditional)", "mn-Mong", "Myanmar", "my", "Nepali", "ne", "Norwegian", "nb", "Odia", "or", "Pashto", "ps", "Persian", "fa", "Polish", "pl", "Portuguese (Brazil)", "pt", "Portuguese (Portugal)", "pt-pt", "Punjabi", "pa", "Queretaro Otomi", "otq", "Romanian", "ro", "Russian", "ru", "Samoan (Latin)", "sm", "Serbian (Cyrillic)", "sr-Cyrl", "Serbian (Latin)", "sr-Latn", "Slovak", "sk", "Slovenian", "sl", "Somali (Arabic)", "so", "Spanish", "es", "Swahili (Latin)", "sw", "Swedish", "sv", "Tahitian", "ty", "Tamil", "ta", "Tatar (Latin)", "tt", "Telugu", "te", "Thai", "th", "Tibetan", "bo", "Tigrinya", "ti", "Tongan", "to", "Turkish", "tr", "Turkmen (Latin)", "tk", "Ukrainian", "uk", "Upper Sorbian", "hsb", "Urdu", "ur", "Uyghur (Arabic)", "ug", "Uzbek (Latin)", "uz", "Vietnamese", "vi", "Welsh", "cy", "Yucatec Maya", "yua", "Zulu", "zu"];
 const moneyConversions = ["AED", "AE", "AFN", "AF", "XCD", "AG", "ALL", "AL", "AMD", "AM", "ANG", "AN", "AOA", "AO", "AQD", "AQ", "ARS", "AR", "AUD", "AU", "AZN", "AZ", "BAM", "BA", "BBD", "BB", "BDT", "BD", "XOF", "BE", "BGN", "BG", "BHD", "BH", "BIF", "BI", "BMD", "BM", "BND", "BN", "BOB", "BO", "BRL", "BR", "BSD", "BS", "NOK", "BV", "BWP", "BW", "BYR", "BY", "BZD", "BZ", "CAD", "CA", "CDF", "CD", "XAF", "CF", "CHF", "CH", "CLP", "CL", "CNY", "CN", "COP", "CO", "CRC", "CR", "CUP", "CU", "CVE", "CV", "CYP", "CY", "CZK", "CZ", "DJF", "DJ", "DKK", "DK", "DOP", "DO", "DZD", "DZ", "ECS", "EC", "EEK", "EE", "EGP", "EG", "ETB", "ET", "EUR", "FR", "FJD", "FJ", "FKP", "FK", "GBP", "GB", "GEL", "GE", "GGP", "GG", "GHS", "GH", "GIP", "GI", "GMD", "GM", "GNF", "GN", "GTQ", "GT", "GYD", "GY", "HKD", "HK", "HNL", "HN", "HRK", "HR", "HTG", "HT", "HUF", "HU", "IDR", "ID", "ILS", "IL", "INR", "IN", "IQD", "IQ", "IRR", "IR", "ISK", "IS", "JMD", "JM", "JOD", "JO", "JPY", "JP", "KES", "KE", "KGS", "KG", "KHR", "KH", "KMF", "KM", "KPW", "KP", "KRW", "KR", "KWD", "KW", "KYD", "KY", "KZT", "KZ", "LAK", "LA", "LBP", "LB", "LKR", "LK", "LRD", "LR", "LSL", "LS", "LTL", "LT", "LVL", "LV", "LYD", "LY", "MAD", "MA", "MDL", "MD", "MGA", "MG", "MKD", "MK", "MMK", "MM", "MNT", "MN", "MOP", "MO", "MRO", "MR", "MTL", "MT", "MUR", "MU", "MVR", "MV", "MWK", "MW", "MXN", "MX", "MYR", "MY", "MZN", "MZ", "NAD", "NA", "XPF", "NC", "NGN", "NG", "NIO", "NI", "NPR", "NP", "NZD", "NZ", "OMR", "OM", "PAB", "PA", "PEN", "PE", "PGK", "PG", "PHP", "PH", "PKR", "PK", "PLN", "PL", "PYG", "PY", "QAR", "QA", "RON", "RO", "RSD", "RS", "RUB", "RU", "RWF", "RW", "SAR", "SA", "SBD", "SB", "SCR", "SC", "SDG", "SD", "SEK", "SE", "SGD", "SG", "SKK", "SK", "SLL", "SL", "SOS", "SO", "SRD", "SR", "STD", "ST", "SVC", "SV", "SYP", "SY", "SZL", "SZ", "THB", "TH", "TJS", "TJ", "TMT", "TM", "TND", "TN", "TOP", "TO", "TRY", "TR", "TTD", "TT", "TWD", "TW", "TZS", "TZ", "UAH", "UA", "UGX", "UG", "USD", "US", "UYU", "UY", "UZS", "UZ", "VEF", "VE", "VND", "VN", "VUV", "VU", "YER", "YE", "ZAR", "ZA", "ZMK", "ZM", "ZWD", "ZW"];
 const quotes = [
@@ -456,7 +464,7 @@ const items = {
             source: "Mashle"
         },
     },
-    /// Items with basic properties (stat increases)
+    /// Items with basic properties (stat increase/decrease)
     "rare": {
         "Creampuff": {
             slot: "hidden",
@@ -478,13 +486,53 @@ const items = {
             image: "/images/items/chunchunmaru.png",
             source: "Konosuba"
         },
+        "Seed": {
+            slot: "consumable1",
+            type: "stat",
+            stats: {
+                health: 1
+            },
+            description: "Exclusive drop from skeletons in Tululu.",
+            image: "/images/items/seed.png",
+            source: "My Unique Skill Makes Me OP Even at Level 1"
+        },
+        "Mähne": {
+            slot: "main",
+            type: "stat",
+            stats: {
+                attack: 1
+            },
+            description: "Comprised of two large blades joined by a hilt with an extending holder.",
+            image: "/images/items/mahne.png",
+            source: "Pumpkin Scissors"
+        },
+        "Belle Delphine's Bath Water": {
+            slot: "consumable1",
+            type: "stat",
+            stats: {
+                health: -99,
+                mana: -99,
+                attack: -99,
+                defense: -99,
+                strength: -99,
+                agility: -99,
+                vitality: -99,
+                resilience: -99,
+                intelligence: -99,
+                dexterity: -99,
+                luck: -99
+            },
+            description: "...",
+            image: "/images/items/belledelphinesbathwater.png",
+            source: "Meme"
+        },
     },
     /// Items with unique properties (abilities)
     "exotic": {
         "Grass Block": {
             slot: "main",
             type: "ability",
-            information: "Place a grass block.",
+            information: "Places a grass block",
             description: "C418 - Sweden",
             image: "/images/items/grassblock.png",
             source: "Minecraft"
@@ -492,7 +540,7 @@ const items = {
         "Hestia Knife": {
             slot: "wrist",
             type: "ability",
-            information: "Becomes stronger according to the wielder's status.",
+            information: "Becomes stronger according to the wielder's status",
             description: "A special knife created by Hephaestus with help from Hestia.",
             requirement: "Member of Hestia Familia",
             image: "/images/items/hestiaknife.png",
@@ -501,10 +549,47 @@ const items = {
         "Code of Hammurabi": {
             slot: "offhand",
             type: "ability",
-            information: "Redirects every attack against the user back to the attacker.",
+            information: "Redirects every attack against the user back to the attacker",
             description: "An eye for an eye, a tooth for a tooth.",
             image: "/images/items/codeofhammurabi.png",
             source: "Tomb Raider King"
+        },
+        "Door Knocker": {
+            slot: "main",
+            type: "both",
+            stats: {
+                attack: 99,
+                agility: -1
+            },
+            information: "Decreases the enemy morale",
+            description: "Töten Sie. Töten Sie. Töten Sie.",
+            requirement: "Must be at point blank range",
+            image: "/images/items/doorknocker.png",
+            source: "Pumpkin Scissors"
+        },
+        "Necklace": {
+            slot: "necklace",
+            type: "ability",
+            information: "Doubles item drops",
+            description: "Hello... Yoda?",
+            image: "/images/items/necklace.png",
+            source: "My Unique Skill Makes Me OP Even at Level 1"
+        },
+        "Bicorn Horns": {
+            slot: "offhand",
+            type: "ability",
+            information: "Allows using level 1 magic with no limitations",
+            description: "Magic: F",
+            image: "/images/items/bicornhorns.png",
+            source: "My Unique Skill Makes Me OP Even at Level 1"
+        },
+        "Slime Tear": {
+            slot: "offhand",
+            type: "ability",
+            information: "Reflects slime attacks",
+            description: "Dead or carrot.",
+            image: "/images/items/slimetear.png",
+            source: "My Unique Skill Makes Me OP Even at Level 1"
         },
     },
     /// Items for fun (modifies the application)
@@ -512,7 +597,7 @@ const items = {
         "Demon Lord's Ring": {
             slot: "ring",
             type: "ability",
-            information: "Reflects all magic.",
+            information: "Reflects all magic",
             description: "Most powerful accessory in Cross Reverie.",
             image: "/images/items/demonlordsring.png",
             source: "How Not to Summon a Demon Lord"
@@ -616,6 +701,7 @@ const breakoutPatterns = [
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
 const widgetsFunActive = [];
+var widgetsTextActive = [];
 const operation = '-+/*%';
 const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
@@ -626,6 +712,7 @@ var mouse = {
     y: 0
 };
 var healthDisplay;
+let timeoutText;
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -853,6 +940,8 @@ function createPopup(text, type = "normal", randomPosition = false){
         });
         timeoutRemove = setTimeout(() => {
             widgetContainer.removeChild(popup);
+            clearTimeout(timeoutAnimation);
+            clearTimeout(timeoutRemove);    
         }, 1000);
     }, 1000);
     popup.onclick = () => {
@@ -1017,7 +1106,8 @@ class Widgets extends Component{
                 pitch: 0,
                 rate: 0,
                 health: {},
-                close: false
+                close: false,
+                randomText: false
             },
             prevPosition: {
                 prevX: 0,
@@ -1076,6 +1166,7 @@ class Widgets extends Component{
                         }
                     },
                     quote: {
+                        name: "Quote",
                         active: false,
                         position: {
                             x: 0,
@@ -1086,6 +1177,7 @@ class Widgets extends Component{
                         }
                     },
                     translator: {
+                        name: "Translator",
                         active: false,
                         position: {
                             x: 0,
@@ -1096,6 +1188,7 @@ class Widgets extends Component{
                         }   
                     },
                     googletranslator: {
+                        name: "Google Translator",
                         active: false,
                         position: {
                             x: 0,
@@ -1106,6 +1199,7 @@ class Widgets extends Component{
                         }   
                     },
                     calculator: {
+                        name: "Calculator",
                         active: false,
                         position: {
                             x: 0,
@@ -1124,6 +1218,7 @@ class Widgets extends Component{
                         }
                     },
                     weather: {
+                        name: "Weather",
                         active: false,
                         position: {
                             x: 0,
@@ -1142,6 +1237,7 @@ class Widgets extends Component{
                         }
                     },
                     timeconversion: {
+                        name: "Time Conversion",
                         active: false,
                         position: {
                             x: 0,
@@ -1152,6 +1248,7 @@ class Widgets extends Component{
                         }
                     },
                     spreadsheet: {
+                        name: "Spreadsheet",
                         active: false,
                         position: {
                             x: 0,
@@ -1161,17 +1258,19 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    notepad: {
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
+                    // notepad: {
+                    //     name: "Notepad",
+                    //     active: false,
+                    //     position: {
+                    //         x: 0,
+                    //         y: 0
+                    //     },
+                    //     drag: {
+                    //         disabled: false
+                    //     }
+                    // },
                     qrcode: {
+                        name: "QR Code",
                         active: false,
                         position: {
                             x: 0,
@@ -1182,6 +1281,7 @@ class Widgets extends Component{
                         }
                     },
                     battery: {
+                        name: "Battery",
                         active: false,
                         position: {
                             x: 0,
@@ -1192,6 +1292,7 @@ class Widgets extends Component{
                         }
                     },
                     currencyconverter: {
+                        name: "Currency Converter",
                         active: false,
                         position: {
                             x: 0,
@@ -1201,17 +1302,30 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    urlshortner: {
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
+                    // urlshortner: {
+                    //     name: "URL Shortner",
+                    //     active: false,
+                    //     position: {
+                    //         x: 0,
+                    //         y: 0
+                    //     },
+                    //     drag: {
+                    //         disabled: false
+                    //     }
+                    // },
                     imagecolorpicker: {
+                        name: "Image Color Picker",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    musicplayer: {
+                        name: "Music Player",
                         active: false,
                         position: {
                             x: 0,
@@ -1224,6 +1338,7 @@ class Widgets extends Component{
                 },
                 games: {
                     snake: {
+                        name: "Snake",
                         active: false,
                         position: {
                             x: 0,
@@ -1234,6 +1349,7 @@ class Widgets extends Component{
                         }
                     },
                     typingtest: {
+                        name: "Typing Test",
                         active: false,
                         position: {
                             x: 0,
@@ -1244,6 +1360,7 @@ class Widgets extends Component{
                         }
                     },
                     simongame: {
+                        name: "Simon Game",
                         active: false,
                         position: {
                             x: 0,
@@ -1254,6 +1371,7 @@ class Widgets extends Component{
                         }
                     },
                     minesweeper: {
+                        name: "Minesweeper",
                         active: false,
                         position: {
                             x: 0,
@@ -1264,6 +1382,7 @@ class Widgets extends Component{
                         }
                     },
                     breakout: {
+                        name: "Breakout",
                         active: false,
                         position: {
                             x: 0,
@@ -1274,6 +1393,7 @@ class Widgets extends Component{
                         }
                     },
                     chess: {
+                        name: "Chess",
                         active: false,
                         position: {
                             x: 0,
@@ -1284,6 +1404,7 @@ class Widgets extends Component{
                         }
                     },
                     twentyfortyeight: {
+                        name: "2048",
                         active: false,
                         position: {
                             x: 0,
@@ -1294,6 +1415,18 @@ class Widgets extends Component{
                         }
                     },
                     trivia: {
+                        name: "Trivia",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    tetris: {
+                        name: "Tetris",
                         active: false,
                         position: {
                             x: 0,
@@ -1306,6 +1439,7 @@ class Widgets extends Component{
                 },
                 fun: {
                     pokemonsearch: {
+                        name: "Pokemon Search",
                         active: false,
                         position: {
                             x: 0,
@@ -1316,6 +1450,7 @@ class Widgets extends Component{
                         }
                     },
                     pickerwheel: {
+                        name: "Picker Wheel",
                         active: false,
                         position: {
                             x: 0,
@@ -1326,6 +1461,7 @@ class Widgets extends Component{
                         }
                     },
                     donutanimation: {
+                        name: "Donut Animation",
                         active: false,
                         position: {
                             x: 0,
@@ -1336,6 +1472,7 @@ class Widgets extends Component{
                         }
                     },
                     aiimagegenerator: {
+                        name: "Ai Image Generator",
                         active: false,
                         position: {
                             x: 0,
@@ -1354,6 +1491,7 @@ class Widgets extends Component{
                         }
                     },
                     sticker: {
+                        name: "Sticker",
                         active: false,
                         position: {
                             x: 0,
@@ -1471,6 +1609,31 @@ class Widgets extends Component{
                         name: "",
                         rarity: ""
                     }
+                },
+                test: {name: ""},
+                consumable1: {
+                    name: "",
+                    rarity: ""
+                },
+                consumable2: {
+                    name: "",
+                    rarity: ""
+                },
+                consumable3: {
+                    name: "",
+                    rarity: ""
+                },
+                consumable4: {
+                    name: "",
+                    rarity: ""
+                },
+                consumable5: {
+                    name: "",
+                    rarity: ""
+                },
+                consumable6: {
+                    name: "",
+                    rarity: ""
                 }
             },
             gold: 0,
@@ -1524,6 +1687,7 @@ class Widgets extends Component{
             }), () => {
                 let e = document.getElementById(`${what}-widget-animation`);
                 let elementSelects = e.querySelectorAll(".select-match");
+                widgetsTextActive = [...document.querySelectorAll(".text-animation")];
                 /// Show react-selects
                 for(let i of elementSelects){
                     i.style.display = "block";
@@ -1602,7 +1766,9 @@ class Widgets extends Component{
                                     }
                                 }
                             }
-                        }));
+                        }), () => {
+                            widgetsTextActive = [...document.querySelectorAll(".text-animation")];
+                        });
                     };
                 });
             }else{
@@ -1621,7 +1787,9 @@ class Widgets extends Component{
                             }
                         }
                     }
-                }));
+                }), () => {
+                    widgetsTextActive = [...document.querySelectorAll(".text-animation")];
+                });
             };
         };
         if(speechSynthesis.speaking){
@@ -1806,7 +1974,7 @@ class Widgets extends Component{
             default:
                 this.setState({
                     stickers: []
-                },()=>{console.log(this.state.stickers)});
+                });
                 break;
         };
     };
@@ -1878,7 +2046,34 @@ class Widgets extends Component{
                 ...prevState[type],
                 [where]: what
             }
-        }));
+        }), () => {
+            if(this.state.values.randomText && (where === "randomText")){
+                this.randomTimeoutText();
+            }else if(this.state.values.randomText === false){
+                clearTimeout(timeoutText);
+                timeoutText = undefined;
+            };
+        });
+    };
+    randomTimeoutText(){
+        if(this.state.values.randomText && (timeoutText === undefined)){
+            let randomNumber = Math.random() * 60000 + 5000;
+            timeoutText = setTimeout(() => {
+                this.randomTextAnimation();
+                timeoutText = undefined;
+                this.randomTimeoutText();
+            }, randomNumber);
+        };
+    };
+    randomTextAnimation(){
+        if(widgetsTextActive.length > 0){
+            let randomTextAnimation = textAnimations[Math.floor(Math.random() * textAnimations.length)];
+            let elementRandomText = widgetsTextActive[Math.floor(Math.random() * widgetsTextActive.length)];
+            elementRandomText.style.animation = "none";
+            window.requestAnimationFrame(() => {
+                elementRandomText.style.animation = randomTextAnimation; 
+            });
+        };
     };
     updateWidgetsActive(what, where){
         switch(where){
@@ -1968,15 +2163,15 @@ class Widgets extends Component{
                 };
                 this.updateGameValue("equipment", newEquipment);
                 let item = items[itemData.rarity][itemData.name];
-                if(item.type === "stat"){
+                if(item.type === "stat" || item.type === "both"){
                     let itemStats = Object.keys(item.stats);
                     let newStats = {};
                     for(let i in itemStats){
-                        newStats[itemStats[i]] = item.stats[itemStats] + this.state.stats[itemStats];
+                        newStats[itemStats[i]] = item.stats[itemStats[i]] + this.state.stats[itemStats[i]];
                     };
                     this.updateGameValue("stats", newStats);
                 };
-                if(item.type === "ability"){
+                if(item.type === "ability" || item.type === "both"){
                     let newAbilities = [...this.state.abilities, item.information];
                     this.updateGameValue("abilities", newAbilities);
                 };
@@ -1992,15 +2187,15 @@ class Widgets extends Component{
                 };
                 this.updateGameValue("equipment", newEquipment);
                 let item = items[itemData.rarity][itemData.name];
-                if(item.type === "stat"){
+                if(item.type === "stat" || item.type === "both"){
                     let itemStats = Object.keys(item.stats);
                     let newStats = {};
                     for(let i in itemStats){
-                        newStats[itemStats[i]] = item.stats[itemStats] + this.state.stats[itemStats];
+                        newStats[itemStats[i]] = item.stats[itemStats[i]] + this.state.stats[itemStats[i]];
                     };
                     this.updateGameValue("stats", newStats);
                 };
-                if(item.type === "ability"){
+                if(item.type === "ability" || item.type === "both"){
                     let newAbilities = [...this.state.abilities, item.information];
                     this.updateGameValue("abilities", newAbilities);
                 };
@@ -2122,26 +2317,17 @@ class Widgets extends Component{
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
-            let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
-            for(let i in this.state.widgets.utility){
-                this.setState(prevState => ({
-                    widgets: {
-                        ...prevState.widgets,
-                        utility: {
-                            ...prevState.widgets.utility,
-                            [i]: {
-                                ...prevState.widgets.utility[i],
-                                ...dataLocalStorage.utility[i]
-                            }
-                        }
-                    }
-                }), () => {
-                    this.updateCustomBorder();
-                    if(this.state.widgets.utility[i].active === true){
-                        this.updateWidgetsActive(i, "utility");
-                    };
-                });
+            let widgetsUtility = {};
+            for(let i in dataLocalStorage.utility){
+                widgetsUtility[i] = {
+                    ...this.state.widgets.utility[i],
+                    ...dataLocalStorage.utility[i]
+                };
+                if(dataLocalStorage.utility[i].active){
+                    this.updateWidgetsActive(i, "utility");
+                };
                 /// For specific widgets that have unique state values
+                let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
                 switch(i){
                     case "setting":
                         this.setState({
@@ -2158,8 +2344,13 @@ class Widgets extends Component{
                                 pitch: localStorageValues["pitch"],
                                 rate: localStorageValues["rate"],
                                 health: localStorageValues["health"],
-                                close: localStorageValues["close"]
+                                close: localStorageValues["close"],
+                                randomText: localStorageValues["randomText"]
                             },
+                        }, () => {
+                            if(this.state.values.randomText){
+                                this.randomTimeoutText();
+                            };
                         });
                         /// Setting global variables
                         healthDisplay = localStorageValues["health"];
@@ -2168,44 +2359,46 @@ class Widgets extends Component{
                         break;
                 };
             };
-            for(let i in this.state.widgets.games){
-                this.setState(prevState => ({
-                    widgets: {
-                        ...prevState.widgets,
-                        games: {
-                            ...prevState.widgets.games,
-                            [i]: {
-                                ...prevState.widgets.games[i],
-                                ...dataLocalStorage.games[i]
-                            }
-                        }
-                    }
-                }), () => {
-                    this.updateCustomBorder();
-                    if(this.state.widgets.games[i].active === true){
-                        this.updateWidgetsActive(i, "games");
-                    }; 
-                });
+            let widgetsGames = {};
+            for(let i in dataLocalStorage.games){
+                widgetsGames[i] = {
+                    ...this.state.widgets.games[i],
+                    ...dataLocalStorage.games[i]
+                };
+                if(dataLocalStorage.games[i].active){
+                    this.updateWidgetsActive(i, "games");
+                };
             };
-            for(let i in this.state.widgets.fun){
-                this.setState(prevState => ({
-                    widgets: {
-                        ...prevState.widgets,
-                        fun: {
-                            ...prevState.widgets.fun,
-                            [i]: {
-                                ...prevState.widgets.fun[i],
-                                ...dataLocalStorage.fun[i]
-                            }
-                        }
-                    }
-                }), () => {
-                    this.updateCustomBorder();
-                    if(this.state.widgets.fun[i].active === true){
-                        this.updateWidgetsActive(i, "fun");
-                    };
-                });
+            let widgetsFun = {};
+            for(let i in dataLocalStorage.fun){
+                widgetsFun[i] = {
+                    ...this.state.widgets.fun[i],
+                    ...dataLocalStorage.fun[i]
+                };
+                if(dataLocalStorage.fun[i].active){
+                    this.updateWidgetsActive(i, "fun");
+                };
             };
+            this.setState({
+                widgets: {
+                    ...this.state.widgets,
+                    utility: {
+                        ...this.state.widgets.utility,
+                        ...widgetsUtility
+                    },
+                    games: {
+                        ...this.state.widgets.games,
+                        ...widgetsGames
+                    },
+                    fun: {
+                        ...this.state.widgets.fun,
+                        ...widgetsFun
+                    }
+                }
+            }, () => {
+                this.updateCustomBorder();
+                widgetsTextActive = [...document.querySelectorAll(".text-animation")];
+            });
         }else{
             this.storeData();
         };
@@ -2218,7 +2411,10 @@ class Widgets extends Component{
         if(localStorage.getItem("equipment") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("equipment"));
             this.setState({
-                equipment: dataLocalStorage
+                equipment: {
+                    ...this.state.equipment,
+                    ...dataLocalStorage
+                }
             });
         };
         if(localStorage.getItem("gold") !== null){
@@ -2246,6 +2442,7 @@ class Widgets extends Component{
         window.removeEventListener("new item", this.addItem);
         window.removeEventListener("gold bag", this.addGoldBag);
         window.removeEventListener("equip item", this.equipItem);
+        clearTimeout(timeoutText);
     };
     render(){
         const defaultProps = {
@@ -2272,6 +2469,28 @@ class Widgets extends Component{
             renderHearts: renderHearts,
             healthDisplay: this.state.values.health.value
         };
+        let widgets = {};
+        let widgetActiveVariables = {};
+        for(let widgetType of Object.keys(this.state.widgets)){
+            for(let widget of Object.keys(this.state.widgets[widgetType])){
+                switch(widget){
+                    case "setting":
+                    case "inventory":
+                    case "equipment":
+                    case "character":
+                        break;
+                    default: 
+                        widgets[widgetType] = {
+                            ...widgets[widgetType],
+                            [widget]: this.state.widgets[widgetType][widget].name
+                        };
+                        break;
+                };
+                if(widget !== "setting"){
+                    widgetActiveVariables[widget] = this.state.widgets[widgetType][widget].active;
+                };
+            };
+        };
         return(
             <div id="widget-container"
                 onMouseMove={(event) => this.handleMouseMove(event)}>
@@ -2283,6 +2502,10 @@ class Widgets extends Component{
                         position: "absolute",
                         bottom: 0,
                         right: 0}}>
+                        <button onClick={() => {
+                            randomItem(1, "exotic");}}>
+                            Add item: exotic
+                        </button>
                         <button onClick={() => {
                             randomItem(1, "meme");}}>
                             Add item: meme
@@ -2302,37 +2525,8 @@ class Widgets extends Component{
                     </section>
                     : <></>}
                 <WidgetSetting
-                    widgets={{
-                        quote: this.state.widgets.utility.quote.active,
-                        inventory: this.state.widgets.utility.inventory.active,
-                        equipment: this.state.widgets.utility.equipment.active,
-                        character: this.state.widgets.utility.character.active,
-                        translator: this.state.widgets.utility.translator.active,
-                        googletranslator: this.state.widgets.utility.googletranslator.active,
-                        calculator: this.state.widgets.utility.calculator.active,
-                        weather: this.state.widgets.utility.weather.active,
-                        timeconversion: this.state.widgets.utility.timeconversion.active,
-                        spreadsheet: this.state.widgets.utility.spreadsheet.active,
-                        notepad: this.state.widgets.utility.notepad.active,
-                        qrcode: this.state.widgets.utility.qrcode.active,
-                        battery: this.state.widgets.utility.battery.active,
-                        snake: this.state.widgets.games.snake.active,
-                        typingtest: this.state.widgets.games.typingtest.active,
-                        pokemonsearch: this.state.widgets.fun.pokemonsearch.active,
-                        pickerwheel: this.state.widgets.fun.pickerwheel.active,
-                        simongame: this.state.widgets.games.simongame.active,
-                        minesweeper: this.state.widgets.games.minesweeper.active,
-                        breakout: this.state.widgets.games.breakout.active,
-                        donutanimation: this.state.widgets.fun.donutanimation.active,
-                        currencyconverter: this.state.widgets.utility.currencyconverter.active,
-                        aiimagegenerator: this.state.widgets.fun.aiimagegenerator.active,
-                        chess: this.state.widgets.games.chess.active,
-                        urlshortner: this.state.widgets.utility.urlshortner.active,
-                        imagecolorpicker: this.state.widgets.utility.imagecolorpicker.active,
-                        sticker: this.state.widgets.fun.sticker.active,
-                        twentyfortyeight: this.state.widgets.games.twentyfortyeight.active,
-                        trivia: this.state.widgets.games.trivia.active,
-                    }}
+                    widgets={widgets}
+                    widgetActiveVariables={widgetActiveVariables}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
                     dragStart={dragStart}
@@ -2541,7 +2735,7 @@ class Widgets extends Component{
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.utility.notepad.active
+                {/* {this.state.widgets.utility.notepad.active
                     ? <WidgetNotepad
                         defaultProps={defaultProps}
                         position={{
@@ -2554,7 +2748,7 @@ class Widgets extends Component{
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>
-                    : <></>}
+                    : <></>} */}
                 {this.state.widgets.utility.qrcode.active
                     ? <WidgetQRCode
                         defaultProps={defaultProps}
@@ -2593,7 +2787,7 @@ class Widgets extends Component{
                         randColor={randColor}
                         largeIcon={largeIcon}/>
                     : <></>}
-                {this.state.widgets.utility.urlshortner.active
+                {/* {this.state.widgets.utility.urlshortner.active
                     ? <WidgetURLShortner
                         defaultProps={defaultProps}
                         position={{
@@ -2602,7 +2796,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.urlshortner.drag.disabled}
                         largeIcon={largeIcon}/>
-                    : <></>}
+                    : <></>} */}
                 {this.state.widgets.utility.imagecolorpicker.active
                     ? <WidgetImageColorPicker
                         defaultProps={defaultProps}
@@ -2613,6 +2807,17 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.utility.imagecolorpicker.drag.disabled}
                         copyToClipboard={copyToClipboard}
                         randColor={randColor}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.musicplayer.active
+                    ? <WidgetMusicPlayer
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.musicplayer.position.x,
+                            y: this.state.widgets.utility.musicplayer.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.musicplayer.drag.disabled}
+                        copyToClipboard={copyToClipboard}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {
@@ -2716,6 +2921,17 @@ class Widgets extends Component{
                         sortSelect={sortSelect}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {this.state.widgets.games.tetris.active === true
+                    ? <WidgetTetris
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.tetris.position.x,
+                            y: this.state.widgets.games.tetris.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.tetris.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
                 { 
                     //#endregion
                 }
@@ -2796,7 +3012,7 @@ class Widgets extends Component{
     };
 };
 //#region Widget template
-// import { React, Component } from 'react';
+// import { React, Component, memo } from 'react';
 // import { FaGripHorizontal } from 'react-icons/fa';
 // import { FaExpand, Fa0 } from 'react-icons/fa6';
 // import { IoClose } from 'react-icons/io5';

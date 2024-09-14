@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { TbMoneybag } from "react-icons/tb";
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { TbMoneybag } from "react-icons/tb";
 
 
 /// Variables
@@ -185,9 +185,9 @@ class WidgetTypingTest extends Component{
         };
         clearInterval(timer);
         this.setState({
-            goldEarned: this.state.wpm
+            goldEarned: (this.state.wpm / 2)
         });
-        this.props.gameProps.updateGameValue("gold", this.state.wpm);
+        this.props.gameProps.updateGameValue("gold", (this.state.wpm / 2));
     };
     handleResetGame(preset){
         clearInterval(timer);
@@ -291,6 +291,9 @@ class WidgetTypingTest extends Component{
             document.getElementById("typingtest-input-field").focus();
         });
     };
+    componentWillUnmount(){
+        clearInterval(timer);
+    };
     render(){
         return(
             <Draggable 
@@ -318,13 +321,6 @@ class WidgetTypingTest extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("typingtest", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -339,11 +335,18 @@ class WidgetTypingTest extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("typingtest", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Gold Earned */}
-                            <span className="flex-center row">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -351,7 +354,7 @@ class WidgetTypingTest extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -369,19 +372,19 @@ class WidgetTypingTest extends Component{
                         </div>
                         {/* Information */}
                         <div className="aesthetic-scale scale-div element-ends space-nicely space-bottom">
-                            <div className="flex-center row gap">
+                            <div className="text-animation flex-center row gap">
                                 <span className="font medium bold">Time Left: </span>
                                 <span className="font medium">{this.state.time}</span>
                             </div>
-                            <div className="flex-center row gap">
+                            <div className="text-animation flex-center row gap">
                                 <span className="font medium bold">Mistakes: </span>
                                 <span className="font medium">{this.state.mistakesCount} | {this.state.wrongStrokes}</span>
                             </div>
-                            <div className="flex-center row gap">
+                            <div className="text-animation flex-center row gap">
                                 <span className="font medium bold">WPM: </span>
                                 <span className="font medium">{this.state.wpm}</span>
                             </div>
-                            <div className="flex-center row gap">
+                            <div className="text-animation flex-center row gap">
                                 <span className="font medium bold">CPM: </span>
                                 <span className="font medium">{this.state.cpm}</span>
                             </div>
@@ -450,4 +453,4 @@ class WidgetTypingTest extends Component{
     };
 };
 
-export default WidgetTypingTest;
+export default memo(WidgetTypingTest);

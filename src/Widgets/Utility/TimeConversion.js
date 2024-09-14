@@ -1,15 +1,15 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaArrowDownLong } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
+import { Component, memo, React } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaArrowDownLong, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
+import Select from "react-select";
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
-import Select from "react-select";
-import { IoClose } from 'react-icons/io5';
 
 
 /// Select option
@@ -257,13 +257,6 @@ class WidgetTimeConversion extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -276,6 +269,13 @@ class WidgetTimeConversion extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("timeconversion", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -376,7 +376,7 @@ class WidgetTimeConversion extends Component{
                                 </section>
                                 {/* Converted date */}
                                 <section className="flex-center column gap">
-                                    <span className="aesthetic-scale scale-self font medium">
+                                    <span className="text-animation aesthetic-scale scale-self font medium">
                                         {this.state.date.toLocaleString("en-US", {
                                             hour12: this.state.hour12,
                                             timeZone: this.state.timezone.value
@@ -399,4 +399,4 @@ class WidgetTimeConversion extends Component{
     };
 };
 
-export default WidgetTimeConversion;
+export default memo(WidgetTimeConversion);

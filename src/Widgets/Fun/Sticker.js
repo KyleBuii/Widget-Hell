@@ -1,9 +1,9 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 
 
 class WidgetSticker extends Component{
@@ -192,4 +192,4 @@ class WidgetSticker extends Component{
     };
 };
 
-export default WidgetSticker;
+export default memo(WidgetSticker);

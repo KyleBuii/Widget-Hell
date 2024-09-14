@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { RiBattery2ChargeLine } from "react-icons/ri";
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { RiBattery2ChargeLine } from "react-icons/ri";
 
 
 class WidgetBattery extends Component{
@@ -82,13 +82,6 @@ class WidgetBattery extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("battery", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -101,6 +94,13 @@ class WidgetBattery extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("battery", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("battery", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -117,7 +117,7 @@ class WidgetBattery extends Component{
                                 ? <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}><RiBattery2ChargeLine/></IconContext.Provider>
                                 : <></>}
                             <p id="battery-percentage"
-                                className="font bold black">{this.state.percentage}%</p>
+                                className="text-animation font bold black">{this.state.percentage}%</p>
                         </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
@@ -130,4 +130,4 @@ class WidgetBattery extends Component{
     };
 };
 
-export default WidgetBattery;
+export default memo(WidgetBattery);

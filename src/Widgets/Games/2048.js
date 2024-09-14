@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { VscDebugBreakpointLogUnverified } from 'react-icons/vsc';
-import { TbMoneybag } from 'react-icons/tb';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
+import { TbMoneybag } from 'react-icons/tb';
+import { VscDebugBreakpointLogUnverified } from 'react-icons/vsc';
 
 
 /// Variables
@@ -73,10 +73,11 @@ class Widget2048 extends Component{
         document.getElementById("twentyfortyeight-overlay-gameover")
             .style.visibility = "visible";
         intervalTimer = clearInterval(intervalTimer);
+        let gold = Math.floor((1/4) * this.state.board.score);
         this.setState({
-            goldEarned: this.state.board.score
+            goldEarned: gold
         });
-        this.props.gameProps.updateGameValue("gold", this.state.board.score);
+        this.props.gameProps.updateGameValue("gold", gold);
         if(this.state.board.hasWon()){
             this.props.gameProps.randomItem(1);
         };
@@ -146,14 +147,14 @@ class Widget2048 extends Component{
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Score */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "green", className: "global-class-name" }}>
                                     <VscDebugBreakpointLogUnverified/>
                                 </IconContext.Provider>
                                 {this.state.board.score}
                             </span>
                             {/* Gold Earned */}
-                            <span className="flex-center row float middle-left">
+                            <span className="text-animation flex-center row float middle-left">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -161,14 +162,14 @@ class Widget2048 extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle-right">
+                            <span className="text-animation flex-center row float middle-right">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
@@ -437,4 +438,4 @@ class Board{
 };
 
 
-export default Widget2048;
+export default memo(Widget2048);

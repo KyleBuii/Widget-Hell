@@ -1,12 +1,12 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightLong, FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
-import { BsArrowLeftRight } from 'react-icons/bs';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
-import sanitizeHtml from 'sanitize-html';
-import Select from "react-select";
+import { IconContext } from 'react-icons';
+import { BsArrowLeftRight } from 'react-icons/bs';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaArrowRightLong, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import Select from "react-select";
+import sanitizeHtml from 'sanitize-html';
 
 
 /// Variables
@@ -133,9 +133,7 @@ class WidgetTranslator extends Component{
                 break;
             /// Encryption
             case "base64":
-                // /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
                 if(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(this.state.input)){
-                    console.log(this.state.input)
                     this.setState(prevState => ({
                         convert: window.atob(prevState.input)
                         // convert: decodeURIComponent(escape(window.atob(prevState.input)))
@@ -556,13 +554,6 @@ class WidgetTranslator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -575,6 +566,13 @@ class WidgetTranslator extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("translator", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -636,7 +634,7 @@ class WidgetTranslator extends Component{
                             <div id="translator-preview-cut-corner"
                                 className="cut-scrollbar-corner-part-1 p">
                                 <p id="translator-translated-text"
-                                    className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
+                                    className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                             </div>
                         </div>
                         {/* Buttons */}
@@ -762,4 +760,4 @@ class WidgetTranslator extends Component{
     };
 };
 
-export default WidgetTranslator;
+export default memo(WidgetTranslator);

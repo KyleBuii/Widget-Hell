@@ -1,13 +1,13 @@
-import { React, Component } from 'react';
 import Slider from 'rc-slider';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
-import { TbMoneybag } from "react-icons/tb";
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { TbMoneybag } from "react-icons/tb";
 
 
 //////////////////// Functions ////////////////////
@@ -275,6 +275,7 @@ class WidgetSnake extends Component{
             clearInterval(this.moveSnakeInterval);
         };
         clearInterval(intervalTimer);
+        clearTimeout(timeoutInvulnerabilityFrames);
     };
     changeSpeed(value){
         this.setState({
@@ -410,13 +411,6 @@ class WidgetSnake extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -431,11 +425,18 @@ class WidgetSnake extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Gold Earned */}
-                            <span className="flex-center row">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -443,14 +444,14 @@ class WidgetSnake extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle">
+                            <span className="text-animation flex-center row float middle">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
@@ -552,4 +553,4 @@ class WidgetSnake extends Component{
     };
 };
 
-export default WidgetSnake;
+export default memo(WidgetSnake);

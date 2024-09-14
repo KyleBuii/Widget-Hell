@@ -1,11 +1,12 @@
-import { React, Component } from 'react';
+import { Component, React } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaRegClock } from 'react-icons/fa6';
+import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
 // import { AiOutlineSetting } from 'react-icons/ai';
-import { TbMoneybag } from "react-icons/tb";
-import { IconContext } from 'react-icons';
+import { memo } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
 import { IoClose } from 'react-icons/io5';
+import { TbMoneybag } from "react-icons/tb";
 
 
 /// Variables
@@ -370,13 +371,6 @@ class WidgetBreakout extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -391,11 +385,18 @@ class WidgetBreakout extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Gold Earned */}
-                            <span className="flex-center row">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -403,14 +404,14 @@ class WidgetBreakout extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle">
+                            <span className="text-animation flex-center row float middle">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
@@ -463,4 +464,4 @@ class WidgetBreakout extends Component{
     };
 };
 
-export default WidgetBreakout;
+export default memo(WidgetBreakout);

@@ -1,8 +1,8 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 
 
@@ -85,13 +85,6 @@ class WidgetQuote extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("quote", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -106,17 +99,24 @@ class WidgetQuote extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("quote", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Quote */}
                         <div id="quote-container"
                             className="aesthetic-scale scale-self">
                             <span className="font-quote large">"</span>
                             <span id="quote-text"
-                                className="font large normal">{this.state.currentQuote}</span>
+                                className="text-animation font large normal">{this.state.currentQuote}</span>
                             <span className="font-quote large">"</span>
                         </div>
                         <p id="author-container"
-                            className="aesthetic-scale scale-self font-author">- {this.state.currentAuthor}</p>
+                            className="text-animation aesthetic-scale scale-self font-author">- {this.state.currentAuthor}</p>
                         {/* Bottom Bar */}
                         <div className="element-ends">
                             <div className="flex-center row space-nicely space-left">
@@ -150,4 +150,4 @@ class WidgetQuote extends Component{
     };
 };
 
-export default WidgetQuote;
+export default memo(WidgetQuote);

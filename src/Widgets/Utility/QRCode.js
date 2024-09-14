@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaDownload } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
-import Select from 'react-select';
-import QRCode from 'react-qr-code';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaDownload, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import QRCode from 'react-qr-code';
+import Select from 'react-select';
 
 
 /// Variables
@@ -72,13 +72,6 @@ class WidgetQRCode extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("qrcode", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -91,6 +84,13 @@ class WidgetQRCode extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("qrcode", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("qrcode", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -176,4 +176,4 @@ class WidgetQRCode extends Component{
     };
 };
 
-export default WidgetQRCode;
+export default memo(WidgetQRCode);

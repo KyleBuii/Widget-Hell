@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { BsArrowCounterclockwise } from 'react-icons/bs';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { BsArrowCounterclockwise } from 'react-icons/bs';
+import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -127,13 +127,6 @@ class WidgetDonutAnimation extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("donutanimation", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -148,15 +141,22 @@ class WidgetDonutAnimation extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("donutanimation", "close", "fun")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Donut Container */}
                         <section className="flex-center column gap large-gap">
                             {/* Donut */}
                             <pre id="donutanimation-donut"
-                                className="no-highlight"></pre>
+                                className="text-animation no-highlight"></pre>
                             {/* Modifications Container */}
                             <div className="aesthetic-scale scale-span flex-center column section-group group-medium font">
-                                <span className="font medium bold line bellow">Modifications</span>
+                                <span className="leave-me-alone font medium bold line bellow">Modifications</span>
                                 {/* Height */}
                                 <div className="element-ends">
                                     <span>Height</span>
@@ -292,4 +292,4 @@ class WidgetDonutAnimation extends Component{
     };
 };
 
-export default WidgetDonutAnimation;
+export default memo(WidgetDonutAnimation);

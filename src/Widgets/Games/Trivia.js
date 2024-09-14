@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaQuestion, FaRegClock } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { TbMoneybag } from 'react-icons/tb';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import Select from "react-select";
 import sanitizeHtml from 'sanitize-html';
 
@@ -345,14 +345,14 @@ class WidgetTrivia extends Component{
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Question Number */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: "0.75em", className: "global-class-name" }}>
                                     <FaQuestion/>
                                 </IconContext.Provider>
                                 {this.state.questionCount + 1}/{(this.state.amount === "") ? 1 : this.state.amount}
                             </span>
                             {/* Gold Earned */}
-                            <span className="flex-center row float middle-left">
+                            <span className="text-animation flex-center row float middle-left">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -360,26 +360,89 @@ class WidgetTrivia extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle-right">
+                            <span className="text-animation flex-center row float middle-right">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
                                 {this.state.timer}
                             </span>
                         </section>
+                        {/* Customize Trivia Overlay */}
+                        <section id="trivia-overlay-customize"
+                            className="overlay rounded">
+                            <div className="aesthetic-scale scale-span font flex-center column gap small-gap only-justify-content fill-width">
+                                <label htmlFor="trivia-input-number-of-questions"
+                                    className="aesthetic-scale scale-self origin-left">Number of Questions</label>
+                                <input id="trivia-input-number-of-questions"
+                                    className="input-match"
+                                    type="number"
+                                    value={this.state.amount}
+                                    min={1}
+                                    max={50}
+                                    name="trivia-input-number-of-questions"
+                                    onChange={this.handleNumber}
+                                    required
+                                    placeholder="# of Questions"/>
+                                <span className="origin-left">Select Category</span>
+                                <Select className="select-match"
+                                    value={this.state.category}
+                                    defaultValue={optionsCategory[0]["options"][0]}
+                                    onChange={(event) => this.handleSelect("category", event)}
+                                    options={optionsCategory}
+                                    formatGroupLabel={this.props.formatGroupLabel}
+                                    theme={(theme) => ({
+                                        ...theme,
+                                        colors: {
+                                            ...theme.colors,
+                                            ...this.props.selectTheme
+                                        }
+                                    })}/>
+                                <span className="origin-left">Select Difficulty</span>
+                                <Select className="select-match"
+                                    value={this.state.difficulty}
+                                    defaultValue={optionsDifficulty[0]["options"][0]}
+                                    onChange={(event) => this.handleSelect("difficulty", event)}
+                                    options={optionsDifficulty}
+                                    formatGroupLabel={this.props.formatGroupLabel}
+                                    theme={(theme) => ({
+                                        ...theme,
+                                        colors: {
+                                            ...theme.colors,
+                                            ...this.props.selectTheme
+                                        }
+                                    })}/>
+                                <span className="origin-left">Select Type</span>
+                                <Select className="select-match"
+                                    value={this.state.type}
+                                    defaultValue={optionsType[0]["options"][0]}
+                                    onChange={(event) => this.handleSelect("type", event)}
+                                    options={optionsType}
+                                    formatGroupLabel={this.props.formatGroupLabel}
+                                    theme={(theme) => ({
+                                        ...theme,
+                                        colors: {
+                                            ...theme.colors,
+                                            ...this.props.selectTheme
+                                        }
+                                    })}/>
+                            </div>
+                            <button className="button-match fill-width space-nicely space-top not-bottom"
+                                onClick={() => this.fetchTrivia()}
+                                disabled={this.state.running}>Start Trivia</button>
+                        </section>
                         {/* Question and Choices */}
                         <section id="trivia-questions"
                             className="aesthetic-scale scale-span flex-center column gap large-gap">
                             {/* Question */}
                             <div className="flex-center column gap small-gap font space-nicely space-top not-bottom">
-                                <span className="font bold medium"
+                                <span className="text-animation font bold medium"
                                     dangerouslySetInnerHTML={{
                                         __html: sanitizeHtml(this.state.categories[this.state.questionCount], {
                                             allowedTags: [],
@@ -387,16 +450,16 @@ class WidgetTrivia extends Component{
                                             allowedIframeHostnames: []
                                         })
                                     }}></span>
-                                <span className={`difficulty ${this.state.difficulties[this.state.questionCount]?.toLowerCase()}`}>
+                                <span className={`text-animation difficulty ${this.state.difficulties[this.state.questionCount]?.toLowerCase()}`}>
                                     {this.state.difficulties[this.state.questionCount]}
                                 </span>
                                 <span dangerouslySetInnerHTML={{
-                                        __html: sanitizeHtml(this.state.questions[this.state.questionCount], {
-                                            allowedTags: [],
-                                            allowedAttributes: [],
-                                            allowedIframeHostnames: []
-                                        })
-                                    }}></span>
+                                    __html: sanitizeHtml(this.state.questions[this.state.questionCount], {
+                                        allowedTags: [],
+                                        allowedAttributes: [],
+                                        allowedIframeHostnames: []
+                                    })
+                                }}></span>
                             </div>
                             {/* Choices */}
                             <div id="trivia-choices"
@@ -424,68 +487,6 @@ class WidgetTrivia extends Component{
                                 </div>
                                 : <></>}
                         </section>
-                        {/* Customize Trivia Overlay */}
-                        <section id="trivia-overlay-customize"
-                            className="overlay rounded">
-                            <div className="font flex-center column gap small-gap only-justify-content fill-width">
-                                <label htmlFor="trivia-input-number-of-questions">Number of Questions</label>
-                                <input id="trivia-input-number-of-questions"
-                                    className="input-match"
-                                    type="number"
-                                    value={this.state.amount}
-                                    min={1}
-                                    max={50}
-                                    name="trivia-input-number-of-questions"
-                                    onChange={this.handleNumber}
-                                    required
-                                    placeholder="# of Questions"/>
-                                <span>Select Category</span>
-                                <Select className="select-match"
-                                    value={this.state.category}
-                                    defaultValue={optionsCategory[0]["options"][0]}
-                                    onChange={(event) => this.handleSelect("category", event)}
-                                    options={optionsCategory}
-                                    formatGroupLabel={this.props.formatGroupLabel}
-                                    theme={(theme) => ({
-                                        ...theme,
-                                        colors: {
-                                            ...theme.colors,
-                                            ...this.props.selectTheme
-                                        }
-                                    })}/>
-                                <span>Select Difficulty</span>
-                                <Select className="select-match"
-                                    value={this.state.difficulty}
-                                    defaultValue={optionsDifficulty[0]["options"][0]}
-                                    onChange={(event) => this.handleSelect("difficulty", event)}
-                                    options={optionsDifficulty}
-                                    formatGroupLabel={this.props.formatGroupLabel}
-                                    theme={(theme) => ({
-                                        ...theme,
-                                        colors: {
-                                            ...theme.colors,
-                                            ...this.props.selectTheme
-                                        }
-                                    })}/>
-                                <span>Select Type</span>
-                                <Select className="select-match"
-                                    value={this.state.type}
-                                    defaultValue={optionsType[0]["options"][0]}
-                                    onChange={(event) => this.handleSelect("type", event)}
-                                    options={optionsType}
-                                    formatGroupLabel={this.props.formatGroupLabel}
-                                    theme={(theme) => ({
-                                        ...theme,
-                                        colors: {
-                                            ...theme.colors,
-                                            ...this.props.selectTheme
-                                        }
-                                    })}/>
-                            </div>
-                            <button className="button-match fill-width space-nicely space-top not-bottom"
-                                onClick={() => this.fetchTrivia()}
-                                disabled={this.state.running}>Start Trivia</button>
-                        </section>
                         {/* Hearts */}
                         {(this.props.gameProps.healthDisplay !== "none") 
                             ? <section id="trivia-health"
@@ -502,4 +503,4 @@ class WidgetTrivia extends Component{
     };
 };
 
-export default WidgetTrivia;
+export default memo(WidgetTrivia);

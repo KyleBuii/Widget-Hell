@@ -1,19 +1,22 @@
-import { React, Component } from 'react';
-import Draggable from 'react-draggable';
-import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
-import { BiBriefcase } from "react-icons/bi";
-import { GiAxeSword } from "react-icons/gi";
-import { IoBodyOutline } from "react-icons/io5";
-import { IconContext } from 'react-icons';
-import Switch from 'react-switch';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { BiBriefcase } from "react-icons/bi";
+import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { GiAxeSword } from "react-icons/gi";
+import { IoBodyOutline } from "react-icons/io5";
+import ReactPaginate from 'react-paginate';
 import Select from "react-select";
+import Switch from 'react-switch';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 
 /// Variables
 let intervalTimeBased;
+let timeoutTrick;
 /// Select options
 const optionsAnimation = [
     {
@@ -85,7 +88,8 @@ const optionsCustomBorder = [
             {value: "diagonal", label: "Diagonal"},
             {value: "dashed", label: "Dashed"},
             {value: "double", label: "Double"},
-            {value: "map-inspired", label: "Map Inspired"}
+            {value: "map-inspired", label: "Map Inspired"},
+            {value: "default-light", label: "Default Light"},
         ]
     }
 ];
@@ -119,39 +123,11 @@ class WidgetSetting extends Component{
             showHideWidgets: false,
             search: "",
             widgetsButton: {
-                widgetsButtonUtility: {
-                    quoteButton: true,
-                    translatorButton: true,
-                    googleTranslatorButton: true,
-                    calculatorButton: true,
-                    weatherButton: true,
-                    timeConversionButton: true,
-                    spreadsheetButton: true,
-                    notepadButton: true,
-                    qrCodeButton: true,
-                    batteryButton: true,
-                    currencyConverterButton: true,
-                    urlShortnerButton: true,
-                    imageColorPickerButton: true,
-                },
-                widgetsButtonGames: {
-                    snakeButton: true,
-                    typingTestButton: true,
-                    simonGameButton: true,
-                    minesweeperButton: true,
-                    breakoutButton: true,
-                    chessButton: true,
-                    twentyFortyeightButton: true,
-                    triviaButton: true,
-                },
-                widgetsButtonFun: {
-                    pokemonSearchButton: true,
-                    pickerWheelButton: true,
-                    donutAnimationButton: true,
-                    aiImageGeneratorButton: true,
-                    stickerButton: true,
-                }
+                widgetsButtonUtility: {},
+                widgetsButtonGames: {},
+                widgetsButtonFun: {}
             },
+            activeTab: "utility",
             utilityTab: true,
             gamesTab: false,
             funTab: false,
@@ -176,9 +152,19 @@ class WidgetSetting extends Component{
                 pitch: 0,
                 rate: 0,
                 health: {value: "default", label: "Default"},
-                close: false
-            }
+                close: false,
+                randomTrick: false,
+                randomText: false
+            },
+            maxPageUtility: 0,
+            pageUtility: 0,
+            maxPageGames: 0,
+            pageGames: 0,
+            maxPageFun: 0,
+            pageFun: 0
         };
+        this.randomTimeout = this.randomTimeout.bind(this);
+        this.handleRandomTrick = this.handleRandomTrick.bind(this);
         this.handleTrick = this.handleTrick.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handlePressableButton = this.handlePressableButton.bind(this);
@@ -186,6 +172,7 @@ class WidgetSetting extends Component{
         this.handleSlider = this.handleSlider.bind(this);
         this.handleTabSwitch = this.handleTabSwitch.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
         this.storeData = this.storeData.bind(this);
     };
     /// Remove element at index "i" where order doesn't matter
@@ -232,8 +219,24 @@ class WidgetSetting extends Component{
         };
 
     };
+    randomTimeout(what){
+        switch(what){
+            case "trick":
+                if(this.state.values.randomTrick && timeoutTrick === undefined){
+                    let randomNumber = Math.random() * 300000 + 60000;
+                    timeoutTrick = setTimeout(() => {
+                        timeoutTrick = undefined;
+                        this.handleTrick();
+                        this.randomTimeout("trick");
+                    }, randomNumber);
+                };
+                break;
+            default:
+                break;
+        };
+    };
     handleTrick(){
-        const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive];
+        const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive, ...this.props.widgetsFunActive];
         if(combinedWidgets.length !== 0){
             const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
             const randIndexAnimation = Math.floor(Math.random() * this.props.tricks.length);
@@ -244,10 +247,38 @@ class WidgetSetting extends Component{
             });
         };
     };
+    handleRandomTrick(checked){
+        this.setState({
+            values: {
+                ...this.state.values,
+                randomTrick: checked
+            }
+        }, () => {
+            if(this.state.values.randomTrick){
+                this.randomTimeout("trick");  
+            }else{
+                clearTimeout(timeoutTrick);
+                timeoutTrick = undefined;
+            };
+        });
+    };
     handleClose(event){
         let elementButton = document.getElementById(`show-hide-widgets-popout-button-${event.detail.element}`);
         if(elementButton !== null){
-            elementButton.style.opacity = "0.5";
+            /// Default is a normal pressable button
+            switch(event.detail.element){
+                case "inventory":
+                case "equipment":
+                case "character":
+                    this.setState({
+                        [event.detail.element]: !this.state[event.detail.element]
+                    });
+                    elementButton.classList.add("disabled");
+                    break;
+                default:
+                    elementButton.style.opacity = "0.5";
+                    break;
+            };
         };
         switch(event.detail.type){
             case "utility":
@@ -306,7 +337,7 @@ class WidgetSetting extends Component{
             default:
                 const button = document.getElementById("show-hide-widgets-popout-button-" + what);
                 this.props.showHide(what, where);
-                if(this.props.widgets[what] === false){
+                if(this.props.widgetActiveVariables[what] === false){
                     button.style.opacity = "1";
                     this.props.updateWidgetsActive(what, where);
                 }else{
@@ -461,9 +492,13 @@ class WidgetSetting extends Component{
         };
         this.setState({
             search: "",
+            activeTab: what,
             [what + "Tab"]: true
         }, () => {
             this.updateSearch(this.state.search);
+            if(this.state[`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`] !== 0){
+                this.handlePageClick(0);
+            };
         });
     };
     updateTab(what){
@@ -649,6 +684,11 @@ class WidgetSetting extends Component{
         };
         app.style.filter = `brightness(${brightness}%)`;
     };
+    handlePageClick(event){
+        this.setState({
+            [`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]: event
+        });
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -671,7 +711,9 @@ class WidgetSetting extends Component{
                     pitch: this.state.values.pitch,
                     rate: this.state.values.rate,
                     health: this.state.values.health,
-                    close: this.state.values.close
+                    close: this.state.values.close,
+                    randomTrick: this.state.values.randomTrick,
+                    randomText: this.state.values.randomText
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -687,6 +729,41 @@ class WidgetSetting extends Component{
         this.props.sortSelect(optionsCustomBorder);
         this.props.sortSelect(optionsVoice);
         this.props.sortSelect(optionsHealth);
+        /// Prevents typing in non-display selects
+        let elementSelects = document.getElementById("settings-widget-animation")
+            .querySelectorAll(".select-match");
+        for(let i of elementSelects){
+            i.style.display = "none";
+        };
+        /// Populate widget button objects
+        let keysWidgetType = Object.keys(this.props.widgets);
+        let objectButtonsUtility = {};
+        let objectButtonsGames = {};
+        let objectButtonsFun = {};
+        for(let widgetType of keysWidgetType){
+            let keysWidget = Object.keys(this.props.widgets[widgetType]);
+            for(let widgetName of keysWidget){
+                switch(widgetType){
+                    case "utility": objectButtonsUtility[`${widgetName}Button`] = true; break;
+                    case "games": objectButtonsGames[`${widgetName}Button`] = true;   break;
+                    case "fun": objectButtonsFun[`${widgetName}Button`] = true;     break;
+                    default: break;
+                };
+            };
+        };
+        this.setState({
+            widgetsButton: {
+                widgetsButtonUtility: {
+                    ...objectButtonsUtility
+                },
+                widgetsButtonGames: {
+                    ...objectButtonsGames
+                },
+                widgetsButtonFun: {
+                    ...objectButtonsFun
+                }
+            }
+        });
         /// Load utility widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
@@ -730,7 +807,9 @@ class WidgetSetting extends Component{
                                 pitch: localStorageValues["pitch"],
                                 rate: localStorageValues["rate"],
                                 health: localStorageValues["health"],
-                                close: localStorageValues["close"]
+                                close: localStorageValues["close"],
+                                randomTrick: localStorageValues["randomTrick"],
+                                randomText: localStorageValues["randomText"]
                             }
                         }, () => {
                             /// Update Display
@@ -744,6 +823,10 @@ class WidgetSetting extends Component{
                             if(this.state.values.shadow === true){
                                 this.props.updateDesign("shadow", true);
                             };
+                            /// Set random
+                            if(this.state.values.randomTrick){
+                                this.randomTimeout("trick");
+                            };
                         });
                         break;
                     default:
@@ -751,13 +834,46 @@ class WidgetSetting extends Component{
                 };
             };
         };
+        /// Set max page number
+        let utilityPageMax = Math.ceil(this.buttonsUtility.length / 12);
+        let gamesPageMax = Math.ceil(this.buttonsGames.length / 12);
+        let funPageMax = Math.ceil(this.buttonsFun.length / 12);
+        this.setState({
+            maxPageUtility: utilityPageMax,
+            maxPageGames: gamesPageMax,
+            maxPageFun: funPageMax
+        });
     };
     componentWillUnmount(){
         window.removeEventListener("close", this.handleClose);
         window.removeEventListener("beforeunload", this.storeData);
         clearInterval(intervalTimeBased);
+        clearTimeout(timeoutTrick);
     };
-    render(){
+    render(){       
+        this.buttonsUtility = [];
+        this.buttonsGames = [];
+        this.buttonsFun = [];
+        let tabs = ["Utility", "Games", "Fun"];
+        for(let i of tabs){
+            let widgetKeys = Object.keys(this.state.widgetsButton[`widgetsButton${i}`]);
+            for(let j in widgetKeys){
+                let widgetName = widgetKeys[j]
+                    .replace(/(.*)Button/, "$1");
+                let elementButton = <button id={`show-hide-widgets-popout-button-${widgetName}`}
+                    widgetname={widgetName}
+                    className="button-match option opt-medium disabled-option"
+                    onClick={() => this.handlePressableButton(widgetName, i.toLowerCase())}>
+                    {this.props.widgets[i.toLowerCase()][widgetName]}
+                </button>;
+                switch(i){
+                    case "Utility": this.buttonsUtility.push(elementButton); break;
+                    case "Games": this.buttonsGames.push(elementButton); break;
+                    case "Fun": this.buttonsFun.push(elementButton); break;
+                    default: break;
+                };
+            };    
+        };
         return(
             <Draggable
                 position={{
@@ -768,7 +884,7 @@ class WidgetSetting extends Component{
                     this.props.dragStop("settings");
                     this.props.updatePosition("setting", "utility", data.x, data.y);
                 }}
-                cancel="button, span, p, section"
+                cancel="button, span, p, section, li"
                 bounds="parent">
                 <div id="settings-widget"
                     className="widget">
@@ -854,151 +970,63 @@ class WidgetSetting extends Component{
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-utility"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {(this.state.widgetsButton.widgetsButtonUtility["quoteButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-quote"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("quote", "utility")}>Quote</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["translatorButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-translator"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("translator", "utility")}>Translator</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["googleTranslatorButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-googletranslator"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("googletranslator", "utility")}>Google Translator</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["calculatorButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-calculator"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("calculator", "utility")}>Calculator</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["weatherButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-weather"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("weather", "utility")}>Weather</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["timeConversionButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-timeconversion"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("timeconversion", "utility")}>Time Conversion</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["spreadsheetButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-spreadsheet"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("spreadsheet", "utility")}>Spreadsheet</button>
-                                                    : <></>}
-                                                {/* {(this.state.widgetsButton.widgetsButtonUtility["notepadButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-notepad"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("notepad", "utility")}>Notepad</button>
-                                                    : <></>} */}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["qrCodeButton"])
-                                                    ? <button id="show-hide-widgets-popout-button-qrcode"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("qrcode", "utility")}>QR Code Generator</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["batteryButton"])
-                                                    ? <button id="show-hide-widgets-popout-button-battery"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("battery", "utility")}>Device Battery</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["currencyConverterButton"])
-                                                    ? <button id="show-hide-widgets-popout-button-currencyconverter"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("currencyconverter", "utility")}>Currency Converter</button>
-                                                    : <></>}
-                                                {/* {(this.state.widgetsButton.widgetsButtonUtility["urlShortnerButton"])
-                                                    ? <button id="show-hide-widgets-popout-button-urlshortner"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("urlshortner", "utility")}>URL Shortner</button>
-                                                    : <></>} */}
-                                                {(this.state.widgetsButton.widgetsButtonUtility["imageColorPickerButton"])
-                                                    ? <button id="show-hide-widgets-popout-button-imagecolorpicker"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("imagecolorpicker", "utility")}>Image Color Picker</button>
-                                                    : <></>}
+                                                {this.buttonsUtility.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
+                                                    return ((this.state.widgetsButton.widgetsButtonUtility[`${widget.props.widgetname}Button`] === true)
+                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>
+                                                        : <></>);
+                                                })}
                                             </section>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-games"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {(this.state.widgetsButton.widgetsButtonGames["snakeButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-snake"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("snake", "games")}>Snake</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["typingTestButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-typingtest"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("typingtest", "games")}>Typing Test</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["simonGameButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-simongame"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("simongame", "games")}>Simon Game</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["minesweeperButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-minesweeper"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("minesweeper", "games")}>Minesweeper</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["breakoutButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-breakout"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("breakout", "games")}>Breakout</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["chessButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-chess"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("chess", "games")}>Chess</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["twentyFortyeightButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-twentyfortyeight"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("twentyfortyeight", "games")}>2048</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonGames["triviaButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-trivia"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("trivia", "games")}>Trivia</button>
-                                                    : <></>}
+                                                {this.buttonsGames.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
+                                                    return ((this.state.widgetsButton.widgetsButtonGames[`${widget.props.widgetname}Button`] === true)
+                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>
+                                                        : <></>);
+                                                })}
                                             </section>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-fun"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {(this.state.widgetsButton.widgetsButtonFun["pokemonSearchButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-pokemonsearch"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("pokemonsearch", "fun")}>Pokemon Search</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonFun["pickerWheelButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-pickerwheel"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("pickerwheel", "fun")}>Picker Wheel</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonFun["donutAnimationButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-donutanimation"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("donutanimation", "fun")}>Donut Animation</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonFun["aiImageGeneratorButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-aiimagegenerator"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("aiimagegenerator", "fun")}>Ai Image Generator</button>
-                                                    : <></>}
-                                                {(this.state.widgetsButton.widgetsButtonFun["stickerButton"] === true)
-                                                    ? <button id="show-hide-widgets-popout-button-sticker"
-                                                        className="button-match option opt-medium disabled-option"
-                                                        onClick={() => this.handlePressableButton("sticker", "fun")}>Sticker</button>
-                                                    : <></>}
+                                                {this.buttonsFun.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
+                                                    return ((this.state.widgetsButton.widgetsButtonFun[`${widget.props.widgetname}Button`] === true)
+                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>
+                                                        : <></>);
+                                                })}
                                             </section>
                                         </TabPanel>
                                     </Tabs>
+                                    <ReactPaginate className="paginate-pages font bold"
+                                        key={this.state[`maxPage${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]}
+                                        breakLabel="..."
+                                        nextLabel={
+                                            <span className="flex-center">
+                                                <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                                    <IoIosArrowForward/>
+                                                </IconContext.Provider>
+                                            </span>
+                                        }
+                                        onPageChange={(event) => this.handlePageClick(event.selected)}
+                                        pageRangeDisplayed={3}
+                                        pageCount={this.state[`maxPage${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]}
+                                        previousLabel={
+                                            <span className="flex-center">
+                                                <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                                    <IoIosArrowBack/>
+                                                </IconContext.Provider>
+                                            </span>
+                                        }
+                                        renderOnZeroPageCount={null}/>
                                 </section>
                             </section>
                         </Draggable>
@@ -1200,7 +1228,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                             </fieldset>
                                             {/* Hotbar */}
-                                            <fieldset className="section-sub">
+                                            <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
                                                 <legend className="font small space-nicely space-bottom length-short">
                                                     Hotbar
                                                 </legend>
@@ -1337,14 +1365,44 @@ class WidgetSetting extends Component{
                                                 {/* Save position of popup */}
                                                 <section className="element-ends">
                                                     <label className="font small"
-                                                        htmlFor="settings-popout-feature-savepositionpopup">
+                                                        htmlFor="settings-popout-misc-savepositionpopup">
                                                         Save Position: Popup
                                                     </label>
-                                                    <input id="settings-popout-feature-savepositionpopup"
-                                                        name="settings-input-popout-feature-savepositionpopout"
+                                                    <input id="settings-popout-misc-savepositionpopup"
+                                                        name="settings-input-popout-misc-savepositionpopout"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}
                                                         checked={this.state.values.savePositionPopout}/>
+                                                </section>
+                                            </fieldset>
+                                            {/* Random */}
+                                            <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
+                                                <legend className="font small space-nicely space-bottom length-short">
+                                                    Random Events
+                                                </legend>
+                                                {/* Trick */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-misc-random-trick">
+                                                        Trick
+                                                    </label>
+                                                    <input id="settings-popout-misc-random-trick"
+                                                        name="settings-input-popout-misc-random-trick"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleRandomTrick(event.target.checked)}
+                                                        checked={this.state.values.randomTrick}/>
+                                                </section>
+                                                {/* Text */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-misc-random-text">
+                                                        Text
+                                                    </label>
+                                                    <input id="settings-popout-misc-random-text"
+                                                        name="settings-input-popout-misc-random-text"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "randomText", "values")}
+                                                        checked={this.state.values.randomText}/>
                                                 </section>
                                             </fieldset>
                                         </section>
@@ -1400,4 +1458,4 @@ class WidgetSetting extends Component{
     };
 };
 
-export default WidgetSetting;
+export default memo(WidgetSetting);

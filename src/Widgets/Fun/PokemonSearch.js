@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { AiOutlineSetting } from 'react-icons/ai';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { AiOutlineSetting } from 'react-icons/ai';
+import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -21,6 +21,7 @@ let springRotate = { x: 0, y: 0 };
 let springGlare = { x: 50, y: 50, o: 0 };
 let springBackground = { x: 50, y: 50 };
 let springRotateDelta = { x: 0, y: 0 };
+let timeoutReset;
 
 
 class WidgetPokemonSearch extends Component{
@@ -262,7 +263,7 @@ class WidgetPokemonSearch extends Component{
         r.style.setProperty("--background-y", `${springBackground.y}%`);
     };
     handleInteractEnd(e, delay = 500){
-        setTimeout(function(){
+        timeoutReset = setTimeout(function(){
             springRotate = { x: 0, y: 0 };
             springGlare = { x: 50, y: 50, o: 0 };
             springBackground = { x: 50, y: 50 };
@@ -294,6 +295,7 @@ class WidgetPokemonSearch extends Component{
     componentWillUnmount(){
         const inputPokemonSearch = document.getElementById("pokemonsearch-input-search");
         inputPokemonSearch.removeEventListener("keydown", this.handleKeyPress);
+        clearTimeout(timeoutReset);
     };
     render(){
         return(
@@ -322,13 +324,6 @@ class WidgetPokemonSearch extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -341,6 +336,13 @@ class WidgetPokemonSearch extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "fullscreen", "fun")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "close", "fun")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -455,23 +457,23 @@ class WidgetPokemonSearch extends Component{
                                 <tbody>
                                     <tr>
                                         <td>Attack:</td>
-                                        <td>{this.state.attack}</td>
+                                        <td className="text-animation">{this.state.attack}</td>
                                     </tr>
                                     <tr>
                                         <td>Defense:</td>
-                                        <td>{this.state.defense}</td>
+                                        <td className="text-animation">{this.state.defense}</td>
                                     </tr>
                                     <tr>
                                         <td>Sp. Attack:</td>
-                                        <td>{this.state.specialAttack}</td>
+                                        <td className="text-animation">{this.state.specialAttack}</td>
                                     </tr>
                                     <tr>
                                         <td>Sp. Defense:</td>
-                                        <td>{this.state.specialDefense}</td>
+                                        <td className="text-animation">{this.state.specialDefense}</td>
                                     </tr>
                                     <tr>
                                         <td>Speed:</td>
-                                        <td>{this.state.speed}</td>
+                                        <td className="text-animation">{this.state.speed}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -633,4 +635,4 @@ class WidgetPokemonSearch extends Component{
     };
 };
 
-export default WidgetPokemonSearch;
+export default memo(WidgetPokemonSearch);

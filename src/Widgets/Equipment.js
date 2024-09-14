@@ -1,9 +1,32 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+
+
+//#region Equipment Guide
+/* Stats Guide
+[Main Stats]   ->       [Side Stats]
+   Health      ->         Vitality
+    Mana       ->       Intelligence
+   Attack      ->   Strength + Dexterity
+   Defense     ->        Resilience
+   Agility
+    Luck
+*/
+/* Slots Guide
+                              Headband -   Helmet   - Eyewear
+                                          Necklace
+                            Undershirt - Chestplate - Cape
+          Right Bracelet - Right Wrist -    Belt    - Left Wrist - Left Bracelet
+Main Item -  Right Glove - Right Ring  -  Legging   - Left Ring  - Left Glove - Offhand Item
+       Right Hidden Item in Boot - Right Boot - Left Boot - Left Hidden Item in Boot
+   Consumable 1 - Consumable 2 - Consumable 3 - Consumable 4 - Consumable 5 - Consumable 6
+     [Health]   -    [Mana]    -   [Attack]   -  [Defense]   -  [Agility]   -    [Luck]
+*/
+//#endregion
 
 
 class WidgetEquipment extends Component{
@@ -61,7 +84,11 @@ class WidgetEquipment extends Component{
                 }
             }));
         };
-        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/${this.state.item.slot}.png)`;
+        if(/consumable/.test(this.state.item.slot)){
+            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`;
+        }else{
+            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/${this.state.item.slot}.png)`;
+        };
         itemSlot.style.opacity = "0.5";
         itemSlot.onclick = null;
         this.props.updateGameValue("equipment", newEquipment);
@@ -110,7 +137,7 @@ class WidgetEquipment extends Component{
     removeStats(itemData){
         let item = this.props.items[itemData.rarity][itemData.name];
         let newAbilities;
-        if(item.type === "ability"){
+        if(item.type === "ability" || item.type === "both"){
             let indexRemove = this.props.abilities.indexOf(item.information);
             if(indexRemove === 0){
                 newAbilities = [...this.props.abilities.slice(1)];
@@ -119,11 +146,11 @@ class WidgetEquipment extends Component{
             };
             this.props.updateGameValue("abilities", newAbilities);
         };
-        if(item.type === "stat"){
+        if(item.type === "stat" || item.type === "both"){
             let itemStats = Object.keys(item.stats);
             let newStats = {};
             for(let i in itemStats){
-                newStats[itemStats[i]] = this.props.stats[itemStats] - item.stats[itemStats];
+                newStats[itemStats[i]] = this.props.stats[itemStats[i]] - item.stats[itemStats[i]];
             };
             this.props.updateGameValue("stats", newStats);
         };
@@ -237,13 +264,6 @@ class WidgetEquipment extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -256,6 +276,13 @@ class WidgetEquipment extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("equipment", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -424,32 +451,32 @@ class WidgetEquipment extends Component{
                                                 }}></button>
                                         </div>
                                     </div>
-                                    {/* Potion Slots */}
-                                    <div id="equipment-slots-potion" 
+                                    {/* Consumable Slots */}
+                                    <div id="equipment-slots-consumable" 
                                         className="slot flex-center row gap">
-                                        <button id="equipment-slot-potion-1"
+                                        <button id="equipment-slot-consumable1"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
-                                        <button id="equipment-slot-potion-2"
+                                        <button id="equipment-slot-consumable2"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
-                                        <button id="equipment-slot-potion-3"
+                                        <button id="equipment-slot-consumable3"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
-                                        <button id="equipment-slot-potion-4"
+                                        <button id="equipment-slot-consumable4"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
-                                        <button id="equipment-slot-potion-5"
+                                        <button id="equipment-slot-consumable5"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
-                                        <button id="equipment-slot-potion-6"
+                                        <button id="equipment-slot-consumable6"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/potion.png)`
+                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
                                             }}></button>
                                     </div>
                                 </section>
@@ -538,19 +565,29 @@ class WidgetEquipment extends Component{
                                         </tr>
                                         <tr>
                                             <td>Slot:</td>
-                                            <td>{this.state.item.slot.replace(/^./, (char) => char.toUpperCase())}</td>
+                                            <td>{this.state.item.slot
+                                                .replace(/^./, (char) => char.toUpperCase())
+                                                .replace(/[0-9]/, "")}</td>
                                         </tr>
-                                        {(this.props.items[this.state.item.rarity][this.state.item.name].type === "stat")
+                                        {(/stat|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
                                             ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name].stats)
                                                 .map((value, index) => {
                                                     return <tr key={`row-stat-${index}`}>
                                                         <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
-                                                        <td>+{this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}</td>
+                                                        <td>
+                                                            {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
+                                                                ? ""
+                                                                : "+"}
+                                                            {this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}
+                                                        </td>
                                                     </tr>
                                                 })
-                                            : <tr>
+                                            : <></>}
+                                        {(/ability|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
+                                            ? <tr>
                                                 <td colSpan={2}>{this.props.items[this.state.item.rarity][this.state.item.name].information}</td>
-                                            </tr>}
+                                            </tr>
+                                            : <></>}
                                     </tbody>
                                 </table>
                             </div>
@@ -577,4 +614,4 @@ class WidgetEquipment extends Component{
     };
 };
 
-export default WidgetEquipment;
+export default memo(WidgetEquipment);

@@ -1,12 +1,12 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegTrashCan, FaRegPaste, FaExpand, Fa0 } from 'react-icons/fa6';
-import { BsPlusSlashMinus } from 'react-icons/bs';
-import { FiDelete } from 'react-icons/fi';
-import { BiExpand } from 'react-icons/bi';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import { evaluate, round } from 'mathjs';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { BiExpand } from 'react-icons/bi';
+import { BsPlusSlashMinus } from 'react-icons/bs';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand, FaRegPaste, FaRegTrashCan } from 'react-icons/fa6';
+import { FiDelete } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
 
 
@@ -423,13 +423,6 @@ class WidgetCalculator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -444,18 +437,25 @@ class WidgetCalculator extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Display */}
                         <div id="calculator-display-container"
                             className="flex-center column">
-                            <input className="font small input-typable no-side space-nicely space-right length-short space-bottom length-short"
+                            <input className="text-animation font small input-typable no-side space-nicely space-right length-short space-bottom length-short"
                                 name="calculator-input-question"
                                 type="text"
                                 value={this.state.question}
                                 readOnly>
                             </input>
                             <input id="calculator-input-field"
-                                className="font large bold input-typable no-side"
+                                className="text-animation font large bold input-typable no-side"
                                 name="calculator-input-input"
                                 type="text"
                                 value={this.state.input}
@@ -624,4 +624,4 @@ class WidgetCalculator extends Component{
     };
 };
 
-export default WidgetCalculator;
+export default memo(WidgetCalculator);

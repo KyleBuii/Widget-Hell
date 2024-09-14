@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaDownload, FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaRegCircleQuestion } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import { HfInference } from '@huggingface/inference';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaDownload, FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand, FaRegCircleQuestion } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 import Select from 'react-select';
 
 
@@ -169,13 +169,6 @@ class WidgetAiImageGenerator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("aiimagegenerator", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -190,13 +183,20 @@ class WidgetAiImageGenerator extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("aiimagegenerator", "close", "fun")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         <section className="flex-center column gap small-gap">
                             {/* Inputs */}
                             <div id="aiimagegenerator-inputs"
                                 className="aesthetic-scale scale-span flex-center only-justify-content column gap font bold">
                                 <div className="element-ends">
-                                    <span>Prompt</span>
+                                    <span className="origin-left">Prompt</span>
                                     <button className="when-elements-are-not-straight button-match inverse"
                                         onClick={() => this.handleButtonHelp()}>
                                         <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
@@ -209,7 +209,7 @@ class WidgetAiImageGenerator extends Component{
                                     name="textarea-prompt"
                                     placeholder="Write your prompt here."
                                     onChange={(event) => this.handleInput("prompt", event)}></textarea>
-                                <span>Undesired Content</span>
+                                <span className="origin-left">Undesired Content</span>
                                 <textarea className="textarea-match"
                                     value={this.state.negative}
                                     name="textarea-undesired-content"
@@ -277,4 +277,4 @@ class WidgetAiImageGenerator extends Component{
     };
 };
 
-export default WidgetAiImageGenerator;
+export default memo(WidgetAiImageGenerator);

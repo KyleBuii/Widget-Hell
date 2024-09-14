@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegCircleQuestion, FaExpand, Fa0, FaWind, FaLocationDot, FaDroplet } from 'react-icons/fa6';
+import { Fa0, FaDroplet, FaExpand, FaLocationDot, FaRegCircleQuestion, FaWind } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 import { MdWaves } from "react-icons/md";
 import { WiCloudyGusts } from "react-icons/wi";
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
-import { IoClose } from 'react-icons/io5';
 
 
 class WidgetWeather extends Component{
@@ -159,13 +159,6 @@ class WidgetWeather extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -178,6 +171,13 @@ class WidgetWeather extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("weather", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -231,7 +231,7 @@ class WidgetWeather extends Component{
                             </section>
                         </Draggable>
                         {/* Location */}
-                        <div className="aesthetic-scale scale-self flex-center row gap only-align-items">
+                        <div className="text-animation aesthetic-scale scale-self origin-left flex-center row gap only-align-items">
                             <IconContext.Provider value={{ size: "1em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                 <FaLocationDot/>
                             </IconContext.Provider>
@@ -247,14 +247,14 @@ class WidgetWeather extends Component{
                             {/* Temperature */}
                             <div id="weather-temperature"
                                 className="flex-center row gap larger-gap">
-                                <div className="flex-center column">
+                                <div className="text-animation flex-center column">
                                     <span className="font larger bold">
                                         <span>{this.state.tempC}</span>
                                         <span className="font micro text-above">&deg;C</span>
                                     </span>
                                     <span className="font small transparent-bold">{this.state.feelsLikeC}&deg;C</span>
                                 </div>
-                                <div className="flex-center column">
+                                <div className="text-animation flex-center column">
                                     <span className="font larger bold">
                                         <span>{this.state.tempF}</span>
                                         <span className="font micro text-above">&deg;F</span>
@@ -264,11 +264,11 @@ class WidgetWeather extends Component{
                             </div>
                             {/* Condition */}
                             <span id="weather-condition"
-                                className="font medium">{this.state.weatherCondition}</span>
+                                className="text-animation font medium">{this.state.weatherCondition}</span>
                             <div className="flex-center column gap medium-gap">
                                 <div className="flex-center row gap larger-gap">
                                     {/* Humidity */}
-                                    <div className="flex-center row gap small-gap">
+                                    <div className="text-animation flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <MdWaves/>
                                         </IconContext.Provider>
@@ -278,7 +278,7 @@ class WidgetWeather extends Component{
                                         </div>
                                     </div>
                                     {/* Wind */}
-                                    <div className="flex-center row gap small-gap">
+                                    <div className="text-animation flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <FaWind style={{ transform: `rotate(${this.state.windDirection}deg)` }}/>
                                         </IconContext.Provider>
@@ -291,7 +291,7 @@ class WidgetWeather extends Component{
                                 </div>
                                 <div className="flex-center row gap small-gap">
                                     {/* Percipitation */}
-                                    <div className="flex-center row gap small-gap">
+                                    <div className="text-animation flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "1.8em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <FaDroplet/>
                                         </IconContext.Provider>
@@ -302,7 +302,7 @@ class WidgetWeather extends Component{
                                         </div>
                                     </div>
                                     {/* Gust */}
-                                    <div className="flex-center row gap small-gap">
+                                    <div className="text-animation flex-center row gap small-gap">
                                         <IconContext.Provider value={{ size: "2.5em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                             <WiCloudyGusts/>
                                         </IconContext.Provider>
@@ -316,7 +316,7 @@ class WidgetWeather extends Component{
                             </div>
                         </section>
                         {/* Last Updated */}
-                        <span className="font micro transparent-normal">Last updated: {this.state.lastUpdated}</span>
+                        <span className="text-animation font micro transparent-normal">Last updated: {this.state.lastUpdated}</span>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>
@@ -328,4 +328,4 @@ class WidgetWeather extends Component{
     };
 };
 
-export default WidgetWeather;
+export default memo(WidgetWeather);

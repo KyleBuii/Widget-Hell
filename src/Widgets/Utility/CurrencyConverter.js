@@ -1,11 +1,11 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
-import Select from "react-select";
+import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import Select from "react-select";
 
 
 /// Variables
@@ -140,13 +140,6 @@ class WidgetCurrencyConverter extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("currencyconverter", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -161,13 +154,20 @@ class WidgetCurrencyConverter extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("currencyconverter", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Currency Converter Container */}
                         <section id="currencyconverter-container"
                             className="flex-center column gap small-gap">
                             <div id="currencyconverter-result"
                                 className="aesthetic-scale scale-span flex-center column fill-width">
-                                <span className="font large">{this.state.input} {this.state.from.label} = {this.state.result} {this.state.to.label}</span>
+                                <span className="text-animation font large">{this.state.input} {this.state.from.label} = {this.state.result} {this.state.to.label}</span>
                                 <span className="font micro transparent-normal">1 {this.state.from.label} = {this.state.rate} {this.state.to.label}</span>
                             </div>
                             <input className="input-match fill-width"
@@ -227,4 +227,4 @@ class WidgetCurrencyConverter extends Component{
     };
 };
 
-export default WidgetCurrencyConverter;
+export default memo(WidgetCurrencyConverter);

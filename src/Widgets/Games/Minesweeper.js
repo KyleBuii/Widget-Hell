@@ -1,12 +1,12 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaBomb, FaRegClock } from 'react-icons/fa6';
-import { TbMoneybag } from "react-icons/tb";
-import { PiFlagPennantFill } from "react-icons/pi";
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import Slider from 'rc-slider';
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaBomb, FaExpand, FaRegClock } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { PiFlagPennantFill } from "react-icons/pi";
+import { TbMoneybag } from "react-icons/tb";
 
 
 /// Variables
@@ -355,13 +355,6 @@ class WidgetMinesweeper extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("minesweeper", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -376,18 +369,25 @@ class WidgetMinesweeper extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("minesweeper", "close", "games")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Mines Left */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "black", className: "global-class-name" }}>
                                     <FaBomb/>
                                 </IconContext.Provider>
                                 {this.state.minesLeft}
                             </span>
                             {/* Gold Earned */}
-                            <span className="flex-center row float middle-left">
+                            <span className="text-animation flex-center row float middle-left">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -395,37 +395,25 @@ class WidgetMinesweeper extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="flex-center row float middle-right">
+                            <span className="text-animation flex-center row float middle-right">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
                                 {this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}
                             </span>
                             {/* Timer */}
-                            <span className="flex-center row gap">
+                            <span className="text-animation flex-center row gap">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
                                     <FaRegClock/>
                                 </IconContext.Provider>
                                 {this.state.timer}
                             </span>
                         </section>
-                        {/* Game Container */}
-                        <section className="flex-center row gap small-gap">
-                            {/* Board */}
-                            <div id="minesweeper-board"
-                                className="flex-center column">
-                                {this.renderBoard()}
-                            </div>
-                            {/* Hearts */}
-                            {(this.props.gameProps.healthDisplay !== "none") 
-                                ? <div id="minesweeper-health"
-                                    className="flex-center">
-                                    {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
-                                        return heart;
-                                    })}
-                                </div>
-                                : <></>}
-                        </section>
+                        {/* Board */}
+                        <div id="minesweeper-board"
+                            className="flex-center column">
+                            {this.renderBoard()}
+                        </div>
                         {/* Controller Container */}
                         <section id="minesweeper-container-controller"
                             className="space-nicely space-top">
@@ -475,9 +463,18 @@ class WidgetMinesweeper extends Component{
                                     disabled={this.state.disabled}/>
                             </div>
                         </section>
+                        {/* Hearts */}
+                        {(this.props.gameProps.healthDisplay !== "none") 
+                            ? <div id="minesweeper-health"
+                                className="flex-center space-nicely space-top not-bottom">
+                                {this.props.gameProps.renderHearts(this.state.health).map((heart) => {
+                                    return heart;
+                                })}
+                            </div>
+                            : <></>}
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by [AUTHOR NAME]</span>
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
                             : <></>}
                     </div>
                 </div>
@@ -503,4 +500,4 @@ class Cell{
 };
 
 
-export default WidgetMinesweeper;
+export default memo(WidgetMinesweeper);

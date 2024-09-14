@@ -79,18 +79,33 @@ body{
 @mixin circle-color($color){
     background-color: $color;
     box-shadow: 1px 1px 5px $color;
-};
+}
 
 @mixin grid-auto($columns){
     display: grid;
     grid-template-columns: repeat($columns, auto);
-};
+}
 
 @mixin grid-auto-row($rows){
     display: grid;
     grid-template-rows: repeat($rows, auto);
     grid-auto-flow: column;
-};
+}
+
+@mixin slide-on-hover($height, $width, $speed: 2s){
+    position: relative;
+    height: $height;
+    width: $width;
+    overflow: hidden;
+    span{
+        position: absolute;
+        white-space: nowrap;
+        transition: translate $speed;
+        &:hover{
+            translate: calc($width - 100%) 0;
+        }
+    }
+}
 //#endregion
 
 
@@ -139,6 +154,9 @@ body{
     &.transparent-bold{
         font-weight: bold;
         color: rgba(var(--randColorOpacity), 0.4);
+    }
+    &.transparent-white{
+        color: rgba(255, 255, 255, .2);
     }
     &.no-color{
         color: white;
@@ -284,6 +302,12 @@ body{
     padding: 1.6rem;
     border-radius: 25.4px;
     border: 1px solid var(--randColor);
+    &.custom-shape{
+        background-color: unset;
+        padding: none;
+        border-radius: unset;
+        border: none;
+    }
 }
 
 .popout{
@@ -314,6 +338,10 @@ body{
     padding: 0.5em;
     font-size: 1.2em;
     text-wrap: nowrap;
+    img{
+        height: 64px;
+        width: 64px;
+    }
     //#region Items
     &.gold{
         background-color: rgba(255, 215, 0, 0.6);
@@ -1019,11 +1047,8 @@ body{
 
 /// Bar on top of widget
 .hotbar{
+    @extend .flex-center, .row;
     position: fixed;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
     top: -1.2em;
     right: 1.2em;
     background-color: rgba(255, 255, 255, 0.2);
@@ -1099,6 +1124,42 @@ body{
     &.hard{
         color: #fb0005;
         text-shadow: 0 0 2px #fb0005;
+    }
+}
+
+.origin-left{
+    transform-origin: left;
+}
+
+.progress-bar{
+    height: 0.8em;
+    border-radius: 25px;
+    background-color: #505050;
+    span{
+        height: 0.8em;
+        width: 0;
+        border-radius: 25px;
+        background-color: var(--randColorLight);
+    }
+}
+
+.paginate-pages{
+    @extend .flex-center, .row, .gap, .large-gap;
+    list-style: none;
+    padding: 0;
+    margin: 0.5em;
+    li{
+        cursor: pointer;
+        &:hover{
+            color: rgba(var(--randColorOpacity), 0.8);
+        }
+        &.selected{
+            padding: 0.4em 0.7em;
+            color: var(--randColorLight);
+            border: 1px solid rgba(var(--randColorOpacity), 0.25);
+            box-shadow: 0px 0px 2px rgba(var(--randColorOpacity), 0.25);
+            border-radius: 8px;
+        }
     }
 }
 
@@ -3446,6 +3507,10 @@ body{
 		        inset 0 0 0 (5px * 1.2) #fff,
 		        inset 0 0 100vw 100vw var(--fill-color);
 }
+
+.border-default-light{
+    border: 8px solid var(--randColorLight);
+}
 //#endregion
 
 /// Snake grid cells
@@ -3884,6 +3949,10 @@ body{
         span{
             text-align: center;
         }
+        img{
+            height: 64px;
+            width: 64px;
+        }
     }
     #inventory-currency{
         margin-top: 2em;
@@ -3894,7 +3963,7 @@ body{
 }
 
 #equipment-widget{
-    #equipment-slots-armor, #equipment-slots-potion{
+    #equipment-slots-armor, #equipment-slots-consumable{
         button{
             @extend .flex-center;
             opacity: 0.5;
@@ -3915,6 +3984,10 @@ body{
         transform: none;
         span{
             text-align: center;
+        }
+        img{
+            height: 64px;
+            width: 64px;
         }
     }
     #equipment-table-stats{
@@ -4181,6 +4254,141 @@ body{
         background-color: var(--randColor);
     }
 }
+
+#musicplayer-widget{
+    #musicplayer-widget-animation{
+        padding-bottom: 0;
+        padding-right: 0;
+        border-radius: 25.4px;
+    }
+    #musicplayer-hotbar{
+        top: 0.35em;
+        right: 3em;
+    }
+    #musicplayer-disc{
+        z-index: 0;
+        cursor: pointer;
+        position: absolute;
+        height: 11.5em;
+        width: 11.5em;
+        top: 0;
+        left: 0;
+        border: 6px solid var(--randColorLight);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: white;
+        overflow: hidden;
+        transition-property: border-radius height width;
+        transition-duration: 2s;
+        &::before{
+            @extend .float, .center;
+            z-index: -1;
+            content: "";
+            height: 3em;
+            width: 3em;
+            display: inline-block;
+            background-color: var(--randColorLight);
+            border-radius: 50%;
+        }
+        #musicplayer-player{
+            position: relative;
+            top: -78px;
+            left: -78px;
+            pointer-events: none;
+            transition-property: top left;
+            transition-duration: 2s;    
+        }    
+    }
+    #musicplayer-details{
+        height: 7em;
+        width: 15em;
+        border: 6px solid var(--randColorLight);
+        border-bottom: none;
+        border-radius: 25px 25px 0px 0px;
+        background-color: var(--randColor);
+        color: #b9b9b9;
+        padding: 0.5em 1em 0em 10em;
+        transition-property: text-shadow background-color;
+        transition-duration: 0.5s;
+        #musicplayer-name{
+            @include slide-on-hover(30px, 240px);
+            cursor: pointer;
+        }
+        #musicplayer-author{
+            cursor: pointer;
+        }
+        &.musicplayer-animation-remove-details{
+            text-shadow: 0px 0px 5px white;
+            background-color: rgb(136, 0, 0);
+        }
+        &.musicplayer-animation-add-details{
+            text-shadow: 0px 0px 5px white;
+            background-color: rgb(77, 148, 77);
+        }
+    }
+    #musicplayer-controls{
+        height: 7em;
+        width: 30em;
+        border-radius: 25px;
+        background-color: white;
+        #musicplayer-remove{
+            position: absolute;
+            left: 10em;
+        }
+        #musicplayer-button-previous{
+            position: relative;
+            left: 0;
+            transition: all 0.3s;
+            &.musicplayer-animation-button-previous{
+                left: -0.6em;
+                opacity: 0.5;
+            }
+        }
+        #musicplayer-button-play{
+            @extend .flex-center;
+            &:active{
+                transform: unset;
+            }
+            #musicplayer-button-clone-play{
+                margin-top: 0.4em;
+                pointer-events: none;
+                position: absolute;
+            }
+        }
+        #musicplayer-button-next{
+            position: relative;
+            right: 0;
+            transition: all 0.3s;
+            &.musicplayer-animation-button-next{
+                right: -0.6em;
+                opacity: 0.5;
+            }
+        }
+        #musicplayer-add{
+            position: absolute;
+            left: 27.5em;
+        }
+        #musicplayer-input-add{
+            position: absolute;
+            width: 0;
+            top: 15.38em;
+            left: 28.5em;
+            transition-property: height width padding;
+            transition-duration: 1s;
+            visibility: hidden;
+            height: 0;
+            padding: 0;
+            &.musicplayer-animation-input-add{
+                visibility: visible;
+                height: 2.5em;
+                width: 7em;
+                top: 14.15em;
+                left: 28em;
+                padding-left: 0.8em;
+            }
+        }
+    }
+}
 //#endregion
 
 
@@ -4218,7 +4426,6 @@ body{
 
 #typingtest-widget{
     max-width: 50em;
-    max-height: 26.46em;
     width: 100%;
     #typingtest-input-field{
         opacity: 0;
@@ -4308,7 +4515,7 @@ body{
 
 #minesweeper-widget{
     #minesweeper-health{
-        @include grid-auto-row(8);
+        @include grid-auto(8);
     }
 }
 
@@ -4368,6 +4575,17 @@ body{
     }
     #trivia-health{
         @include grid-auto(11);
+    }
+}
+
+#tetris-widget{
+    #tetris-canvas{
+        outline: none;
+    }
+    #tetris-health{
+        position: absolute;
+        bottom: 23em;
+        right: 11em;
     }
 }
 //#endregion
@@ -4597,6 +4815,18 @@ body{
     to   { transform: scale(1); }
 }
 
+@keyframes rotateDisk{
+    0%   { transform: rotateZ(0deg);   }
+    100% { transform: rotateZ(360deg); }
+}
+
+@keyframes pulse{
+    to { transform: scale(1.5);
+         opacity: 0; }
+}
+
+//#region Text
+/// Limited characters
 @keyframes textWave{
     /// by Temani Afif
     /// 10 letters max
@@ -4631,6 +4861,44 @@ body{
         calc( 0*var(--w)) 0 var(--randColor),calc(-1*var(--w)) 0 var(--randColor),calc(-2*var(--w)) 0 var(--randColor),calc(-3*var(--w)) 0 var(--randColor),calc(-4*var(--w)) 0 var(--randColor), 
         calc(-5*var(--w)) 0 var(--randColor),calc(-6*var(--w)) 0 var(--randColor),calc(-7*var(--w)) 0 var(--randColor),calc(-8*var(--w)) 0 var(--randColor),calc(-9*var(--w)) -10px var(--randColor)}
 }
+
+/// Unlimited characters
+@keyframes textBobbling{
+    100% { transform: translateY(0.1%); }
+}
+
+@keyframes textErratic{
+    /// by Temani Afif
+    0%,12.5%  {transform: translate(10px,0);    }
+    13%,25%   {transform: translate(4px,-4px);  }
+    26%,37.5% {transform: translate(2px,8px);   }
+    38%,50%   {transform: translate(12px,-6px); }
+    51%,62.5% {transform: translate(0,12px);    }
+    63%,75%   {transform: translate(-8px,-4px); }
+    76%,86.5% {transform: translate(-12px,6px); }
+    87%,100%  {transform: translate(6px,0);     }
+}
+
+@keyframes textGlitch{
+    /// by Temani Afif
+    0%,25% {
+        text-shadow: 
+            0.03px -0.01px 0.01px rgb(255 0 0), 
+            0.02px  0.02px 0      rgb(0 255 0), 
+           -0.02px  0.02px 0      rgb(0 0 255);
+    }
+    25%,100% {
+        text-shadow: 
+            0 0 0 rgb(255 0 0), 
+            0 0 0 rgb(0 255 0), 
+            0 0 0 rgb(0 0 255);
+    }    
+}
+
+@keyframes textRotate{
+    100% { transform: rotate(1deg); }
+}
+//#endregion
 //#endregion
 
 

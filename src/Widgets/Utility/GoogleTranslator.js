@@ -1,12 +1,12 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaArrowRightFromBracket, FaRegPaste, FaExpand, Fa0, FaVolumeHigh } from 'react-icons/fa6';
-import { BsArrowLeftRight } from 'react-icons/bs';
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
 import $ from 'jquery';
-import Select from "react-select";
+import { Component, memo, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { BsArrowLeftRight } from 'react-icons/bs';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaArrowRightFromBracket, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import Select from "react-select";
 
 
 /// Variables
@@ -209,13 +209,6 @@ class WidgetGoogleTranslator extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -228,6 +221,13 @@ class WidgetGoogleTranslator extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -286,7 +286,7 @@ class WidgetGoogleTranslator extends Component{
                         {/* Display */}
                         <div id="googletranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
-                            <p className="cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
+                            <p className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                         </div>
                         {/* Bottom Buttons */}
                         <div className="element-ends float bottom">
@@ -321,4 +321,4 @@ class WidgetGoogleTranslator extends Component{
     };
 };
 
-export default WidgetGoogleTranslator;
+export default memo(WidgetGoogleTranslator);

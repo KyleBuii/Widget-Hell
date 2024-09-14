@@ -1,12 +1,13 @@
-import { React, Component } from 'react';
+import { Component, React } from 'react';
+import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegArrowAltCircleLeft, FaRegArrowAltCircleRight } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
+import { Fa0, FaExpand } from 'react-icons/fa6';
+import { IoClose } from 'react-icons/io5';
 import { MdOutlineInventory2 } from "react-icons/md";
 import { TbMoneybag } from "react-icons/tb";
-import { IconContext } from 'react-icons';
-import Draggable from 'react-draggable';
-import { IoClose } from 'react-icons/io5';
 // import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { memo } from 'react';
 
 
 /// Variables
@@ -177,13 +178,6 @@ class WidgetInventory extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -198,7 +192,18 @@ class WidgetInventory extends Component{
                                     <FaExpand/>
                                 </button>
                                 : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "close", "utility")}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
                         </section>
+                        {/* Author */}
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
+                            : <></>}
                         {/* Inventory */}
                         <section className="flex-center column gap medium-gap">
                             {/* Inventory Slots */}
@@ -294,19 +299,29 @@ class WidgetInventory extends Component{
                                         </tr>
                                         <tr>
                                             <td>Slot:</td>
-                                            <td>{this.props.items[this.state.item.rarity][this.state.item.name].slot.replace(/^./, (char) => char.toUpperCase())}</td>
+                                            <td>{this.props.items[this.state.item.rarity][this.state.item.name].slot
+                                                .replace(/^./, (char) => char.toUpperCase())
+                                                .replace(/[0-9]/, "")}</td>
                                         </tr>
-                                        {(this.props.items[this.state.item.rarity][this.state.item.name].type === "stat")
+                                        {(/stat|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
                                             ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name].stats)
                                                 .map((value, index) => {
                                                     return <tr key={`row-stat-${index}`}>
                                                         <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
-                                                        <td>+{this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}</td>
+                                                        <td>
+                                                            {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
+                                                                ? ""
+                                                                : "+"}
+                                                            {this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}
+                                                        </td>
                                                     </tr>
                                                 })
-                                            : <tr>
+                                            : <></>}
+                                        {(/ability|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
+                                            ? <tr>
                                                 <td colSpan={2}>{this.props.items[this.state.item.rarity][this.state.item.name].information}</td>
-                                            </tr>}
+                                            </tr>
+                                            : <></>}
                                     </tbody>
                                 </table>
                             </div>
@@ -343,10 +358,6 @@ class WidgetInventory extends Component{
                                         this.props.items[this.state.item.rarity][this.state.item.name].slot
                                     )}>Equip</button>}
                         </section>
-                        {/* Author */}
-                        {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
-                            : <></>}
                     </div>
                 </div>
             </Draggable>
@@ -354,4 +365,4 @@ class WidgetInventory extends Component{
     };
 };
 
-export default WidgetInventory;
+export default memo(WidgetInventory);

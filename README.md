@@ -7,6 +7,19 @@
 - Move them however you will!
 - ...and more!
 
+## **Gold reward guide**
+| Game | Rate |
+| --- | --- |
+| Minesweeper | Equal to mines on complete |
+| Snake | Equal to food eaten |
+| Simon Game | Equal to correct guesses |
+| Typing Test | Equal to half of WPM |
+| Breakout | Equal to bricks broken |
+| Chess | Equal to pieces captured |
+| 2048 | Equal to 1/4 of score |
+| Trivia | Equal to correct guesses |
+| Tetris | Equal to 1 gold for every 1000 score |
+
 ## **Item rewards guide**
 ### Drop rates
 | Rarity | Rate |
@@ -27,6 +40,7 @@
 | Chess | Every 5 pieces captured |
 | 2048 | On getting 2048 |
 | Trivia | Every 5 correct answers |
+| Tetris | Every 5000 score |
 
 ## **Stats guide [WIP]**
 <details>
@@ -35,19 +49,19 @@
 Health rounds down.
 | Heart | Hits |
 | --- | --- |
-| ![heart 1](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart1.png) | 1 |
-| ![heart 2](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart2.png) | 5 |
-| ![heart 3](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart3.png) | 10 |
-| ![heart 4](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart4.png) | 15 |
-| ![heart 5](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart5.png) | 20|
-| ![heart 6](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart6.png) | 25 |
-| ![heart 7](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart7.png) | 30 |
-| ![heart 8](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart8.png) | 35 |
-| ![heart 9](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart9.png) | 40 |
-| ![heart 10](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart10.png) | 45 |
-| ![heart 11](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart11.png) | 50 |
-| ![heart 12](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart12.png) | 55 |
-| ![heart 13](https://github.com/KyleBuii/Widget-Hell/tree/main/public/images/hearts/heart13.png) | 60 |
+| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart1.png) | 1 |
+| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart2.png) | 5 |
+| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart3.png) | 10 |
+| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart4.png) | 15 |
+| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart5.png) | 20|
+| ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart6.png) | 25 |
+| ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart7.png) | 30 |
+| ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart8.png) | 35 |
+| ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart9.png) | 40 |
+| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart10.png) | 45 |
+| ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart11.png) | 50 |
+| ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart12.png) | 55 |
+| ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart13.png) | 60 |
 
 | Game |  |
 | --- | --- |
@@ -59,6 +73,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | Allows a wrong guess for every 10 |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Mana</summary>
@@ -73,6 +88,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Attack</summary>
@@ -87,6 +103,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Defense</summary>
@@ -101,6 +118,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Strength</summary>
@@ -115,6 +133,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Agility</summary>
@@ -129,6 +148,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Vitality</summary>
@@ -143,6 +163,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Resilience</summary>
@@ -157,6 +178,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Intelligence</summary>
@@ -171,6 +193,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Dexterity</summary>
@@ -185,6 +208,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Trivia | N/A |
+| Tetris | N/A |
 </details>
 <details>
     <summary>Luck</summary>
@@ -198,7 +222,8 @@ Health rounds down.
 | Breakout | N/A |
 | Chess | N/A |
 | 2048 | N/A |
+| Tetris | N/A |
 </details>
 
 ## **Plans**
-- Allow contributors and users to make their own widget with high customizabilitiy
+- Allow users to create their own widgets with a focus on high customization and user-friendly simplicity

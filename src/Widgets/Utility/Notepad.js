@@ -1,10 +1,10 @@
-import { React, Component } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0, FaBold, FaSuperscript, FaSubscript, FaListOl, FaListUl, FaRotateLeft, FaRotateRight, FaLink, FaLinkSlash, FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaIndent, FaOutdent, FaHighlighter } from 'react-icons/fa6';
-import { MdFormatColorText } from 'react-icons/md';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { Fa0, FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold, FaExpand, FaHighlighter, FaIndent, FaLink, FaLinkSlash, FaListOl, FaListUl, FaOutdent, FaRotateLeft, FaRotateRight, FaSubscript, FaSuperscript } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { MdFormatColorText } from 'react-icons/md';
 
 
 class WidgetNotepad extends Component{
@@ -105,13 +105,6 @@ class WidgetNotepad extends Component{
                         </span>
                         {/* Hotbar */}
                         <section className="hotbar">
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
                             {/* Reset Position */}
                             {(this.props.defaultProps.hotbar.resetPosition)
                                 ? <button className="button-match inverse when-elements-are-not-straight"
@@ -124,6 +117,13 @@ class WidgetNotepad extends Component{
                                 ? <button className="button-match inverse when-elements-are-not-straight"
                                     onClick={() => this.props.defaultProps.handleHotbar("notepad", "fullscreen", "utility")}>
                                     <FaExpand/>
+                                </button>
+                                : <></>}
+                            {/* Close */}
+                            {(this.props.defaultProps.hotbar.close)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "close", "utility")}>
+                                    <IoClose/>
                                 </button>
                                 : <></>}
                         </section>
@@ -346,4 +346,4 @@ class WidgetNotepad extends Component{
     };
 };
 
-export default WidgetNotepad;
+export default memo(WidgetNotepad);
