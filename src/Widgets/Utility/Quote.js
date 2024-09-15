@@ -8,6 +8,7 @@ import { IoClose } from 'react-icons/io5';
 
 /// Variables
 var voices;
+let timeoutCopy;
 
 
 class WidgetQuote extends Component{
@@ -52,11 +53,23 @@ class WidgetQuote extends Component{
             };
         };
     };
+    handleCopy(){
+        this.props.copyToClipboard(this.state.currentQuote);
+        let elementQuote = document.getElementById("quote-text");
+        elementQuote.style.textShadow = "0px 0px 10px var(--randColorLight)";
+        timeoutCopy = setTimeout(() => {
+            elementQuote.style.textShadow = "unset";
+        }, 400);
+    };
     componentDidMount(){
+        voices = window.speechSynthesis.getVoices();
         speechSynthesis.addEventListener("voiceschanged", () => {
             voices = window.speechSynthesis.getVoices();
         }, { once: true });
         this.handleNewQuote();
+    };
+    componentWillUnmount(){
+        clearTimeout(timeoutCopy);
     };
     render(){
         return(
@@ -122,7 +135,7 @@ class WidgetQuote extends Component{
                             <div className="flex-center row space-nicely space-left">
                                 {/* Clipboard */}
                                 <button className="button-match fadded inversed"
-                                    onClick={() => this.props.copyToClipboard(this.state.currentQuote)}>
+                                    onClick={() => this.handleCopy()}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>

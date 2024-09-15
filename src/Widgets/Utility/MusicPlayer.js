@@ -22,7 +22,7 @@ class WidgetMusicPlayer extends Component{
             urls: [
                 {
                     name: "Origin | Original by Kilia Kurayami",
-                    artist: "Kilia Kurayami Ch. 【EIEN Project",
+                    artist: "Kilia Kurayami Ch. 【EIEN Project】",
                     url: "https://www.youtube.com/watch?v=7Rb5fxeqVxs"
                 },
                 {
@@ -528,7 +528,7 @@ class WidgetMusicPlayer extends Component{
                                         : <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
                                             <FaRegCirclePlay/>
                                         </IconContext.Provider>}
-                                    <button id="musicplayer-button-clone-play"
+                                    <div id="musicplayer-button-clone-play"
                                         className="button-match inverse">
                                         {(this.state.playing)
                                             ? <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
@@ -537,7 +537,7 @@ class WidgetMusicPlayer extends Component{
                                             : <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
                                                 <FaRegCirclePlay/>
                                             </IconContext.Provider>}
-                                    </button>
+                                    </div>
                                 </button>
                                 <button id="musicplayer-button-next"
                                     className="button-match inverse"

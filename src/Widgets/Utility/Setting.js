@@ -140,21 +140,9 @@ class WidgetSetting extends Component{
                 screenDimmerSlider: false,
                 screenDimmerValue: 100,
                 background: {value: "default", label: "Default"},
-                animation: {value: "default", label: "Default"},
-                customBorder: {value: "default", label: "Default"},
-                shadow: false,
-                authorNames: false,
-                fullscreen: false,
-                resetPosition: false,
-                savePositionPopout: false,
                 timeBased: false,
-                voice: {value: "0", label: "David"},
-                pitch: 0,
-                rate: 0,
-                health: {value: "default", label: "Default"},
-                close: false,
                 randomTrick: false,
-                randomText: false
+                shadow: false
             },
             maxPageUtility: 0,
             pageUtility: 0,
@@ -699,21 +687,8 @@ class WidgetSetting extends Component{
                     screenDimmer: this.state.values.screenDimmer,
                     screenDimmerValue: this.state.values.screenDimmerValue,
                     background: this.state.values.background,
-                    animation: this.state.values.animation,
-                    customBorder: this.state.values.customBorder,
-                    authorNames: this.state.values.authorNames,
-                    fullscreen: this.state.values.fullscreen,
-                    resetPosition: this.state.values.resetPosition,
-                    savePositionPopout: this.state.values.savePositionPopout,
-                    shadow: this.state.values.shadow,
                     timeBased: this.state.values.timeBased,
-                    voice: this.state.values.voice,
-                    pitch: this.state.values.pitch,
-                    rate: this.state.values.rate,
-                    health: this.state.values.health,
-                    close: this.state.values.close,
                     randomTrick: this.state.values.randomTrick,
-                    randomText: this.state.values.randomText
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -786,51 +761,40 @@ class WidgetSetting extends Component{
                             break;
                     };
                 };
-                switch(i){
-                    case "setting":
-                        this.setState({
-                            values: {
-                                ...this.state.values,
-                                screenDimmer: localStorageValues["screenDimmer"],
-                                screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
-                                screenDimmerValue: localStorageValues["screenDimmerValue"],
-                                background: localStorageValues["background"],
-                                animation: localStorageValues["animation"],
-                                customBorder: localStorageValues["customBorder"],
-                                authorNames: localStorageValues["authorNames"],
-                                fullscreen: localStorageValues["fullscreen"],
-                                resetPosition: localStorageValues["resetPosition"],
-                                savePositionPopout: localStorageValues["savePositionPopout"],
-                                shadow: localStorageValues["shadow"],
-                                timeBased: localStorageValues["timeBased"],
-                                voice: localStorageValues["voice"],
-                                pitch: localStorageValues["pitch"],
-                                rate: localStorageValues["rate"],
-                                health: localStorageValues["health"],
-                                close: localStorageValues["close"],
-                                randomTrick: localStorageValues["randomTrick"],
-                                randomText: localStorageValues["randomText"]
-                            }
-                        }, () => {
-                            /// Update Display
-                            if(this.state.values.screenDimmer && this.state.values.timeBased){
-                                this.handleInterval(true);
-                            }else if(this.state.values.screenDimmer){
-                                document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
-                            };
-                            /// Update Design
-                            this.updateBackground(this.state.values.background);
-                            if(this.state.values.shadow === true){
-                                this.props.updateDesign("shadow", true);
-                            };
-                            /// Set random
-                            if(this.state.values.randomTrick){
-                                this.randomTimeout("trick");
-                            };
-                        });
-                        break;
-                    default:
-                        break;
+                if(localStorageValues["screenDimmer"] !== undefined){
+                    switch(i){
+                        case "setting":
+                            this.setState({
+                                values: {
+                                    ...this.state.values,
+                                    screenDimmer: localStorageValues["screenDimmer"],
+                                    screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
+                                    screenDimmerValue: localStorageValues["screenDimmerValue"],
+                                    background: localStorageValues["background"],
+                                    timeBased: localStorageValues["timeBased"],
+                                    randomTrick: localStorageValues["randomTrick"]
+                                }
+                            }, () => {
+                                /// Update Display
+                                if(this.state.values.screenDimmer && this.state.values.timeBased){
+                                    this.handleInterval(true);
+                                }else if(this.state.values.screenDimmer){
+                                    document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
+                                };
+                                /// Update Design
+                                this.updateBackground(this.state.values.background);
+                                if(this.state.values.shadow === true){
+                                    this.props.updateDesign("shadow", true);
+                                };
+                                /// Set random
+                                if(this.state.values.randomTrick){
+                                    this.randomTimeout("trick");
+                                };
+                            });
+                            break;
+                        default:
+                            break;
+                    };
                 };
             };
         };
@@ -1115,7 +1079,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-design-select-animation"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.state.values.animation}
+                                                    value={this.props.values.animation}
                                                     defaultValue={optionsAnimation[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "animation")}
                                                     options={optionsAnimation}
@@ -1144,7 +1108,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-design-select-background"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.state.values.background}
+                                                    value={this.props.values.background}
                                                     defaultValue={optionsBackground[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "background")}
                                                     options={optionsBackground}
@@ -1173,7 +1137,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-design-select-custom-border"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.state.values.customBorder}
+                                                    value={this.props.values.customBorder}
                                                     defaultValue={optionsCustomBorder[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "customBorder")}
                                                     options={optionsCustomBorder}
@@ -1199,7 +1163,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-design-shadow"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "shadow", "values")}
-                                                        checked={this.state.values.shadow}
+                                                        checked={this.props.values.shadow}
                                                         />
                                                 </section>
                                             </section>
@@ -1224,7 +1188,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-feature-authorNames"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "authorNames", "values")}
-                                                        checked={this.state.values.authorNames}/>
+                                                        checked={this.props.values.authorNames}/>
                                                 </section>
                                             </fieldset>
                                             {/* Hotbar */}
@@ -1242,7 +1206,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-feature-close"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "close", "values")}
-                                                        checked={this.state.values.close}/>
+                                                        checked={this.props.values.close}/>
                                                 </section>
                                                 {/* Fullscreen */}
                                                 <section className="element-ends">
@@ -1254,7 +1218,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-feature-fullscreen"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "fullscreen", "values")}
-                                                        checked={this.state.values.fullscreen}/>
+                                                        checked={this.props.values.fullscreen}/>
                                                 </section>
                                                 {/* Reset Position */}
                                                 <section className="element-ends">
@@ -1266,7 +1230,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-feature-resetPosition"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}
-                                                        checked={this.state.values.resetPosition}
+                                                        checked={this.props.values.resetPosition}
                                                         />
                                                 </section>
                                             </fieldset>
@@ -1295,7 +1259,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-misc-select-type"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.state.values.voice}
+                                                    value={this.props.values.voice}
                                                     defaultValue={optionsVoice[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "voice")}
                                                     options={optionsVoice}
@@ -1331,7 +1295,7 @@ class WidgetSetting extends Component{
                                                             style: {display: "none" }
                                                         }
                                                     }}
-                                                    value={this.state.values.pitch}/>
+                                                    value={this.props.values.pitch}/>
                                                 {/* Rate */}
                                                 <section className="element-ends">
                                                     <span className="font small">
@@ -1355,7 +1319,7 @@ class WidgetSetting extends Component{
                                                             style: {display: "none" }
                                                         }
                                                     }}
-                                                    value={this.state.values.rate}/>
+                                                    value={this.props.values.rate}/>
                                             </fieldset>
                                             {/* Popout */}
                                             <fieldset className="section-sub">
@@ -1372,7 +1336,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-misc-savepositionpopout"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "savePositionPopout", "values")}
-                                                        checked={this.state.values.savePositionPopout}/>
+                                                        checked={this.props.values.savePositionPopout}/>
                                                 </section>
                                             </fieldset>
                                             {/* Random */}
@@ -1402,7 +1366,7 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-misc-random-text"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "randomText", "values")}
-                                                        checked={this.state.values.randomText}/>
+                                                        checked={this.props.values.randomText}/>
                                                 </section>
                                             </fieldset>
                                         </section>
@@ -1426,7 +1390,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-game-select-health"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.state.values.health}
+                                                    value={this.props.values.health}
                                                     defaultValue={optionsHealth[0]["options"][0]}
                                                     isDisabled={!this.state.settings}
                                                     onChange={(event) => this.handleSelect(event, "health")}

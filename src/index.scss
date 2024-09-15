@@ -4067,6 +4067,7 @@ body{
         margin-top: 1rem;
         #quote-text{
             padding-top: 0.6rem;
+            transition: text-shadow 0.4s;
         }
     }
 }
@@ -4077,6 +4078,9 @@ body{
     width: 100vmin;
     #translator-preview-cut-corner{
         margin-top: 0.9rem;
+        #translator-translated-text{
+            transition: text-shadow 0.4s;
+        }
     }
 }
 

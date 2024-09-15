@@ -12,6 +12,7 @@ import sanitizeHtml from 'sanitize-html';
 /// Variables
 let regexPopouts = new RegExp(/replace|reverse|case-transform/);
 var voices;
+let timeoutCopy;
 /// Select options
 const optionsTranslateFrom = [
     {
@@ -494,7 +495,16 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
+    handleCopy(){
+        this.props.copyToClipboard(this.state.converted);
+        let elementTranslatedText = document.getElementById("translator-translated-text");
+        elementTranslatedText.style.textShadow = "0px 0px 2px var(--randColorLight)";
+        timeoutCopy = setTimeout(() => {
+            elementTranslatedText.style.textShadow = "unset";
+        }, 400);
+    };
     componentDidMount(){
+        voices = window.speechSynthesis.getVoices();
         speechSynthesis.addEventListener("voiceschanged", () => {
             voices = window.speechSynthesis.getVoices();
         }, { once: true });
@@ -526,6 +536,7 @@ class WidgetTranslator extends Component{
             "to": this.state.to
         };
         sessionStorage.setItem("translator", JSON.stringify(data));
+        clearTimeout(timeoutCopy);
     };
     render(){
         return(
@@ -642,7 +653,7 @@ class WidgetTranslator extends Component{
                             <div className="flex-center row">
                                 {/* Clipboard */}
                                 <button className="button-match fadded inversed"
-                                    onClick={() => this.props.copyToClipboard(this.state.converted)}>
+                                    onClick={() => this.handleCopy()}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>

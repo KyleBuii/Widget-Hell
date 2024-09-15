@@ -1095,17 +1095,17 @@ class Widgets extends Component{
         this.state = {
             developer: false,
             values: {
-                animation: {},
-                customBorder: {},
+                animation: {value: "default", label: "Default"},
+                customBorder: {value: "default", label: "Default"},
                 savePositionPopout: false,
                 authorNames: false,
                 fullscreen: false,
                 resetPosition: false,
                 shadow: false,
-                voice: {},
+                voice: {value: "0", label: "David"},
                 pitch: 0,
                 rate: 0,
-                health: {},
+                health: {value: "default", label: "Default"},
                 close: false,
                 randomText: false
             },
@@ -2248,6 +2248,27 @@ class Widgets extends Component{
                 if(this.state.values.savePositionPopout){
                     data.utility[i].popouts = this.state.widgets.utility[i].popouts;
                 };
+                if(i === "setting"){
+                    data["utility"]["setting"] = {
+                        ...data["utility"]["setting"],
+                        values: {        
+                            ...data["utility"]["setting"]["values"],
+                            animation: this.state.values.animation,
+                            customBorder: this.state.values.customBorder,
+                            authorNames: this.state.values.authorNames,
+                            fullscreen: this.state.values.fullscreen,
+                            resetPosition: this.state.values.resetPosition,
+                            savePositionPopout: this.state.values.savePositionPopout,
+                            shadow: this.state.values.shadow,
+                            voice: this.state.values.voice,
+                            pitch: this.state.values.pitch,
+                            rate: this.state.values.rate,
+                            health: this.state.values.health,
+                            close: this.state.values.close,
+                            randomText: this.state.values.randomText
+                        }
+                    };
+                };
             };
             for(let i in this.state.widgets.games){
                 data.games[i] = {
@@ -2278,6 +2299,26 @@ class Widgets extends Component{
                 };
                 if(this.state.values.savePositionPopout){
                     data.utility[i].popouts = this.state.widgets.utility[i].popouts;
+                };
+                if(i === "setting"){
+                    data["utility"]["setting"] = {
+                        ...data["utility"]["setting"],
+                        values: {        
+                            animation: this.state.values.animation,
+                            customBorder: this.state.values.customBorder,
+                            authorNames: this.state.values.authorNames,
+                            fullscreen: this.state.values.fullscreen,
+                            resetPosition: this.state.values.resetPosition,
+                            savePositionPopout: this.state.values.savePositionPopout,
+                            shadow: this.state.values.shadow,
+                            voice: this.state.values.voice,
+                            pitch: this.state.values.pitch,
+                            rate: this.state.values.rate,
+                            health: this.state.values.health,
+                            close: this.state.values.close,
+                            randomText: this.state.values.randomText
+                        }
+                    };
                 };
             };
             for(let i in this.state.widgets.games){
@@ -2525,6 +2566,7 @@ class Widgets extends Component{
                 <WidgetSetting
                     widgets={widgets}
                     widgetActiveVariables={widgetActiveVariables}
+                    values={this.state.values}
                     showHide={this.handleShowHide}
                     showHidePopout={this.handleShowHidePopout}
                     dragStart={dragStart}
