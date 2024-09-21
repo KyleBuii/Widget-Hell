@@ -10,7 +10,7 @@ import Select from "react-select";
 
 
 /// Variables
-let voices;
+let timeoutCopy;
 /// Select option
 var optionsTranslateFrom = [
     {
@@ -134,23 +134,17 @@ class WidgetGoogleTranslator extends Component{
         };
     };
     handleTalk(){
-        if(this.state.converted !== ""){
-            if(speechSynthesis.speaking){
-                speechSynthesis.cancel();
-            }else{
-                let utterance = new SpeechSynthesisUtterance(this.state.converted);
-                utterance.voice = voices[this.props.voice.value];
-                utterance.pitch = this.props.pitch;
-                utterance.rate = this.props.rate;
-                utterance.lang = this.state.from.value;
-                speechSynthesis.speak(utterance);
-            };
-        };
+        this.props.talk(this.state.converted);
+    };
+    handleCopy(){
+        this.props.copyToClipboard(this.state.converted);
+        let elementTranslatedText = document.getElementById("googletranslator-translated-text");
+        elementTranslatedText.style.textShadow = "0px 0px 2px var(--randColorLight)";
+        timeoutCopy = setTimeout(() => {
+            elementTranslatedText.style.textShadow = "unset";
+        }, 400);
     };
     componentDidMount(){
-        speechSynthesis.addEventListener("voiceschanged", () => {
-            voices = window.speechSynthesis.getVoices();
-        }, { once: true });
         /// Populate select with 'languages' array
         for(var curr = 0; curr < this.props.languages.length; curr+=2){
             optionsTranslateTo[0]["options"].push(
@@ -181,6 +175,7 @@ class WidgetGoogleTranslator extends Component{
             "to": this.state.to
         };
         sessionStorage.setItem("googletranslator", JSON.stringify(data));
+        clearTimeout(timeoutCopy);
     };
     render(){
         return(
@@ -286,14 +281,15 @@ class WidgetGoogleTranslator extends Component{
                         {/* Display */}
                         <div id="googletranslator-preview-cut-corner"
                             className="cut-scrollbar-corner-part-1 p">
-                            <p className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
+                            <p id="googletranslator-translated-text"
+                                className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                         </div>
                         {/* Bottom Buttons */}
                         <div className="element-ends float bottom">
                             <div className="flex-center row">
                                 {/* Clipboard */}
                                 <button className="button-match fadded inversed"
-                                    onClick={() => this.props.copyToClipboard(this.state.converted)}>
+                                    onClick={() => this.handleCopy()}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>

@@ -26,3 +26,7 @@ Hearts = https://opengameart.org/content/2d-heart-2-animations
 Door Breaker = https://www.deviantart.com/theguardiantempest/art/Doorknocker-Custom-371217359
 
 Music Player = https://dova-s.jp/bgm/
+
+Quote =
+https://djjjk9bjm164h.cloudfront.net/petal.png
+https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/

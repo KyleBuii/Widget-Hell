@@ -7,6 +7,25 @@
 - Move them however you will!
 - ...and more!
 
+## **Game controls**
+| Game | Control | Action |
+| --- | --- | --- |
+| Minesweeper | Left Click | Reveal a cell |
+| | Right Click | Flag/Unflag |
+| Snake | WASD/Arrow Keys | Move |
+| | Shift | Dash |
+| Simon Game | | |
+| Typing Test | | |
+| Breakout | | |
+| Chess | | |
+| 2048 | WASD/Arrow Keys | Move |
+| Trivia | | |
+| Tetris | AD/Left and Right Arrow Keys | Move |
+| | W/Up Arrow Key | Rotate clockwise |
+| | S/Down Arrow Key | Soft drop |
+| | Spacebar | Hard drop |
+| | F | Reset |
+
 ## **Gold reward guide**
 | Game | Rate |
 | --- | --- |

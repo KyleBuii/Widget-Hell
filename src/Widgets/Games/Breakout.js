@@ -188,6 +188,9 @@ class WidgetBreakout extends Component{
                     case "1":
                         brickColor = "black";
                         break;
+                    case "2":
+                        brickColor = "brown";
+                        break;
                     case "b":
                         brickColor = "blue";
                         break;

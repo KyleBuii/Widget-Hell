@@ -3515,12 +3515,34 @@ body{
 
 /// Snake grid cells
 .grid-cell{
+    border-radius: 25%;
     box-sizing: border-box;
-    &--food{
-        background-color: red;
-    }
     &--snake{
         background-color: var(--randColor);
+    }
+    &--debris{
+        background-color: #666;
+    }
+    &--foodnormal{
+        background-color: #0100fe;
+    }
+    &--foodnormalmoving{
+        background-color: #0100fe;
+    }
+    &--fooddouble{
+        background-color: #008301;
+    }
+    &--fooddoublemoving{
+        background-color: #008301;
+    }
+    &--foodtriple{
+        background-color: #fb0005;
+    }
+    &--foodtriplemoving{
+        background-color: #fb0005;
+    }
+    &--foodbomb{
+        background-color: black;
     }
 }
 
@@ -3573,7 +3595,7 @@ body{
             color: #008301;
         }
         &.cell-3{
-            color: #fb0005
+            color: #fb0005;
         }
         &.cell-4{
             color: #000185;
@@ -3749,13 +3771,15 @@ body{
     }
 }
 
-/// Cursor trail
-.trail{
-    position: absolute;
-    height: 6px;
-    width: 6px;
-    border-radius: 3px;
-    background: black;
+.alternating-text-color{
+    span{
+        &:nth-child(odd){
+            color: var(--randColorLight);
+        }
+        &:nth-child(even){
+            color: var(--randColor);
+        }
+    }
 }
 //#endregion
 
@@ -4061,6 +4085,24 @@ body{
         padding: 0.3rem 1.9rem 1.58rem;
         text-align: center;
     }
+    #quote-canvas{
+        pointer-events: none;
+        height: 100%;
+        width: 100%;
+        border-radius: 25px;
+    }
+    #quote-image{
+        pointer-events: none;
+        height: 100%;
+        width: 100%;
+        border-radius: 25px;
+        background-image: url(../public/images/singles/cherryblossom.png);
+        background-position: bottom left;
+        background-size: 200px;
+        background-repeat: no-repeat;
+        opacity: 0.2;
+        margin-left: 1em;
+    }
     #quote-container{
         display: flex;
         flex-direction: row;
@@ -4068,6 +4110,16 @@ body{
         #quote-text{
             padding-top: 0.6rem;
             transition: text-shadow 0.4s;
+        }
+    }
+    #quote-slider-total{
+        visibility: hidden;
+        width: 0;
+        transition-property: width visibility;
+        transition-duration: 1.2s;
+        &.animation-quote-slider-total{
+            visibility: visible;
+            width: 5em;
         }
     }
 }
@@ -4090,6 +4142,9 @@ body{
     width: 100vmin;
     #googletranslator-preview-cut-corner{
         margin-top: 0.9rem;
+        #googletranslator-translated-text{
+            transition: text-shadow 0.4s;
+        }
     }
 }
 
@@ -4097,6 +4152,9 @@ body{
     font-size: 1.11em;
     #calculator-display-container{
         margin: 0rem 0rem 0.3rem;
+        #calculator-input-field{
+            transition: text-shadow 0.4s;
+        }
     }
     #calculator-button-memory-display{
         visibility: hidden;
@@ -4149,6 +4207,12 @@ body{
 }
 
 #weather-widget{
+    #weather-location{
+        transition: scale 0.3s text-shadow 0.4s;
+    }
+    #weather-information{
+        transition: text-shadow 0.4s;
+    }
     #weather-temperature{
         margin-right: 1em;
     }
@@ -4234,6 +4298,7 @@ body{
             background-position: center;
             background-size: cover;
             word-break: break-all;
+            transition: text-shadow 0.4s;
         }
     }
 }
@@ -4412,10 +4477,12 @@ body{
                 max-width: 100%;
                 box-sizing: content-box;
                 border: 4px solid var(--randColor);
+                border-radius: 10px;
                 display: flex;
                 flex-wrap: wrap;
             }
             #snake-overlay{
+                border-radius: 6px;
                 margin: 0.25rem;
             }
             #snake-popout-settings{
@@ -4807,6 +4874,12 @@ body{
             max-width: 4em;
             width: 100%;
         }
+    }
+}
+
+#facts-widget{
+    #facts-widget-animation{
+        max-width: 20em;
     }
 }
 //#endregion

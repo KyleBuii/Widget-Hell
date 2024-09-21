@@ -120,35 +120,27 @@ class WidgetSetting extends Component{
     constructor(props){
         super(props);
         this.state = {
-            showHideWidgets: false,
-            search: "",
-            widgetsButton: {
-                widgetsButtonUtility: {},
-                widgetsButtonGames: {},
-                widgetsButtonFun: {}
-            },
-            activeTab: "utility",
-            utilityTab: true,
-            gamesTab: false,
-            funTab: false,
-            settings: false,
-            inventory: false,
-            equipment: false,
-            character: false,
             values: {
                 screenDimmer: false,
                 screenDimmerSlider: false,
                 screenDimmerValue: 100,
                 background: {value: "default", label: "Default"},
                 timeBased: false,
-                randomTrick: false,
-                shadow: false
+                randomTrick: false
             },
+            search: "",
+            searched: [],
+            activeTab: "utility",
+            showHideWidgets: false,
+            settings: false,
+            inventory: false,
+            equipment: false,
+            character: false,
             maxPageUtility: 0,
-            pageUtility: 0,
             maxPageGames: 0,
-            pageGames: 0,
             maxPageFun: 0,
+            pageUtility: 0,
+            pageGames: 0,
             pageFun: 0
         };
         this.randomTimeout = this.randomTimeout.bind(this);
@@ -432,56 +424,52 @@ class WidgetSetting extends Component{
         switch(where){
             case "background":
                 this.updateBackground(what);
+                this.setState({
+                    values: {
+                        ...this.state.values,
+                        [where]: what
+                    }
+                });        
                 break;
             default:
                 this.props.updateValue(what, where, "values");
                 break;
         };
-        this.setState({
-            values: {
-                ...this.state.values,
-                [where]: what
-            }
-        });
     };
     /// Handles all checkboxes
     handleCheckbox(what, where, type){
-        this.setState({
-            values: {
-                ...this.state.values,
-                [where]: what
-            }
-        }, () => {
-            switch(where){
-                case "savePositionPopout":
-                    break;
-                case "timeBased":
-                    this.setState({
-                        values: {
-                            ...this.state.values,
-                            screenDimmerSlider: !what
-                        }
-                    });
-                    this.handleInterval(what);
-                    break;
-                default:
-                    this.props.updateDesign(where, what);
-                    break;
-            };    
-        });
-        this.props.updateValue(what, where, type);
+        switch(where){
+            case "timeBased":
+                this.setState({
+                    values: {
+                        ...this.state.values,
+                        [where]: what
+                    }
+                }, () => {
+                    switch(where){
+                        case "timeBased":
+                            this.setState({
+                                values: {
+                                    ...this.state.values,
+                                    screenDimmerSlider: !what
+                                }
+                            });
+                            this.handleInterval(what);
+                            break;
+                        default:
+                            break;
+                    };    
+                });
+                break;
+            default:
+                this.props.updateValue(what, where, type);
+                break;
+        };
     };
     handleTabSwitch(what){
-        const allTabs = ["utility", "games", "fun"];
-        for(const i in allTabs){
-            this.setState({
-                [allTabs[i] + "Tab"]: false
-            });
-        };
         this.setState({
             search: "",
-            activeTab: what,
-            [what + "Tab"]: true
+            activeTab: what
         }, () => {
             this.updateSearch(this.state.search);
             if(this.state[`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`] !== 0){
@@ -528,49 +516,21 @@ class WidgetSetting extends Component{
         });
     };
     updateSearch(what){
-        var widgetsButtonKeys, widgetsButtonUpdate, widgetsButtonType, currTab;
-        var widgetsMatch = [];
-        if(this.state.utilityTab === true){
-            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonUtility);
-            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonUtility;
-            widgetsButtonType = "widgetsButtonUtility";
-            currTab = "utility";
-        }else if(this.state.gamesTab === true){
-            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonGames);
-            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonGames;
-            widgetsButtonType = "widgetsButtonGames";
-            currTab = "games";
-        }else if(this.state.funTab === true){
-            widgetsButtonKeys = Object.keys(this.state.widgetsButton.widgetsButtonFun);
-            widgetsButtonUpdate = this.state.widgetsButton.widgetsButtonFun;
-            widgetsButtonType = "widgetsButtonFun";
-            currTab = "fun";
-        };
-        if(what.length <= 2){
-            for(const i in widgetsButtonKeys){
-                widgetsButtonUpdate[widgetsButtonKeys[i]] = true;
-            };
-            widgetsMatch.length = 0;
-        }else if(what.length >= 3){
-            const reSearch = new RegExp("(" + what + ")", "i");
-            for(const i in widgetsButtonKeys){
-                const slicedKey = widgetsButtonKeys[i].slice(0, widgetsButtonKeys[i].length-3);
-                if(reSearch.test(slicedKey)){
-                    widgetsButtonUpdate[widgetsButtonKeys[i]] = true;
-                    widgetsMatch.push(slicedKey);
-                }else{
-                    widgetsButtonUpdate[widgetsButtonKeys[i]] = false;
+        let widgetsMatch = [];
+        let widgetButtons = this[`buttons${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`];
+        let regexSearch = new RegExp(`(${what})`, "i");
+        if(what.length > 2){
+            for(let i of widgetButtons){
+                if(regexSearch.test(i.props.widgetname)){
+                    widgetsMatch.push(i);
                 };
             };
         };
-        this.setState(prevState => ({
-            widgetsButton: {
-                ...prevState.widgetsButton,
-                [widgetsButtonType]: widgetsButtonUpdate
-            }
-        }), () => {
+        this.setState({
+            searched: [...widgetsMatch]
+        }, () => {
             if(what.length <= 2){
-                this.updateTab(currTab);
+                this.updateTab(this.state.activeTab);
             };
         });
     };
@@ -710,35 +670,6 @@ class WidgetSetting extends Component{
         for(let i of elementSelects){
             i.style.display = "none";
         };
-        /// Populate widget button objects
-        let keysWidgetType = Object.keys(this.props.widgets);
-        let objectButtonsUtility = {};
-        let objectButtonsGames = {};
-        let objectButtonsFun = {};
-        for(let widgetType of keysWidgetType){
-            let keysWidget = Object.keys(this.props.widgets[widgetType]);
-            for(let widgetName of keysWidget){
-                switch(widgetType){
-                    case "utility": objectButtonsUtility[`${widgetName}Button`] = true; break;
-                    case "games": objectButtonsGames[`${widgetName}Button`] = true;   break;
-                    case "fun": objectButtonsFun[`${widgetName}Button`] = true;     break;
-                    default: break;
-                };
-            };
-        };
-        this.setState({
-            widgetsButton: {
-                widgetsButtonUtility: {
-                    ...objectButtonsUtility
-                },
-                widgetsButtonGames: {
-                    ...objectButtonsGames
-                },
-                widgetsButtonFun: {
-                    ...objectButtonsFun
-                }
-            }
-        });
         /// Load utility widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
@@ -783,9 +714,6 @@ class WidgetSetting extends Component{
                                 };
                                 /// Update Design
                                 this.updateBackground(this.state.values.background);
-                                if(this.state.values.shadow === true){
-                                    this.props.updateDesign("shadow", true);
-                                };
                                 /// Set random
                                 if(this.state.values.randomTrick){
                                     this.randomTimeout("trick");
@@ -814,26 +742,25 @@ class WidgetSetting extends Component{
         clearInterval(intervalTimeBased);
         clearTimeout(timeoutTrick);
     };
-    render(){       
+    render(){
         this.buttonsUtility = [];
         this.buttonsGames = [];
         this.buttonsFun = [];
-        let tabs = ["Utility", "Games", "Fun"];
-        for(let i of tabs){
-            let widgetKeys = Object.keys(this.state.widgetsButton[`widgetsButton${i}`]);
-            for(let j in widgetKeys){
-                let widgetName = widgetKeys[j]
-                    .replace(/(.*)Button/, "$1");
-                let elementButton = <button id={`show-hide-widgets-popout-button-${widgetName}`}
-                    widgetname={widgetName}
+        let tabs = ["utility", "games", "fun"];
+        for(let tab of tabs){
+            let widgetKeys = Object.keys(this.props.widgets[tab]);
+            for(let widgetIndex in widgetKeys){
+                let widget = widgetKeys[widgetIndex];
+                let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
+                    widgetname={widget}
                     className="button-match option opt-medium disabled-option"
-                    onClick={() => this.handlePressableButton(widgetName, i.toLowerCase())}>
-                    {this.props.widgets[i.toLowerCase()][widgetName]}
+                    onClick={() => this.handlePressableButton(widget, tab)}>
+                    {this.props.widgets[tab][widget]}
                 </button>;
-                switch(i){
-                    case "Utility": this.buttonsUtility.push(elementButton); break;
-                    case "Games": this.buttonsGames.push(elementButton); break;
-                    case "Fun": this.buttonsFun.push(elementButton); break;
+                switch(tab){
+                    case "utility": this.buttonsUtility.push(elementButton); break;
+                    case "games":   this.buttonsGames.push(elementButton);   break;
+                    case "fun":     this.buttonsFun.push(elementButton);     break;
                     default: break;
                 };
             };    
@@ -934,39 +861,45 @@ class WidgetSetting extends Component{
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-utility"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {this.buttonsUtility.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
-                                                    return ((this.state.widgetsButton.widgetsButtonUtility[`${widget.props.widgetname}Button`] === true)
-                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                {(this.state.searched.length !== 0)
+                                                    ? this.state.searched.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
                                                             {widget}
-                                                        </span>
-                                                        : <></>);
-                                                })}
+                                                        </span>})
+                                                    : this.buttonsUtility.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>})}
                                             </section>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-games"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {this.buttonsGames.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
-                                                    return ((this.state.widgetsButton.widgetsButtonGames[`${widget.props.widgetname}Button`] === true)
-                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                {(this.state.searched.length !== 0)
+                                                    ? this.state.searched.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
                                                             {widget}
-                                                        </span>
-                                                        : <></>);
-                                                })}
+                                                        </span>})
+                                                    : this.buttonsGames.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>})}
                                             </section>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-fun"
                                                 className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
-                                                {this.buttonsFun.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
-                                                    return ((this.state.widgetsButton.widgetsButtonFun[`${widget.props.widgetname}Button`] === true)
-                                                        ? <span key={`widget-${widget.props.widgetname}`}>
+                                                {(this.state.searched.length !== 0)
+                                                    ? this.state.searched.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
                                                             {widget}
-                                                        </span>
-                                                        : <></>);
-                                                })}
+                                                        </span>})
+                                                    : this.buttonsFun.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
+                                                        return <span key={`widget-${widget.props.widgetname}`}>
+                                                            {widget}
+                                                        </span>})}
                                             </section>
                                         </TabPanel>
                                     </Tabs>
@@ -1108,7 +1041,7 @@ class WidgetSetting extends Component{
                                                 </section>
                                                 <Select id="settings-popout-design-select-background"
                                                     className="select-match space-nicely space-top length-medium"
-                                                    value={this.props.values.background}
+                                                    value={this.state.values.background}
                                                     defaultValue={optionsBackground[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "background")}
                                                     options={optionsBackground}

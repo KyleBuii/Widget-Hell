@@ -10,6 +10,17 @@ import { IoClose } from 'react-icons/io5';
 import { TbMoneybag } from "react-icons/tb";
 
 
+//////////////////// Guides ////////////////////
+/// Debris spawning guide
+/*
+Direction      Start       Every
+Debris left    4 seconds   3 seconds
+Debris top     8 seconds   4 seconds
+Debris right   13 seconds  5 seconds
+Debris bottom  20 seconds  7 seconds
+*/
+
+
 //////////////////// Functions ////////////////////
 function shallowEquals(arr1, arr2) {
     if (!arr1 || !arr2 || arr1.length !== arr2.length)
@@ -28,11 +39,21 @@ function arrayDiff(arr1, arr2) {
     });
 };
 
+/// Checks if arr1 values falls between [arr2 - arr3]
+function fallsBetween(arr1, arr2, arr3){
+    if(((arr1[0] >= arr2[0]) && (arr1[0] <= arr3[0]))
+        && ((arr1[1] >= arr2[1]) && (arr1[1] <= arr3[1]))){
+        return true;
+    };
+    return false;
+};
+
 /// Displays a single cell
 function GridCell(props) {
     const classes = `grid-cell 
-        ${props.foodCell ? "grid-cell--food" : ""} 
+        ${props.foodCell ? `grid-cell--food${props.foodType}` : ""} 
         ${props.snakeCell ? "grid-cell--snake" : ""}
+        ${props.debrisCell ? "grid-cell--debris" : ""}
     `;
     return(
         <div className={classes}
@@ -45,9 +66,17 @@ function GridCell(props) {
 };
 
 
-/// Variables
+//////////////////// Variables ////////////////////
 var intervalTimer;
-var timeoutInvulnerabilityFrames;
+var timeoutDebrisLeft;
+var timeoutDebrisTop;
+var timeoutDebrisRight;
+var timeoutDebrisBottom;
+var timeoutInvulnerabilityFrames = undefined;
+let delayDebrisLeft = 3000;
+let delayDebrisTop = 4000;
+let delayDebrisRight = 5000;
+let delayDebrisBottom = 7000;
 
 
 class WidgetSnake extends Component{
@@ -56,59 +85,72 @@ class WidgetSnake extends Component{
         this.state = {
             goldEarned: 0,
             timer: 0,
-            size: 24,
+            size: 28,
             settings: false,
+            help: false,
             startMoving: false,
             snake: [],
+            debrisLeft: [],
+            debrisTop: [],
+            debrisRight: [],
+            debrisBottom: [],
             food: [],
+            foodType: "normal",
+            foodDelay: 0,
             highscore: 0,
             status: 0,          /// 0 = not started, 1 = in progress, 2 = finished
             direction: 0,       /// Using keycodes to indicate direction
             speed: 130,
+            step: 1,
             maxHealth: 1,
             health: 1
         };
         this.storeData = this.storeData.bind(this);
-        this.resizer = this.resizer.bind(this);
         this.moveFood = this.moveFood.bind(this);
         this.checkIfAteFood = this.checkIfAteFood.bind(this);
         this.startGame = this.startGame.bind(this);
         this.endGame = this.endGame.bind(this);
-        this.moveSnake = this.moveSnake.bind(this);
+        this.loop = this.loop.bind(this);
         this.doesntOverlap = this.doesntOverlap.bind(this);
-        this.setDirection = this.setDirection.bind(this);
+        this.keyDown = this.keyDown.bind(this);
         this.removeTimers = this.removeTimers.bind(this);
         this.changeSpeed = this.changeSpeed.bind(this);
         this.resetSpeed = this.resetSpeed.bind(this);
     };
-    resizer(){
-        if(window.innerWidth < 450){
-            this.setState({
-                size: (window.innerWidth / 16) - 4
-            });
-        }else{
-            this.setState({
-                size: 24
-            });
-        };
-    };
-    /// Randomly place snake food
+    /// Randomly place a random snake food
     moveFood(){
         const x = parseInt(Math.random() * this.numCells);
         const y = parseInt(Math.random() * this.numCells);
+        let keysFoodTypes = Object.keys(this.props.foodTypes);
+        let randomFoodType = Math.floor(Math.random() * keysFoodTypes.length);
         this.setState({
-            food: [x, y]
+            food: [x, y],
+            foodType: keysFoodTypes[randomFoodType],
+            foodDelay: (this.props.foodTypes[keysFoodTypes[randomFoodType]].delay) ? this.props.foodTypes[keysFoodTypes[randomFoodType]].delay : 0
         });
     };
-    setDirection({keyCode}){
+    keyDown({keyCode}){
         if(this.state.status !== 0 || this.state.status !== 2){
             const re = new RegExp("\\b83|40|87|38|68|39|65|37\\b");
             if(this.state.startMoving === true
                 && re.test(keyCode)){
-                this.moveSnakeInterval = setInterval(this.moveSnake, this.state.speed);
+                this.moveSnakeInterval = setInterval(this.loop, this.state.speed);
                 intervalTimer = setInterval(() => {
                     this.setState({
                         timer: this.state.timer + 1
+                    }, () => {
+                        if(this.state.timer === 1){
+                            this.spawnDebris("left");
+                        };
+                        if(this.state.timer === 4){
+                            this.spawnDebris("top");  
+                        };
+                        if(this.state.timer === 8){
+                            this.spawnDebris("right");  
+                        };
+                        if(this.state.timer === 13){
+                            this.spawnDebris("bottom");  
+                        };
                     });
                 }, 1000);
                 this.setState({
@@ -128,34 +170,91 @@ class WidgetSnake extends Component{
                     direction: keyCode
                 });
             };
+            /// Dash key (shift)
+            if(keyCode === 16){
+                this.setState({
+                    step: 2
+                });
+            };
         };
     };
-    moveSnake(){
+    spawnDebris(where){
+        let randomPosition;
+        let randomDebris = this.props.debris[Math.floor(Math.random() * this.props.debris.length)];
+        let calculateDebris = [];
+        switch(where){
+            case "left":
+                randomPosition = Math.floor(Math.random() * (this.state.size + randomDebris[0][0]) + Math.abs(randomDebris[0][0]));
+                for(let i of randomDebris){
+                    calculateDebris.push([i[0] + randomPosition, i[1]]);
+                };
+                this.setState({
+                    debrisLeft: calculateDebris
+                });
+                break;
+            case "top":
+                randomPosition = Math.floor(Math.random() * (this.state.size + randomDebris[0][1]) + Math.abs(randomDebris[0][1]));
+                for(let i of randomDebris){
+                    calculateDebris.push([i[0], i[1] + randomPosition]);
+                };
+                this.setState({
+                    debrisTop: calculateDebris
+                });
+                break;
+            case "right":
+                randomPosition = Math.floor(Math.random() * (this.state.size + randomDebris[0][0]) + Math.abs(randomDebris[0][0]));
+                for(let i of randomDebris){
+                    calculateDebris.push([i[0] + randomPosition, Math.abs(i[1]) + this.state.size]);
+                };
+                this.setState({
+                    debrisRight: calculateDebris
+                });
+                break;
+            case "bottom":
+                randomPosition = Math.floor(Math.random() * (this.state.size + randomDebris[0][1]) + Math.abs(randomDebris[0][1]));
+                for(let i of randomDebris){
+                    calculateDebris.push([Math.abs(i[0]) + this.state.size, i[1] + randomPosition]);
+                };
+                this.setState({
+                    debrisBottom: calculateDebris
+                });
+                break;
+            default:
+                break;
+        };
+    };
+    /// Move snake, food, debris, eating food
+    loop(){
         const newSnake = [];
         /// Set in the new "head" of the snake
         switch(this.state.direction){
             /// Down
             case 83:
             case 40:
-                newSnake[0] = [this.state.snake[0][0], this.state.snake[0][1] + 1];
+                newSnake[0] = [this.state.snake[0][0] + this.state.step, this.state.snake[0][1]];
                 break;
             /// Up
             case 87:
             case 38:
-                newSnake[0] = [this.state.snake[0][0], this.state.snake[0][1] - 1];
+                newSnake[0] = [this.state.snake[0][0] - this.state.step, this.state.snake[0][1]];
                 break;
             /// Right
             case 68:
             case 39:
-                newSnake[0] = [this.state.snake[0][0] + 1, this.state.snake[0][1]];
+                newSnake[0] = [this.state.snake[0][0], this.state.snake[0][1] + this.state.step];
                 break;
             /// Left
             case 65:
             case 37:
-                newSnake[0] = [this.state.snake[0][0] - 1, this.state.snake[0][1]];
+                newSnake[0] = [this.state.snake[0][0], this.state.snake[0][1] - this.state.step];
                 break;
             default:
                 break;
+        };
+        if(this.state.step !== 1){
+            this.setState({
+                step: 1
+            });
         };
         /// Shift each "body" segment to the previous segment's position
         [].push.apply(
@@ -170,51 +269,169 @@ class WidgetSnake extends Component{
         if((!this.isValid(newSnake[0]) 
             || !this.doesntOverlap(newSnake))
             && timeoutInvulnerabilityFrames === undefined){
-            this.setState({
-                health: this.state.health - 1
-            }, () => {
-                if(this.state.health <= 0){
-                    this.endGame()
-                }else{
-                    timeoutInvulnerabilityFrames = setTimeout(() => {
-                        timeoutInvulnerabilityFrames = undefined;
-                    }, 1000);
-                };
-            });
+            this.takeDamage();
         }else{
+            /// If moving food
+            let copyFood = this.state.food;
+            if(this.props.foodTypes[this.state.foodType].moving
+                && this.state.foodDelay === 0){
+                let foodPositions = [-1, 0, 1];
+                let randomPosition = Math.floor(Math.random() * 2);
+                copyFood[randomPosition] = copyFood[randomPosition] + foodPositions[Math.floor(Math.random() * foodPositions.length)];
+                if(!this.isValid(copyFood)){
+                    copyFood = [this.state.size/2, this.state.size/2];
+                };
+            };
+            /// Debris Left
+            let newDebrisLeft = this.state.debrisLeft;
+            if(this.state.debrisLeft.length !== 0){
+                for(let i = 0; i < newDebrisLeft.length; i++){
+                    newDebrisLeft[i][1] = newDebrisLeft[i][1] + 1;
+                };
+                if(fallsBetween(newSnake[0], newDebrisLeft[0], newDebrisLeft[this.state.debrisLeft.length - 1])
+                    && timeoutInvulnerabilityFrames === undefined){
+                    this.takeDamage();
+                };
+                if(newDebrisLeft[0][1] === this.state.size + 1){
+                    newDebrisLeft = [];
+                    timeoutDebrisLeft = setTimeout(() => {
+                        this.spawnDebris("left");
+                    }, delayDebrisLeft);
+                };
+            };
+            /// Debris Top
+            let newDebrisTop = this.state.debrisTop;
+            if(this.state.debrisTop.length !== 0){
+                for(let i = 0; i < newDebrisTop.length; i++){
+                    newDebrisTop[i][0] = newDebrisTop[i][0] + 1;
+                };
+                if(fallsBetween(newSnake[0], newDebrisTop[0], newDebrisTop[this.state.debrisTop.length - 1])
+                    && timeoutInvulnerabilityFrames === undefined){
+                    this.takeDamage();
+                };
+                if(newDebrisTop[0][0] === this.state.size + 1){
+                    newDebrisTop = [];
+                    timeoutDebrisTop = setTimeout(() => {
+                        this.spawnDebris("top");
+                    }, delayDebrisTop);
+                };
+            };
+            /// Debris Right
+            let newDebrisRight = this.state.debrisRight;
+            if(this.state.debrisRight.length !== 0){
+                for(let i = 0; i < newDebrisRight.length; i++){
+                    newDebrisRight[i][1] = newDebrisRight[i][1] - 1;
+                };
+                if(fallsBetween(newSnake[0], newDebrisRight[0], newDebrisRight[this.state.debrisRight.length - 1])
+                    && timeoutInvulnerabilityFrames === undefined){
+                    this.takeDamage();
+                };
+                if(newDebrisRight[newDebrisRight.length - 1][1] === -1){
+                    newDebrisRight = [];
+                    timeoutDebrisRight = setTimeout(() => {
+                        this.spawnDebris("right");
+                    }, delayDebrisRight);
+                };
+            };
+            /// Debris Bottom
+            let newDebrisBottom = this.state.debrisBottom;
+            if(this.state.debrisBottom.length !== 0){
+                for(let i = 0; i < newDebrisBottom.length; i++){
+                    newDebrisBottom[i][0] = newDebrisBottom[i][0] - 1;
+                };
+                if(fallsBetween(newSnake[0], newDebrisBottom[0], newDebrisBottom[this.state.debrisBottom.length - 1])
+                    && timeoutInvulnerabilityFrames === undefined){
+                    this.takeDamage();
+                };
+                if(newDebrisBottom[newDebrisBottom.length - 1][0] === (0 - newDebrisBottom.length)){
+                    newDebrisBottom = [];
+                    timeoutDebrisBottom = setTimeout(() => {
+                        this.spawnDebris("bottom");
+                    }, delayDebrisBottom);
+                };
+            };
             this.setState({
-                snake: newSnake
+                snake: newSnake,
+                debrisLeft: newDebrisLeft,
+                debrisTop: newDebrisTop,
+                debrisRight: newDebrisRight,
+                debrisBottom: newDebrisBottom,
+                food: copyFood,
+                foodDelay: (this.state.foodDelay !== 0) ? (this.state.foodDelay - 1) : this.props.foodTypes[this.state.foodType].delay
             });
             this.checkIfAteFood(newSnake);
         };
+    };
+    takeDamage(){
+        this.setState({
+            health: this.state.health - 1
+        }, () => {
+            if(this.state.health <= 0){
+                this.endGame()
+            }else{
+                timeoutInvulnerabilityFrames = setTimeout(() => {
+                    timeoutInvulnerabilityFrames = undefined;
+                }, 500);
+            };
+        });
     };
     checkIfAteFood(newSnake){
         if(!shallowEquals(newSnake[0], this.state.food))
             return
         /// Snake gets longer
-        let newSnakeSegment;
+        let newSnakeSegment = [];
         const lastSegment = newSnake[newSnake.length - 1];
+        let snakeLengthIncrease = this.props.foodTypes[this.state.foodType].score;
+        let currentLengthIncrease = 0;
         /// Where should we position the new snake segment?
         //// Here are some potential positions, we can choose the best looking one
-        let lastPositionOptions = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+        let lastPositionOptions = [[-1 * currentLengthIncrease, 0], [0, -1 * currentLengthIncrease], [1 * currentLengthIncrease, 0], [0, 1 * currentLengthIncrease]];
         /// The snake is moving along the y-axis, so try that instead
         if(newSnake.length > 1){
             lastPositionOptions[0] = arrayDiff(lastSegment, newSnake[newSnake.length - 2]);
         };
         for(var i = 0; i < lastPositionOptions.length; i++){
-            newSnakeSegment = [
+            let tempNewSnakeSegment = [
                 lastSegment[0] + lastPositionOptions[i][0],
                 lastSegment[1] + lastPositionOptions[i][1]
             ];
-            if(this.isValid(newSnakeSegment)){
+            if(this.isValid(tempNewSnakeSegment)
+                && currentLengthIncrease < snakeLengthIncrease){
+                newSnakeSegment.push(tempNewSnakeSegment);
+                currentLengthIncrease++;
+            }else if(currentLengthIncrease === snakeLengthIncrease){
                 break;
             };
         };
         this.setState({
-            goldEarned: this.state.goldEarned + 1,
-            snake: newSnake.concat([newSnakeSegment]),
+            goldEarned: this.state.goldEarned + snakeLengthIncrease,
+            snake: newSnake.concat(newSnakeSegment),
             food: []
         });
+        if(this.state.foodType === "bomb"){
+            this.setState({
+                debrisLeft: [],
+                debrisTop: [],
+                debrisRight: [],
+                debrisBottom: []    
+            });
+            clearTimeout(timeoutDebrisLeft);
+            clearTimeout(timeoutDebrisTop);
+            clearTimeout(timeoutDebrisRight);
+            clearTimeout(timeoutDebrisBottom);    
+            timeoutDebrisLeft = setTimeout(() => {
+                this.spawnDebris("left");
+            }, delayDebrisLeft);
+            timeoutDebrisTop = setTimeout(() => {
+                this.spawnDebris("top");
+            }, delayDebrisTop);
+            timeoutDebrisRight = setTimeout(() => {
+                this.spawnDebris("right");
+            }, delayDebrisRight);
+            timeoutDebrisBottom = setTimeout(() => {
+                this.spawnDebris("bottom");
+            }, delayDebrisBottom);
+        };
         this.moveFood();
     };
     /// Is the cell's position inside the grid?
@@ -251,13 +468,16 @@ class WidgetSnake extends Component{
             startMoving: true,
             status: 1,
             snake: [[cells, cells]],
+            debrisLeft: [],
+            debrisTop: [],
+            debrisRight: [],
+            debrisBottom: [],
             health: this.state.maxHealth
         });
         this.el.focus();
     };
     endGame(){
         this.removeTimers();
-        clearInterval(intervalTimer);
         if((this.state.snake.length - 1) >= 10){
             let amount = Math.floor((this.state.snake.length - 1) / 10);
             this.props.gameProps.randomItem(amount);
@@ -275,7 +495,11 @@ class WidgetSnake extends Component{
             clearInterval(this.moveSnakeInterval);
         };
         clearInterval(intervalTimer);
-        clearTimeout(timeoutInvulnerabilityFrames);
+        clearTimeout(timeoutDebrisLeft);
+        clearTimeout(timeoutDebrisTop);
+        clearTimeout(timeoutDebrisRight);
+        clearTimeout(timeoutDebrisBottom);
+        timeoutInvulnerabilityFrames = clearTimeout(timeoutInvulnerabilityFrames);
     };
     changeSpeed(value){
         this.setState({
@@ -292,20 +516,11 @@ class WidgetSnake extends Component{
         switch(what){
             case "settings":
                 const buttonSettings = document.getElementById("snake-button-settings");
-                const popoutSettings = document.getElementById("snake-popout-settings");
-                if(this.state.settings === false){
-                    this.setState({
-                        settings: true
-                    });
-                    buttonSettings.style.opacity = "1";
-                    popoutSettings.style.visibility = "visible";
-                }else{
-                    this.setState({
-                        settings: false
-                    });
-                    buttonSettings.style.opacity = "0.5";
-                    popoutSettings.style.visibility = "hidden";
-                };
+                const popoutAnimationSettings = document.getElementById("snake-popout-animation-settings");
+                this.setState({
+                    settings: !this.state.settings
+                });
+                this.props.defaultProps.showHidePopout(popoutAnimationSettings, !this.state.settings, buttonSettings);
                 break;
             default:
                 break;
@@ -338,7 +553,6 @@ class WidgetSnake extends Component{
         };
     };
     componentDidMount(){
-        window.addEventListener("resize", this.resizer);
         window.addEventListener("beforeunload", this.storeData);
         /// Load widget's data from local storage
         if(localStorage.getItem("widgets") !== null){
@@ -362,7 +576,6 @@ class WidgetSnake extends Component{
         });
     };
     componentWillUnmount(){
-        window.removeEventListener("resize", this.resizer);
         window.removeEventListener("beforeunload", this.storeData);
         this.removeTimers();
         this.storeData();
@@ -372,14 +585,24 @@ class WidgetSnake extends Component{
         this.numCells = Math.floor(this.state.size / 0.9375);
         const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
-        const cells = cellIndexes.map(y => {
-            return cellIndexes.map(x => {
-                const foodCell = this.state.food[0] === x && this.state.food[1] === y;
-                let snakeCell = this.state.snake.filter(c => c[0] === x && c[1] === y);
+        const cells = cellIndexes.map(x => {
+            return cellIndexes.map((y) => {
+                const foodCell = (this.state.food[0] === x) && (this.state.food[1] === y);
+                let snakeCell = this.state.snake.filter((c) => (c[0] === x) && (c[1] === y));
                 snakeCell = snakeCell.length && snakeCell[0];
+                let debrisCellLeft = this.state.debrisLeft.filter((c) => (c[0] === x) && (c[1] === y));
+                let debrisCellTop = this.state.debrisTop.filter((c) => (c[0] === x) && (c[1] === y));
+                let debrisCellRight = this.state.debrisRight.filter((c) => (c[0] === x) && (c[1] === y));
+                let debrisCellBottom = this.state.debrisBottom.filter((c) => (c[0] === x) && (c[1] === y));
+                let debrisCell = (debrisCellLeft.length && debrisCellLeft[0])
+                    || (debrisCellTop.length && debrisCellTop[0])
+                    || (debrisCellRight.length && debrisCellRight[0])
+                    || (debrisCellBottom.length && debrisCellBottom[0]);
                 return(
                     <GridCell foodCell={foodCell}
+                        foodType={this.state.foodType}
                         snakeCell={snakeCell}
+                        debrisCell={debrisCell}
                         size={cellSize}
                         key={x + " " + y}/>
                 );
@@ -460,7 +683,7 @@ class WidgetSnake extends Component{
                         </section>
                         {/* Game Container */}
                         <section id="snake-display"
-                            onKeyDown={this.setDirection}
+                            onKeyDown={this.keyDown}
                             style={{
                                 width: this.state.size + "em",
                                 height: this.state.size + "em"
@@ -476,7 +699,7 @@ class WidgetSnake extends Component{
                             </div>
                             {/* Overlay */}
                             <div id="snake-overlay"
-                                className="aesthetic-scale scale-span overlay flex-center column gap">
+                                className="aesthetic-scale scale-span overlay rounded flex-center column gap">
                                 {(this.state.status === 2) ? <span className="font large bold">GAME OVER!</span>
                                     : ""}
                                 {(this.state.status === 2) ? <span className="font medium">Score: {this.state.snake.length - 1}</span>

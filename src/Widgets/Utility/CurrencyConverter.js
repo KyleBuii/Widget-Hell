@@ -15,6 +15,7 @@ const optionsMoneyConversion = [
         options: []
     }
 ];
+let timeoutTextShadow;
 
 
 class WidgetCurrencyConverter extends Component{
@@ -86,6 +87,11 @@ class WidgetCurrencyConverter extends Component{
                 this.setState({
                     running: false
                 });
+                let elementConvertedCurrency = document.getElementById("currencyconverter-result");
+                elementConvertedCurrency.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementConvertedCurrency.style.textShadow = "unset";
+                }, 400);
             };
         }else{
             this.setState({
@@ -112,6 +118,7 @@ class WidgetCurrencyConverter extends Component{
             from: this.state.from,
             to: this.state.to
         }));
+        clearTimeout(timeoutTextShadow);
     };
     render(){
         return(

@@ -10,6 +10,10 @@ import { FiDelete } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
 
 
+/// Variables
+let timeoutTextShadow;
+
+
 class WidgetCalculator extends Component{
     constructor(props){
         super(props);
@@ -156,42 +160,48 @@ class WidgetCalculator extends Component{
                 };
                 break;
             case "MC":
-                let contianerMemory = document.getElementById("calculator-button-memory-container");
-                if(where !== undefined){
-                    if(where === 0){
-                        this.setState({
-                            memory: [...this.state.memory.slice(0, this.state.memory.length - 1)]
-                        }, () => {
-                            this.updateLabelMemory();
-                        });
+                if(this.state.memory.length !== 0){
+                    let contianerMemory = document.getElementById("calculator-button-memory-container");
+                    if(where !== undefined){
+                        if(where === 0){
+                            this.setState({
+                                memory: [...this.state.memory.slice(1, this.state.memory.length)]
+                            }, () => {
+                                this.updateLabelMemory();
+                            });
+                        }else{
+                            this.setState({
+                                memory: [...this.state.memory.slice(0, where), ...this.state.memory.slice(where + 1)]
+                            }, () => {
+                                this.updateLabelMemory();
+                            });
+                        };
+                        contianerMemory.removeChild(
+                            contianerMemory.children[where]
+                        );
                     }else{
                         this.setState({
-                            memory: [...this.state.memory.slice(0, (this.state.memory.length - 1) - where), ...this.state.memory.slice(this.state.memory.length - where)]
-                        }, () => {
-                            this.updateLabelMemory();
+                            memory: []
                         });
+                        contianerMemory.innerHTML = "";
                     };
-                    contianerMemory.removeChild(
-                        contianerMemory.children[where]
-                    );
-                }else{
-                    this.setState({
-                        memory: []
-                    });
-                    contianerMemory.innerHTML = "";
+                    this.handleAnimations("MC");
                 };
                 break;
             case "MR":
                 if(this.state.input !== ""
-                    && this.state.input !== "UNDEFINED"){
+                    && this.state.input !== "UNDEFINED"
+                    && this.state.memory.length !== 0){
                     this.setState({
                         input: this.state.memory[0]
                     });
+                    this.handleAnimations("MR");
                 }
                 break;
             case "M+":
                 if(this.state.input !== ""
-                && this.state.input !== "UNDEFINED"){
+                && this.state.input !== "UNDEFINED"
+                && this.state.memory.length !== 0){
                     let lastNumberMAdd = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     var add;
                     if(where !== undefined){
@@ -213,11 +223,13 @@ class WidgetCalculator extends Component{
                             .children[0]
                             .innerHTML = add;
                     };
+                    this.handleAnimations("M+");
                 }
                 break;
             case "M-":
                 if(this.state.input !== ""
-                    && this.state.input !== "UNDEFINED"){
+                    && this.state.input !== "UNDEFINED"
+                    && this.state.memory.length !== 0){
                     let lastNumberMSubtract = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
                     var subtract;
                     if(where !== undefined){
@@ -239,6 +251,7 @@ class WidgetCalculator extends Component{
                             .children[0]
                             .innerHTML = subtract;
                     };
+                    this.handleAnimations("M-");
                 };
                 break;
             case "MS":
@@ -252,6 +265,7 @@ class WidgetCalculator extends Component{
                         this.createLabelMemory(lastNumberMS, this.state.memory.length - 1);
                         this.updateLabelMemory();
                     });
+                    this.handleAnimations("MS");
                 };
                 break;
             case "Mv":
@@ -371,6 +385,52 @@ class WidgetCalculator extends Component{
             this.createLabelMemory(value, index);    
         });
     };
+    handleCopy(){
+        this.props.copyToClipboard(this.state.input)
+        this.handleAnimations("copy");
+    };
+    handleAnimations(what){
+        let elementTranslatedText = document.getElementById("calculator-input-field");
+        switch(what){
+            case "copy":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            case "MC":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            case "MR":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            case "M+":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            case "M-":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            case "MS":
+                elementTranslatedText.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementTranslatedText.style.textShadow = "unset";
+                }, 400);
+                break;
+            default: break;
+        };
+    };
     componentDidMount(){
         /// Add event listener
         const inputField = document.getElementById("calculator-input-field");
@@ -395,6 +455,7 @@ class WidgetCalculator extends Component{
             "memory": this.state.memory
         };
         sessionStorage.setItem("calculator", JSON.stringify(data));
+        clearTimeout(timeoutTextShadow);
     };
     render(){
         return(
@@ -465,7 +526,7 @@ class WidgetCalculator extends Component{
                         {/* Utility Bar */}
                         <div className="font smaller flex-center space-nicely space-bottom length-short">
                             <button className="button-match fadded inversed"
-                                onClick={() => this.props.copyToClipboard(this.state.input)}>
+                                onClick={() => this.handleCopy()}>
                                 <IconContext.Provider value={{ className: "global-class-name" }}>
                                     <FaRegPaste/>
                                 </IconContext.Provider>

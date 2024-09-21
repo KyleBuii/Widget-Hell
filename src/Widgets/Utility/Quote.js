@@ -1,14 +1,16 @@
+import Slider from 'rc-slider';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { Fa0, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import { MdNumbers } from 'react-icons/md';
 
 
 /// Variables
-var voices;
 let timeoutCopy;
+let intervalLoop;
 
 
 class WidgetQuote extends Component{
@@ -16,7 +18,9 @@ class WidgetQuote extends Component{
         super(props);
         this.state = {
             currentQuote: "",
-            currentAuthor: ""
+            currentAuthor: "",
+            falling: [],
+            total: 8
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
     };
@@ -40,36 +44,80 @@ class WidgetQuote extends Component{
             speechSynthesis.cancel();
         };
     };
-    handleTalk(){
-        if(this.state.currentQuote !== ""){
-            if(speechSynthesis.speaking){
-                speechSynthesis.cancel();
-            }else{
-                let utterance = new SpeechSynthesisUtterance(this.state.currentQuote);
-                utterance.voice = voices[this.props.voice.value];
-                utterance.pitch = this.props.pitch;
-                utterance.rate = this.props.rate;
-                speechSynthesis.speak(utterance);
-            };
+    handleButton(what){
+        switch(what){
+            case "copy":
+                this.props.copyToClipboard(this.state.currentQuote);
+                let elementQuote = document.getElementById("quote-text");
+                elementQuote.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutCopy = setTimeout(() => {
+                    elementQuote.style.textShadow = "unset";
+                }, 400);        
+                break;
+            case "talk":
+                this.props.talk(this.state.currentQuote);
+                break;
+            case "total":
+                let elementSliderTotal = document.getElementById("quote-slider-total");
+                if(elementSliderTotal.checkVisibility({ visibilityProperty: true })){
+                    elementSliderTotal.classList.remove("animation-quote-slider-total");          
+                    elementSliderTotal.blur();
+                }else{
+                    elementSliderTotal.classList.add("animation-quote-slider-total");
+                };
+                break;
+            default:
+                break;
         };
     };
-    handleCopy(){
-        this.props.copyToClipboard(this.state.currentQuote);
-        let elementQuote = document.getElementById("quote-text");
-        elementQuote.style.textShadow = "0px 0px 10px var(--randColorLight)";
-        timeoutCopy = setTimeout(() => {
-            elementQuote.style.textShadow = "unset";
-        }, 400);
+    handleSlider(value){
+        this.setState({
+            total: value
+        });
+    };
+    handleSliderBlur(){
+        let elementSliderTotal = document.getElementById("quote-slider-total");
+        elementSliderTotal.classList.remove("animation-quote-slider-total");          
+        if(this.state.total !== this.state.falling.length){
+            this.loadFallingImage();
+        };
+    };
+    loadFallingImage(){
+        if(this.state.total !== 0){
+            let fallingImage = new Image();
+            fallingImage.src = "/images/singles/petal.png";
+            let images = [];
+            for(let i = 0; i < this.state.total; i++){
+                images.push(new Falling(fallingImage));
+            };
+            this.setState({
+                falling: [...images]
+            });
+            clearInterval(intervalLoop);
+            intervalLoop = setInterval(() => {
+                this.loop();
+            }, 1000 / 60);
+        }else{
+            this.clear();
+            clearInterval(intervalLoop);   
+        };
+    };
+    loop(){
+        this.clear();
+        this.state.falling.forEach((falling) => falling.animate());
+    };
+    clear(){
+        const canvas = document.getElementById("quote-canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
     componentDidMount(){
-        voices = window.speechSynthesis.getVoices();
-        speechSynthesis.addEventListener("voiceschanged", () => {
-            voices = window.speechSynthesis.getVoices();
-        }, { once: true });
         this.handleNewQuote();
+        this.loadFallingImage();
     };
     componentWillUnmount(){
         clearTimeout(timeoutCopy);
+        clearInterval(intervalLoop);
     };
     render(){
         return(
@@ -120,6 +168,12 @@ class WidgetQuote extends Component{
                                 </button>
                                 : <></>}
                         </section>
+                        {/* Falling Images */}
+                        <canvas id="quote-canvas"
+                            className="float center"></canvas>
+                        {/* Background Image */}
+                        <div id="quote-image"
+                            className="float center"></div>
                         {/* Quote */}
                         <div id="quote-container"
                             className="aesthetic-scale scale-self">
@@ -134,19 +188,41 @@ class WidgetQuote extends Component{
                         <div className="element-ends">
                             <div className="flex-center row space-nicely space-left">
                                 {/* Clipboard */}
-                                <button className="button-match fadded inversed"
-                                    onClick={() => this.handleCopy()}>
+                                <button className="button-match inverse"
+                                    onClick={() => this.handleButton("copy")}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaRegPaste/>
                                     </IconContext.Provider>
                                 </button>
                                 {/* Talk */}
-                                <button className="button-match fadded inversed"
-                                    onClick={() => this.handleTalk()}>
+                                <button className="button-match inverse"
+                                    onClick={() => this.handleButton("talk")}>
                                     <IconContext.Provider value={{ className: "global-class-name" }}>
                                         <FaVolumeHigh/>
                                     </IconContext.Provider>
                                 </button>
+                                {/* Total */}
+                                <button className="button-match inverse"
+                                    onClick={() => this.handleButton("total")}>
+                                    <IconContext.Provider value={{ className: "global-class-name" }}>
+                                        <MdNumbers/>
+                                    </IconContext.Provider>
+                                </button>
+                                <span id="quote-slider-total">
+                                    <Slider className="slider"
+                                        onChange={(value) => this.handleSlider(value)}
+                                        onBlur={() => this.handleSliderBlur()}
+                                        min={0}
+                                        max={100}
+                                        step={1}
+                                        marks={{
+                                            8: {
+                                                label: 8,
+                                                style: {display: "none" }
+                                            }
+                                        }}
+                                        value={this.state.total}/>
+                                </span>
                             </div>
                             {/* New Quote */}
                             <button className="button-match"
@@ -162,5 +238,48 @@ class WidgetQuote extends Component{
         );
     };
 };
+
+/// Created by Evan Jin (진경성) https://codepen.io/rudtjd2548
+class Falling{
+    constructor(image){
+        const canvas = document.getElementById("quote-canvas");
+        this.fallingImage = image;
+        this.x = -Math.random() * canvas.width;
+        this.y = -(Math.random() * canvas.height * 2) - canvas.height;
+        this.w = 25 + Math.random() * 15;
+        this.h = 20 + Math.random() * 10;
+        this.opacity = (this.w / 40) - 0.4;
+        this.flip = Math.random();
+        this.xSpeed = 1.5 + Math.random() * 2;
+        this.ySpeed = 1 + Math.random() * 1;
+        this.flipSpeed = Math.random() * 0.03;
+    };
+    draw(){
+        const canvas = document.getElementById("quote-canvas");
+        const ctx = canvas.getContext("2d");
+        if(this.y > canvas.height || this.x > canvas.width){
+            this.x = -this.fallingImage.width;
+            this.y = (Math.random() * canvas.height * 2) - canvas.height;
+            this.xSpeed = 1.5 + Math.random() * 2;
+            this.ySpeed = 1 + Math.random() * 1;
+            this.flip = Math.random();
+        };
+        ctx.globalAlpha = this.opacity;
+        ctx.drawImage(
+            this.fallingImage, 
+            this.x, 
+            this.y, 
+            this.w * (0.6 + (Math.abs(Math.cos(this.flip)) / 3)), 
+            this.h * (0.8 + (Math.abs(Math.sin(this.flip)) / 5))
+        );
+    };
+    animate(){
+        this.x += this.xSpeed;
+        this.y += this.ySpeed;
+        this.flip += this.flipSpeed;
+        this.draw();
+    };
+};
+
 
 export default memo(WidgetQuote);

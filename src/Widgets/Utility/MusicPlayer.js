@@ -339,7 +339,7 @@ class WidgetMusicPlayer extends Component{
     handleInputSubmit(event){
         /// Enter key
         if((event.keyCode === 13)
-            && (/(?:https:\/\/)?(?:www\.)?(youtube|soundcloud)\.com/.test(event.target.value))){
+            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))){
             document.getElementById("musicplayer-input-add")
                 .classList.remove("musicplayer-animation-input-add");
             this.setState({

@@ -34,6 +34,7 @@ import WidgetTranslator from './Widgets/Utility/Translator.js';
 import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
 import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.js';
+import WidgetFacts from './Widgets/Fun/Facts.js';
 
 
 //////////////////// Variables ////////////////////
@@ -259,6 +260,8 @@ const sentences = [
     , "I pop off my scalp like the lid of a cookie jar. It's the secret place where I keep all my dreams. Little balls of sunshine, all rubbing together like a bundle of kittens. I reach inside with my thumb and forefinger and pluck one out. It's warm and tingly. But there’s no time to waste! I put it in a bottle to keep it safe. And I put the bottle on the shelf with all of the other bottles. Happy thoughts, happy thoughts, happy thoughts in bottles, all in a row. My collection makes me lots of friends. Each bottle a starlight to make amends. Sometimes my friend feels a certain way. Down comes a bottle to save the day. Night after night, more dreams. Friend after friend, more bottles. Deeper and deeper my fingers go. Like exploring a dark cave, discovering the secrets hiding in the nooks and crannies. Digging and digging. Scraping and scraping. I blow dust off my bottle caps. It doesn't feel like time elapsed. My empty shelf could use some more. My friends look through my locked front door. Finally, all done. I open up, and in come my friends. In they come, in such a hurry. Do they want my bottles that much? I frantically pull them from the shelf, one after the other. Holding them out to each and every friend. Each and every bottle. But every time I let one go, it shatters against the tile between my feet. Happy thoughts, happy thoughts, happy thoughts in shards, all over the floor. They were supposed to be for my friends, my friends who aren't smiling. They're all shouting, pleading. Something. But all I hear is echo, echo, echo, echo, echo. Inside my head."
     , "Aw, yeah. Here's your superstar tonight (yeah). Yeah, you know who this is. It's your one and only Pippa in the house. You know how it's gonna go down with me. I'ma 'bout to tell you, so listen good. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. I was a kid, who dreamed to become. Somebody awesome in this world. But fate really sucked, I had to give up. It's how I lost my way. Then came along a way I could shine. A virtual space where I can belong. You may laugh at me but that's how things unfolded. In this crazy life of mine. I must watch out, there are many rivals. Waiting to eat me alive. I will not give the stage to anyone. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!. And even if the darkness gets a hold of you. I'll be by your side. I'll be the shining star to light the way. We all have scars inside and nights of tears and that's okay. You're not alone, yeah, you're a part of me. Eternally. Here I come, a mega idol. All eyes on me, no eyes on you. You think I'm silly, I'm here to save the world. I'm gonna fight, fight till the end. I have intense bomb-igniting thoughts. They will create shockwaves in your brain. No matter what, the circus must go on. We're in this crazy world together, you and me. So don't let go and just be awesome. Just be awesome. I am a superstar, inside the screen so fly. I am the one that you desire day and night. I am a superstar, inside the screen so fly. I am the only one, yeah, the ripper!"
     , "Hi, I'm Isabella from Indeed USA. Can I recommend a job for you? It's a data generation job that accepts beginners with no experience (part-time/full-time) and pays between $80 and $300 per hour. The company offers free training - pay during training - no location restrictions! If you are interested, please contact the person in charge (Emily) through RCS by sending a text message to the following number:  ###########"
+    , "I hope you die. How, you may ask? Well, I have specially selected 20 different types of torture methods/executions that I would like you to go through. 1. The Rack: A device that stretched the victim's body, often dislocating joints. 2. Iron Maiden: An iron cabinet with spikes that would impale the victim when closed. 3. The Brazen Bull: A hollow metal bull where victims were placed inside and roasted over a fire. 4. Judas Cradle: Victims were lowered onto a pyramid-shaped seat, causing severe pain. 5. Thumbscrews: A device that crushed fingers or toes with a tightening screw. 6. The Breaking Wheel: A large wheel used to break bones, leaving the victim to die slowly. 7. Scavenger's Daughter: A compression device that forced the victim's body into an agonizing position. 8. The Pear of Anguish: A pear-shaped instrument inserted into orifices, expanded to cause internal damage. 9. The Chair of Torture: A spiked chair where victims were strapped down to be pierced. 10. The Spanish Tickler: A claw-like device used to rip flesh from the body. 11. The Heretic's Fork: A two-pronged fork placed under the chin and chest, preventing movement 12. The Boot: A device that crushed the feet or legs by applying extreme pressure. 13. The Garrote: A device used to strangle or break the neck. 14. The Ducking Stool: A chair attached to a lever, used to dunk victims into water. 15. Water Torture: Methods involving the pouring of water to simulate drowning or other forms of psychological distress. 16. The Cat's Paw: A claw-like tool used to tear the flesh from the victim's body. 17. The Lead Sprinkler: A tool used to sprinkle molten lead or boiling oil onto the victim. 18. Saw Torture: Victims were hung upside down and sawed in half, ensuring they remained conscious for longer. 19. The Coffin: A cage that confined the victim in a restrictive posture, often left in public for humiliation. 20. The Brank: A metal mask with a spiked bit that was inserted into the mouth to prevent speech, mainly used on those accused of blasphemy or gossip."
+    , "I was eating dinner at like a small little fold up table in the living room cuz im sick and dont wanna get everyone else sick and I was putting a water bottle cap back on and it got caught in one of my kinda loose bandaids and I went to get it out and it went flying then I went to pick it up but I tripped over one of the couch pillows that were on the ground and tried to grab onto the table for support and it fucking flipped over."
 ];
 const uwuDictionary = {
     "this": ["dis"],
@@ -275,137 +278,84 @@ const uwuDictionary = {
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
     , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)", "=w="];
 const brailleDictionary = {
-    ' ': '⠀',
-    '_': '⠸',
-    '-': '⠤',
-    ',': '⠠',
-    ';': '⠰',
-    ':': '⠱',
-    '!': '⠮',
-    '?': '⠹',
-    '.': '⠨',
-    '(': '⠷',
-    '[': '⠪',
-    '@': '⠈',
-    '*': '⠡',
-    '/': '⠌',
-    "'": '⠄',
-    '"': '⠐',
-    '\\': '⠳',
-    '&': '⠯',
-    '%': '⠩',
-    '^': '⠘',
-    '+': '⠬',
-    '<': '⠣',
-    '>': '⠜',
-    '$': '⠫',
-    '0': '⠴',
-    '1': '⠂',
-    '2': '⠆',
-    '3': '⠒',
-    '4': '⠲',
-    '5': '⠢',
-    '6': '⠖',
-    '7': '⠶',
-    '8': '⠦',
-    '9': '⠔',
-    'a': '⠁',
-    'b': '⠃',
-    'c': '⠉',
-    'd': '⠙',
-    'e': '⠑',
-    'f': '⠋',
-    'g': '⠛',
-    'h': '⠓',
-    'i': '⠊',
-    'j': '⠚',
-    'k': '⠅',
-    'l': '⠇',
-    'm': '⠍',
-    'n': '⠝',
-    'o': '⠕',
-    'p': '⠏',
-    'q': '⠟',
-    'r': '⠗',
-    's': '⠎',
-    't': '⠞',
-    'u': '⠥',
-    'v': '⠧',
-    'w': '⠺',
-    'x': '⠭',
-    'z': '⠵',
-    ']': '⠻',
-    '#': '⠼',
-    'y': '⠽',
-    ')': '⠾',
-    '=': '⠿'
+    'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙',
+    'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓',
+    'i': '⠊', 'j': '⠚', 'k': '⠅', 'l': '⠇',
+    'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏',
+    'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+    'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭',
+    'y': '⠽', 'z': '⠵', ' ': '⠀',
+    '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲',
+    '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦',
+    '9': '⠔', '0': '⠴',
+    ']': '⠻', '#': '⠼', ')': '⠾', '=': '⠿',
+    '_': '⠸', '-': '⠤', ',': '⠠', ';': '⠰',
+    ':': '⠱', '!': '⠮', '?': '⠹', '.': '⠨',
+    '(': '⠷', '[': '⠪', '@': '⠈', '*': '⠡',
+    '/': '⠌', "'": '⠄', '"': '⠐', '\\': '⠳',
+    '&': '⠯', '%': '⠩', '^': '⠘', '+': '⠬',
+    '<': '⠣', '>': '⠜', '$': '⠫'
 };
 const brailleFromDictionary = {
-    ' ': ' ', 
-    '⠀': ' ',
-    '⠸': '_',
-    '⠤': '-',
-    '⠠': ',',
-    '⠰': ';',
-    '⠱': ':',
-    '⠮': '!',
-    '⠹': '?',
-    '⠨': '.',
-    '⠷': '(',
-    '⠪': '[',
-    '⠈': '@',
-    '⠡': '*',
-    '⠌': '/',
-    '⠄': "'",
-    '⠐': '"',
-    '⠳': '\\',
-    '⠯': '&',
-    '⠩': '%',
-    '⠘': '^',
-    '⠬': '+',
-    '⠣': '<',
-    '⠜': '>',
-    '⠫': '$',
-    '⠴': '0',
-    '⠂': '1',
-    '⠆': '2',
-    '⠒': '3',
-    '⠲': '4',
-    '⠢': '5',
-    '⠖': '6',
-    '⠶': '7',
-    '⠦': '8',
-    '⠔': '9',
-    '⠁': 'a',
-    '⠃': 'b',
-    '⠉': 'c',
-    '⠙': 'd',
-    '⠑': 'e',
-    '⠋': 'f',
-    '⠛': 'g',
-    '⠓': 'h',
-    '⠊': 'i',
-    '⠚': 'j',
-    '⠅': 'k',
-    '⠇': 'l',
-    '⠍': 'm',
-    '⠝': 'n',
-    '⠕': 'o',
-    '⠏': 'p',
-    '⠟': 'q',
-    '⠗': 'r',
-    '⠎': 's',
-    '⠞': 't',
-    '⠥': 'u',
-    '⠧': 'v',
-    '⠺': 'w',
-    '⠭': 'x',
-    '⠵': 'z',
-    '⠻': ']',
-    '⠼': '#',
-    '⠽': 'y',
-    '⠾': ')',
-    '⠿': '='
+    '⠁': 'a', '⠃': 'b', '⠉': 'c', '⠙': 'd',
+    '⠑': 'e', '⠋': 'f', '⠛': 'g', '⠓': 'h',
+    '⠊': 'i', '⠚': 'j', '⠅': 'k', '⠇': 'l',
+    '⠍': 'm', '⠝': 'n', '⠕': 'o', '⠏': 'p',
+    '⠟': 'q', '⠗': 'r', '⠎': 's', '⠞': 't',
+    '⠥': 'u', '⠧': 'v', '⠺': 'w', '⠭': 'x',
+    '⠽': 'y', '⠵': 'z', ' ': ' ', 
+    '⠂': '1', '⠆': '2', '⠒': '3', '⠲': '4',
+    '⠢': '5', '⠖': '6', '⠶': '7', '⠦': '8',
+    '⠔': '9', '⠴': '0',
+    '⠸': '_', '⠤': '-', '⠠': ',', '⠰': ';',
+    '⠱': ':', '⠮': '!', '⠹': '?', '⠨': '.',
+    '⠷': '(', '⠪': '[', '⠈': '@', '⠡': '*',
+    '⠌': '/', '⠄': "'", '⠐': '"', '⠳': '\\',
+    '⠯': '&', '⠩': '%', '⠘': '^', '⠬': '+',
+    '⠣': '<', '⠜': '>', '⠫': '$', '⠻': ']',
+    '⠼': '#', '⠾': ')', '⠿': '='
+};
+const moorseCodeDictionary = {
+    'a': '.-',    'b': '-...',  'c': '-.-.', 'd': '-..',
+    'e': '.',     'f': '..-.',  'g': '--.',  'h': '....',
+    'i': '..',    'j': '.---',  'k': '-.-',  'l': '.-..',
+    'm': '--',    'n': '-.',    'o': '---',  'p': '.--.',
+    'q': '--.-',  'r': '.-.',   's': '...',  't': '-',
+    'u': '..-',   'v': '...-',  'w': '.--',  'x': '-..-',
+    'y': '-.--',  'z': '--..',  ' ': '/',
+    '1': '.----', '2': '..---', '3': '...--', '4': '....-', 
+    '5': '.....', '6': '-....', '7': '--...', '8': '---..', 
+    '9': '----.', '0': '-----'
+};
+const moorseCodeFromDictionary = {
+    '.-': 'a',    '-...': 'b',  '-.-.': 'c', '-..': 'd',
+    '.': 'e',     '..-.': 'f',  '--.': 'g',  '....': 'h',
+    '..': 'i',    '.---': 'j',  '-.-': 'k',  '.-..': 'l',
+    '--': 'm',    '-.': 'n',    '---': 'o',  '.--.': 'p',
+    '--.-': 'q',  '.-.': 'r',   '...': 's',  '-': 't',
+    '..-': 'u',   '...-': 'v',  '.--': 'w',  '-..-': 'x',
+    '-.--': 'y',  '--..': 'z',  '/': ' ',
+    '.----': '1', '..---': '2', '...--': '3', '....-': '4', 
+    '.....': '5', '-....': '6', '--...': '7', '---..': '8', 
+    '----.': '9', '-----': '0'
+};
+const phoneticAlphabetDictionary = {
+    'a': 'Alfa',    'b': 'Bravo',    'c': 'Charlie', 'd': 'Delta',
+    'e': 'Echo',    'f': 'Foxtrot',  'g': 'Golf',    'h': 'Hotel',
+    'i': 'India',   'j': 'Juliett',  'k': 'Kilo',    'l': 'Lima',
+    'm': 'Mike',    'n': 'November', 'o': 'Oscar',   'p': 'Papa',
+    'q': 'Quebec',  'r': 'Romeo',    's': 'Sierra',  't': 'Tango',
+    'u': 'Uniform', 'v': 'Victor',   'w': 'Whiskey', 'x': 'Xray',
+    'y': 'Yankee',  'z': 'Zulu',     ' ': '(space)'
+};
+const phoneticAlphabetFromDictionary = {
+    'Alfa': 'a',    'Bravo': 'b',    'Charlie': 'c', 'Delta': 'd',
+    'Echo': 'e',    'Foxtrot': 'f',  'Golf': 'g',    'Hotel': 'h',
+    'India': 'i',   'Juliett': 'j',  'Kilo': 'k',    'Lima': 'l',
+    'Mike': 'm',    'November': 'n', 'Oscar': 'o',   'Papa': 'p',
+    'Quebec': 'q',  'Romeo': 'r',    'Sierra': 's',  'Tango': 't',
+    'Uniform': 'u', 'Victor': 'v',   'Whiskey': 'w', 'Xray': 'x',
+    'Yankee': 'y',  'Zulu': 'z',     '(space)': ' '
 };
 const emojifyDictionary = {
     "actually": ["&#x1F913;&#x261D;&#xFE0F;"],
@@ -638,6 +588,7 @@ const breakoutPatterns = [
     /*
         0 = empty space
         1 = black
+        2 = brown
         b = blue
         g = green
         o = orange
@@ -696,6 +647,87 @@ const breakoutPatterns = [
         0 0 0 r 0 0 r 0 0 0
         0 0 0 0 r r 0 0 0 0
     `,
+    `
+        g g g g g g g g g g
+        g g g g g 2 g g g g
+        g 2 g g g 2 g 2 g g
+        2 2 2 2 g 2 2 2 g 2
+        2 2 2 2 2 2 2 2 2 2
+        2 2 2 2 2 2 2 2 2 2
+        2 2 2 2 2 2 2 2 2 2
+        2 2 2 2 2 2 2 2 2 2
+        2 2 2 2 2 2 2 2 2 2
+        2 2 2 2 2 2 2 2 2 2
+    `,
+];
+const foodTypes = {
+    /// Normal
+    normal: {
+        score: 1
+    },
+    double: {
+        score: 2
+    },
+    triple: {
+        score: 3
+    },
+    /// Moving
+    normalmoving: {
+        score: 1,
+        moving: true,
+        delay: 6
+    },
+    doublemoving: {
+        score: 2,
+        moving: true,
+        delay: 3
+    },
+    triplemoving: {
+        score: 3,
+        moving: true,
+        delay: 1
+    },
+    /// Unique
+    bomb: {
+        score: 1
+    },
+};
+const debrisPatterns = [
+    /// Draw should fall within the [] side / in Quadrant II
+    /// The bottom right of the draw should be [0, -1]
+    /// Anything in the () side / in Quadrants I/III/IV will not work
+    //                             .
+    //              II             .           I
+    //     []                      .                   ()
+    //       [-3, -3] [-3, -2] [-3, -1] (-3, 0) (-3, 1)
+    //       [-2, -3] [-2, -2] [-2, -1] (-2, 0) (-2, 1)
+    //       [-1, -3] [-1, -2] [-1, -1] (-1, 0) (-1, 1)
+    // . . . [ 0, -3] [ 0, -2] [ 0, -1] ( 0, 0) ( 0, 1) . . .
+    //       ( 1, -3) ( 1, -2) ( 1, -1) ( 1, 0) ( 1, 1)
+    //       ( 2, -3) ( 2, -2) ( 2, -1) ( 2, 0) ( 2, 1)
+    //       ( 3, -3) ( 3, -2) ( 3, -1) ( 3, 0) ( 3, 1)
+    //     ()                      .                   ()
+    //              III            .           IV
+    //                             .
+    ///
+    /// —
+    [ [0, -5], [0, -4], [0, -3], [0, -2], [0, -1] ],
+    [ [0, -10], [0, -9], [0, -8], [0, -7], [0, -6], [0, -5], [0, -4], [0, -3], [0, -2], [0, -1] ],
+    [ [0, -15], [0, -14], [0, -13], [0, -12], [0, -11], [0, -10], [0, -9], [0, -8], [0, -7], [0, -6], [0, -5], [0, -4], [0, -3], [0, -2], [0, -1] ],
+    /// |
+    [ [-4, -1], [-3, -1], [-2, -1], [-1, -1], [0, -1] ],
+    [ [-9, -1], [-8, -1], [-7, -1], [-6, -1], [-5, -1], [-4, -1], [-3, -1], [-2, -1], [-1, -1], [0, -1] ],
+    [ [-14, -1], [-13, -1], [-12, -1], [-11, -1], [-10, -1], [-9, -1], [-8, -1], [-7, -1], [-6, -1], [-5, -1], [-4, -1], [-3, -1], [-2, -1], [-1, -1], [0, -1] ],
+    /// Squares
+    [ [-1, -2], [-1, -1],
+      [ 0, -2], [ 0, -1] ],
+    [ [-2, -3], [-2, -2], [-2, -1],
+      [-1, -3], [-1, -2], [-1, -1],
+      [ 0, -3], [ 0, -2], [ 0, -1] ],
+    [ [-3, -4], [-3, -3], [-3, -2], [-3, -1],
+      [-2, -4], [-2, -3], [-2, -2], [-2, -1],
+      [-1, -4], [-1, -3], [-1, -2], [-1, -1],
+      [ 0, -4], [ 0, -3], [ 0, -2], [ 0, -1] ],
 ];
 //#endregion
 const widgetsUtilityActive = [];
@@ -713,6 +745,7 @@ var mouse = {
 };
 var healthDisplay;
 let timeoutText;
+var voices;
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -772,13 +805,15 @@ const selectHideGroupHeading = (props) => {
 const selectHideGroupMenuList = (props) => {
     let newProps = {
         ...props,
-        children: (Array.isArray(props.children))
-            ? props.children.map((c, idx) =>
-                (idx === -1)
-                    ? c
-                    : { ...c, props: { ...c.props, className: "collapse-group" } }
-            )
-            : props.children
+        children: props.children
+        /// Hides all children
+        // children: (Array.isArray(props.children))
+        //     ? props.children.map((c, idx) =>
+        //         (idx === -1)
+        //             ? c
+        //             : { ...c, props: { ...c.props, className: "collapse-group" } }
+        //     )
+        //     : props.children
     };
     return <components.MenuList {...newProps} />;    
 };
@@ -1501,6 +1536,17 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    facts: {
+                        name: "Facts",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 }
             },
             stickers: [],
@@ -1666,6 +1712,7 @@ class Widgets extends Component{
         this.addItem = this.addItem.bind(this);
         this.equipItem = this.equipItem.bind(this);
         this.updateGameValue = this.updateGameValue.bind(this);
+        this.talk = this.talk.bind(this);
     };
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
@@ -2039,6 +2086,7 @@ class Widgets extends Component{
                 healthDisplay = what;
                 break;
             default:
+                this.updateDesign(where, what);
                 break;
         };
         this.setState(prevState => ({
@@ -2231,6 +2279,19 @@ class Widgets extends Component{
                 break;
         };
     };
+    talk(text){
+        if(text !== ""){
+            if(speechSynthesis.speaking){
+                speechSynthesis.cancel();
+            }else{
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = voices[this.state.values.voice.value];
+                utterance.pitch = this.state.values.pitch;
+                utterance.rate = this.state.values.rate;
+                speechSynthesis.speak(utterance);
+            };
+        };
+    };
     storeData(){
         let data = {
             utility: {},
@@ -2346,6 +2407,7 @@ class Widgets extends Component{
         localStorage.setItem("equipment", JSON.stringify(this.state.equipment));
         localStorage.setItem("stats", JSON.stringify(this.state.stats));
         localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
+        localStorage.setItem("date", (new Date().getDate()));
     };
     componentDidMount(){
         randColor();
@@ -2387,6 +2449,9 @@ class Widgets extends Component{
                                 randomText: localStorageValues["randomText"]
                             },
                         }, () => {
+                            if(this.state.values.shadow === true){
+                                this.updateDesign("shadow", true);
+                            };
                             if(this.state.values.randomText){
                                 this.randomTimeoutText();
                             };
@@ -2475,6 +2540,11 @@ class Widgets extends Component{
                 abilities: [...dataLocalStorageAbilities]
             });
         };
+        /// Load voices
+        voices = window.speechSynthesis.getVoices();
+        speechSynthesis.addEventListener("voiceschanged", () => {
+            voices = window.speechSynthesis.getVoices();
+        }, { once: true });
     };
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
@@ -2655,9 +2725,7 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.quote.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.quote.drag.disabled}
-                        voice={this.state.values.voice}
-                        pitch={this.state.values.pitch}
-                        rate={this.state.values.rate}
+                        talk={this.talk}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.translator.active === true
@@ -2676,14 +2744,16 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.utility.translator.drag.disabled}
                         brailleDictionary={brailleDictionary}
                         brailleFromDictionary={brailleFromDictionary}
+                        moorseCodeDictionary={moorseCodeDictionary}
+                        moorseCodeFromDictionary={moorseCodeFromDictionary}
+                        phoneticAlphabetDictionary={phoneticAlphabetDictionary}
+                        phoneticAlphabetFromDictionary={phoneticAlphabetFromDictionary}
                         uwuDictionary={uwuDictionary}
                         uwuEmoticons={uwuEmoticons}
                         emojifyDictionary={emojifyDictionary}
                         matchAll={matchAll}
                         punctuation={punctuation}
-                        voice={this.state.values.voice}
-                        pitch={this.state.values.pitch}
-                        rate={this.state.values.rate}
+                        talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         selectHideGroupHeading={selectHideGroupHeading}
@@ -2703,9 +2773,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
                         languages={languages}
-                        voice={this.state.values.voice}
-                        pitch={this.state.values.pitch}
-                        rate={this.state.values.rate}
+                        talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         smallIcon={smallIcon}
@@ -2876,6 +2944,8 @@ class Widgets extends Component{
                             y: this.state.widgets.games.snake.position.y
                         }}
                         dragDisabled={this.state.widgets.games.snake.drag.disabled}
+                        foodTypes={foodTypes}
+                        debris={debrisPatterns}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.typingtest.active === true
@@ -3042,6 +3112,16 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.fun.sticker.drag.disabled}
                         stickers={this.state.stickers}
                         updateStickers={this.updateStickers}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.fun.facts.active === true
+                    ? <WidgetFacts
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.fun.facts.position.x,
+                            y: this.state.widgets.fun.facts.position.y
+                        }}
+                        dragDisabled={this.state.widgets.fun.facts.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {

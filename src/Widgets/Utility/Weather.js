@@ -8,6 +8,10 @@ import { MdWaves } from "react-icons/md";
 import { WiCloudyGusts } from "react-icons/wi";
 
 
+/// Variables
+let timeoutTextShadow;
+
+
 class WidgetWeather extends Component{
     constructor(props){
         super(props);
@@ -106,6 +110,14 @@ class WidgetWeather extends Component{
                 this.setState({
                     running: false
                 });
+                let elementWeatherLocation = document.getElementById("weather-location");
+                let elementWeatherInformation = document.getElementById("weather-information");
+                elementWeatherLocation.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                elementWeatherInformation.style.textShadow = "0px 0px 10px var(--randColorLight)";
+                timeoutTextShadow = setTimeout(() => {
+                    elementWeatherLocation.style.textShadow = "unset";
+                    elementWeatherInformation.style.textShadow = "unset";
+                }, 400);
             };
         };
     };
@@ -131,6 +143,7 @@ class WidgetWeather extends Component{
             "input": this.state.input
         };
         sessionStorage.setItem("weather", JSON.stringify(data));
+        clearTimeout(timeoutTextShadow);
     };
     render(){
         return(
@@ -231,14 +244,16 @@ class WidgetWeather extends Component{
                             </section>
                         </Draggable>
                         {/* Location */}
-                        <div className="text-animation aesthetic-scale scale-self origin-left flex-center row gap only-align-items">
+                        <div id="weather-location"
+                            className="text-animation aesthetic-scale scale-self origin-left flex-center row gap only-align-items">
                             <IconContext.Provider value={{ size: "1em", className: "global-class-name", color: "var(--randColorLight)" }}>
                                 <FaLocationDot/>
                             </IconContext.Provider>
                             <span className="font medium bold">{this.state.name}, {this.state.region}</span>
                         </div>
                         {/* Weather Information */}
-                        <section className="aesthetic-scale scale-span flex-center column gap">
+                        <section id="weather-information"
+                            className="aesthetic-scale scale-span flex-center column gap">
                             {/* Image */}
                             <img className="no-highlight"
                                 src={this.state.weatherIcon}

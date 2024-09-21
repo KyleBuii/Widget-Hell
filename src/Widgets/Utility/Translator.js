@@ -11,7 +11,6 @@ import sanitizeHtml from 'sanitize-html';
 
 /// Variables
 let regexPopouts = new RegExp(/replace|reverse|case-transform/);
-var voices;
 let timeoutCopy;
 /// Select options
 const optionsTranslateFrom = [
@@ -25,13 +24,17 @@ const optionsTranslateFrom = [
         label: "Other Languages",
         options: [
             {value: "pekofy", label: "Pekofy"},
-            {value: "braille", label: "Braille"}
+            {value: "braille", label: "Braille"},
+            {value: "moorsecode", label: "Moorse Code"},
+            {value: "phoneticalphabet", label: "Phonetic Alphabet"},
         ]
     },
     {
         label: "Encryption",
         options: [
-            {value: "base64", label: "Base64"}
+            {value: "base64", label: "Base64"},
+            {value: "binary", label: "Binary"},
+            {value: "hexadecimal", label: "Hexadecimal"},
         ]
     }
 ];
@@ -49,13 +52,17 @@ const optionsTranslateTo = [
             {value: "braille", label: "Braille"},
             {value: "pig-latin", label: "Pig latin"},
             {value: "uwu", label: "UwU"},
-            {value: "emojify", label: "Emojify"}
+            {value: "emojify", label: "Emojify"},
+            {value: "moorsecode", label: "Moorse Code"},
+            {value: "phoneticalphabet", label: "Phonetic Alphabet"},
         ]
     },
     {
         label: "Encryption",
         options: [
-            {value: "base64", label: "Base64"}
+            {value: "base64", label: "Base64"},
+            {value: "binary", label: "Binary"},
+            {value: "hexadecimal", label: "Hexadecimal"},
         ]
     },
     {
@@ -115,71 +122,92 @@ class WidgetTranslator extends Component{
     };
     /// Convert the "from" language to english
     convertFromText(){
+        let stringConvertFrom = "";
         switch(this.state.from.value){
             /// Other languages
             case "pekofy":
-                this.setState(prevState => ({
-                    convert: prevState.input
-                        .replace(/\s(peko)/ig, "")
-                }));
+                stringConvertFrom = this.state.input
+                    .replace(/\s(peko)/ig, "");
                 break;
             case "braille":
-                this.setState(prevState => ({
-                    convert: prevState.input
-                        .toString()
-                        .split("")
-                        .map(letter => this.props.brailleFromDictionary[letter])
-                        .join("")
-                }));
+                stringConvertFrom = this.state.input
+                    .toString()
+                    .split("")
+                    .map(letter => this.props.brailleFromDictionary[letter])
+                    .join("");
+                break;
+            case "moorsecode":
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((char) => {
+                        return this.props.moorseCodeFromDictionary[char] || "";
+                    })
+                    .join("");
+                break;
+            case "phoneticalphabet":
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((char) => {
+                        return this.props.phoneticAlphabetFromDictionary[char] || "";    
+                    })
+                    .join("");
                 break;
             /// Encryption
             case "base64":
                 if(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(this.state.input)){
-                    this.setState(prevState => ({
-                        convert: window.atob(prevState.input)
-                        // convert: decodeURIComponent(escape(window.atob(prevState.input)))
-                    }));
+                    stringConvertFrom = window.atob(this.state.input);
                 };
                 break;
+            case "binary":
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((binary) => String.fromCharCode(parseInt(binary, 2)))
+                    .join("");
+                break;
+            case "hexadecimal":
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((hex) => String.fromCharCode(parseInt(hex, 16)))
+                    .join("");
+                break;
             default:
-                this.setState(prevState => ({
-                    convert: prevState.input
-                }));
+                stringConvertFrom = this.state.input;
                 break;
         };
-        this.convertToText();   
+        this.setState({
+            convert: stringConvertFrom
+        }, () => {
+            this.convertToText();
+        });
     };
     /// Convert english to the "to" language
     convertToText(){
+        let stringConvertTo = "";
         switch(this.state.to.value){
             /// Other languages
             case "pig-latin":
-                this.setState(prevState => ({
-                    converted: prevState.convert
-                        .toString()
-                        .toLowerCase()
-                        .split(" ")
-                        .map(curr => curr
-                            .replace(/^[aioue]\w*/i, "$&way")
-                            .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
-                        .join(" ")
-                }));
+                stringConvertTo = this.state.convert
+                    .toString()
+                    .toLowerCase()
+                    .split(" ")
+                    .map(curr => curr
+                        .replace(/^[aioue]\w*/i, "$&way")
+                        .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
+                    .join(" ")
                 break;
             case "pekofy":
-                this.setState(prevState => ({
-                    converted: prevState.convert
-                        .replace(/[^.!?]$/i, "$& peko")
-                        .replace(/[.]/ig, " peko.")
-                        .replace(/[!]/ig, " peko!")
-                        .replace(/[?]/ig, " peko?")
-                }));
+                stringConvertTo = this.state.convert
+                    .replace(/[^.!?]$/i, "$& peko")
+                    .replace(/[.]/ig, " peko.")
+                    .replace(/[!]/ig, " peko!")
+                    .replace(/[?]/ig, " peko?")
                 break;
             case "uwu":
                 let wordsUwu = Object.keys(this.props.uwuDictionary)
                     .join("|");
                 let regexUwuDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsUwu})(?![\\w${this.props.punctuation}])`, "i");
-                this.setState(prevState => ({
-                    converted: this.props.grep(prevState.convert
+                stringConvertTo = this.props.mergePunctuation(
+                    this.props.grep(this.state.convert
                         .toString()
                         .toLowerCase()
                         .split(this.props.matchAll))
@@ -194,177 +222,168 @@ class WidgetTranslator extends Component{
                                 : (/[f]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([f])(\w*)/, "$1b$3")
                                 : (/^\d/.test(word)) ? word
                                 : word.replace(/(?=\w{3,})^([^\Ww])(\w*)/, "$1w$2");
-                        })
-                }), () => {
-                    this.setState(prevState => ({
-                        converted: this.props.mergePunctuation(prevState.converted)
-                    }));
-                    /// Insert emoticon at random position
-                    var randPosition;
-                    const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
-                    if(this.state.converted.length > 4){
-                        randPosition = Math.floor(Math.random() * (this.state.converted.length - 2) + 2);
-                        this.setState(prevState => ({
-                            converted: [...prevState.converted.slice(0, randPosition)
-                                , this.props.uwuEmoticons[randEmoticon]
-                                , ...prevState.converted.slice(randPosition)]
-                                .join(" ")
-                        }));
-                    }else if(this.state.converted.length <= 4
-                        && this.state.converted.length >= 2){
-                        this.setState(prevState => ({
-                            converted: prevState.converted
-                                .join(" ")
-                        }));
-                    };
-                });
+                        }
+                    )
+                );
+                /// Insert emoticon at random position
+                var randPosition;
+                const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
+                if(stringConvertTo.length > 4){
+                    randPosition = Math.floor(Math.random() * (stringConvertTo.length - 2) + 2);
+                    stringConvertTo = [...stringConvertTo.slice(0, randPosition)
+                        , this.props.uwuEmoticons[randEmoticon]
+                        , ...stringConvertTo.slice(randPosition)]
+                        .join(" ");
+                }else if(stringConvertTo.length <= 4){
+                    stringConvertTo = stringConvertTo.join(" ");
+                };          
                 break;
             case "braille":
-                this.setState(prevState => ({
-                    converted: prevState.convert
-                        .toString()
-                        .toLowerCase()
-                        .split("")
-                        .map(letter => this.props.brailleDictionary[letter])
-                        .join("")
-                }));
+                stringConvertTo = this.state.convert
+                    .toString()
+                    .toLowerCase()
+                    .split("")
+                    .map(letter => this.props.brailleDictionary[letter])
+                    .join("");
                 break;
             case "emojify":
                 let wordsEmojify = Object.keys(this.props.emojifyDictionary)
                     .join("|");
                 let regexEmojifyDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsEmojify})(?![\\w${this.props.punctuation}])`, "i");
-                this.setState(prevState => ({
-                    converted: this.props.mergePunctuation(this.props.grep(prevState.convert
+                stringConvertTo = this.props.mergePunctuation(
+                    this.props.grep(this.state.convert
                         .split(this.props.matchAll)
                         .map((word) => {
                             return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][
                                 Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)
                             ]) : word;
-                        })))
-                        .join(" ")
-                }), () => {
-                    const clean = sanitizeHtml(this.state.converted, {
-                        allowedTags: [],
-                        allowedAttributes: {},
-                        allowedIframeHostnames: []
-                    });
-                    document.getElementById("translator-translated-text").innerHTML = clean;
-                });
+                        })
+                    )
+                ).join(" ");
+                break;
+            case "moorsecode":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .map((char) => {
+                        return this.props.moorseCodeDictionary[char.toLowerCase()] || "";
+                    })
+                    .join(" ")
+                    .replace(/\s+/g, " ");
+                break;
+            case "phoneticalphabet":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .map((char) => {
+                        return this.props.phoneticAlphabetDictionary[char.toLowerCase()] || "";   
+                    })
+                    .join(" ")
+                    .replace(/\s+/g, " ");
                 break;
             /// Encryption
             case "base64":
-                this.setState(prevState => ({
-                    converted: btoa(unescape(encodeURIComponent(prevState.convert)))
-                }));
+                stringConvertTo = btoa(unescape(encodeURIComponent(this.state.convert)));
+                break;
+            case "binary":
+                let stringConvertedBinary = "";
+                for(let i = 0; i < this.state.convert.length; i++){
+                    stringConvertedBinary += this.state.convert[i].charCodeAt(0).toString(2) + " ";
+                };
+                stringConvertTo = stringConvertedBinary;
+                break;
+            case "hexadecimal":
+                let stringConvertedHexadecimal = "";
+                for(let i = 0; i < this.state.convert.length; i++){
+                    stringConvertedHexadecimal += this.state.convert[i].charCodeAt(0).toString(16) + " ";
+                };
+                stringConvertTo = stringConvertedHexadecimal;
                 break;
             /// Modify
             case "replace":
-                this.setState(prevState => ({
-                    converted: prevState.convert
-                        .replace(this.state.replaceFrom, prevState.replaceTo)
-                }));
+                stringConvertTo = this.state.convert
+                    .replace(this.state.replaceFrom, this.state.replaceTo)
                 break;
             case "reverse":
                 if(this.state.reverseWord && this.state.reverseSentence){
-                /// Reverse Word + Sentence
-                    this.setState(prevState => ({
-                        converted: this.props.mergePunctuation(prevState.convert
-                            .split(/([.?!])\s*/)
-                            .map(sentence => sentence
+                    /// Reverse Word + Sentence
+                    stringConvertTo = this.props.mergePunctuation(this.state.convert
+                        .split(/([.?!])\s*/)
+                        .map(sentence => sentence
+                            .split(" ")
+                            .map(word => word
+                                .split("")
+                                .reverse()
+                                .join(""))
+                            .reverse()
+                            .join(" ")
+                        )
+                    ).join(" ");
+                }else if(this.state.reverseWord){
+                    /// Reverse Word
+                    stringConvertTo = this.state.convert
+                        .split(/(\s|[^\w'])/g)
+                        .map(function(word){
+                            return word
+                                .split("")
+                                .reverse()
+                                .join("");
+                        })
+                        .join("");
+                }else if(this.state.reverseSentence){
+                    /// Reverse Sentence
+                    stringConvertTo = this.props.mergePunctuation(this.state.convert
+                        .split(/([.!?"])\s*/)
+                        .map(function(sentence){
+                            return sentence
                                 .split(" ")
-                                .map(word => word
-                                    .split("")
-                                    .reverse()
-                                    .join(""))
                                 .reverse()
                                 .join(" ")
-                            ))
-                            .join(" ")
-                    }));
-                }else if(this.state.reverseWord){
-                /// Reverse Word
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .split(/(\s|[^\w'])/g)
-                            .map(function(word){
-                                return word
-                                    .split("")
-                                    .reverse()
-                                    .join("");
-                            })
-                            .join("")
-                    }));
-                }else if(this.state.reverseSentence){
-                /// Reverse Sentence
-                    this.setState(prevState => ({
-                        converted: this.props.mergePunctuation(prevState.convert
-                            .split(/([.!?"])\s*/)
-                            .map(function(sentence){
-                                return sentence
-                                    .split(" ")
-                                    .reverse()
-                                    .join(" ")
-                            }))
-                            .join(" ")
-                    }));
+                        })
+                    ).join(" ");
                 }else{
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                    }));   
+                    stringConvertTo = this.state.convert;
                 };
                 break;
             case "case-transform":
                 if(this.state.caseTransformUpper){
                     /// Case Transform Upper
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .toUpperCase()
-                    }));
+                    stringConvertTo = this.state.convert
+                        .toUpperCase();
                 }else if(this.state.caseTransformLower){
                     /// Case Transform Lower
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .toLowerCase()
-                    }));
+                    stringConvertTo = this.state.convert
+                        .toLowerCase();
                 }else if(this.state.caseTransformCapitalize){
                     /// Case Transform Capitalize
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .replace(/\b\w/g, (char) => {
-                                return char.toUpperCase()
-                            })
-                    }));
+                    stringConvertTo = this.state.convert
+                        .replace(/\b\w/g, (char) => {
+                            return char.toUpperCase()
+                        });
                 }else if(this.state.caseTransformAlternate){
                     /// Case Transform Alternate
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .toLowerCase()
-                            .split("")
-                            .map((val, i) => {
-                                return (i % 2 === 0) ? val.toUpperCase() : val;
-                            })
-                            .join("")
-                    }));
+                    stringConvertTo = this.state.convert
+                        .toLowerCase()
+                        .split("")
+                        .map((val, i) => {
+                            return (i % 2 === 0) ? val.toUpperCase() : val;
+                        })
+                        .join("");
                 }else if(this.state.caseTransformInverse){
                     /// Case Transform Inverse
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                            .replace(/[a-z]/gi, (char) => {
-                                return (char === char.toUpperCase()) ? char.toLowerCase() : char.toUpperCase();
-                            })
-                    }));
+                    stringConvertTo = this.state.convert
+                        .replace(/[a-z]/gi, (char) => {
+                            return (char === char.toUpperCase()) ? char.toLowerCase() : char.toUpperCase();
+                        });
                 }else{
-                    this.setState(prevState => ({
-                        converted: prevState.convert
-                    }));
+                    stringConvertTo = this.state.convert;
                 };
                 break;
             default:
-                this.setState(prevState => ({
-                    converted: prevState.convert
-                }));
+                stringConvertTo = this.state.convert;
                 break;
         };
+        this.setState({
+            converted: stringConvertTo
+        });
     };
     /// Handles "word-break" for unbreakable strings
     handleWordBreak(){
@@ -372,6 +391,7 @@ class WidgetTranslator extends Component{
         switch(this.state.to.value){
             case "braille":
             case "base64":
+            case "hexadecimal":
                 translatedText.style.wordBreak = "break-all";
                 break;
             default:
@@ -427,6 +447,7 @@ class WidgetTranslator extends Component{
                 to: prev
             }), () => {
                 this.convertFromText();
+                this.handleWordBreak();
             });
         };
         if(speechSynthesis.speaking){
@@ -443,17 +464,7 @@ class WidgetTranslator extends Component{
         });
     };
     handleTalk(){
-        if(this.state.converted !== ""){
-            if(speechSynthesis.speaking){
-                speechSynthesis.cancel();
-            }else{
-                let utterance = new SpeechSynthesisUtterance(this.state.converted);
-                utterance.voice = voices[this.props.voice.value];
-                utterance.pitch = this.props.pitch;
-                utterance.rate = this.props.rate;
-                speechSynthesis.speak(utterance);
-            };
-        };
+        this.props.talk(this.state.converted);
     };
     /// Handles "replace" from "translator-translate-to"
     handleReplaceFrom(event){
@@ -504,10 +515,6 @@ class WidgetTranslator extends Component{
         }, 400);
     };
     componentDidMount(){
-        voices = window.speechSynthesis.getVoices();
-        speechSynthesis.addEventListener("voiceschanged", () => {
-            voices = window.speechSynthesis.getVoices();
-        }, { once: true });
         /// Sort the "translate-to" optgroups options alphabetically
         this.props.sortSelect(optionsTranslateFrom);
         this.props.sortSelect(optionsTranslateTo);
@@ -527,6 +534,7 @@ class WidgetTranslator extends Component{
                     let popoutAnimation = document.getElementById(`${this.state.to.value}-popout-animation`);
                     this.props.defaultProps.showHidePopout(popoutAnimation, true);        
                 };
+                this.handleWordBreak();
             });
         };
     };
@@ -645,7 +653,13 @@ class WidgetTranslator extends Component{
                             <div id="translator-preview-cut-corner"
                                 className="cut-scrollbar-corner-part-1 p">
                                 <p id="translator-translated-text"
-                                    className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
+                                    className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">
+                                    {sanitizeHtml(this.state.converted, {
+                                        allowedTags: [],
+                                        allowedAttributes: {},
+                                        allowedIframeHostnames: []
+                                    })}
+                                </p>
                             </div>
                         </div>
                         {/* Buttons */}
