@@ -190,6 +190,9 @@ class WidgetCurrencyConverter extends Component{
                                     options={optionsMoneyConversion}
                                     onChange={(event) => this.handleSelect("from", event)}
                                     formatGroupLabel={this.props.formatGroupLabel}
+                                    components={{
+                                        MenuList: this.props.menuListScrollbar
+                                    }}
                                     theme={(theme) => ({
                                         ...theme,
                                         colors: {
@@ -210,6 +213,9 @@ class WidgetCurrencyConverter extends Component{
                                     options={optionsMoneyConversion}
                                     onChange={(event) => this.handleSelect("to", event)}
                                     formatGroupLabel={this.props.formatGroupLabel}
+                                    components={{
+                                        MenuList: this.props.menuListScrollbar
+                                    }}
                                     theme={(theme) => ({
                                         ...theme,
                                         colors: {

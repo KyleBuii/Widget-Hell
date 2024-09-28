@@ -8,11 +8,17 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import { TbMoneybag } from "react-icons/tb";
 // import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import { memo } from 'react';
+import SimpleBar from 'simplebar-react';
 
 
 /// Variables
 const regexItemsLeftAndRight = /bracelet|wrist|glove|ring|hidden|boot/;
-
+const audioItemOpen = new Audio("/sounds/switch_006.wav");
+const audioItemClose = new Audio("/sounds/switch_007.wav");
+const audioPageClick = new Audio("/sounds/magnet_on_reduced.wav");
+const audioItemEquip = new Audio("/sounds/cloth-inventory.wav");
+const audioItemEquipJewelry = new Audio("/sounds/ring_inventory.wav");
+const audioItemEquipConsumable = new Audio("/sounds/bite-small.wav");
 
 class WidgetInventory extends Component{
     constructor(props){
@@ -28,6 +34,7 @@ class WidgetInventory extends Component{
         this.updateInventory = this.updateInventory.bind(this);
     };
     viewItem(item){
+        this.props.defaultProps.playAudio(audioItemOpen);
         document.getElementById("inventory-popout-view-item")
             .style
             .visibility = "visible";
@@ -35,7 +42,15 @@ class WidgetInventory extends Component{
             item: item
         });
     };
-    equipItem(name, rarity, slot, whatSide){
+    equipItem(event, name, rarity, slot, whatSide){
+        event.stopPropagation();
+        if(/ring|bracelet|necklace/.test(slot)){
+            this.props.defaultProps.playAudio(audioItemEquipJewelry);
+        }else if(/consumable/.test(slot)){
+            this.props.defaultProps.playAudio(audioItemEquipConsumable);
+        }else{
+            this.props.defaultProps.playAudio(audioItemEquip);
+        };
         if(whatSide){
             window.dispatchEvent(new CustomEvent("equip item", {
                 "detail": {
@@ -54,6 +69,7 @@ class WidgetInventory extends Component{
                 }
             }));
         };
+        document.getElementById("inventory-popout-view-item").style.visibility = "hidden";
     };
     addItem(event){
         this.setState({
@@ -115,14 +131,16 @@ class WidgetInventory extends Component{
         });
     };
     handlePages(direction){
-        if(direction === "left"
-            && this.state.page !== 0){
+        if((direction === "left")
+            && (this.state.page !== 0)){
+            this.props.defaultProps.playAudio(audioPageClick);
             this.setState({
                 page: this.state.page - 1
             });
         };
-        if(direction === "right"
-            && this.state.page !== this.state.pageMax){
+        if((direction === "right")
+            && (this.state.page !== this.state.pageMax)){
+            this.props.defaultProps.playAudio(audioPageClick);
             this.setState({
                 page: this.state.page + 1
             });
@@ -285,45 +303,51 @@ class WidgetInventory extends Component{
                         <section id="inventory-popout-view-item"
                             className="overlay rounded flex-center column gap font no-highlight"
                             onClick={() => {
+                                this.props.defaultProps.playAudio(audioItemClose);
                                 document.getElementById("inventory-popout-view-item").style.visibility = "hidden";
                             }}>
                             <span className="font bold large-medium">{this.state.item.name}</span>
                             <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"/>
-                                <table className="flex-center column font small">
-                                    <tbody>
-                                        <tr>
-                                            <td>Rarity:</td>
-                                            <td>{this.state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Slot:</td>
-                                            <td>{this.props.items[this.state.item.rarity][this.state.item.name].slot
-                                                .replace(/^./, (char) => char.toUpperCase())
-                                                .replace(/[0-9]/, "")}</td>
-                                        </tr>
-                                        {(/stat|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
-                                            ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name].stats)
-                                                .map((value, index) => {
-                                                    return <tr key={`row-stat-${index}`}>
-                                                        <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
-                                                        <td>
-                                                            {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
-                                                                ? ""
-                                                                : "+"}
-                                                            {this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}
-                                                        </td>
-                                                    </tr>
-                                                })
-                                            : <></>}
-                                        {(/ability|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
-                                            ? <tr>
-                                                <td colSpan={2}>{this.props.items[this.state.item.rarity][this.state.item.name].information}</td>
+                                <SimpleBar style={{
+                                    maxHeight: 80,
+                                    width: 150
+                                }}>
+                                    <table className="flex-center column font small">
+                                        <tbody>
+                                            <tr>
+                                                <td>Rarity:</td>
+                                                <td>{this.state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
                                             </tr>
-                                            : <></>}
-                                    </tbody>
-                                </table>
+                                            <tr>
+                                                <td>Slot:</td>
+                                                <td>{this.props.items[this.state.item.rarity][this.state.item.name].slot
+                                                    .replace(/^./, (char) => char.toUpperCase())
+                                                    .replace(/[0-9]/, "")}</td>
+                                            </tr>
+                                            {(/stat|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
+                                                ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name].stats)
+                                                    .map((value, index) => {
+                                                        return <tr key={`row-stat-${index}`}>
+                                                            <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
+                                                            <td>
+                                                                {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
+                                                                    ? ""
+                                                                    : "+"}
+                                                                {this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}
+                                                            </td>
+                                                        </tr>
+                                                    })
+                                                : <></>}
+                                            {(/ability|both/.test(this.props.items[this.state.item.rarity][this.state.item.name].type))
+                                                ? <tr>
+                                                    <td colSpan={2}>{this.props.items[this.state.item.rarity][this.state.item.name].information}</td>
+                                                </tr>
+                                                : <></>}
+                                        </tbody>
+                                    </table>
+                                </SimpleBar>
                             </div>
                             <span>{this.props.items[this.state.item.rarity][this.state.item.name].description}</span>
                             {(this.props.items[this.state.item.rarity][this.state.item.name].requirement)
@@ -337,14 +361,16 @@ class WidgetInventory extends Component{
                             {(regexItemsLeftAndRight.test(this.props.items[this.state.item.rarity][this.state.item.name].slot))
                                 ? <div className="flex-center row gap">
                                     <button className="button-match space-nicely space-top not-bottom"
-                                        onClick={() => this.equipItem(
+                                        onClick={(event) => this.equipItem(
+                                            event,
                                             this.state.item.name,
                                             this.state.item.rarity,
                                             this.props.items[this.state.item.rarity][this.state.item.name].slot,
                                             "left"
                                         )}>Equip Left</button>
                                     <button className="button-match space-nicely space-top not-bottom"
-                                        onClick={() => this.equipItem(
+                                        onClick={(event) => this.equipItem(
+                                            event,
                                             this.state.item.name,
                                             this.state.item.rarity,
                                             this.props.items[this.state.item.rarity][this.state.item.name].slot,
@@ -352,7 +378,8 @@ class WidgetInventory extends Component{
                                         )}>Equip Right</button>
                                 </div>
                                 : <button className="button-match space-nicely space-top not-bottom"
-                                    onClick={() => this.equipItem(
+                                    onClick={(event) => this.equipItem(
+                                        event,
                                         this.state.item.name,
                                         this.state.item.rarity,
                                         this.props.items[this.state.item.rarity][this.state.item.name].slot

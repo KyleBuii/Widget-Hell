@@ -10,7 +10,7 @@ import sanitizeHtml from 'sanitize-html';
 
 
 /// Variables
-let regexPopouts = new RegExp(/replace|reverse|case-transform/);
+let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
 let timeoutCopy;
 /// Select options
 const optionsTranslateFrom = [
@@ -25,8 +25,8 @@ const optionsTranslateFrom = [
         options: [
             {value: "pekofy", label: "Pekofy"},
             {value: "braille", label: "Braille"},
-            {value: "moorsecode", label: "Moorse Code"},
-            {value: "phoneticalphabet", label: "Phonetic Alphabet"},
+            {value: "moorseCode", label: "Moorse Code"},
+            {value: "phoneticAlphabet", label: "Phonetic Alphabet"},
         ]
     },
     {
@@ -50,11 +50,14 @@ const optionsTranslateTo = [
         options: [
             {value: "pekofy", label: "Pekofy"},
             {value: "braille", label: "Braille"},
-            {value: "pig-latin", label: "Pig latin"},
+            {value: "pigLatin", label: "Pig latin"},
             {value: "uwu", label: "UwU"},
             {value: "emojify", label: "Emojify"},
-            {value: "moorsecode", label: "Moorse Code"},
-            {value: "phoneticalphabet", label: "Phonetic Alphabet"},
+            {value: "moorseCode", label: "Moorse Code"},
+            {value: "phoneticAlphabet", label: "Phonetic Alphabet"},
+            {value: "spaced", label: "Spaced"},
+            {value: "mirrorWriting", label: "Mirror Writing"},
+            {value: "enchantingTable", label: "Enchanting Table"},
         ]
     },
     {
@@ -70,7 +73,7 @@ const optionsTranslateTo = [
         options: [
             {value: "replace", label: "Replace"},
             {value: "reverse", label: "Reverse"},
-            {value: "case-transform", label: "Case Transform"}
+            {value: "caseTransform", label: "Case Transform"}
         ]
     }
 ];
@@ -136,20 +139,11 @@ class WidgetTranslator extends Component{
                     .map(letter => this.props.brailleFromDictionary[letter])
                     .join("");
                 break;
-            case "moorsecode":
+            case "moorseCode":
+            case "phoneticAlphabet":
                 stringConvertFrom = this.state.input
                     .split(" ")
-                    .map((char) => {
-                        return this.props.moorseCodeFromDictionary[char] || "";
-                    })
-                    .join("");
-                break;
-            case "phoneticalphabet":
-                stringConvertFrom = this.state.input
-                    .split(" ")
-                    .map((char) => {
-                        return this.props.phoneticAlphabetFromDictionary[char] || "";    
-                    })
+                    .map((char) => this.props[`${this.state.from.value}FromDictionary`][char] || "")
                     .join("");
                 break;
             /// Encryption
@@ -185,7 +179,7 @@ class WidgetTranslator extends Component{
         let stringConvertTo = "";
         switch(this.state.to.value){
             /// Other languages
-            case "pig-latin":
+            case "pigLatin":
                 stringConvertTo = this.state.convert
                     .toString()
                     .toLowerCase()
@@ -240,11 +234,10 @@ class WidgetTranslator extends Component{
                 break;
             case "braille":
                 stringConvertTo = this.state.convert
-                    .toString()
-                    .toLowerCase()
                     .split("")
-                    .map(letter => this.props.brailleDictionary[letter])
-                    .join("");
+                    .map((letter) => this.props.brailleDictionary[letter.toLowerCase()] || "")
+                    .join("")
+                    .replace(/\s+/g, " ");
                 break;
             case "emojify":
                 let wordsEmojify = Object.keys(this.props.emojifyDictionary)
@@ -261,23 +254,31 @@ class WidgetTranslator extends Component{
                     )
                 ).join(" ");
                 break;
-            case "moorsecode":
+            case "moorseCode":
+            case "phoneticAlphabet":
                 stringConvertTo = this.state.convert
                     .split("")
-                    .map((char) => {
-                        return this.props.moorseCodeDictionary[char.toLowerCase()] || "";
-                    })
+                    .map((char) => this.props[`${this.state.to.value}Dictionary`][char.toLowerCase()] || "")
                     .join(" ")
                     .replace(/\s+/g, " ");
                 break;
-            case "phoneticalphabet":
+            case "spaced":
                 stringConvertTo = this.state.convert
                     .split("")
-                    .map((char) => {
-                        return this.props.phoneticAlphabetDictionary[char.toLowerCase()] || "";   
-                    })
-                    .join(" ")
-                    .replace(/\s+/g, " ");
+                    .join(" ");
+                break;
+            case "mirrorWriting":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .reverse()
+                    .map((char) => this.props.mirrorWrittingDictionary[char] || char)
+                    .join("");
+                break;
+            case "enchantingTable":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .map((char) => this.props.enchantingTableDictionary[char.toLowerCase()] || char)
+                    .join("");
                 break;
             /// Encryption
             case "base64":
@@ -343,7 +344,7 @@ class WidgetTranslator extends Component{
                     stringConvertTo = this.state.convert;
                 };
                 break;
-            case "case-transform":
+            case "caseTransform":
                 if(this.state.caseTransformUpper){
                     /// Case Transform Upper
                     stringConvertTo = this.state.convert
@@ -744,31 +745,31 @@ class WidgetTranslator extends Component{
                             cancel="input, button"
                             defaultPosition={{x: 60, y: 0}}
                             bounds={{top: -145, left: -300, right: 425, bottom: 270}}>
-                            <section id="case-transform-popout"
+                            <section id="caseTransform-popout"
                                 className="popout">
-                                <section id="case-transform-popout-animation"
+                                <section id="caseTransform-popout-animation"
                                     className="popout-animation">
                                     <section className="grid space-nicely space-all length-long">
                                         <button className="button-match option opt-long"
                                             onClick={this.handleSave}>Save</button>
                                         <section className="flex-center row gap">
-                                            <button id="case-transform-popout-button-caseTransformLower"
+                                            <button id="caseTransform-popout-button-caseTransformLower"
                                                 className="button-match option opt-small disabled-option"
-                                                onClick={() => this.handlePressableButton("caseTransformLower", "case-transform")}>Lower</button>
-                                            <button id="case-transform-popout-button-caseTransformUpper"
+                                                onClick={() => this.handlePressableButton("caseTransformLower", "caseTransform")}>Lower</button>
+                                            <button id="caseTransform-popout-button-caseTransformUpper"
                                                 className="button-match option opt-small disabled-option"
-                                                onClick={() => this.handlePressableButton("caseTransformUpper", "case-transform")}>Upper</button>
-                                            <button id="case-transform-popout-button-caseTransformCapitalize"
+                                                onClick={() => this.handlePressableButton("caseTransformUpper", "caseTransform")}>Upper</button>
+                                            <button id="caseTransform-popout-button-caseTransformCapitalize"
                                                 className="button-match option opt-small disabled-option"
-                                                onClick={() => this.handlePressableButton("caseTransformCapitalize", "case-transform")}>Capitalize</button>
+                                                onClick={() => this.handlePressableButton("caseTransformCapitalize", "caseTransform")}>Capitalize</button>
                                         </section>
                                         <section className="flex-center row gap">
-                                            <button id="case-transform-popout-button-caseTransformAlternate"
+                                            <button id="caseTransform-popout-button-caseTransformAlternate"
                                                 className="button-match option opt-small disabled-option"
-                                                onClick={() => this.handlePressableButton("caseTransformAlternate", "case-transform")}>Alternate</button>
-                                            <button id="case-transform-popout-button-caseTransformInverse"
+                                                onClick={() => this.handlePressableButton("caseTransformAlternate", "caseTransform")}>Alternate</button>
+                                            <button id="caseTransform-popout-button-caseTransformInverse"
                                                 className="button-match option opt-small disabled-option"
-                                                onClick={() => this.handlePressableButton("caseTransformInverse", "case-transform")}>Inverse</button>
+                                                onClick={() => this.handlePressableButton("caseTransformInverse", "caseTransform")}>Inverse</button>
                                         </section>
                                     </section>
                                 </section>

@@ -35,6 +35,8 @@ import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
 import WidgetWeather from './Widgets/Utility/Weather.js';
 import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.js';
 import WidgetFacts from './Widgets/Fun/Facts.js';
+import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.js';
+import SimpleBar from 'simplebar-react';
 
 
 //////////////////// Variables ////////////////////
@@ -262,18 +264,91 @@ const sentences = [
     , "Hi, I'm Isabella from Indeed USA. Can I recommend a job for you? It's a data generation job that accepts beginners with no experience (part-time/full-time) and pays between $80 and $300 per hour. The company offers free training - pay during training - no location restrictions! If you are interested, please contact the person in charge (Emily) through RCS by sending a text message to the following number:  ###########"
     , "I hope you die. How, you may ask? Well, I have specially selected 20 different types of torture methods/executions that I would like you to go through. 1. The Rack: A device that stretched the victim's body, often dislocating joints. 2. Iron Maiden: An iron cabinet with spikes that would impale the victim when closed. 3. The Brazen Bull: A hollow metal bull where victims were placed inside and roasted over a fire. 4. Judas Cradle: Victims were lowered onto a pyramid-shaped seat, causing severe pain. 5. Thumbscrews: A device that crushed fingers or toes with a tightening screw. 6. The Breaking Wheel: A large wheel used to break bones, leaving the victim to die slowly. 7. Scavenger's Daughter: A compression device that forced the victim's body into an agonizing position. 8. The Pear of Anguish: A pear-shaped instrument inserted into orifices, expanded to cause internal damage. 9. The Chair of Torture: A spiked chair where victims were strapped down to be pierced. 10. The Spanish Tickler: A claw-like device used to rip flesh from the body. 11. The Heretic's Fork: A two-pronged fork placed under the chin and chest, preventing movement 12. The Boot: A device that crushed the feet or legs by applying extreme pressure. 13. The Garrote: A device used to strangle or break the neck. 14. The Ducking Stool: A chair attached to a lever, used to dunk victims into water. 15. Water Torture: Methods involving the pouring of water to simulate drowning or other forms of psychological distress. 16. The Cat's Paw: A claw-like tool used to tear the flesh from the victim's body. 17. The Lead Sprinkler: A tool used to sprinkle molten lead or boiling oil onto the victim. 18. Saw Torture: Victims were hung upside down and sawed in half, ensuring they remained conscious for longer. 19. The Coffin: A cage that confined the victim in a restrictive posture, often left in public for humiliation. 20. The Brank: A metal mask with a spiked bit that was inserted into the mouth to prevent speech, mainly used on those accused of blasphemy or gossip."
     , "I was eating dinner at like a small little fold up table in the living room cuz im sick and dont wanna get everyone else sick and I was putting a water bottle cap back on and it got caught in one of my kinda loose bandaids and I went to get it out and it went flying then I went to pick it up but I tripped over one of the couch pillows that were on the ground and tried to grab onto the table for support and it fucking flipped over."
+    , "Crazy? I was crazy once. They locked me in a shoebox. A shoebox on September. A shoebox on 21st September. And 21st September make me crazy. Crazy? I was crazy once."
 ];
+/* Dictionary template (need to manually put in ` and change \ -> \\)
+/// Dictionary
+    const allCharacters = `abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890(){}[]<>!?@#$%^&*~-_+|\\/=:;"',.`
+        .split("");
+    const convertedCharacters = `[CONVERTED CHARACTERS]`
+        .split("");
+    let string = "";
+    let count = 0;
+    for(let i in allCharacters){
+        if(/27|53|63/.test(i)){
+            count = 0;
+            string += "\n";
+        }else if((count % 4 === 0)){
+            string += "\n";
+        };
+        count++;
+        if(allCharacters[i] === "'"){
+            string += `"${allCharacters[i]}": "${convertedCharacters[i]}", `;
+        }else{
+            string += `'${allCharacters[i]}': '${convertedCharacters[i]}', `;
+        };
+    };
+    string += "'`': '[CONVERTED `]'";
+    console.log(string);
+
+/// Dictionary from
+    const dictionary = [DICTIONARY];
+    let string = "";
+    let count = 0;
+    for(let i in dictionary){
+        if(/27|53|63/.test(i)){
+            count = 0;
+            string += "\n";
+        }else if((count % 4 === 0)){
+            string += "\n";
+        };
+        count++;
+        if(i === "'"){
+            string += `"${dictionary[i]}": "${i}", `;
+        }else{
+            string += `'${dictionary[i]}': '${i}', `;
+        };
+    };
+    console.log(string);
+
+/// Dictionary manually
+    'a': '', 'b': '', 'c': '', 'd': '',
+    'e': '', 'f': '', 'g': '', 'h': '',
+    'i': '', 'j': '', 'k': '', 'l': '',
+    'm': '', 'n': '', 'o': '', 'p': '',
+    'q': '', 'r': '', 's': '', 't': '',
+    'u': '', 'v': '', 'w': '', 'x': '',
+    'y': '', 'z': '', ' ': ' ',
+    'A': '', 'B': '', 'C': '', 'D': '',
+    'E': '', 'F': '', 'G': '', 'H': '',
+    'I': '', 'J': '', 'K': '', 'L': '',
+    'M': '', 'N': '', 'O': '', 'P': '',
+    'Q': '', 'R': '', 'S': '', 'T': '',
+    'U': '', 'V': '', 'W': '', 'X': '',
+    'Y': '', 'Z': '',
+    '1': '', '2': '', '3': '', '4': '',
+    '5': '', '6': '', '7': '', '8': '',
+    '9': '', '0': '',
+    '(': '', ')': '', '{': '', '}': '',
+    '[': '', ']': '', '<': '', '>': '',
+    '!': '', '?': '', '@': '', '#': '',
+    '$': '', '%': '', '^': '', '&': '',
+    '*': '', '~': '', '-': '', '_': '',
+    '+': '', '|': '', '\\': '', '/': '',
+    '=': '', ':': '', ';': '', '"': '',
+    "'": '', ',': '', '.': '', '`': ''
+*/
 const uwuDictionary = {
-    "this": ["dis"],
-    "the": ["da", "tha"],
-    "that": ["dat"],
-    "my": ["mwie"],
-    "have": ["habe", "habve"],
-    "epic": ["ebic"],
+    "this":  ["dis"],
+    "the":   ["da", "tha"],
+    "that":  ["dat"],
+    "my":    ["mwie"],
+    "have":  ["habe", "habve"],
+    "epic":  ["ebic"],
     "worse": ["wose"],
-    "you": ["uwu", "u"],
-    "of": ["ob"],
-    "love": ["wuv"]
+    "you":   ["uwu", "u"],
+    "of":    ["ob"],
+    "love":  ["wuv"]
 };
 const uwuEmoticons = ["X3", ":3", "owo", "uwu", ">3<", "o3o"
     , "｡◕‿◕｡", "(o´ω｀o)", "(´･ω･`)", "=w="];
@@ -357,23 +432,52 @@ const phoneticAlphabetFromDictionary = {
     'Uniform': 'u', 'Victor': 'v',   'Whiskey': 'w', 'Xray': 'x',
     'Yankee': 'y',  'Zulu': 'z',     '(space)': ' '
 };
+const mirrorWrittingDictionary = {
+    'a': 'ɒ', 'b': 'd', 'c': 'ɔ', 'd': 'b', 
+    'e': 'ɘ', 'f': 'ʇ', 'g': 'ϱ', 'h': 'ʜ', 
+    'i': 'i', 'j': 'į', 'k': 'ʞ', 'l': 'l', 
+    'm': 'm', 'n': 'n', 'o': 'o', 'p': 'q', 
+    'q': 'p', 'r': 'ɿ', 's': 'ƨ', 't': 'Ɉ', 
+    'u': 'υ', 'v': 'v', 'w': 'w', 'x': 'x', 
+    'y': 'γ', 'z': 'z', ' ': ' ', 
+    'A': 'A', 'B': 'ઘ', 'C': 'Ɔ', 'D': 'Ⴇ', 
+    'E': 'Ǝ', 'F': 'ᆿ', 'G': 'Ә', 'H': 'H', 
+    'I': 'I', 'J': 'Ⴑ', 'K': 'ﻼ', 'L': '⅃', 
+    'M': 'M', 'N': 'И', 'O': 'O', 'P': 'Գ', 
+    'Q': 'Ϙ', 'R': 'Я', 'S': 'Ƨ', 'T': 'T', 
+    'U': 'U', 'V': 'V', 'W': 'W', 'X': 'X', 
+    'Y': 'Y', 'Z': 'Z', 
+    '1': 'Ɩ', '2': 'ς', '3': 'Ɛ', '4': 'μ', 
+    '5': 'ट', '6': 'მ', '7': '٢', '8': '8', 
+    '9': '୧', '0': '0', 
+    '(': ')', ')': '(', '{': '}', '}': '{', 
+    '[': ']', ']': '[', '<': '>', '>': '<', 
+    '!': '!', '?': '⸮', '@': '@', '#': '#', 
+    '$': '$', '%': '%', '^': '^', '&': '&', 
+    '*': '*', '~': '~', '-': '-', '_': '_', 
+    '+': '+', '|': '|', '\\': '/', '/': '\\', 
+    '=': '=', ':': ':', ';': ';', '"': '"', 
+    "'": "'", ',': ',', '.': '.', '`': '`'
+};
 const emojifyDictionary = {
     "actually": ["&#x1F913;&#x261D;&#xFE0F;"],
-    "hey": ["&#x1F44B;"],
-        "hello": ["&#x1F44B;"],
-    "you": ["&#x1F448;"],
-        "your": ["&#x1F448;"],
-    "like": ["&#x1F44D;"],
-        "liked": ["&#x1F44D;"],
-    "money": ["&#x1F4B0;"],
-        "rich": ["&#x1F4B0;"],
-    "run": ["&#x1F3C3;"],
-        "running": ["&#x1F3C3;"],
-        "ran": ["&#x1F3C3;"],
-    "house": ["&#x1F3E0;", "&#x1F3E1;"],
-        "home": ["&#x1F3E0;", "&#x1F3E1;"],
-    "just": ["&#x261D;&#xFE0F;"],
-    "phone": ["&#x1F4F1;"],
+    "hey":      ["&#x1F44B;"], "hello": ["&#x1F44B;"],
+    "you":      ["&#x1F448;"], "your": ["&#x1F448;"],
+    "like":     ["&#x1F44D;"], "liked": ["&#x1F44D;"],
+    "money":    ["&#x1F4B0;"], "rich": ["&#x1F4B0;"],
+    "run":      ["&#x1F3C3;"], "running": ["&#x1F3C3;"], "ran": ["&#x1F3C3;"],
+    "house":    ["&#x1F3E0;", "&#x1F3E1;"], "home": ["&#x1F3E0;", "&#x1F3E1;"],
+    "just":     ["&#x261D;&#xFE0F;"],
+    "phone":    ["&#x1F4F1;"],
+};
+const enchantingTableDictionary = {
+    'a': 'ᔑ', 'b': 'ʖ', 'c': 'ᓵ', 'd': '↸', 
+    'e': 'ᒷ', 'f': '⎓', 'g': '⊣', 'h': '⍑', 
+    'i': '╎', 'j': '⋮', 'k': 'ꖌ', 'l': 'ꖎ', 
+    'm': 'ᒲ', 'n': 'リ', 'o': '𝙹', 'p': '!¡', 
+    'q': 'ᑑ', 'r': '∷', 's': 'ᓭ', 't': 'ℸ', 
+    'u': '⚍', 'v': '⍊', 'w': '∴', 'x': '̣/', 
+    'y': '||', 'z': '⨅'
 };
 const items = {
     /// Mainly currency and cosmetic items (aesthetics)
@@ -803,9 +907,9 @@ const selectHideGroupHeading = (props) => {
     );    
 };
 const selectHideGroupMenuList = (props) => {
-    let newProps = {
-        ...props,
-        children: props.children
+    // let newProps = {
+    //     ...props,
+        // children: props.children
         /// Hides all children
         // children: (Array.isArray(props.children))
         //     ? props.children.map((c, idx) =>
@@ -814,8 +918,13 @@ const selectHideGroupMenuList = (props) => {
         //             : { ...c, props: { ...c.props, className: "collapse-group" } }
         //     )
         //     : props.children
-    };
-    return <components.MenuList {...newProps} />;    
+    // };
+    return <SimpleBar style={{ maxHeight: 210 }}>{props.children}</SimpleBar>;    
+};
+const menuListScrollbar = (props) => {
+    return(
+        <SimpleBar style={{ maxHeight: 210 }}>{props.children}</SimpleBar>
+    );
 };
 //#endregion
 //#endregion
@@ -1120,6 +1229,14 @@ function renderHearts(health){
     };
     return elementHearts;
 };
+
+function playAudio(audio){
+    let duplicateAudio = audio.cloneNode();
+    duplicateAudio.play();
+    duplicateAudio.onended = () => {
+        duplicateAudio.remove();
+    };    
+};
 //#endregion
 
 
@@ -1128,7 +1245,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: false,
+            developer: true,
             values: {
                 animation: {value: "default", label: "Default"},
                 customBorder: {value: "default", label: "Default"},
@@ -1361,6 +1478,17 @@ class Widgets extends Component{
                     },
                     musicplayer: {
                         name: "Music Player",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    animesearcher: {
+                        name: "Anime Searcher",
                         active: false,
                         position: {
                             x: 0,
@@ -2376,7 +2504,7 @@ class Widgets extends Component{
                             pitch: this.state.values.pitch,
                             rate: this.state.values.rate,
                             health: this.state.values.health,
-                            close: this.state.values.close,
+                            close: true,
                             randomText: this.state.values.randomText
                         }
                     };
@@ -2400,6 +2528,12 @@ class Widgets extends Component{
                     data.fun[i].popouts = this.state.widgets.fun[i].popouts;
                 };
             };
+            const widgetDates = ["facts", "animesearcher"];
+            let objectWidgetDates = {};
+            for(let i of widgetDates){
+                objectWidgetDates[i] = new Date().getDate();
+            };
+            localStorage.setItem("date", JSON.stringify(objectWidgetDates));
         };
         localStorage.setItem("widgets", JSON.stringify(data));
         localStorage.setItem("gold", this.state.gold);
@@ -2407,7 +2541,6 @@ class Widgets extends Component{
         localStorage.setItem("equipment", JSON.stringify(this.state.equipment));
         localStorage.setItem("stats", JSON.stringify(this.state.stats));
         localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
-        localStorage.setItem("date", (new Date().getDate()));
     };
     componentDidMount(){
         randColor();
@@ -2567,7 +2700,8 @@ class Widgets extends Component{
                 fullscreen: this.state.values.fullscreen,
                 resetPosition: this.state.values.resetPosition,
                 close: this.state.values.close
-            }
+            },
+            playAudio: playAudio
         };
         const gameProps = {
             gold: this.state.gold,
@@ -2654,6 +2788,7 @@ class Widgets extends Component{
                     formatGroupLabel={formatGroupLabel}
                     selectTheme={selectTheme}
                     selectStyleSmall={selectStyleSmall}
+                    menuListScrollbar={menuListScrollbar}
                     customBorderValue={this.state.values.customBorder}
                     position={{
                         x: this.state.widgets.utility.setting.position.x,
@@ -2748,9 +2883,11 @@ class Widgets extends Component{
                         moorseCodeFromDictionary={moorseCodeFromDictionary}
                         phoneticAlphabetDictionary={phoneticAlphabetDictionary}
                         phoneticAlphabetFromDictionary={phoneticAlphabetFromDictionary}
+                        mirrorWrittingDictionary={mirrorWrittingDictionary}
                         uwuDictionary={uwuDictionary}
                         uwuEmoticons={uwuEmoticons}
                         emojifyDictionary={emojifyDictionary}
+                        enchantingTableDictionary={enchantingTableDictionary}
                         matchAll={matchAll}
                         punctuation={punctuation}
                         talk={this.talk}
@@ -2776,6 +2913,7 @@ class Widgets extends Component{
                         talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -2827,6 +2965,7 @@ class Widgets extends Component{
                         sortSelect={sortSelect}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.spreadsheet.active === true
@@ -2892,6 +3031,7 @@ class Widgets extends Component{
                         moneyConversions={moneyConversions}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
                         randColor={randColor}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -2925,6 +3065,17 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.musicplayer.position.y
                         }}
                         dragDisabled={this.state.widgets.utility.musicplayer.drag.disabled}
+                        copyToClipboard={copyToClipboard}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.utility.animesearcher.active
+                    ? <WidgetAnimeSearcher
+                        defaultProps={defaultProps}
+                        position={{
+                            x: this.state.widgets.utility.animesearcher.position.x,
+                            y: this.state.widgets.utility.animesearcher.position.y
+                        }}
+                        dragDisabled={this.state.widgets.utility.animesearcher.drag.disabled}
                         copyToClipboard={copyToClipboard}
                         largeIcon={largeIcon}/>
                     : <></>}
@@ -3029,6 +3180,7 @@ class Widgets extends Component{
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         sortSelect={sortSelect}
+                        menuListScrollbar={menuListScrollbar}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.games.tetris.active === true
@@ -3098,6 +3250,7 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.fun.aiimagegenerator.drag.disabled}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}
                         largeIcon={largeIcon}/>

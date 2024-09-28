@@ -236,6 +236,9 @@ class WidgetGoogleTranslator extends Component{
                                 onChange={this.handleFrom}
                                 options={optionsTranslateFrom}
                                 formatGroupLabel={this.props.formatGroupLabel}
+                                components={{
+                                    MenuList: this.props.menuListScrollbar
+                                }}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {
@@ -257,6 +260,9 @@ class WidgetGoogleTranslator extends Component{
                                 onChange={this.handleTo}
                                 options={optionsTranslateTo}
                                 formatGroupLabel={this.props.formatGroupLabel}
+                                components={{
+                                    MenuList: this.props.menuListScrollbar
+                                }}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {

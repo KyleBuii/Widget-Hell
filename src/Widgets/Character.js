@@ -160,6 +160,12 @@ class WidgetCharacter extends Component{
                             <div id="character-hidden-right"></div>
                             <div id="character-boot-left"></div>
                             <div id="character-boot-right"></div>
+                            <div id="character-consumable1"></div>
+                            <div id="character-consumable2"></div>
+                            <div id="character-consumable3"></div>
+                            <div id="character-consumable4"></div>
+                            <div id="character-consumable5"></div>
+                            <div id="character-consumable6"></div>
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

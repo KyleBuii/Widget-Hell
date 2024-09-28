@@ -397,6 +397,9 @@ class WidgetTrivia extends Component{
                                     onChange={(event) => this.handleSelect("category", event)}
                                     options={optionsCategory}
                                     formatGroupLabel={this.props.formatGroupLabel}
+                                    components={{
+                                        MenuList: this.props.menuListScrollbar
+                                    }}
                                     theme={(theme) => ({
                                         ...theme,
                                         colors: {
@@ -411,6 +414,9 @@ class WidgetTrivia extends Component{
                                     onChange={(event) => this.handleSelect("difficulty", event)}
                                     options={optionsDifficulty}
                                     formatGroupLabel={this.props.formatGroupLabel}
+                                    components={{
+                                        MenuList: this.props.menuListScrollbar
+                                    }}
                                     theme={(theme) => ({
                                         ...theme,
                                         colors: {
@@ -425,6 +431,9 @@ class WidgetTrivia extends Component{
                                     onChange={(event) => this.handleSelect("type", event)}
                                     options={optionsType}
                                     formatGroupLabel={this.props.formatGroupLabel}
+                                    components={{
+                                        MenuList: this.props.menuListScrollbar
+                                    }}
                                     theme={(theme) => ({
                                         ...theme,
                                         colors: {

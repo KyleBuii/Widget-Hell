@@ -12,9 +12,6 @@ class WidgetFacts extends Component{
         this.state = {
             facts: {
                 cat: []
-            },
-            indexes: {
-                cat: 0
             }
         };
     };
@@ -33,6 +30,8 @@ class WidgetFacts extends Component{
                     ...this.state.facts,
                     cat: [...catFacts]
                 }
+            }, () => {
+                this.storeData();    
             });
         }catch(err){
             console.error(err);
@@ -55,17 +54,20 @@ class WidgetFacts extends Component{
         sessionStorage.setItem("facts", JSON.stringify(data));
     };
     componentDidMount(){
+        const dateLocalStorage = JSON.parse(localStorage.getItem("date"));
+        const currentDate = new Date().getDate();
         if((sessionStorage.getItem("facts") !== null)
-            && (localStorage.getItem("date") === (new Date().getDate()).toString())){
+            && (dateLocalStorage["facts"] === currentDate)){
             this.setState({
                 facts: {...JSON.parse(sessionStorage.getItem("facts"))}
             });
         }else{
             this.fetchFacts();
+            localStorage.setItem("date", JSON.stringify({
+                ...dateLocalStorage,
+                "facts": currentDate
+            }));
         };
-    };
-    componentWillUnmount(){
-        this.storeData();
     };
     render(){
         return(
@@ -121,9 +123,12 @@ class WidgetFacts extends Component{
                             {/* Cat */}
                             <span className="font bold">&#128008; Cat Facts</span>
                             <div className="alternating-text-color flex-center column gap">
-                                {this.state.facts.cat.map((text, index) => {
-                                    return <span key={`facts-cat-${index}`}>{text}</span>
-                                })}
+                                {(this.state.facts.cat.length !== 0)
+                                    ? this.state.facts.cat.map((text, index) => {
+                                        return <span className="text-animation"
+                                            key={`facts-cat-${index}`}>{text}</span>
+                                    })
+                                    : <span>No facts</span>}
                             </div>
                         </section>
                         {/* Author */}

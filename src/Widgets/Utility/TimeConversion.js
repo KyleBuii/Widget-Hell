@@ -66,7 +66,7 @@ class WidgetTimeConversion extends Component{
                     });
                 }else{
                     this.setState({
-                        time: what
+                        time: "12:00"
                     });
                 };
                 break;
@@ -117,7 +117,7 @@ class WidgetTimeConversion extends Component{
                     tempMonth = event.target.value;
                 }
                 this.setState({
-                    date: new Date(`${this.state.year} ${tempMonth} ${this.state.day} ${this.state.time}`),
+                    date: new Date(`${this.state.year} ${tempMonth || 1} ${this.state.day} ${this.state.time}`),
                     month: tempMonth
                 });
                 break;
@@ -144,7 +144,7 @@ class WidgetTimeConversion extends Component{
                     tempDay = event.target.value;
                 }
                 this.setState({
-                    date: new Date(`${this.state.year} ${this.state.month} ${tempDay} ${this.state.time}`),
+                    date: new Date(`${this.state.year} ${this.state.month} ${tempDay || 1} ${this.state.time}`),
                     day: tempDay
                 });
                 break;
@@ -179,7 +179,7 @@ class WidgetTimeConversion extends Component{
                     tempYear = event.target.value;
                 }
                 this.setState({
-                    date: new Date(`${validYear} ${this.state.month} ${this.state.day} ${this.state.time}`),
+                    date: new Date(`${validYear || 822} ${this.state.month} ${this.state.day} ${this.state.time}`),
                     year: tempYear
                 });
                 break;
@@ -303,7 +303,7 @@ class WidgetTimeConversion extends Component{
                                             Month: 
                                         </label>
                                         <input id="timeconversion-input-month"
-                                            className="input-typable"
+                                            className="input-match"
                                             name="timeconversion-input-month"
                                             type="number"
                                             max="12"
@@ -315,7 +315,7 @@ class WidgetTimeConversion extends Component{
                                             Day: 
                                         </label>
                                         <input id="timeconversion-input-day"
-                                            className="input-typable"
+                                            className="input-match"
                                             name="timeconversion-input-day"
                                             type="number"
                                             max="31"
@@ -327,7 +327,7 @@ class WidgetTimeConversion extends Component{
                                             Year: 
                                         </label>
                                         <input id="timeconversion-input-year"
-                                            className="input-typable"
+                                            className="input-match"
                                             name="timeconversion-input-year"
                                             type="number"
                                             max="9999"
@@ -342,12 +342,12 @@ class WidgetTimeConversion extends Component{
                                             value={this.state.time}
                                             locale={this.state.timeformat}/>
                                     </section>
-                                    <section className="flex-center row gap">
+                                    <section className="grid col-50-50 fill-width">
                                         <button id="time-conversion-button-twelvehr"
-                                            className="button-match option opt-small"
+                                            className="button-match option"
                                             onClick={() => this.handleButton("12hr")}>12hr</button>
                                         <button id="time-conversion-button-twentyfourhr" 
-                                            className="button-match option opt-small"
+                                            className="button-match option"
                                             onClick={() => this.handleButton("24hr")}>24hr</button>
                                     </section>
                                 </section>
@@ -366,6 +366,9 @@ class WidgetTimeConversion extends Component{
                                         }
                                         options={optionsTimzones}
                                         formatGroupLabel={this.props.formatGroupLabel}
+                                        components={{
+                                            MenuList: this.props.menuListScrollbar
+                                        }}
                                         theme={(theme) => ({
                                             ...theme,
                                             colors: {

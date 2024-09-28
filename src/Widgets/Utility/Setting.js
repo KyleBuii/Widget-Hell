@@ -6,12 +6,12 @@ import { IconContext } from 'react-icons';
 import { BiBriefcase } from "react-icons/bi";
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { GiAxeSword } from "react-icons/gi";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoBodyOutline } from "react-icons/io5";
 import ReactPaginate from 'react-paginate';
 import Select from "react-select";
 import Switch from 'react-switch';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 
 /// Variables
@@ -139,9 +139,9 @@ class WidgetSetting extends Component{
             maxPageUtility: 0,
             maxPageGames: 0,
             maxPageFun: 0,
-            pageUtility: 0,
-            pageGames: 0,
-            pageFun: 0
+            pageUtility: -1,
+            pageGames: -1,
+            pageFun: -1
         };
         this.randomTimeout = this.randomTimeout.bind(this);
         this.handleRandomTrick = this.handleRandomTrick.bind(this);
@@ -478,34 +478,23 @@ class WidgetSetting extends Component{
         });
     };
     updateTab(what){
-        switch(what){
-            case "utility":
-                for(var currUtilityWidget in this.props.widgetsUtilityActive){
-                    switch(this.props.widgetsUtilityActive[currUtilityWidget]){
-                        case "inventory":
-                        case "equipment":
-                            break;
-                        default:
-                            const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsUtilityActive[currUtilityWidget]);
-                            button.style.opacity = "1";
-                            break;
-                    };
+        let tabCapitalized = what.replace(/^./, (char) => char.toUpperCase());
+        let widgetPage = `page${tabCapitalized}`;
+        let widgetKeys = Object.keys(this.props.widgets[what])
+            .sort()
+            .slice((12 * this.state[widgetPage]), (12 + (12 * this.state[widgetPage])));
+        for(let widget of this.props[`widgets${tabCapitalized}Active`]){
+            if(widgetKeys.indexOf(widget) !== -1){
+                switch(widget){
+                    case "inventory":
+                    case "equipment":
+                        break;
+                    default:
+                        let elementButton = document.getElementById("show-hide-widgets-popout-button-" + widget);
+                        elementButton.style.opacity = "1";
+                        break;
                 };
-                break;
-            case "games":
-                for(var currGamesWidget in this.props.widgetsGamesActive){
-                    const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsGamesActive[currGamesWidget]);
-                    button.style.opacity = "1";
-                };
-                break;
-            case "fun":
-                for(var currFunWidget in this.props.widgetsFunActive){
-                    const button = document.getElementById("show-hide-widgets-popout-button-" + this.props.widgetsFunActive[currFunWidget]);
-                    button.style.opacity = "1";
-                };
-                break;
-            default:
-                break;
+            };
         };
     };
     handleSearch(event){
@@ -518,8 +507,8 @@ class WidgetSetting extends Component{
     updateSearch(what){
         let widgetsMatch = [];
         let widgetButtons = this[`buttons${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`];
-        let regexSearch = new RegExp(`(${what})`, "i");
         if(what.length > 2){
+            let regexSearch = new RegExp(`(${what})`, "i");
             for(let i of widgetButtons){
                 if(regexSearch.test(i.props.widgetname)){
                     widgetsMatch.push(i);
@@ -635,6 +624,8 @@ class WidgetSetting extends Component{
     handlePageClick(event){
         this.setState({
             [`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]: event
+        }, () => {
+            this.updateTab(this.state.activeTab);    
         });
     };
     storeData(){
@@ -670,11 +661,27 @@ class WidgetSetting extends Component{
         for(let i of elementSelects){
             i.style.display = "none";
         };
-        /// Load utility widget's data from local storage
+        /// Set max page number
+        let utilityPageMax = Math.ceil(this.buttonsUtility.length / 12);
+        let gamesPageMax = Math.ceil(this.buttonsGames.length / 12);
+        let funPageMax = Math.ceil(this.buttonsFun.length / 12);
+        this.setState({
+            maxPageUtility: utilityPageMax,
+            maxPageGames: gamesPageMax,
+            maxPageFun: funPageMax,
+            pageUtility: 0
+        });        
+        /// Load only the first 12 utility widget's data from local storage
+        /// as well as unique buttons [inventory, equipment, character]
+        /// Since the first render will always be page 1 of utility tab
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = await JSON.parse(localStorage.getItem("widgets"));
             let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
-            for(let i in dataLocalStorage.utility){
+            let widgetUtilityKeys = Object.keys(this.props.widgets["utility"])
+                .sort()
+                .slice(0, 12);
+            widgetUtilityKeys = [...widgetUtilityKeys, "inventory", "equipment", "character"];
+            for(let i of widgetUtilityKeys){
                 if(dataLocalStorage.utility[i].active === true){
                     switch(i){
                         case "inventory":
@@ -726,15 +733,6 @@ class WidgetSetting extends Component{
                 };
             };
         };
-        /// Set max page number
-        let utilityPageMax = Math.ceil(this.buttonsUtility.length / 12);
-        let gamesPageMax = Math.ceil(this.buttonsGames.length / 12);
-        let funPageMax = Math.ceil(this.buttonsFun.length / 12);
-        this.setState({
-            maxPageUtility: utilityPageMax,
-            maxPageGames: gamesPageMax,
-            maxPageFun: funPageMax
-        });
     };
     componentWillUnmount(){
         window.removeEventListener("close", this.handleClose);
@@ -748,7 +746,8 @@ class WidgetSetting extends Component{
         this.buttonsFun = [];
         let tabs = ["utility", "games", "fun"];
         for(let tab of tabs){
-            let widgetKeys = Object.keys(this.props.widgets[tab]);
+            let widgetKeys = Object.keys(this.props.widgets[tab])
+                .sort();
             for(let widgetIndex in widgetKeys){
                 let widget = widgetKeys[widgetIndex];
                 let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
@@ -904,7 +903,7 @@ class WidgetSetting extends Component{
                                         </TabPanel>
                                     </Tabs>
                                     <ReactPaginate className="paginate-pages font bold"
-                                        key={this.state[`maxPage${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]}
+                                        forcePage={this.state[`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]}
                                         breakLabel="..."
                                         nextLabel={
                                             <span className="flex-center">
@@ -1018,6 +1017,9 @@ class WidgetSetting extends Component{
                                                     options={optionsAnimation}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
                                                     theme={(theme) => ({
                                                         ...theme,
                                                         colors: {
@@ -1047,6 +1049,9 @@ class WidgetSetting extends Component{
                                                     options={optionsBackground}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
                                                     theme={(theme) => ({
                                                         ...theme,
                                                         colors: {
@@ -1076,6 +1081,9 @@ class WidgetSetting extends Component{
                                                     options={optionsCustomBorder}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
                                                     theme={(theme) => ({
                                                         ...theme,
                                                         colors: {
@@ -1198,6 +1206,9 @@ class WidgetSetting extends Component{
                                                     options={optionsVoice}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
                                                     theme={(theme) => ({
                                                         ...theme,
                                                         colors: {
@@ -1330,6 +1341,9 @@ class WidgetSetting extends Component{
                                                     options={optionsHealth}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
                                                     theme={(theme) => ({
                                                         ...theme,
                                                         colors: {

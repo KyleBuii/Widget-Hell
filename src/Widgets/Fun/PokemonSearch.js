@@ -354,7 +354,7 @@ class WidgetPokemonSearch extends Component{
                                 <div className="input-with-button-inside">
                                     {/* Search Field */}
                                     <input id="pokemonsearch-input-search"
-                                        className="input-typable"
+                                        className="input-match"
                                         type="text"
                                         name="pokemonsearch-input-search"
                                         onChange={(e) => this.setState({
@@ -371,7 +371,7 @@ class WidgetPokemonSearch extends Component{
                                 </div>
                                 {/* Search Button */}
                                 <button id="pokemonsearch-button-search" 
-                                    className="button-match option"
+                                    className="button-match"
                                     type="button"
                                     onClick={() => this.handleButton("search")}
                                     disabled={this.state.running}>Search</button>
@@ -379,7 +379,7 @@ class WidgetPokemonSearch extends Component{
                                 <button id="pokemonsearch-button-setting"
                                     className="button-match inverse disabled-option space-nicely space-top length-medium"
                                     onClick={() => this.handleButton("setting")}>
-                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: "global-class-name" }}>
+                                    <IconContext.Provider value={{ size: "1.5em", className: "global-class-name" }}>
                                         <AiOutlineSetting/>
                                     </IconContext.Provider>
                                 </button>

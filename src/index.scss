@@ -173,6 +173,9 @@ body{
     &.no-break-word{
         white-space: nowrap;
     }
+    &.spoiler{
+        color: #ff001560;
+    }
 }
 
 .font-quote{
@@ -202,7 +205,8 @@ body{
 //#region Aesthetics
 .aesthetic-scale{
     &.scale-self{
-        transition: scale 0.3s;
+        transition-property: scale;
+        transition-duration: 0.3s;
         will-change: scale;
         &:hover{
             scale: 1.03;
@@ -524,7 +528,7 @@ body{
             color: rgba(var(--randColorOpacity), 0.8);
             background-color: unset;
         }
-        &:active{
+        &:active:not(.disabled-active){
             transform: scale(0.93);
         }
         &.disabled{
@@ -680,6 +684,8 @@ body{
 }
 
 .link-match{
+    cursor: pointer;
+    color: var(--randColor);
     text-decoration: none;
     transition: color 0.3s;
     &:hover{
@@ -750,6 +756,9 @@ body{
     align-items: center;
     &.justify-content-right{
         justify-content: right;
+    }
+    &.align-items-left{
+        align-items: flex-start;
     }
     &.only-align-items{
         justify-content: unset;
@@ -831,8 +840,9 @@ body{
     position: relative;
     button{
         position: absolute;
-        right: 0;
-        top: 0.15em;
+        right: 0.5em;
+        top: 50%;
+        transform: translate(0%, -50%);
     }
 }
 
@@ -870,6 +880,9 @@ body{
     gap: 0.3em;
     &.col-auto{
         grid-template-columns: max-content max-content;
+    }
+    &.col-50-50{
+        grid-template-columns: repeat(2, 50%);
     }
     &.col-2{
         &.spread-short{
@@ -3772,21 +3785,117 @@ body{
 }
 
 .alternating-text-color{
-    span{
+    span:not(.no-alternating-text-color){
         &:nth-child(odd){
-            color: var(--randColorLight);
-        }
-        &:nth-child(even){
             color: var(--randColor);
         }
+        &:nth-child(even){
+            color: var(--randColorLight);
+        }
     }
+    &.fade-color{
+        span:not(.no-alternating-text-color){
+            &:nth-child(even){
+                color: rgba(var(--randColorOpacity), 0.4);    
+            }
+        }
+    };
+}
+
+.character{
+    &:hover{
+        .text-boxed{
+            background-color: var(--randColorLight);
+        }
+        .image-character{
+            border: 1px solid var(--randColorLight); 
+        }
+    }
+}
+
+.text-boxed{
+    @extend .flex-center;
+    cursor: default;
+    padding: 0.2em;
+    border: 1px solid var(--randColor);
+    border-radius: 0px 0px 5px 5px;
+    color: white;
+    background-color: var(--randColor);
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    //#region Anime Searcher
+    &.anime-searcher-normal{
+        width: 92%;
+    }
+    &.anime-searcher-wide{
+        width: 97%;
+    }
+    //#endregion
+}
+
+.text-tag{
+    cursor: default;
+    background-color: var(--randColor);
+    padding: 4px 6px;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.5em;
+    &.adult-tag{
+        background-color: #be0011;
+    }
+}
+
+.image-cover{
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    left: 0;
+    max-height: 256px;
+    max-width: 195px;
+    border-radius: 10px;
+    transition-property: scale left;
+    transition-duration: 0.3s;
+    will-change: scale;
+    &:hover{
+        scale: 1.03;
+    }
+    &.animation-image-cover{
+        position: relative;
+        left: 50%;
+        scale: 2;
+        &:hover{
+            scale: 2;
+        }
+    }
+}
+
+.image-character{
+    cursor: pointer;
+    max-height: 128px;
+    border: 1px solid var(--randColor);
+    border-radius: 5px 5px 0px 0px;
+    transition-property: max-height border;
+    transition-duration: 1s;
+    &.animation-image-character{
+        max-height: 160px;
+    }
+    &.large-image{
+        max-height: 256px;
+    }
+}
+
+.image-site{
+    max-height: 16px;
+    height: 100%;
+    max-width: 16px;
+    width: 100%;
 }
 //#endregion
 
 
 //////////////////// Class: Libraries ////////////////////
 //#region
-/// React tabs
+//#region React tabs
 .react-tabs{
     @extend .no-highlight;
     &__tab-list{
@@ -3834,6 +3943,7 @@ body{
         }
     }
 }
+//#endregion
 
 //#region React calendar
 .react-calendar{
@@ -3856,7 +3966,7 @@ body{
 
 //#region React time picker
 .react-time-picker__wrapper{
-    border-color: var(--randColor) !important;
+    @extend .input-match;
 }
 
 .react-time-picker__clock{
@@ -3883,6 +3993,22 @@ body{
 .react-clock__mark__body,
 .react-clock__hand__body{
     background-color: var(--randColorLight) !important;
+}
+//#endregion
+
+//#region Simplebar
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+    background-color: var(--randColor);
+}
+
+.simplebar-track.simplebar-horizontal .simplebar-scrollbar:before {
+    background-color: var(--randColor);
+}
+
+.simplebar-content-wrapper{
+    &:focus{
+        outline: none;
+    }
 }
 //#endregion
 //#endregion
@@ -3938,6 +4064,11 @@ body{
             input{
                 width: 8em;
             }
+        }
+        button{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
     #settings-popout-animation{
@@ -4132,6 +4263,7 @@ body{
         margin-top: 0.9rem;
         #translator-translated-text{
             transition: text-shadow 0.4s;
+            white-space: pre-wrap;
         }
     }
 }
@@ -4310,8 +4442,8 @@ body{
     }
     #imagecolorpicker-image{
         img{
-            height: 512px;
-            width: 512px;
+            max-height: 512px;
+            max-width: 512px;
         }
     }
     #imagecolorpicker-eye-dropper-button{
@@ -4454,6 +4586,80 @@ body{
                 top: 14.15em;
                 left: 28em;
                 padding-left: 0.8em;
+            }
+        }
+    }
+}
+
+#animesearcher-widget{
+    #animesearcher-information{
+        height: 45em;
+        width: 40em;
+    }
+    #animesearcher-image-uploaded{
+        img{
+            max-width: 100%;
+            width: 100%;
+            border-radius: 5px 5px 0px 0px;
+        }
+    }
+    #animesearcher-image-banner{
+        max-width: 100%;
+        border-radius: 5px;
+    }
+    #animesearcher-container-information{
+        position: relative;
+        margin-left: 0.5em;
+        top: -5em;
+        #animesearcher-container-information-sidebar{
+            max-width: 9em;
+            width: 100%;
+            #animesearcher-tags{
+                width: 9em;
+            }
+            #animesearcher-external-sources{
+                @include grid-auto(4);
+                gap: 0.5em;
+            }
+        }
+    }
+    #animesearcher-container-description{
+        position: relative;
+        max-width: 25em;
+        width: 100%;
+        margin-right: 0.5em;
+        #animesearcher-relations, #animesearcher-characters, #animesearcher-recommendations, #animesearcher-streaming-episodes{
+            width: 100%;
+            padding-bottom: 0.8em;
+            .simplebar-content{
+                @extend .flex-center, .gap, .row, .only-align-items;
+                &::before, &::after{
+                    position: absolute;
+                }
+            }
+        }
+        #animesearcher-character-information{
+            @extend .float, .center;
+            cursor: default;
+            position: fixed;
+            top: 40%;
+            max-height: 35em;
+            width: 35em;
+            background-color: white;
+            padding: 1em;
+            scale: 0;
+            transform-origin: top left;
+            transition-property: height width;
+            transition-duration: 1.5s;
+            &.animation-animesearcher-character-information{
+                visibility: visible;
+                scale: 1;
+            }
+            .simplebar-content{
+                @extend .flex-center, .gap, .small-gap, .row, .align-items-left;
+                &::before, &::after{
+                    position: absolute;
+                }
             }
         }
     }

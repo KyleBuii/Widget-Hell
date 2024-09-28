@@ -224,6 +224,9 @@ class WidgetAiImageGenerator extends Component{
                                 onChange={(event) => this.handleSelect(event)}
                                 isDisabled={this.state.running}
                                 formatGroupLabel={this.props.formatGroupLabel}
+                                components={{
+                                    MenuList: this.props.menuListScrollbar
+                                }}
                                 theme={(theme) => ({
                                     ...theme,
                                     colors: {
@@ -234,7 +237,7 @@ class WidgetAiImageGenerator extends Component{
                             {/* Generate Button */}
                             <button className="button-match fill-width"
                                 onClick={() => this.generateImage()}
-                                disabled={this.state.running}>Generate</button>
+                                disabled={this.state.running}>{(this.state.running) ? "Generating..." : "Generate"}</button>
                             {/* Image */}
                             <div id="aiimagegenerator-images"
                                 className="aesthetic-scale scale-self grid col-auto"></div>
