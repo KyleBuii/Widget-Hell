@@ -93,9 +93,9 @@ class WidgetEquipment extends Component{
             }));
         };
         if(/consumable/.test(this.state.item.slot)){
-            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`;
+            itemSlot.style.backgroundImage = `url(/images/inventory/consumable.png)`;
         }else{
-            itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/inventory/${this.state.item.slot}.png)`;
+            itemSlot.style.backgroundImage = `url(/images/inventory/${this.state.item.slot}.png)`;
         };
         itemSlot.style.opacity = "0.5";
         itemSlot.onclick = null;
@@ -113,7 +113,7 @@ class WidgetEquipment extends Component{
             if(this.props.equipment[event.detail.slot][event.detail.side].name !== event.detail.name
                 && this.props.equipment[event.detail.slot][event.detail.side].name === ""){
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}-${event.detail.side}`);
-                itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[itemData.rarity][itemData.name].image})`;
+                itemSlot.style.backgroundImage = `url(${this.props.items[itemData.rarity][itemData.name].image})`;
                 if(event.detail.side === "left"){
                     itemSlot.style.transform = "scaleX(-1)";
                 }else{
@@ -132,7 +132,7 @@ class WidgetEquipment extends Component{
             if(this.props.equipment[event.detail.slot].name !== event.detail.name
                 && this.props.equipment[event.detail.slot].name === ""){
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}`);
-                itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[itemData.rarity][itemData.name].image})`;
+                itemSlot.style.backgroundImage = `url(${this.props.items[itemData.rarity][itemData.name].image})`;
                 itemSlot.style.opacity = "1";
                 itemSlot.onclick = () => {
                     this.viewItem({
@@ -203,7 +203,7 @@ class WidgetEquipment extends Component{
                 /// Equipped items with no left and right
                 if(this.props.equipment[i].name !== undefined){
                     itemSlot = document.getElementById(`equipment-slot-${i}`);
-                    itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].rarity][this.props.equipment[i].name].image})`;
+                    itemSlot.style.backgroundImage = `url(${this.props.items[this.props.equipment[i].rarity][this.props.equipment[i].name].image})`;
                     itemSlot.style.opacity = "1";
                     itemSlot.onclick = () => {
                         this.viewItem({
@@ -215,7 +215,7 @@ class WidgetEquipment extends Component{
                     /// Left equipped item
                     if(this.props.equipment[i].left.name !== ""){
                         itemSlot = document.getElementById(`equipment-slot-${i}-left`);
-                        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].left.rarity][this.props.equipment[i].left.name].image})`;
+                        itemSlot.style.backgroundImage = `url(${this.props.items[this.props.equipment[i].left.rarity][this.props.equipment[i].left.name].image})`;
                         itemSlot.style.transform = "scaleX(-1)";
                         itemSlot.style.opacity = "1";
                         itemSlot.onclick = () => {
@@ -229,7 +229,7 @@ class WidgetEquipment extends Component{
                     /// Right equipped item
                     if(this.props.equipment[i].right.name !== ""){
                         itemSlot = document.getElementById(`equipment-slot-${i}-right`);
-                        itemSlot.style.backgroundImage = `url(${process.env.PUBLIC_URL + this.props.items[this.props.equipment[i].right.rarity][this.props.equipment[i].right.name].image})`;
+                        itemSlot.style.backgroundImage = `url(${this.props.items[this.props.equipment[i].right.rarity][this.props.equipment[i].right.name].image})`;
                         itemSlot.style.transform = "scaleX(1)";
                         itemSlot.style.opacity = "1";
                         itemSlot.onclick = () => {
@@ -316,17 +316,17 @@ class WidgetEquipment extends Component{
                                             {/* Headband */}
                                             <button id="equipment-slot-headband"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/headband.png)`
+                                                    backgroundImage: `url(/images/inventory/headband.png)`
                                                 }}></button>
                                             {/* Helmet */}
                                             <button id="equipment-slot-helmet"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/helmet.png)`
+                                                    backgroundImage: `url(/images/inventory/helmet.png)`
                                                 }}></button>
                                             {/* Eyewear */}
                                             <button id="equipment-slot-eyewear"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/eyewear.png)`,
+                                                    backgroundImage: `url(/images/inventory/eyewear.png)`,
                                                     backgroundSize: "25px"
                                                 }}></button>
                                         </div>
@@ -335,7 +335,7 @@ class WidgetEquipment extends Component{
                                             {/* Necklace */}
                                             <button id="equipment-slot-necklace"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/necklace.png)`,
+                                                    backgroundImage: `url(/images/inventory/necklace.png)`,
                                                     backgroundSize: "25px"
                                                 }}></button>
                                         </div>
@@ -344,17 +344,17 @@ class WidgetEquipment extends Component{
                                             {/* Undershirt */}
                                             <button id="equipment-slot-undershirt"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/undershirt.png)`
+                                                    backgroundImage: `url(/images/inventory/undershirt.png)`
                                                 }}></button>
                                             {/* Chestplate */}
                                             <button id="equipment-slot-chestplate"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/chestplate.png)`
+                                                    backgroundImage: `url(/images/inventory/chestplate.png)`
                                                 }}></button>
                                             {/* Cape */}
                                             <button id="equipment-slot-cape"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/cape.png)`
+                                                    backgroundImage: `url(/images/inventory/cape.png)`
                                                 }}></button>
                                         </div>
                                         {/* Belt Container */}
@@ -362,31 +362,31 @@ class WidgetEquipment extends Component{
                                             {/* Right Bracelet */}
                                             <button id="equipment-slot-bracelet-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/bracelet.png)`,
+                                                    backgroundImage: `url(/images/inventory/bracelet.png)`,
                                                     backgroundSize: "25px",
                                                     transform: "scaleX(-1)"
                                                 }}></button>
                                             {/* Right Wrist */}
                                             <button id="equipment-slot-wrist-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/wrist.png)`,
+                                                    backgroundImage: `url(/images/inventory/wrist.png)`,
                                                     backgroundSize: "20px"
                                                 }}></button>
                                             {/* Belt */}
                                             <button id="equipment-slot-belt"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/belt.png)`
+                                                    backgroundImage: `url(/images/inventory/belt.png)`
                                                 }}></button>
                                             {/* Left Wrist */}
                                             <button id="equipment-slot-wrist-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/wrist.png)`,
+                                                    backgroundImage: `url(/images/inventory/wrist.png)`,
                                                     backgroundSize: "20px"
                                                 }}></button>
                                             {/* Left Bracelet */}
                                             <button id="equipment-slot-bracelet-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/bracelet.png)`,
+                                                    backgroundImage: `url(/images/inventory/bracelet.png)`,
                                                     backgroundSize: "25px"
                                                 }}></button>
                                         </div>
@@ -395,43 +395,43 @@ class WidgetEquipment extends Component{
                                             {/* Main Item */}
                                             <button id="equipment-slot-main"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/main.png)`
+                                                    backgroundImage: `url(/images/inventory/main.png)`
                                                 }}></button>
                                             {/* Right Glove */}
                                             <button id="equipment-slot-glove-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/glove.png)`,
+                                                    backgroundImage: `url(/images/inventory/glove.png)`,
                                                     backgroundSize: "22px"
                                                 }}></button>
                                             {/* Right Ring */}
                                             <button id="equipment-slot-ring-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/ring.png)`,
+                                                    backgroundImage: `url(/images/inventory/ring.png)`,
                                                     backgroundSize: "20px",
                                                     transform: "scaleX(-1)"
                                                 }}></button>
                                             {/* Legging */}
                                             <button id="equipment-slot-legging"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/legging.png)`
+                                                    backgroundImage: `url(/images/inventory/legging.png)`
                                                 }}></button>
                                             {/* Left Ring */}
                                             <button id="equipment-slot-ring-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/ring.png)`,
+                                                    backgroundImage: `url(/images/inventory/ring.png)`,
                                                     backgroundSize: "20px"
                                                 }}></button>
                                             {/* Left Glove */}
                                             <button id="equipment-slot-glove-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/glove.png)`,
+                                                    backgroundImage: `url(/images/inventory/glove.png)`,
                                                     backgroundSize: "22px",
                                                     transform: "scaleX(-1)"
                                                 }}></button>
                                             {/* Offhand Item */}
                                             <button id="equipment-slot-offhand"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/offhand.png)`,
+                                                    backgroundImage: `url(/images/inventory/offhand.png)`,
                                                     backgroundSize: "40px"
                                                 }}></button>
                                         </div>
@@ -440,25 +440,25 @@ class WidgetEquipment extends Component{
                                             {/* Right Hidden Item in Boot */}
                                             <button id="equipment-slot-hidden-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/hidden.png)`
+                                                    backgroundImage: `url(/images/inventory/hidden.png)`
                                                 }}></button>
                                             {/* Right Boot */}
                                             <button id="equipment-slot-boot-right"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/boot.png)`,
+                                                    backgroundImage: `url(/images/inventory/boot.png)`,
                                                     backgroundSize: "40px"
                                                 }}></button>
                                             {/* Left Boot */}
                                             <button id="equipment-slot-boot-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/boot.png)`,
+                                                    backgroundImage: `url(/images/inventory/boot.png)`,
                                                     backgroundSize: "40px",
                                                     transform: "scaleX(-1)"
                                                 }}></button>
                                             {/* Left Hidden Item in Boot */}
                                             <button id="equipment-slot-hidden-left"
                                                 style={{
-                                                    backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/hidden.png)`
+                                                    backgroundImage: `url(/images/inventory/hidden.png)`
                                                 }}></button>
                                         </div>
                                     </div>
@@ -467,27 +467,27 @@ class WidgetEquipment extends Component{
                                         className="slot flex-center row gap">
                                         <button id="equipment-slot-consumable1"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                         <button id="equipment-slot-consumable2"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                         <button id="equipment-slot-consumable3"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                         <button id="equipment-slot-consumable4"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                         <button id="equipment-slot-consumable5"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                         <button id="equipment-slot-consumable6"
                                             style={{
-                                                backgroundImage: `url(${process.env.PUBLIC_URL}/images/inventory/consumable.png)`
+                                                backgroundImage: `url(/images/inventory/consumable.png)`
                                             }}></button>
                                     </div>
                                 </section>

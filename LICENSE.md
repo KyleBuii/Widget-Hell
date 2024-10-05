@@ -17,6 +17,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - [Quote Cherry Blossom Image](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by Pixabay
 - [Anime Searcher Page Image](https://pixabay.com/vectors/file-generic-icon-icons-matt-1294459/) by Pixabay
 - [Anime Searcher Default Background Image](https://pixabay.com/photos/poppies-flowers-field-red-poppies-6982527/) by Pixabay
+- [Grindshot Player Image](https://opengameart.org/content/blue-grass) by pboop
+- [Grindshot Attacks](https://opengameart.org/content/pixelated-attackhit-animations) by Viktor Hahn
+- [Grindshot Bullets](https://github.com/phaserjs/phaser-ce-coding-tips/tree/master) by photonstorm
+- **Grindshot Tiles**
+    - [Tiny Battle](https://opengameart.org/content/tiny-battle) by Kenny
+    - [Tiny Ski](https://opengameart.org/content/tiny-ski) by Kenny
+    - [Monochrome Pirates](https://opengameart.org/content/monochrome-pirates) by Kenny
 ### Sounds
 - [Kenny Interface Sounds Pack](https://www.kenney.nl/assets/interface-sounds) by Kenny
 - [Inventory Sound Effects](https://opengameart.org/content/inventory-sound-effects) by artisticdude

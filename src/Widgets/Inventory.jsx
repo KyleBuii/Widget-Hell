@@ -82,7 +82,7 @@ class WidgetInventory extends Component{
                     <button
                         onClick={() => this.viewItem(event.detail[i])}
                         style={{
-                            backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
+                            backgroundImage: `url(${this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
                         }}>
                     </button>
                 );
@@ -120,7 +120,7 @@ class WidgetInventory extends Component{
                 <button
                     onClick={() => this.viewItem(this.props.inventory[i])}
                     style={{
-                        backgroundImage: `url(${process.env.PUBLIC_URL + this.props.items[this.props.inventory[i].rarity][this.props.inventory[i].name].image})`
+                        backgroundImage: `url(${this.props.items[this.props.inventory[i].rarity][this.props.inventory[i].name].image})`
                     }}>
                 </button>
             );

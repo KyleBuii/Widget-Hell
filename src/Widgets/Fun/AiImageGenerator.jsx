@@ -9,7 +9,7 @@ import Select from 'react-select';
 
 
 /// Variables
-const hf = new HfInference(process.env.REACT_APP_AI_IMAGE_GENERATOR_ACCESS_TOKEN);
+const hf = new HfInference(import.meta.env.VITE_AI_IMAGE_GENERATOR_ACCESS_TOKEN);
 const optionsModel= [
     {
         label: "Models",

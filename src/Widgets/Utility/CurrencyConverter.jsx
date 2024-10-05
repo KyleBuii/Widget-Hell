@@ -64,7 +64,7 @@ class WidgetCurrencyConverter extends Component{
     async fetchExchangeRate(){
         if(this.state.from.value !== this.state.to.value
             && /^\d*\.?\d*$/.test(this.state.input)){
-            const url = `https://v6.exchangerate-api.com/v6/${process.env.REACT_APP_CURRENCY_CONVERTER_API_KEY}/latest/${this.state.from.label}`;
+            const url = `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_CURRENCY_CONVERTER_API_KEY}/latest/${this.state.from.label}`;
             try{
                 this.setState({
                     running: true

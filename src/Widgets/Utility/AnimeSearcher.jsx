@@ -4,9 +4,9 @@ import { FaExpand, Fa0 } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
-import sanitizeHtml from 'sanitize-html';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
+import DOMPurify from 'dompurify';
 
 
 class WidgetAnimeSearcher extends Component{
@@ -849,13 +849,7 @@ class WidgetAnimeSearcher extends Component{
                                             {/* Description */}
                                             <span className="text-animation"
                                                 dangerouslySetInnerHTML={{
-                                                    __html: sanitizeHtml(this.state.description, {
-                                                        allowedTags: [ 'b', 'i', 'em', 'strong', 'a', 'br' ],
-                                                        allowedAttributes: {
-                                                            'a': [ 'href' ]
-                                                        },
-                                                        allowedIframeHostnames: []
-                                                    })
+                                                    __html: DOMPurify.sanitize(this.state.description)
                                                 }}></span>
                                             {/* Relations */}
                                             {(this.state.relations.length !== 0)
@@ -981,13 +975,7 @@ class WidgetAnimeSearcher extends Component{
                                                         {/* Description */}
                                                         {(this.state.characters[this.state.characterIndex].description)
                                                             ? <span dangerouslySetInnerHTML={{
-                                                                __html: sanitizeHtml(this.state.characters[this.state.characterIndex].description, {
-                                                                    allowedTags: [ 'b', 'i', 'em', 'strong', 'a', 'br' ],
-                                                                    allowedAttributes: {
-                                                                        'a': [ 'href' ]
-                                                                    },
-                                                                    allowedIframeHostnames: []
-                                                                })
+                                                                __html: DOMPurify.sanitize(this.state.characters[this.state.characterIndex].description)
                                                             }}></span>
                                                             : "N/A"}
                                                         {/* Favorites */}

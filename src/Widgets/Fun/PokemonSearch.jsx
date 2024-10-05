@@ -8,8 +8,7 @@ import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
-const Pokedex = require("pokeapi-js-wrapper")
-const P = new Pokedex.Pokedex()
+const P = new Pokedex.Pokedex();
 const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
 const clamp = (value, min = 0, max = 100 ) => {
     return Math.min(Math.max(value, min), max);
@@ -199,7 +198,7 @@ class WidgetPokemonSearch extends Component{
                 let tempSpan = document.createElement("span");
                 let tempImg = document.createElement("img");
                 tempSpan.className = `circle pokemon ${data.types[i].type.name}`;
-                tempImg.src = `${process.env.PUBLIC_URL}/images/pokemon/type/${data.types[i].type.name}.svg`;
+                tempImg.src = `/images/pokemon/type/${data.types[i].type.name}.svg`;
                 tempSpan.appendChild(tempImg);
                 divPokemonTypes.prepend(tempSpan);
             };

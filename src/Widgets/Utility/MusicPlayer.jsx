@@ -212,7 +212,7 @@ class WidgetMusicPlayer extends Component{
             };
             /// Image
             let musicDisc = document.getElementById("musicplayer-disc");
-            musicDisc.style.backgroundImage = `url(${process.env.PUBLIC_URL}${randomMusic.cover})`;
+            musicDisc.style.backgroundImage = `url(${randomMusic.cover})`;
             if(this.state.playing){
                 window.requestAnimationFrame(() => {
                     document.getElementById("musicplayer-disc")

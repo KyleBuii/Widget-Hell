@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -6,7 +7,6 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { Fa0, FaArrowRightLong, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import Select from "react-select";
-import sanitizeHtml from 'sanitize-html';
 
 
 /// Variables
@@ -655,11 +655,7 @@ class WidgetTranslator extends Component{
                                 className="cut-scrollbar-corner-part-1 p">
                                 <p id="translator-translated-text"
                                     className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">
-                                    {sanitizeHtml(this.state.converted, {
-                                        allowedTags: [],
-                                        allowedAttributes: {},
-                                        allowedIframeHostnames: []
-                                    })}
+                                    {DOMPurify.sanitize(this.state.converted)}
                                 </p>
                             </div>
                         </div>

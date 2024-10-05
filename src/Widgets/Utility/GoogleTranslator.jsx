@@ -63,8 +63,8 @@ class WidgetGoogleTranslator extends Component{
             const options = {
                 method: 'POST',
                 headers: {
-                    'X-RapidAPI-Key': process.env.REACT_APP_TRANSLATOR_API_KEY,
-                    'X-RapidAPI-Host': process.env.REACT_APP_TRANSLATOR_API_HOST
+                    'X-RapidAPI-Key': import.meta.env.VITE_TRANSLATOR_API_KEY,
+                    'X-RapidAPI-Host': import.meta.env.VITE_TRANSLATOR_API_HOST
                 },
                 body: data      
             };

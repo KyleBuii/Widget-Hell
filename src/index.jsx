@@ -2,41 +2,43 @@ import { Component, React } from 'react';
 import ReactDOM from 'react-dom/client';
 import { components } from 'react-select';
 import './index.scss';
-import WidgetCharacter from './Widgets/Character.js';
-import WidgetEquipment from './Widgets/Equipment.js';
-import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.js';
-import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.js';
-import WidgetPickerWheel from './Widgets/Fun/PickerWheel.js';
-import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.js';
-import WidgetSticker from './Widgets/Fun/Sticker.js';
-import Widget2048 from './Widgets/Games/2048.js';
-import WidgetBreakout from './Widgets/Games/Breakout.js';
-import WidgetChess from './Widgets/Games/Chess.js';
-import WidgetMinesweeper from './Widgets/Games/Minesweeper.js';
-import WidgetSimonGame from './Widgets/Games/SimonGame.js';
-import WidgetSnake from './Widgets/Games/Snake.js';
-import WidgetTetris from './Widgets/Games/Tetris.js';
-import WidgetTrivia from './Widgets/Games/Trivia.js';
-import WidgetTypingTest from './Widgets/Games/TypingTest.js';
-import WidgetInventory from './Widgets/Inventory.js';
-import WidgetBattery from './Widgets/Utility/Battery.js';
-import WidgetCalculator from './Widgets/Utility/Calculator.js';
-import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.js';
-import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.js';
-import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.js';
-import WidgetNotepad from './Widgets/Utility/Notepad.js';
-import WidgetQRCode from './Widgets/Utility/QRCode.js';
-import WidgetQuote from './Widgets/Utility/Quote.js';
-import WidgetSetting from './Widgets/Utility/Setting.js';
-import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.js';
-import WidgetTimeConversion from './Widgets/Utility/TimeConversion.js';
-import WidgetTranslator from './Widgets/Utility/Translator.js';
-import WidgetURLShortner from './Widgets/Utility/URLShortner.js';
-import WidgetWeather from './Widgets/Utility/Weather.js';
-import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.js';
-import WidgetFacts from './Widgets/Fun/Facts.js';
-import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.js';
+import WidgetCharacter from './Widgets/Character.jsx';
+import WidgetEquipment from './Widgets/Equipment.jsx';
+import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.jsx';
+import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.jsx';
+import WidgetPickerWheel from './Widgets/Fun/PickerWheel.jsx';
+import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.jsx';
+import WidgetSticker from './Widgets/Fun/Sticker.jsx';
+import Widget2048 from './Widgets/Games/2048.jsx';
+import WidgetBreakout from './Widgets/Games/Breakout.jsx';
+import WidgetChess from './Widgets/Games/Chess.jsx';
+import WidgetMinesweeper from './Widgets/Games/Minesweeper.jsx';
+import WidgetSimonGame from './Widgets/Games/SimonGame.jsx';
+import WidgetSnake from './Widgets/Games/Snake.jsx';
+import WidgetTetris from './Widgets/Games/Tetris.jsx';
+import WidgetTrivia from './Widgets/Games/Trivia.jsx';
+import WidgetTypingTest from './Widgets/Games/TypingTest.jsx';
+import WidgetInventory from './Widgets/Inventory.jsx';
+import WidgetBattery from './Widgets/Utility/Battery.jsx';
+import WidgetCalculator from './Widgets/Utility/Calculator.jsx';
+import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.jsx';
+import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.jsx';
+import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.jsx';
+import WidgetNotepad from './Widgets/Utility/Notepad.jsx';
+import WidgetQRCode from './Widgets/Utility/QRCode.jsx';
+import WidgetQuote from './Widgets/Utility/Quote.jsx';
+import WidgetSetting from './Widgets/Utility/Setting.jsx';
+import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.jsx';
+import WidgetTimeConversion from './Widgets/Utility/TimeConversion.jsx';
+import WidgetTranslator from './Widgets/Utility/Translator.jsx';
+import WidgetURLShortner from './Widgets/Utility/URLShortner.jsx';
+import WidgetWeather from './Widgets/Utility/Weather.jsx';
+import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.jsx';
+import WidgetFacts from './Widgets/Fun/Facts.jsx';
+import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
 import SimpleBar from 'simplebar-react';
+import Grindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
+import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
 
 
 //////////////////// Variables ////////////////////
@@ -1590,6 +1592,17 @@ class Widgets extends Component{
                     },
                     tetris: {
                         name: "Tetris",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    grindshot: {
+                        name: "Grindshot",
                         active: false,
                         position: {
                             x: 0,
@@ -3192,6 +3205,17 @@ class Widgets extends Component{
                             y: this.state.widgets.games.tetris.position.y
                         }}
                         dragDisabled={this.state.widgets.games.tetris.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.grindshot.active === true
+                    ? <WidgetGrindshot
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.grindshot.position.x,
+                            y: this.state.widgets.games.grindshot.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.grindshot.drag.disabled}
                         largeIcon={largeIcon}/>
                     : <></>}
                 { 

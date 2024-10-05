@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -6,7 +7,6 @@ import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { TbMoneybag } from 'react-icons/tb';
 import Select from "react-select";
-import sanitizeHtml from 'sanitize-html';
 
 
 /// Variables
@@ -453,21 +453,13 @@ class WidgetTrivia extends Component{
                             <div className="flex-center column gap small-gap font space-nicely space-top not-bottom">
                                 <span className="text-animation font bold medium"
                                     dangerouslySetInnerHTML={{
-                                        __html: sanitizeHtml(this.state.categories[this.state.questionCount], {
-                                            allowedTags: [],
-                                            allowedAttributes: [],
-                                            allowedIframeHostnames: []
-                                        })
+                                        __html: DOMPurify.sanitize(this.state.categories[this.state.questionCount])
                                     }}></span>
                                 <span className={`text-animation difficulty ${this.state.difficulties[this.state.questionCount]?.toLowerCase()}`}>
                                     {this.state.difficulties[this.state.questionCount]}
                                 </span>
                                 <span dangerouslySetInnerHTML={{
-                                    __html: sanitizeHtml(this.state.questions[this.state.questionCount], {
-                                        allowedTags: [],
-                                        allowedAttributes: [],
-                                        allowedIframeHostnames: []
-                                    })
+                                    __html: DOMPurify.sanitize(this.state.questions[this.state.questionCount])
                                 }}></span>
                             </div>
                             {/* Choices */}
@@ -477,11 +469,7 @@ class WidgetTrivia extends Component{
                                     return <button id={`trivia-button-${index}`}
                                         className="button-match fill-width"
                                         dangerouslySetInnerHTML={{
-                                            __html: sanitizeHtml(choice, {
-                                                allowedTags: [],
-                                                allowedAttributes: [],
-                                                allowedIframeHostnames: []
-                                            })
+                                            __html: DOMPurify.sanitize(choice)
                                         }}
                                         key={`button-${index}`}
                                         onClick={() => this.handleChoice(choice, index)}

@@ -46,8 +46,8 @@ z-index guide
     --sunpillar-clr-5: var(--sunpillar-5);
     --sunpillar-clr-6: var(--sunpillar-6);
     --cosmosbg: ;
-    --grain: url("../public/images/pokemon/rarity/grain.webp");
-    --glitter: url("../public/images/pokemon/rarity/glitter.png");
+    --grain: url("/images/pokemon/rarity/grain.webp");
+    --glitter: url("/images/pokemon/rarity/glitter.png");
     --glittersize: 25%;
     --space: 5%;
     --angle: 133deg;
@@ -1456,7 +1456,7 @@ body{
             --space: 4%;
             clip-path: var(--clip);
             background-image: 
-                url("../public/images/pokemon/rarity/cosmos-bottom.png"), 
+                url("/images/pokemon/rarity/cosmos-bottom.png"), 
                 repeating-linear-gradient(82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
                     hsl(93, 56%, 50%) calc(var(--space)*2), 
@@ -1490,7 +1490,7 @@ body{
                 z-index: 2;
               
                 background-image: 
-                  url("../public/images/pokemon/rarity/cosmos-middle-trans.png"), 
+                  url("/images/pokemon/rarity/cosmos-middle-trans.png"), 
                   repeating-linear-gradient(
                     82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
@@ -1526,7 +1526,7 @@ body{
                 z-index: 3;
               
                 background-image: 
-                  url("../public/images/pokemon/rarity/cosmos-top-trans.png"), 
+                  url("/images/pokemon/rarity/cosmos-top-trans.png"), 
                   repeating-linear-gradient(
                     82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
@@ -1585,7 +1585,7 @@ body{
             --space: 200px;
             --hue: 50;
             --mask: none;
-            --foil: url("../public/images/pokemon/rarity/trainerbg.png"); 
+            --foil: url("/images/pokemon/rarity/trainerbg.png"); 
             --imgsize: 25% auto;
             background-image: 
                 radial-gradient(
@@ -1662,7 +1662,7 @@ body{
                 background-blend-mode: hard-light;
                 clip-path: var(--clip);
                 --mask: none;
-                --foil: url("../public/images/pokemon/rarity/trainerbg.png"); 
+                --foil: url("/images/pokemon/rarity/trainerbg.png"); 
                 --imgsize: 25% auto;    
                 background-blend-mode: difference;          
             }
@@ -1774,7 +1774,7 @@ body{
             --r-clr-5: hsl(180, 60%, 35%);
             --r-clr-6: hsl(210, 57%, 39%);
             --r-clr-7: hsl(280, 55%, 31%);
-            --foil: url("../public/images/pokemon/rarity/illusion-mask.png"); 
+            --foil: url("/images/pokemon/rarity/illusion-mask.png"); 
             --imgsize: 33%;
             background-image: 
                 linear-gradient(-45deg, var(--r-clr-1), var(--r-clr-5)), var(--glitter),
@@ -1980,7 +1980,7 @@ body{
     &[rarity="secretRare"]{
         .card-shine{
             --shift: 1px;
-            --foil: url("../public/images/pokemon/rarity/geometric.png"); 
+            --foil: url("/images/pokemon/rarity/geometric.png"); 
             --imgsize: 33%;
             filter: brightness( calc( ( var( --pointer-from-center ) * 0.3 ) + 0.2 ) ) contrast(2) saturate(0.75);          
             background-image:
@@ -2049,7 +2049,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("../public/images/pokemon/rarity/illusion.png"); 
+            --foil: url("/images/pokemon/rarity/illusion.png"); 
             --imgsize: 33%;
             -webkit-mask-image: var(--mask);
             mask-image: var(--mask);
@@ -2140,7 +2140,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("../public/images/pokemon/rarity/illusion.png"); 
+            --foil: url("/images/pokemon/rarity/illusion.png"); 
             --imgsize: 33%;
             -webkit-mask-image: var(--mask);
             mask-image: var(--mask);
@@ -2330,7 +2330,7 @@ body{
     &[rarity="vmax"]{
         .card-shine, .card-shine::after{
             --mask: none;
-            --foil: url("../public/images/pokemon/rarity/vmaxbg.jpg"); 
+            --foil: url("/images/pokemon/rarity/vmaxbg.jpg"); 
             --imgsize: 60% 30%;          
         }
         .card-shine{
@@ -2479,7 +2479,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("../public/images/pokemon/rarity/ancient.png"); 
+            --foil: url("/images/pokemon/rarity/ancient.png"); 
             --imgsize: 18% 15%;
             background-blend-mode: exclusion, hue, hard-light;
             filter: brightness(calc((var(--pointer-from-center) * .25) + .35)) contrast(1.8) saturate(1.75);
@@ -3513,9 +3513,9 @@ body{
     --fill-color: beige;
     background: var(--randColorLight);
 	border: 5px dashed var(--theme-color);
-	box-shadow: 0 0 0 (5px / 2) var(--randColor),
+	box-shadow: 0 0 0 calc(5px / 2) var(--randColor),
 		        0 0 0 (5px * 2.5) #fff,
-		        inset 0 0 0 (5px / 2) var(--randColor),
+		        inset 0 0 0 calc(5px / 2) var(--randColor),
 		        0 5px (5px * 2) (5px * 3) rgba(0,0,0,0.5),
 		        inset 0 0 0 (5px * 1.2) #fff,
 		        inset 0 0 100vw 100vw var(--fill-color);
@@ -3672,45 +3672,45 @@ body{
     }
     &.tile2 {
         background-color: #eee;
-        background-image: url(../public/images/2048/2.gif);
+        background-image: url(/images/2048/2.gif);
     }
     &.tile4 {
         background-color: #eec;
-        background-image: url(../public/images/2048/4.gif);
+        background-image: url(/images/2048/4.gif);
     }
     &.tile8 {
         color: #ffe;
-        background-image: url(../public/images/2048/8.gif);
+        background-image: url(/images/2048/8.gif);
     }
     &.tile16 {
         color: #ffe;
-        background-image: url(../public/images/2048/16.gif);
+        background-image: url(/images/2048/16.gif);
     }
     &.tile32 {
         color: #ffe;
-        background-image: url(../public/images/2048/32.gif);
+        background-image: url(/images/2048/32.gif);
     }
     &.tile64 {
         color: #ffe;
-        background-image: url(../public/images/2048/64.gif);
+        background-image: url(/images/2048/64.gif);
     }
     &.tile128 {
         color: #ffe;
-        background-image: url(../public/images/2048/128.gif);
+        background-image: url(/images/2048/128.gif);
     }
     &.tile256 {
         color: #ffe;
-        background-image: url(../public/images/2048/256.gif);
+        background-image: url(/images/2048/256.gif);
         font-size: 45px;
     }
     &.tile512 {
         color: #ffe;
-        background-image: url(../public/images/2048/512.gif);
+        background-image: url(/images/2048/512.gif);
         font-size: 45px;
     }
     &.tile1024 {
         color: #fff;
-        background-image: url(../public/images/2048/1024.gif);
+        background-image: url(/images/2048/1024.gif);
         font-size: 35px;
     }
     //#endregion
@@ -4227,7 +4227,7 @@ body{
         height: 100%;
         width: 100%;
         border-radius: 25px;
-        background-image: url(../public/images/singles/cherryblossom.png);
+        background-image: url(/images/singles/cherryblossom.png);
         background-position: bottom left;
         background-size: 200px;
         background-repeat: no-repeat;
@@ -4426,7 +4426,7 @@ body{
             background: linear-gradient(
                 rgba(255, 255, 255, .8),
                 rgba(255, 255, 255, .8)),
-                url(../public/images/singles/dollar.jpg);
+                url(/images/singles/dollar.jpg);
             background-position: center;
             background-size: cover;
             word-break: break-all;

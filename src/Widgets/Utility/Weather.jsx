@@ -61,8 +61,8 @@ class WidgetWeather extends Component{
             const options = {
                 method: "GET",
                 headers: {
-                    "X-RapidAPI-Key": process.env.REACT_APP_WEATHER_API_KEY,
-                    "X-RapidAPI-Host": process.env.REACT_APP_WEATHER_API_HOST
+                    "X-RapidAPI-Key": import.meta.env.VITE_WEATHER_API_KEY,
+                    "X-RapidAPI-Host": import.meta.env.VITE_WEATHER_API_HOST
                 }
             };
             try{
