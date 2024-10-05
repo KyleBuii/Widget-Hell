@@ -4,8 +4,8 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { Fa0, FaExpand } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
-import { PhaserGame } from './game/PhaserGame';
-import { EventBus } from './game/EventBus';
+import { PhaserGame } from './Game/PhaserGame';
+import { EventBus } from './Game/EventBus';
 
 
 class WidgetGrindshot extends Component{
