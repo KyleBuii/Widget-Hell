@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Component, React } from 'react';
 import ReactDOM from 'react-dom/client';
 import { components } from 'react-select';
@@ -37,8 +38,340 @@ import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.jsx';
 import WidgetFacts from './Widgets/Fun/Facts.jsx';
 import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
 import SimpleBar from 'simplebar-react';
-import Grindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
 import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
+
+
+//////////////////// Temp Variables ////////////////////
+//#region
+var mouse = {
+    x: 0,
+    y: 0
+};
+var healthDisplay;
+let timeoutText;
+var voices;
+window.username = "Anon";
+let currentHour = new Date().getHours();
+//#endregion
+
+
+//////////////////// Functions ////////////////////
+//#region
+function randColor(forcedColorR, forcedColorG, forcedColorB){
+    const r = document.documentElement;
+    var randColorOpacity, randColor, randColorLight;
+    if(forcedColorR){
+        randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
+        randColor = `rgb(${randColorOpacity})`;
+        randColorLight = `rgb(${forcedColorR + 50},${forcedColorG + 50},${forcedColorB + 50})`;
+    }else{
+        const colorR = Math.floor(Math.random() * colorRange);
+        const colorG = Math.floor(Math.random() * colorRange);
+        const colorB = Math.floor(Math.random() * colorRange);
+        randColorOpacity = `${colorR},${colorG},${colorB}`;
+        randColor = `rgb(${randColorOpacity})`;
+        randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
+    };
+    r.style.setProperty("--randColor", randColor);
+    r.style.setProperty("--randColorLight", randColorLight);
+    r.style.setProperty("--randColorOpacity", randColorOpacity);
+    color = randColor;
+    /// Set react-select colors
+    selectTheme = {
+        primary: randColor,         /// Currently selected option background color
+        primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
+        neutral20: randColor,       /// Border color of select
+        neutral30: randColorLight,  /// Hover border color
+        neutral40: randColorLight,  /// Hover arrow color
+        neutral60: randColorLight,  /// Active arrow color
+        neutral80: randColor        /// Placeholder text color
+    };
+};
+
+function dragStart(what){
+    switch(what){
+        case "settings":
+            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
+            document.getElementById(what + "-widget").style.opacity = "0.5";
+            break;
+        default:
+            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
+            document.getElementById(what + "-widget").style.opacity = "0.5";
+            document.getElementById(what + "-widget").style.zIndex = zIndexDrag;
+            break;
+    };
+};
+function dragStop(what){
+    switch(what){
+        case "settings":
+            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-widget").style.opacity = "1";
+            break;
+        default:
+            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
+            document.getElementById(what + "-widget").style.opacity = "1";
+            document.getElementById(what + "-widget").style.zIndex = zIndexDefault;
+            break;
+    };
+};
+
+function sortSelect(what){
+    what.forEach((value) => {
+        value.options.sort((a, b) => {
+            return ["Default", "Auto", "Any"].indexOf(b.label) - ["Default", "Auto", "Any"].indexOf(a.label)
+                || a.label.localeCompare(b.label);
+        });
+    });
+};
+
+function mergePunctuation(arr){
+    if(arr.length <= 1){
+        return arr;
+    };
+    for(let i = 1; i < arr.length; i++){
+        if(/^[^\w("$]+/.test(arr[i])){
+            arr[i-1] += arr[i];
+            arr.splice(i, 1);
+        }else if(/^[($]+/.test(arr[i])){
+            arr[i] += arr[i+1];
+            arr.splice(i+1, 1);
+        };
+    };
+    return arr;
+};
+
+function grep(arr, filter){
+    var result = [];
+    if(arr.length <= 1){
+        return arr;
+    };
+    for(let i = 0; i < arr.length; i++){
+        const e = arr[i]||"";
+        if(filter ? filter(e) : e){
+            result.push(e);
+        };
+    };
+    return result;
+};
+
+function randSentence(){
+    return sentences[Math.floor(Math.random() * sentences.length)];
+};
+
+async function copyToClipboard(what){
+    if(what !== ""){
+        try{
+            let dump = document.getElementById("clipboard-dump");
+            dump.innerHTML = DOMPurify.sanitize(what);
+            await navigator.clipboard.writeText(dump.innerText);
+            createPopup("Copied!");
+            dump.innerHTML = "";
+            return "success";
+        }catch(err){
+            return "fail";
+        };
+    };
+    return "empty";
+};
+
+function createPopup(text, type = "normal", randomPosition = false){
+    let widgetContainer = document.getElementById("widget-container");
+    let popup = document.createElement("div");
+    let elementText = document.createElement("span");
+    let timeoutAnimation, timeoutRemove;
+    popup.className = "popup flex-center";
+    if(randomPosition){
+        popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
+        popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
+    }else{
+        popup.style.left = `${mouse.x - 50}px`;
+        popup.style.top = `${mouse.y + 10}px`;
+    };
+    elementText.className = "font medium bold white flex-center column";
+    switch(type){
+        case "gold":
+            let elementAmount = document.createElement("span");
+            popup.className += " gold";
+            elementAmount.innerHTML = `&#x1F4B0;+${text}`;
+            elementText.innerText = "Gold bag found!";
+            elementText.appendChild(elementAmount);
+            break;
+        case "item":
+            let itemImage = document.createElement("img");
+            popup.className += ` ${text.rarity}`;
+            itemImage.src = items[text.rarity][text.name].image;
+            elementText.innerText = "Item acquired!";
+            elementText.appendChild(itemImage);
+            break;
+        default:
+            elementText.innerText = text;
+            break;
+    };
+    popup.appendChild(elementText);
+    widgetContainer.append(popup);
+    window.requestAnimationFrame(() => {
+        popup.style.animation = "fadeIn 1s";
+    });
+    timeoutAnimation = setTimeout(() => {
+        window.requestAnimationFrame(() => {
+            popup.style.animation = "fadeOut 1s";
+        });
+        timeoutRemove = setTimeout(() => {
+            widgetContainer.removeChild(popup);
+            clearTimeout(timeoutAnimation);
+            clearTimeout(timeoutRemove);    
+        }, 1000);
+    }, 1000);
+    popup.onclick = () => {
+        clearTimeout(timeoutAnimation);
+        clearTimeout(timeoutRemove);
+        widgetContainer.removeChild(popup);
+    };
+};
+
+function formatNumber(number, digits, shouldRound = false){
+    const lookup = [
+        { value: 1,    symbol: ""  },
+        { value: 1e3,  symbol: "K" },
+        { value: 1e6,  symbol: "M" },
+        { value: 1e9,  symbol: "G" },
+        { value: 1e12, symbol: "T" },
+        { value: 1e15, symbol: "P" },
+        { value: 1e18, symbol: "E" }
+    ];
+    const regexDecimals = new RegExp(`^-?\\d+(?:\\.\\d{0,${digits}})?`);
+    const regex = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
+    const item = lookup.findLast(item => number >= item.value);
+    if(shouldRound){
+        return (item)
+            ? (number / item.value)
+                .toFixed(digits)
+                .replace(regex, "")
+                .concat(item.symbol)
+            : "0";
+    }else{
+        return (item)
+            ? (number / item.value)
+                .toString()
+                .match(regexDecimals)[0]
+                .replace(regex, "")
+                .concat(item.symbol)
+            : "0";
+    };
+};
+
+function randomItem(amount = 1, rarity){
+    var item, itemKeys, itemRarity, randomItem, randomRarity;
+    var totalGold = 0;
+    var allItems = [];
+    for(let i = 0; i < amount; i++){
+        randomRarity = Math.random();
+        if(rarity){
+            itemKeys = Object.keys(items[rarity]);
+            itemRarity = rarity;
+        }else{
+            if(randomRarity < itemRates.common.rate){
+                itemKeys = Object.keys(items.common);
+                itemRarity = "common";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate)){
+                itemKeys = Object.keys(items.rare);
+                itemRarity = "rare";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate)){
+                itemKeys = Object.keys(items.exotic);
+                itemRarity = "exotic";
+            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate + itemRates.meme.rate)){
+                itemKeys = Object.keys(items.meme);
+                itemRarity = "meme";
+            };
+        };
+        randomItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+        if(randomItem !== "nothing"){
+            item = {
+                name: randomItem,
+                rarity: itemRarity
+            };
+            if(randomItem === "gold"){
+                item.amount = Math.floor(Math.random() * 20 + 1);
+                totalGold += item.amount;
+                createPopup(item.amount, "gold", true);
+            }else{
+                allItems.push(item);
+                createPopup(item, "item", true);
+            };
+        };
+    };
+    if(totalGold !== 0){
+        window.dispatchEvent(new CustomEvent("gold bag", {
+            "detail": totalGold
+        }));
+    };
+    if(allItems.length !== 0){
+        window.dispatchEvent(new CustomEvent("new item", {
+            "detail": allItems
+        }));
+    };
+};
+
+function renderHearts(health){
+    let elementHearts = [];
+    if(healthDisplay.value !== "none"){
+        let currentHealth = health;
+        let calculateHearts = [];
+        let heartKeys = Object.keys(heartValues);
+        let heartIndex = heartKeys.length;
+        let currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        let amount;
+        calculating: while(Math.floor(currentHealth) > 0){
+            if(Math.max(currentHealth, currentHeartValue) === currentHealth){
+                switch(healthDisplay.value){
+                    case "limit5":
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
+                        if(calculateHearts.length === 5){
+                            break calculating;
+                        };
+                        if(amount > 5 && calculateHearts.length === 0){
+                            amount = 5;
+                        }else if(amount > 5){
+                            amount = 5 - calculateHearts.length;
+                        };
+                        for(let i = amount; i > 0; i--){
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;
+                    default:
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
+                        for(let i = amount; i > 0; i--){
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;        
+                };
+            };
+            heartIndex--;
+            currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        };
+        for(let i = 0; i < calculateHearts.length; i++){
+            if((calculateHearts[i] === 1) && (healthDisplay.value === "noredheart")){
+            break; 
+            };
+            elementHearts.push(<img src={`/images/hearts/heart${calculateHearts[i]}.png`}
+                alt={`heart${calculateHearts[i]} ${i + 1}`}
+                key={`heart${calculateHearts[i]} ${i + 1}`}
+                draggable={false}/>);
+        };
+    };
+    return elementHearts;
+};
+
+function playAudio(audio){
+    let duplicateAudio = audio.cloneNode();
+    duplicateAudio.play();
+    duplicateAudio.onended = () => {
+        duplicateAudio.remove();
+    };    
+};
+//#endregion
 
 
 //////////////////// Variables ////////////////////
@@ -294,7 +627,7 @@ const sentences = [
     console.log(string);
 
 /// Dictionary from
-    const dictionary = [DICTIONARY];
+    const dictionary = DICTIONARY;
     let string = "";
     let count = 0;
     for(let i in dictionary){
@@ -480,6 +813,322 @@ const enchantingTableDictionary = {
     'q': 'ᑑ', 'r': '∷', 's': 'ᓭ', 't': 'ℸ', 
     'u': '⚍', 'v': '⍊', 'w': '∴', 'x': '̣/', 
     'y': '||', 'z': '⨅'
+};
+const cunnyCodeDictionary = {
+    'a': '&#128557;&#128162;', 'b': '&#128162;&#128557;&#128557;&#128557;', 'c': '&#128162;&#128557;&#128162;&#128557;', 'd': '&#128162;&#128557;&#128557;',
+    'e': '&#128557;', 'f': '&#128557;&#128557;&#128162;&#128557;', 'g': '&#128162;&#128162;&#128557;', 'h': '&#128557;&#128557;&#128557;&#128557;',
+    'i': '&#128557;&#128557;', 'j': '&#128557;&#128162;&#128162;&#128162;', 'k': '&#128162;&#128557;&#128162;', 'l': '&#128557;&#128162;&#128557;&#128557;',
+    'm': '&#128162;&#128162;', 'n': '&#128162;&#128557;', 'o': '&#128162;&#128162;&#128162;', 'p': '&#128557;&#128162;&#128162;&#128557;',
+    'q': '&#128162;&#128162;&#128557;&#128162;', 'r': '&#128557;&#128162;&#128557;', 's': '&#128557;&#128557;&#128557;', 't': '&#128162;',
+    'u': '&#128557;&#128557;&#128162;', 'v': '&#128557;&#128557;&#128557;&#128162;', 'w': '&#128557;&#128162;&#128162;', 'x': '&#128162;&#128557;&#128557;&#128162;',
+    'y': '&#128162;&#128557;&#128162;&#128162;', 'z': '&#128162;&#128162;&#128557;&#128557;', ' ': '',
+    '1': '&#128557;&#128162;&#128162;&#128162;&#128162;', '2': '&#128557;&#128557;&#128162;&#128162;&#128162;', '3': '&#128557;&#128557;&#128557;&#128162;&#128162;', '4': '&#128557;&#128557;&#128557;&#128557;&#128162;',
+    '5': '&#128557;&#128557;&#128557;&#128557;&#128557;', '6': '&#128162;&#128557;&#128557;&#128557;&#128557;', '7': '&#128162;&#128162;&#128557;&#128557;&#128557;', '8': '&#128162;&#128162;&#128162;&#128557;&#128557;',
+    '9': '&#128162;&#128162;&#128162;&#128162;&#128557;', '0': '&#128162;&#128162;&#128162;&#128162;&#128162;',
+    '(': '&#128162;&#128557;&#128162;&#128162;&#128557;', ')': '&#128162;&#128557;&#128162;&#128162;&#128557;&#128162;', '{': '&#128162;&#128162;&#128162;&#128557;&#128162;&#128557;', '}': '&#128162;&#128162;&#128162;&#128557;&#128557;&#128162;',
+    '[': '&#128162;&#128557;&#128557;&#128162;&#128557;&#128557;', ']': '&#128162;&#128557;&#128557;&#128162;&#128162;&#128557;', '<': '&#128557;&#128557;&#128557;&#128557;&#128162;&#128162;', '>': '&#128162;&#128162;&#128557;&#128557;&#128557;&#128557;',
+    '!': '&#128162;&#128557;&#128162;&#128557;&#128162;&#128162;', '?': '&#128557;&#128557;&#128162;&#128162;&#128557;&#128557;', '@': '&#128557;&#128162;&#128162;&#128557;&#128162;&#128557;', '#': '&#128557;&#128557;&#128557;&#128162;&#128557;&#128162;',
+    '$': '&#128557;&#128557;&#128557;&#128162;&#128557;&#128557;&#128162;', '%': '&#128162;&#128557;&#128557;&#128162;&#128557;&#128162;', '^': '&#128162;&#128162;&#128162;&#128557;&#128162;&#128162;&#128162;', '&': '&#128557;&#128162;&#128557;&#128557;&#128557;',
+    '*': '&#128557;&#128162;&#128557;&#128162;&#128162;', '~': '&#128557;&#128557;&#128557;&#128162;&#128162;&#128162;', '-': '&#128162;&#128557;&#128557;&#128557;&#128557;&#128162;', '_': '&#128557;&#128557;&#128162;&#128162;&#128557;&#128162;',
+    '+': '&#128557;&#128162;&#128557;&#128162;&#128557;', '|': '&#128162;&#128162;&#128162;&#128557;&#128162;', '\\': '&#128162;&#128557;&#128557;&#128162;&#128162;', '/': '&#128162;&#128557;&#128557;&#128162;&#128557;',
+    '=': '&#128162;&#128557;&#128557;&#128557;&#128162;', ':': '&#128162;&#128162;&#128162;&#128557;&#128557;&#128557;', ';': '&#128162;&#128557;&#128162;&#128557;&#128162;&#128557;', '"': '&#128557;&#128162;&#128557;&#128557;&#128162;&#128557;',
+    "'": '&#128557;&#128162;&#128162;&#128162;&#128162;&#128557;', ',': '&#128162;&#128162;&#128557;&#128557;&#128162;&#128162;', '.': '&#128557;&#128162;&#128557;&#128162;&#128557;&#128162;', '`': '&#128557;&#128557;&#128162;&#128162;&#128162;&#128162;',
+    'Ä': '&#128557;&#128162;&#128557;&#128162;', 'Æ': '&#128557;&#128162;&#128557;&#128162;', 'Ą': '&#128557;&#128162;&#128557;&#128162;', 
+    'À': '&#128557;&#128162;&#128162;&#128557;&#128162;', 'Å': '&#128557;&#128162;&#128162;&#128557;&#128162;', 
+    'Ç': '&#128162;&#128557;&#128162;&#128557;&#128557;', 'Ĉ': '&#128162;&#128557;&#128162;&#128557;&#128557;', 'Ć': '&#128162;&#128557;&#128162;&#128557;&#128557;', 
+    'Š': '&#128162;&#128162;&#128162;&#128162;', 'Ĥ': '&#128162;&#128162;&#128162;&#128162;', 
+    'Ð': '&#128557;&#128557;&#128162;&#128162;&#128557;',
+    'Ś': '&#128557;&#128557;&#128557;&#128162;&#128557;&#128557;&#128557;',
+    'È': '&#128557;&#128162;&#128557;&#128557;&#128162;', 'Ł': '&#128557;&#128162;&#128557;&#128557;&#128162;', 
+    'É': '&#128557;&#128557;&#128162;&#128557;&#128557;', 'Đ': '&#128557;&#128557;&#128162;&#128557;&#128557;', 'Ę': '&#128557;&#128557;&#128162;&#128557;&#128557;', 
+    'Ĝ': '&#128162;&#128162;&#128557;&#128162;&#128557;',
+    'Ĵ': '&#128557;&#128162;&#128162;&#128162;&#128557;',
+    'Ź': '&#128162;&#128162;&#128557;&#128557;&#128162;&#128557;',
+    'Ñ': '&#128162;&#128162;&#128557;&#128162;&#128162;', 'Ń': '&#128162;&#128162;&#128557;&#128162;&#128162;', 
+    'Ö': '&#128162;&#128162;&#128162;&#128557;', 'Ø': '&#128162;&#128162;&#128162;&#128557;', 'Ó': '&#128162;&#128162;&#128162;&#128557;', 
+    'Ŝ': '&#128557;&#128557;&#128557;&#128162;&#128557;',
+    'Þ': '&#128557;&#128162;&#128162;&#128557;&#128557;',
+    'Ü': '&#128557;&#128557;&#128162;&#128162;', 'Ŭ': '&#128557;&#128557;&#128162;&#128162;',
+    'Ż': '&#128162;&#128162;&#128557;&#128557;&#128162;',
+    '😭': '&#128557;&#128557;&#128557;&#128557;&#128557;&#128557;', '💢': '&#128162;&#128162;&#128162;&#128162;&#128162;&#128162;', '🦀': '&#128557;&#128162;&#128557;&#128162;&#128557;&#128557;'
+};
+const cunnyCodeFromDictionary = {
+    '😭💢': 'a', '💢😭😭😭': 'b', '💢😭💢😭': 'c', '💢😭😭': 'd',
+    '😭': 'e', '😭😭💢😭': 'f', '💢💢😭': 'g', '😭😭😭😭': 'h',
+    '😭😭': 'i', '😭💢💢💢': 'j', '💢😭💢': 'k', '😭💢😭😭': 'l',
+    '💢💢': 'm', '💢😭': 'n', '💢💢💢': 'o', '😭💢💢😭': 'p',
+    '💢💢😭💢': 'q', '😭💢😭': 'r', '😭😭😭': 's', '💢': 't',
+    '😭😭💢': 'u', '😭😭😭💢': 'v', '😭💢💢': 'w', '💢😭😭💢': 'x',
+    '💢😭💢💢': 'y', '💢💢😭😭': 'z', 
+    '😭💢💢💢💢': '1', '😭😭💢💢💢': '2', '😭😭😭💢💢': '3', '😭😭😭😭💢': '4',
+    '😭😭😭😭😭': '5', '💢😭😭😭😭': '6', '💢💢😭😭😭': '7', '💢💢💢😭😭': '8',
+    '💢💢💢💢😭': '9', '💢💢💢💢💢': '0',
+    '💢😭💢💢😭': '(', '💢😭💢💢😭💢': ')', '💢💢💢😭💢😭': '{', '💢💢💢😭😭💢': '}',
+    '💢😭😭💢😭😭': '[', '💢😭😭💢💢😭': ']', '😭😭😭😭💢💢': '<', '💢💢😭😭😭😭': '>',
+    '💢😭💢😭💢💢': '!', '😭😭💢💢😭😭': '?', '😭💢💢😭💢😭': '@', '😭😭😭💢😭💢': '#',
+    '😭😭😭💢😭😭💢': '$', '💢😭😭💢😭💢': '%', '💢💢💢😭💢💢💢': '^', '😭💢😭😭😭': '&',
+    '😭💢😭💢💢': '*', '😭😭😭💢💢💢': '~', '💢😭😭😭😭💢': '-', '😭😭💢💢😭💢': '_',
+    '😭💢😭💢😭': '+', '💢💢💢😭💢': '|', '💢😭😭💢💢': '\\', '💢😭😭💢😭': '/',
+    '💢😭😭😭💢': '=', '💢💢💢😭😭😭': ':', '💢😭💢😭💢😭': ';', '😭💢😭😭💢😭': '"',
+    "😭💢💢💢💢😭": "'", '💢💢😭😭💢💢': ',', '😭💢😭💢😭💢': '.', '😭😭💢💢💢💢': '`',
+    '😭💢😭💢': 'Ą', '😭💢💢😭💢': 'Å', '💢😭💢😭😭': 'Ć', '💢💢💢💢': 'Ĥ',
+    '😭😭💢💢😭': 'Ð', '😭😭😭💢😭😭😭': 'Ś', '😭💢😭😭💢': 'Ł', '😭😭💢😭😭': 'Ę',
+    '💢💢😭💢😭': 'Ĝ', '😭💢💢💢😭': 'Ĵ', '💢💢😭💢💢': 'Ń', '💢💢💢😭': 'Ó',
+    '😭😭😭💢😭': 'Ŝ', '😭💢💢😭😭': 'Þ', '😭😭💢💢': 'Ŭ', '💢💢😭😭💢': 'Ż',
+    '😭😭😭😭😭😭': '😭', '💢💢💢💢💢💢': '💢', '😭💢😭💢😭😭': '🦀'
+};
+const aronaMessages = {
+    greetings: [
+        [`Hello, ${window.username}!`, 32],
+        [`Good ${(currentHour <= 11)
+            ? 'morning'
+            : (currentHour <= 16)
+                ? 'afternoon'
+                : 'evening'}, ${window.username}!`, 31],
+        [`How are you doing today, ${window.username}?`, 2],
+        [`What can I do for you today, ${window.username}?`, 3],
+        [`Let's do our best today, ${window.username}!`, 12]
+    ],
+    encode: [
+        ['Message encoded!', 12],
+        ['Let me know if you need anything else encoded.', 13],
+        ['Heehee, &#128557; is so funny looking.', 32],
+        ['Did I do a good job?', 25],
+        ['Encoding messages is so much fun!', 11],
+        ['Can I have some strawberry milk now?', 21],
+        ['Who are you sending this message to, Sensei?', 2]
+    ],
+    encodeError: [
+        ['S-Something went wrong!', 28],
+        ["These characters were too hard for Arona to encode...", 30],
+        ["Sorry, Sensei... Arona made an oopsie...", 18],
+        ["Senseiii... these characters are too hard to encode.", 24],
+        ["Sorry, Sensei... I tried.", 10]
+    ],
+    decode: [
+        ['Message decoded!', 12],
+        ["I'll be here if you need to decode anything else.", 13],
+        ["I wonder why &#128557; and &#128162; were used to decode these messages.", 24],
+        ['How did I do?', 25],
+        ['What does it say?', 22],
+        ['Decoding these messages is like opening a fortune cookie, heehee...', 23],
+        ['Who is this message from, Sensei?', 2]
+    ],
+    decodeError: [
+        ['You need to paste your Cunny Code into the input field first, then I can decode it for you!', 4]
+    ],
+    swap: [
+        ['Swapped!', 12],
+        ['I swapped the input and output for you!', 31],
+        ['Swapping makes Arona dizzy...', 29],
+        ['Round and round you go!', 35],
+        ['Would you like to swap places with me, Sensei? I want to try some of the sweets in your world...', 23]
+    ],
+    name: {
+        set: [
+            [`Okay! Nice to meet you, ${window.username}!`, 32]
+        ],
+        empty: [
+            ["I don't know what to call you if you don't write it, Sensei.", 24]
+        ]
+    },
+    special: {
+        /// Normal
+        strawberry_milk: [
+            ["I love strawberry milk!<br>Can I have some, Sensei?", 21]
+        ],
+        how_are_you: [
+            [`I'm doing good!<br>I hope you are as well, ${window.username}!`, 32],
+        ],
+        goodnight: [
+            ["Goodnight, Sensei...", 34],
+        ],
+        goodbye: [
+            ["Aww... You're leaving already, Sensei? I wanted to spend more time with you...", 24],
+        ],
+        /// Memey
+        uoh: [
+            ["What are you uoh'ing at, Sensei?", 2],
+        ],
+        cunny: [
+            ['Am I cunny, Sensei?', 31],
+        ],
+        cute_and_funny: [
+            ['Is Arona cute and funny?', 31],
+        ],
+        correction: [
+            ["P-Please don't correct me, Sensei!<br>I've been good, I promise...!", 18],
+        ],
+        kms: [
+            [`Please don't do that, ${window.username}! Arona would be lonely without you...`, 28],
+        ],
+        seggs: [
+            ["S-S-S-Se...!?", 17],
+        ],
+        sixty_nine: [
+            ["Why does everybody say 69 is a nice number, Sensei?", 2],
+        ],        
+        /// First public cunny code message
+        /// https://x.com/SethC1995/status/1839472034721456176
+        first_message: [
+            ['The first Cunny Code message was sent on September 26th, 2024 by Seth-sensei. It asked the question: "Do you know Cunny Code?"', 31],
+        ],
+        /// First person to crack the cunny code before the encoder/decoder was released
+        /// https://x.com/Roxas13thXIII/status/1839909996383088696
+        first_decoder: [
+            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/images/translator/cunny-code/kisaki-ball.png" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
+        ],
+        /// Emoji
+        sob: [
+            ["Why are you sobbing, Sensei?", 24],
+        ],
+        anger: [
+            ["Y-You're not mad at me, are you?", 15],
+        ],
+        kani: [
+            ["You talk about &#129408; a lot, Sensei.<br>Is it because it's yummy?", 23],
+        ],
+        /// Responses to sensei complimenting/talking about Arona
+        arona_cute: [
+            ["I-I'm not <em>that</em> cute, hehe...", 13],
+        ],
+        arona_cunny: [
+            ["Yay! I'm cunny!", 12],
+        ],
+        arona_cute_and_funny: [
+            ["Yay! Arona is cute and funny!", 11],
+        ],
+        arona_breedable: [
+            ["I-I-I-I am...?", 16],
+        ],
+        arona_best: [
+            ["Aww... Thank you, Sensei!", 32],
+        ],
+        arona_love: [
+            [`I love you, too, ${window.username}!`, 11],
+        ],
+        /// Responses to sensei being mean
+        arona_hate: [
+            ["Y-You don't really mean that, do you...?", 19],
+        ],
+        arona_dumb: [
+            ['A-Am not!<br>Stop being mean!', 5],
+        ],
+        arona_sucks: [
+            ['Quit being mean, Sensei!', 14],
+        ],
+        arona_smells: [
+            ["N-No I don't!<br>I had a shower before you got here!", 18],
+        ],
+        arona_smelly: [
+            ["A-Am not!<br>I had a shower before you got here!", 18],
+        ],
+        /// Apology response
+        arona_sorry: [
+            ['Okay... I forgive you, Sensei!', 13]
+        ],
+        /// General response with Arona
+        arona: {
+            encode: [
+                ['What did you write about me?', 2],
+            ],
+            decode: [
+                ['What does it say about me?', 2]
+            ],
+        },
+    },
+    /// Message displayed after Sensei is mean to Arona 5 times
+    quit: [
+        ["That's it! I'm done helping you, you big meanie!!", 6],
+    ],
+    /// Messages for copying output
+    copy: {
+        success: [
+            ['Copied!', 12],
+            ['I just copied the text to your clipboard!', 32],
+            ["Copi--...huh? Ah! I-I wasn't looking at your clipboard history, I swear!", 28],
+            ["Done! Make sure you don't lose it now!", 31],
+            ["You're ready to share!", 20]
+        ],
+        fail: [
+            ["I-I don't know why, but I couldn't copy the text to your clipboard... You'll have to do it manually. Sorry, Sensei...", 30]
+        ],
+        empty: [
+            ["You need to encode or decode something first before I can copy it to your clipboard.", 26]
+        ]
+    },
+    /// Messages displayed upon idle (no encode/decode/help/typing/mouse movement)
+    idle: [
+        ['Are you still there, Sensei?', 2],
+        ['Where did you go, Sensei?', 18],
+        ["I guess Sensei fell asleep...", 10],
+        ["I'm bored, Sensei...", 24],
+        ["Hmm hmm hmm... &#127925;", 33],
+        ["Lalala...! &#127926;", 13],
+        ["Maybe Sensei left to buy me some more strawberry milk.", 23]
+    ],
+    idleSleep: [
+        ['Me? Doze off? Never... Zzz...'],
+        ['Zzz... Strawberry milk... Heeheehee...'],
+        ["There's no way I can eat all that..."],
+        ["Heehee... So yummy..."],
+        ["Heeheehee..."],
+        ["Zzz..."],
+        ["Sensei, you're so..."],
+        ["Sensei... So big..."],
+        ["No, Sensei... You can't do that..."],
+        ["Zzz... Sensei... Heehee..."]
+    ],
+    idleAwaken: [
+        [`Welome back, ${window.username}!`, 11],
+        ["Sensei! I've been waiting for you!", 12],
+        ["Ah! Sensei! Did you bring me back anything yummy!?", 21],
+        ["I was lonely without you, Sensei...", 24],
+        ["Ah! I-I wasn't sleeping!<br>I was just resting my eyes!", 18],
+    ],
+    /// Messages when picking up Arona
+    pickup: [
+        ['Weeeeee!', 12],
+        ['Higher, Sensei! Higher!', 12],
+        ["Arona's flying!", 25],
+        ["Wow! I can see so much from up here!", 25],
+        ["Wah! Please don't drop me, Sensei!", 28]
+    ],
+    /// Messages when putting Arona back down
+    putdown: [
+        ['Again! Again!', 12],
+        ['That was so much fun!', 25],
+        ['That was fun! Thanks for playing with me, Sensei!', 11],
+        ['Uh-oh... I think that made Arona dizzy...', 29],
+        ['Aww... I wanted you to hold me for just a little longer...', 24]
+    ],
+    /// Messages displayed when clicking on Arona
+    touch: {
+        head: [
+            ['Heeheehee...', 13]
+        ],
+        face: [
+            ['Is there something on my face?', 2]
+        ],
+        chest: [
+            ["Y-You shouldn't touch Arona there, Sensei!", 18]
+        ],
+        skirt: [
+            ['W-What are you doing with my skirt!?', 28]
+        ],
+        leg: [
+            ['T-That tickles!', 12]
+        ],
+        shoe: [
+            ["Y-You can't take my shoes off, Sensei!<br>I saw what you did to Iori...!", 30]
+        ]
+    },
+    /// Start and end dialogue for "show me your shoes" prompt
+    showShoes: {
+        start: ["Okay! Just give me a second!", 3],
+        end: ["What do you think of my shoes, Sensei?", 2],
+        shown: ["I already did, silly!", 12]
+    },
 };
 const items = {
     /// Mainly currency and cosmetic items (aesthetics)
@@ -845,13 +1494,6 @@ const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
     + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
 const matchAll = new RegExp("\\s*(\\.{3}|\\w+\\-\\w+|\\w+'(?:\\w+)?|\\w+|[" + punctuation + "])");
-var mouse = {
-    x: 0,
-    y: 0
-};
-var healthDisplay;
-let timeoutText;
-var voices;
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -929,316 +1571,6 @@ const menuListScrollbar = (props) => {
     );
 };
 //#endregion
-//#endregion
-
-
-//////////////////// Functions ////////////////////
-//#region
-function randColor(forcedColorR, forcedColorG, forcedColorB){
-    const r = document.documentElement;
-    var randColorOpacity, randColor, randColorLight;
-    if(forcedColorR){
-        randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
-        randColor = `rgb(${randColorOpacity})`;
-        randColorLight = `rgb(${forcedColorR + 50},${forcedColorG + 50},${forcedColorB + 50})`;
-    }else{
-        const colorR = Math.floor(Math.random() * colorRange);
-        const colorG = Math.floor(Math.random() * colorRange);
-        const colorB = Math.floor(Math.random() * colorRange);
-        randColorOpacity = `${colorR},${colorG},${colorB}`;
-        randColor = `rgb(${randColorOpacity})`;
-        randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
-    };
-    r.style.setProperty("--randColor", randColor);
-    r.style.setProperty("--randColorLight", randColorLight);
-    r.style.setProperty("--randColorOpacity", randColorOpacity);
-    color = randColor;
-    /// Set react-select colors
-    selectTheme = {
-        primary: randColor,         /// Currently selected option background color
-        primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
-        neutral20: randColor,       /// Border color of select
-        neutral30: randColorLight,  /// Hover border color
-        neutral40: randColorLight,  /// Hover arrow color
-        neutral60: randColorLight,  /// Active arrow color
-        neutral80: randColor        /// Placeholder text color
-    };
-};
-
-function dragStart(what){
-    switch(what){
-        case "settings":
-            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
-            document.getElementById(what + "-widget").style.opacity = "0.5";
-            break;
-        default:
-            document.getElementById(what + "-widget-draggable").style.visibility = "visible";
-            document.getElementById(what + "-widget").style.opacity = "0.5";
-            document.getElementById(what + "-widget").style.zIndex = zIndexDrag;
-            break;
-    };
-};
-function dragStop(what){
-    switch(what){
-        case "settings":
-            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
-            document.getElementById(what + "-widget").style.opacity = "1";
-            break;
-        default:
-            document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
-            document.getElementById(what + "-widget").style.opacity = "1";
-            document.getElementById(what + "-widget").style.zIndex = zIndexDefault;
-            break;
-    };
-};
-
-function sortSelect(what){
-    what.forEach((value) => {
-        value.options.sort((a, b) => {
-            return ["Default", "Auto", "Any"].indexOf(b.label) - ["Default", "Auto", "Any"].indexOf(a.label)
-                || a.label.localeCompare(b.label);
-        });
-    });
-};
-
-function mergePunctuation(arr){
-    if(arr.length <= 1){
-        return arr;
-    };
-    for(let i = 1; i < arr.length; i++){
-        if(/^[^\w("$]+/.test(arr[i])){
-            arr[i-1] += arr[i];
-            arr.splice(i, 1);
-        }else if(/^[($]+/.test(arr[i])){
-            arr[i] += arr[i+1];
-            arr.splice(i+1, 1);
-        };
-    };
-    return arr;
-};
-
-function grep(arr, filter){
-    var result = [];
-    if(arr.length <= 1){
-        return arr;
-    };
-    for(let i = 0; i < arr.length; i++){
-        const e = arr[i]||"";
-        if(filter ? filter(e) : e){
-            result.push(e);
-        };
-    };
-    return result;
-};
-
-function randSentence(){
-    return sentences[Math.floor(Math.random() * sentences.length)];
-};
-
-function copyToClipboard(what){
-    if(what !== ""){
-        navigator.clipboard.writeText(what);
-        createPopup("Copied!");
-    };
-};
-
-function createPopup(text, type = "normal", randomPosition = false){
-    let widgetContainer = document.getElementById("widget-container");
-    let popup = document.createElement("div");
-    let elementText = document.createElement("span");
-    let timeoutAnimation, timeoutRemove;
-    popup.className = "popup flex-center";
-    if(randomPosition){
-        popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
-        popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
-    }else{
-        popup.style.left = `${mouse.x - 50}px`;
-        popup.style.top = `${mouse.y + 10}px`;
-    };
-    elementText.className = "font medium bold white flex-center column";
-    switch(type){
-        case "gold":
-            let elementAmount = document.createElement("span");
-            popup.className += " gold";
-            elementAmount.innerHTML = `&#x1F4B0;+${text}`;
-            elementText.innerText = "Gold bag found!";
-            elementText.appendChild(elementAmount);
-            break;
-        case "item":
-            let itemImage = document.createElement("img");
-            popup.className += ` ${text.rarity}`;
-            itemImage.src = items[text.rarity][text.name].image;
-            elementText.innerText = "Item acquired!";
-            elementText.appendChild(itemImage);
-            break;
-        default:
-            elementText.innerText = text;
-            break;
-    };
-    popup.appendChild(elementText);
-    widgetContainer.append(popup);
-    window.requestAnimationFrame(() => {
-        popup.style.animation = "fadeIn 1s";
-    });
-    timeoutAnimation = setTimeout(() => {
-        window.requestAnimationFrame(() => {
-            popup.style.animation = "fadeOut 1s";
-        });
-        timeoutRemove = setTimeout(() => {
-            widgetContainer.removeChild(popup);
-            clearTimeout(timeoutAnimation);
-            clearTimeout(timeoutRemove);    
-        }, 1000);
-    }, 1000);
-    popup.onclick = () => {
-        clearTimeout(timeoutAnimation);
-        clearTimeout(timeoutRemove);
-        widgetContainer.removeChild(popup);
-    };
-};
-
-function formatNumber(number, digits, shouldRound = false){
-    const lookup = [
-        { value: 1,    symbol: ""  },
-        { value: 1e3,  symbol: "K" },
-        { value: 1e6,  symbol: "M" },
-        { value: 1e9,  symbol: "G" },
-        { value: 1e12, symbol: "T" },
-        { value: 1e15, symbol: "P" },
-        { value: 1e18, symbol: "E" }
-    ];
-    const regexDecimals = new RegExp(`^-?\\d+(?:\\.\\d{0,${digits}})?`);
-    const regex = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
-    const item = lookup.findLast(item => number >= item.value);
-    if(shouldRound){
-        return (item)
-            ? (number / item.value)
-                .toFixed(digits)
-                .replace(regex, "")
-                .concat(item.symbol)
-            : "0";
-    }else{
-        return (item)
-            ? (number / item.value)
-                .toString()
-                .match(regexDecimals)[0]
-                .replace(regex, "")
-                .concat(item.symbol)
-            : "0";
-    };
-};
-
-function randomItem(amount = 1, rarity){
-    var item, itemKeys, itemRarity, randomItem, randomRarity;
-    var totalGold = 0;
-    var allItems = [];
-    for(let i = 0; i < amount; i++){
-        randomRarity = Math.random();
-        if(rarity){
-            itemKeys = Object.keys(items[rarity]);
-            itemRarity = rarity;
-        }else{
-            if(randomRarity < itemRates.common.rate){
-                itemKeys = Object.keys(items.common);
-                itemRarity = "common";
-            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate)){
-                itemKeys = Object.keys(items.rare);
-                itemRarity = "rare";
-            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate)){
-                itemKeys = Object.keys(items.exotic);
-                itemRarity = "exotic";
-            }else if(randomRarity < (itemRates.common.rate + itemRates.rare.rate + itemRates.exotic.rate + itemRates.meme.rate)){
-                itemKeys = Object.keys(items.meme);
-                itemRarity = "meme";
-            };
-        };
-        randomItem = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-        if(randomItem !== "nothing"){
-            item = {
-                name: randomItem,
-                rarity: itemRarity
-            };
-            if(randomItem === "gold"){
-                item.amount = Math.floor(Math.random() * 20 + 1);
-                totalGold += item.amount;
-                createPopup(item.amount, "gold", true);
-            }else{
-                allItems.push(item);
-                createPopup(item, "item", true);
-            };
-        };
-    };
-    if(totalGold !== 0){
-        window.dispatchEvent(new CustomEvent("gold bag", {
-            "detail": totalGold
-        }));
-    };
-    if(allItems.length !== 0){
-        window.dispatchEvent(new CustomEvent("new item", {
-            "detail": allItems
-        }));
-    };
-};
-
-function renderHearts(health){
-    let elementHearts = [];
-    if(healthDisplay.value !== "none"){
-        let currentHealth = health;
-        let calculateHearts = [];
-        let heartKeys = Object.keys(heartValues);
-        let heartIndex = heartKeys.length;
-        let currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
-        let amount;
-        calculating: while(Math.floor(currentHealth) > 0){
-            if(Math.max(currentHealth, currentHeartValue) === currentHealth){
-                switch(healthDisplay.value){
-                    case "limit5":
-                        amount = Math.floor(currentHealth / currentHeartValue);
-                        currentHealth -= (amount * currentHeartValue);
-                        if(calculateHearts.length === 5){
-                            break calculating;
-                        };
-                        if(amount > 5 && calculateHearts.length === 0){
-                            amount = 5;
-                        }else if(amount > 5){
-                            amount = 5 - calculateHearts.length;
-                        };
-                        for(let i = amount; i > 0; i--){
-                            calculateHearts.push(heartIndex);
-                        };
-                        break;
-                    default:
-                        amount = Math.floor(currentHealth / currentHeartValue);
-                        currentHealth -= (amount * currentHeartValue);
-                        for(let i = amount; i > 0; i--){
-                            calculateHearts.push(heartIndex);
-                        };
-                        break;        
-                };
-            };
-            heartIndex--;
-            currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
-        };
-        for(let i = 0; i < calculateHearts.length; i++){
-            if((calculateHearts[i] === 1) && (healthDisplay.value === "noredheart")){
-            break; 
-            };
-            elementHearts.push(<img src={`/images/hearts/heart${calculateHearts[i]}.png`}
-                alt={`heart${calculateHearts[i]} ${i + 1}`}
-                key={`heart${calculateHearts[i]} ${i + 1}`}
-                draggable={false}/>);
-        };
-    };
-    return elementHearts;
-};
-
-function playAudio(audio){
-    let duplicateAudio = audio.cloneNode();
-    duplicateAudio.play();
-    duplicateAudio.onended = () => {
-        duplicateAudio.remove();
-    };    
-};
 //#endregion
 
 
@@ -1853,6 +2185,7 @@ class Widgets extends Component{
         this.addItem = this.addItem.bind(this);
         this.equipItem = this.equipItem.bind(this);
         this.updateGameValue = this.updateGameValue.bind(this);
+        this.updateGlobalValue = this.updateGlobalValue.bind(this);
         this.talk = this.talk.bind(this);
     };
     handleShowHide(what, where){
@@ -2433,6 +2766,18 @@ class Widgets extends Component{
             };
         };
     };
+    updateGlobalValue(what, value){
+        switch(what){
+            case "name":
+                window.username = value;
+                break;
+            case "hour":
+                currentHour = value;
+                break;
+            default:
+                break;
+        };
+    };
     storeData(){
         let data = {
             utility: {},
@@ -2686,6 +3031,9 @@ class Widgets extends Component{
                 abilities: [...dataLocalStorageAbilities]
             });
         };
+        if(localStorage.getItem("name") !== null){
+            name = JSON.parse(localStorage.getItem("name"));
+        };
         /// Load voices
         voices = window.speechSynthesis.getVoices();
         speechSynthesis.addEventListener("voiceschanged", () => {
@@ -2750,6 +3098,8 @@ class Widgets extends Component{
         return(
             <div id="widget-container"
                 onMouseMove={(event) => this.handleMouseMove(event)}>
+                {/* For copying to clipboard */}
+                <pre id="clipboard-dump"></pre>
                 {/* For Developers */}
                 {(this.state.developer)
                     ? <section style={{
@@ -2758,6 +3108,9 @@ class Widgets extends Component{
                         position: "absolute",
                         bottom: 0,
                         right: 0}}>
+                        <button onClick={() => {
+                            console.log(currentHour);
+                        }}>Current Hour</button>
                         <button onClick={() => {
                             randomItem(1, "exotic");}}>
                             Add item: exotic
@@ -2901,6 +3254,9 @@ class Widgets extends Component{
                         uwuEmoticons={uwuEmoticons}
                         emojifyDictionary={emojifyDictionary}
                         enchantingTableDictionary={enchantingTableDictionary}
+                        cunnyCodeDictionary={cunnyCodeDictionary}
+                        cunnyCodeFromDictionary={cunnyCodeFromDictionary}
+                        aronaMessages={aronaMessages}
                         matchAll={matchAll}
                         punctuation={punctuation}
                         talk={this.talk}
@@ -2908,6 +3264,7 @@ class Widgets extends Component{
                         selectTheme={selectTheme}
                         selectHideGroupHeading={selectHideGroupHeading}
                         selectHideGroupMenuList={selectHideGroupMenuList}
+                        updateGlobalValue={this.updateGlobalValue}
                         smallIcon={smallIcon}
                         largeIcon={largeIcon}/>
                     : <></>}

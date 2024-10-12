@@ -447,13 +447,15 @@ body{
 .cut-scrollbar-corner-part-2{
     padding: 0rem;
     margin: 0rem;
+    padding-left: 0.4em;
     text-align: center;
     overflow-y: scroll;
     overflow-x: hidden;
     font-size: 0.948em;
+    background-color: white;
     &.textarea{
         height: 6.3em;
-        max-width: 30.1em;
+        max-width: 29.8em;
         width: calc(100vmin - 4.05em);
         border: none;
         resize: none;
@@ -462,7 +464,7 @@ body{
     }
     &.p{
         height: 100%;
-        max-width: 24.5em;
+        max-width: 24em;
         width: calc(100vmin - 4.05em);
         word-wrap: break-word;
         outline: none;
@@ -1015,6 +1017,11 @@ body{
 .float{
     position: absolute;
     &.bottom{
+        &.relative{
+            position: relative;
+            margin-bottom: -1.78em;
+            bottom: 2.4em;
+        }    
         width: 21.3em;
         margin-left: 0.5em;
         bottom: 2.1em;
@@ -3890,6 +3897,45 @@ body{
     max-width: 16px;
     width: 100%;
 }
+
+.dialogue{
+    cursor: default;
+    pointer-events: none;
+    position: absolute;
+    text-align: center;
+    background: rgba(245, 245, 245, 0.9);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(250, 250, 250, 0.7);
+    border-radius: 30px;
+    padding: 8px;
+    &:after{
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        margin-left: -10px;
+        border-bottom: 20px solid #edf6f6;
+        border-right: 10px solid transparent;
+        border-left: 10px solid transparent;
+    }
+    &:before {
+        content: "";
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        margin-left: -10px;
+        border-bottom: 20px solid #333;
+        border-bottom: 20px solid rgba(50, 50, 50, 0.5);
+        border-right: 10px solid transparent;
+        border-left: 10px solid transparent;
+    }
+}
+
+.arona-action{
+    position: relative;
+    cursor: pointer;
+    opacity: 0;
+}
 //#endregion
 
 
@@ -4257,13 +4303,108 @@ body{
 
 #translator-widget{
     font-size: 1.11em;
-    max-width: 26.24em;
-    width: 100vmin;
+    #translator-widget-animation{
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        will-change: background-image;
+    }
     #translator-preview-cut-corner{
         margin-top: 0.9rem;
         #translator-translated-text{
             transition: text-shadow 0.4s;
             white-space: pre-wrap;
+        }
+    }
+    #translator-image{
+        max-height: 17em;
+    }
+    #translator-image-additions-cunny-code{
+        position: absolute;
+        left: 2.5em;
+        max-width: 8.5em;
+        max-height: 21em;
+        width: 100%;
+        height: 100%;
+        #translator-cunny-code-arona-body{
+            #translator-cunny-code-arona-halo{
+                left: 4.5em;
+                top: 0.6em;
+                height: 1em;
+                width: 2.6em;
+                transform: rotate(28deg);
+                border-radius: 100%;   
+            }
+            #translator-cunny-code-arona-head{
+                left: 3.2em;
+                top: 0.6em;
+                height: 2em;
+                width: 3.2em;
+                border-radius: 100%;
+                transform: rotate(10deg);
+            }
+            #translator-cunny-code-arona-face{
+                left: 3.4em;
+                top: 0.7em;
+                height: 1.9em;
+                width: 2.4em;
+                border-radius: 100%;
+            }
+            #translator-cunny-code-arona-chest{
+                left: 3em;
+                top: 0.9em;
+                height: 3em;
+                width: 2.8em;
+                border-radius: 100%;              
+            }
+            #translator-cunny-code-arona-skirt{
+                left: 2em;
+                top: 1.5em;
+                height: 3.2em;
+                width: 5em;
+                border-radius: 100%;
+            }
+            #translator-cunny-code-arona-leg1{
+                left: 3.2em;
+                top: 1.6em;
+                height: 2em;
+                width: 1.1em;
+                border-radius: 0px 0px 0px 70%;
+            }
+            #translator-cunny-code-arona-leg2{
+                left: 4.7em;
+                top: -0.4em;
+                height: 2em;
+                width: 1.1em;
+                border-radius: 0 0 70% 0;
+            }
+            #translator-cunny-code-arona-leg3{
+                left: 3.2em;
+                top: 0.4em;
+                height: 3.4em;
+                width: 1em;
+                border-radius: 70%;
+            }
+            #translator-cunny-code-arona-leg4{
+                left: 4.8em;
+                top: -3em;
+                height: 3.4em;
+                width: 1em;
+                border-radius: 70%;
+            }
+            #translator-cunny-code-arona-shoes{
+                left: 3.3em;
+                top: -2.8em;
+                height: 1.9em;
+                width: 2.7em;
+                border-radius: 10px 20px 5px 5px;
+            }
+        }
+        #translator-cunny-code-arona-dialogue{
+            position: relative;
+            left: 0.2em;
+            top: -16.2em;
+            will-change: visibility;
         }
     }
 }
@@ -5106,6 +5247,11 @@ body{
 @keyframes pulse{
     to { transform: scale(1.5);
          opacity: 0; }
+}
+
+@keyframes dialogueOut{
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 //#region Text

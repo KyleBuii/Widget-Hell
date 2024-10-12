@@ -12,6 +12,16 @@ import Select from "react-select";
 /// Variables
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
 let timeoutCopy;
+let timeoutDialogue;
+let timeoutDialogueOut;
+let timeoutIdle;
+let timeoutSleep;
+let intervalSleepTalk;
+let cunnyCodeEncode = false; /// Checks if encoding/decoding is done once OR an error was dismissed
+let cunnyCodeError = false;  /// Checks if encoding/decoding error is done once
+let cunnyCodeSpecial = false; /// Checks if a special message is done once
+let cunnyCodeArona = false; /// Checks if an arona compliment/hate message is done once
+let cunnyCodeAronaAnger = 0; /// Arona gets angry after 5 insults
 /// Select options
 const optionsTranslateFrom = [
     {
@@ -27,6 +37,7 @@ const optionsTranslateFrom = [
             {value: "braille", label: "Braille"},
             {value: "moorseCode", label: "Moorse Code"},
             {value: "phoneticAlphabet", label: "Phonetic Alphabet"},
+            {value: "cunnyCode", label: "Cunny Code"},
         ]
     },
     {
@@ -58,6 +69,7 @@ const optionsTranslateTo = [
             {value: "spaced", label: "Spaced"},
             {value: "mirrorWriting", label: "Mirror Writing"},
             {value: "enchantingTable", label: "Enchanting Table"},
+            {value: "cunnyCode", label: "Cunny Code"},
         ]
     },
     {
@@ -83,6 +95,8 @@ class WidgetTranslator extends Component{
     constructor(props){
         super(props);
         this.state = {
+            disableInput: false,
+            idle: false,
             input: "",
             convert: "",
             converted: "",
@@ -90,6 +104,8 @@ class WidgetTranslator extends Component{
             to: {},
             replaceFrom: "",
             replaceTo: "",
+            author: "Me",
+            authorLink: "",
             reverseWord: false,
             reverseSentence: false,
             caseTransformLower: false,
@@ -122,9 +138,42 @@ class WidgetTranslator extends Component{
         if(speechSynthesis.speaking){
             speechSynthesis.cancel();
         };
+        switch(true){
+            /// Set idle to true after 60 seconds
+            case ((this.state.from.value === "cunnyCode") || (this.state.to.value === "cunnyCode")):
+                clearTimeout(timeoutIdle);
+                timeoutIdle = setTimeout(() => {
+                    this.setState({
+                        idle: true
+                    }, () => {
+                        this.convertToText();    
+                    });
+                    timeoutIdle = clearTimeout(timeoutIdle);
+                }, 60000);
+                break;
+            default: break;
+        };
+    };
+    handleCunnyCode(type, subtype, subsubtype){
+        let elementDialogue = document.getElementById("translator-cunny-code-arona-dialogue");
+        let elementImage = document.getElementById("translator-image");
+        elementDialogue.style.visibility = "visible";
+        elementDialogue.style.animation = "unset";
+        clearTimeout(timeoutDialogue);
+        clearTimeout(timeoutDialogueOut);
+        let randomMessage;
+        if(subsubtype !== undefined){
+            randomMessage = this.props.aronaMessages[type][subtype][subsubtype][Math.floor(Math.random() * this.props.aronaMessages[type][subtype][subsubtype].length)];
+        }else if(subtype !== undefined){
+            randomMessage = this.props.aronaMessages[type][subtype][Math.floor(Math.random() * this.props.aronaMessages[type][subtype].length)];
+        }else{
+            randomMessage = this.props.aronaMessages[type][Math.floor(Math.random() * this.props.aronaMessages[type].length)];
+        };
+        elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
+        elementImage.src = `./images/translator/cunny-code/arona/${randomMessage[1]}.png`;
     };
     /// Convert the "from" language to english
-    convertFromText(){
+    convertFromText(swap){
         let stringConvertFrom = "";
         switch(this.state.from.value){
             /// Other languages
@@ -145,6 +194,63 @@ class WidgetTranslator extends Component{
                     .split(" ")
                     .map((char) => this.props[`${this.state.from.value}FromDictionary`][char] || "")
                     .join("");
+                break;
+            case "cunnyCode":
+                let encodeError = false; /// If an error exist
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((char) => {
+                        if(char.charAt(0) === "^"){
+                            return this.props.cunnyCodeFromDictionary[char.substring(1)].toUpperCase();
+                        }else if(char === ''){
+                            return " ";
+                        }else if(this.props.cunnyCodeFromDictionary[char] === undefined){
+                            encodeError = true;
+                            return char;
+                        }else{
+                            return this.props.cunnyCodeFromDictionary[char];
+                        };
+                    })
+                    .join("");
+                if(!swap){
+                    /// If there is no typed message
+                    if(this.state.input.length === 0){
+                        cunnyCodeEncode = false;
+                        cunnyCodeError = false;
+                        let elementDialogue = document.getElementById("translator-cunny-code-arona-dialogue");
+                        timeoutDialogue = setTimeout(() => {
+                            elementDialogue.style.animation = "unset";
+                            window.requestAnimationFrame(() => {
+                                elementDialogue.style.animation = "dialogueOut 2s";
+                            });
+                        }, 2000);
+                        timeoutDialogueOut = setTimeout(() => {
+                            elementDialogue.style.visibility = "hidden";
+                        }, 4000);
+                    /// If an error is found and an error message isn't displayed yet
+                    }else if(encodeError && !cunnyCodeError){
+                        cunnyCodeError = true;
+                        this.handleCunnyCode("decodeError");
+                    /// If there is no error and the error message boolean is still true
+                    }else if(!encodeError && cunnyCodeError){
+                        cunnyCodeError = false;
+                        this.handleCunnyCode("decode");
+                    /// Arona
+                    }else if(/😭💢 😭💢😭 💢💢💢 💢😭 😭💢/i.test(this.state.input)
+                        && !cunnyCodeSpecial){
+                        cunnyCodeSpecial = true;
+                        this.handleCunnyCode("special", "arona", "decode")
+                    /// If there is no special case and the special cases boolean is true
+                    }else if(!/😭💢 😭💢😭 💢💢💢 💢😭 😭💢/i.test(this.state.input)
+                        && cunnyCodeSpecial){
+                        cunnyCodeSpecial = false;
+                        this.handleCunnyCode("decode");
+                    /// If there are no errors
+                    }else if(!cunnyCodeEncode && !encodeError && !cunnyCodeError){
+                        cunnyCodeEncode = true;
+                        this.handleCunnyCode("decode");
+                    };
+                };
                 break;
             /// Encryption
             case "base64":
@@ -171,11 +277,11 @@ class WidgetTranslator extends Component{
         this.setState({
             convert: stringConvertFrom
         }, () => {
-            this.convertToText();
+            this.convertToText(swap);
         });
     };
     /// Convert english to the "to" language
-    convertToText(){
+    convertToText(swap){
         let stringConvertTo = "";
         switch(this.state.to.value){
             /// Other languages
@@ -279,6 +385,226 @@ class WidgetTranslator extends Component{
                     .split("")
                     .map((char) => this.props.enchantingTableDictionary[char.toLowerCase()] || char)
                     .join("");
+                break;
+            case "cunnyCode":
+                let encodeError = false; /// If an error exist
+                if(!this.state.disableInput){
+                    stringConvertTo = this.state.convert
+                        .split("")
+                        .map((char) => {
+                            if(/[A-Z]/.test(char)){
+                                return `^${this.props.cunnyCodeDictionary[char.toLowerCase()]}`;
+                            }else{
+                                if(this.props.cunnyCodeDictionary[char.toLowerCase()] === undefined){
+                                    encodeError = true;
+                                    return char;
+                                }else{
+                                    return this.props.cunnyCodeDictionary[char.toLowerCase()];
+                                };
+                            };
+                        })
+                        .join(" ");
+                };
+                if(!swap){
+                    let elementContainer = document.getElementById("translator-widget-animation");
+                    let elementImage = document.getElementById("translator-image");
+                    let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
+                    let elementAronaBody = document.getElementById("translator-cunny-code-arona-body");
+                    let elementDialogue = document.getElementById("translator-cunny-code-arona-dialogue");
+                    let keysSpecial = Object.keys(this.props.aronaMessages.special)
+                    keysSpecial.pop();
+                    keysSpecial.join("|")
+                        .replace(/_/g, " ");
+                    let regexSpecial = new RegExp(`${keysSpecial}`, "i");
+                    let regexAronaPositive = new RegExp("arona.+(cute|cunny|cute and funny|breedable|best|love)", "i");
+                    let regexAronaNegative = new RegExp("arona.+(hate|dumb|sucks|smells|smelly)", "i");
+                    let regexAronaApologize = new RegExp("arona.+(sorry)", "i");
+                    let regexAronaWake = new RegExp("wake up|i( a)?m here", "i");
+                    /// If the user is idle
+                    if(this.state.idle){
+                        /// Arona will go to sleep after 30 seconds
+                        if((timeoutSleep === undefined) &&
+                            (intervalSleepTalk === undefined)){
+                            this.handleCunnyCode("idle");
+                            timeoutSleep = setTimeout(() => {
+                                this.setState({
+                                    disableInput: true
+                                });
+                                elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleep.png)`;
+                                elementImage.style.visibility = "hidden";
+                                elementAronaBody.style.visibility = "hidden";
+                                elementDialogue.style.visibility = "hidden";
+                                intervalSleepTalk = setInterval(() => {
+                                    elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleeptalk.png)`;
+                                    elementDialogue.style.visibility = "visible";
+                                    elementDialogue.style.top = "-10em";
+                                    this.handleCunnyCode("idleSleep");
+                                    timeoutDialogue = setTimeout(() => {
+                                        elementDialogue.style.animation = "unset";
+                                        window.requestAnimationFrame(() => {
+                                            elementDialogue.style.animation = "dialogueOut 2s";
+                                        });
+                                    }, 10000);
+                                    timeoutDialogueOut = setTimeout(() => {
+                                        elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleep.png)`;
+                                        elementDialogue.style.visibility = "hidden";
+                                    }, 12000);
+                                }, 20000);
+                            }, 30000);
+                        };
+                        /// If Arona is woken up
+                        if(regexAronaWake.test(this.state.convert)){
+                            this.setState({
+                                idle: false,
+                                disableInput: false
+                            });
+                            this.handleCunnyCode("idleAwaken");
+                            elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg.png)`;
+                            elementImage.style.visibility = "visible";
+                            elementAronaBody.style.visibility = "visible";
+                            elementDialogue.style.top = "-16.2em";
+                            timeoutSleep = clearTimeout(timeoutSleep);
+                            intervalSleepTalk = clearInterval(intervalSleepTalk);
+                        };
+                    }else{
+                        /// If Arona is angry, you can make Arona not angry by apologizing
+                        if(cunnyCodeAronaAnger === 5){
+                            this.setState({
+                                disableInput: true
+                            });
+                            this.handleCunnyCode("quit");
+                            if(regexAronaNegative.test(this.state.convert)){
+                                cunnyCodeAronaAnger++;
+                            };
+                        /// Arona hides if the user continues to be angry
+                        }else if(cunnyCodeAronaAnger > 5){
+                            elementImage.style.display = "none";
+                            elementImageAdditions.style.display = "none";
+                            if(regexAronaApologize.test(this.state.convert)){
+                                this.setState({
+                                    disableInput: false
+                                });    
+                                cunnyCodeAronaAnger = 0;
+                                elementImage.style.display = "block";
+                                elementImageAdditions.style.display = "block";    
+                                this.handleCunnyCode("special", "arona_sorry");
+                            };
+                        /// If Arona is not angry
+                        }else if(cunnyCodeAronaAnger !== 5){
+                            /// If there is no typed message, set all checks to false
+                            if((this.state.convert.length === 0)
+                                && (timeoutSleep === undefined)){
+                                cunnyCodeEncode = false;
+                                cunnyCodeError = false;
+                                cunnyCodeSpecial = false;
+                                cunnyCodeArona = false;
+                                timeoutDialogue = setTimeout(() => {
+                                    elementDialogue.style.animation = "unset";
+                                    window.requestAnimationFrame(() => {
+                                        elementDialogue.style.animation = "dialogueOut 2s";
+                                    });
+                                }, 2000);
+                                timeoutDialogueOut = setTimeout(() => {
+                                    elementDialogue.style.visibility = "hidden";
+                                }, 4000);
+                            /// If an error is found and an error message isn't displayed yet
+                            }else if(encodeError && !cunnyCodeError){
+                                cunnyCodeError = true;
+                                this.handleCunnyCode("encodeError");
+                            /// If there is no error and the error message boolean is still true
+                            }else if(!encodeError && cunnyCodeError){
+                                cunnyCodeError = false;
+                                this.handleCunnyCode("encode");
+                            /// If there are no errors
+                            }else if(!cunnyCodeEncode && !encodeError && !cunnyCodeError){
+                                cunnyCodeEncode = true;
+                                this.handleCunnyCode("encode");
+                            /// Name
+                            }else if(/My name is \S+|Call me \S+/i.test(this.state.convert)){
+                                if(this.state.convert.match(/([\S]+)$/) !== null){
+                                    this.props.updateGlobalValue("name", this.state.convert.match(/([\S]+)$/)[0]);
+                                    this.handleCunnyCode("name", "set");
+                                }else{
+                                    this.handleCunnyCode("name", "empty");
+                                };
+                            /// Additional matches for special cases
+                            /// Goodnight
+                            }else if(/good.?night/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "goodnight");
+                            /// Goodbye
+                            }else if(/good.?bye/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "goodbye");
+                            /// Uoh
+                            }else if(/\bu+o+h+\b/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "uoh");
+                            /// Kms
+                            }else if(/kill.?my.?self/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "kms");
+                            /// Seggs
+                            }else if(/\bs+e+x+\b/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "seggs");
+                            /// Sixty nine
+                            }else if(/\b69\b/.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "sixty_nine");
+                            /// Arona
+                            }else if(/arona/i.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                this.handleCunnyCode("special", "arona", "encode");
+                            /// Arona Positives (makes Arona less angry)
+                            }else if(regexAronaPositive.test(this.state.convert)
+                                && !cunnyCodeArona){
+                                if(cunnyCodeAronaAnger > 0){
+                                    cunnyCodeAronaAnger--;
+                                };
+                                cunnyCodeArona = true;
+                                let aronaPositiveString = (this.state.convert).match(regexAronaPositive);
+                                this.handleCunnyCode("special", `arona_${aronaPositiveString[1]}`);
+                            /// Arona Negatives
+                            }else if(regexAronaNegative.test(this.state.convert)
+                                && !cunnyCodeArona){
+                                cunnyCodeAronaAnger++;
+                                cunnyCodeArona = true;
+                                let aronaNegativeString = (this.state.convert).match(regexAronaNegative);
+                                this.handleCunnyCode("special", `arona_${aronaNegativeString[1]}`);
+                            /// If an Arona postive and negative is true but there are none, set to false 
+                            }else if(cunnyCodeArona
+                                && !regexAronaPositive.test(this.state.convert)
+                                && !regexAronaNegative.test(this.state.convert)){
+                                cunnyCodeArona = false;
+                                this.handleCunnyCode("special", "arona", "encode");
+                            /// All special cases
+                            }else if(regexSpecial.test(this.state.convert)
+                                && !cunnyCodeSpecial){
+                                cunnyCodeSpecial = true;
+                                let specialString = this.state.convert.match(regexSpecial)[0]
+                                    .replace(/\s/g, "_");
+                                this.handleCunnyCode("special", specialString);
+                            /// If there is no special case and the special cases boolean is true
+                            }else if(!regexSpecial.test(this.state.convert)
+                                && !(/good.?night|good.?bye|\bu+o+h+\b|kill.?my.?self|\bs+e+x+\b|\b69\b|arona/i.test(this.state.convert))
+                                && !regexAronaPositive.test(this.state.convert)
+                                && !regexAronaNegative.test(this.state.convert)
+                                && cunnyCodeSpecial){
+                                cunnyCodeSpecial = false;
+                                cunnyCodeArona = false;
+                                this.handleCunnyCode("encode");
+                            };
+                        };
+                    };
+                };
                 break;
             /// Encryption
             case "base64":
@@ -400,11 +726,45 @@ class WidgetTranslator extends Component{
                 break;
         };
     };
+    /// Handles special stuff for options (author, images, dialogue)
+    handleBackground(swap){
+        let toAuthor, toAuthorLink;
+        let elementContainer = document.getElementById("translator-widget-animation");
+        let elementImage = document.getElementById("translator-image");
+        switch(true){
+            case ((this.state.from.value === "cunnyCode") || (this.state.to.value === "cunnyCode")):
+                if(timeoutSleep === undefined){
+                    cunnyCodeEncode = false;
+                    cunnyCodeError = false;
+                    cunnyCodeSpecial = false;
+                    cunnyCodeArona = false;
+                    toAuthor = "Seth-sensei";
+                    toAuthorLink = "https://github.com/SethClydesdale/cunny-code";
+                    this.props.updateGlobalValue("hour", new Date().getHours());
+                    this.handleCunnyCode((swap) ? "swap" : "greetings");
+                    elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg.png)`;
+                    elementImage.style.display = "block";
+                };
+                break;
+            default:
+                toAuthor = "Me";
+                toAuthorLink = "";
+                elementContainer.style.backgroundImage = "";
+                elementImage.src = "";
+                elementImage.style.display = "none";
+                break;
+        };
+        this.setState({
+            author: toAuthor,
+            authorLink: toAuthorLink
+        });
+    };
     /// Handles the "from" language select
     handleFrom(event){
         this.setState({
             from: event
         }, () => {
+            this.handleBackground();
             if(this.state.input !== ""){
                 this.convertFromText();
             }
@@ -430,6 +790,7 @@ class WidgetTranslator extends Component{
             to: event,
         }, () => {
             this.handleWordBreak();
+            this.handleBackground();
             if(this.state.input !== ""){
                 this.convertToText();
             }
@@ -447,8 +808,9 @@ class WidgetTranslator extends Component{
                 from: prevState.to,
                 to: prev
             }), () => {
-                this.convertFromText();
+                this.convertFromText(true);
                 this.handleWordBreak();
+                this.handleBackground(true);
             });
         };
         if(speechSynthesis.speaking){
@@ -507,13 +869,23 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
-    handleCopy(){
-        this.props.copyToClipboard(this.state.converted);
-        let elementTranslatedText = document.getElementById("translator-translated-text");
-        elementTranslatedText.style.textShadow = "0px 0px 2px var(--randColorLight)";
-        timeoutCopy = setTimeout(() => {
-            elementTranslatedText.style.textShadow = "unset";
-        }, 400);
+    async handleCopy(){
+        try{
+            let clipboardStatus = await this.props.copyToClipboard(this.state.converted);
+            let elementTranslatedText = document.getElementById("translator-translated-text");
+            elementTranslatedText.style.textShadow = "0px 0px 2px var(--randColorLight)";
+            timeoutCopy = setTimeout(() => {
+                elementTranslatedText.style.textShadow = "unset";
+            }, 400);
+            switch(true){
+                case ((this.state.from.value === "cunnyCode") || (this.state.to.value === "cunnyCode")):
+                    this.handleCunnyCode("copy", clipboardStatus);
+                    break;
+                default: break;
+            };
+        }catch(err){
+            console.error(err);
+        };
     };
     componentDidMount(){
         /// Sort the "translate-to" optgroups options alphabetically
@@ -524,6 +896,8 @@ class WidgetTranslator extends Component{
             this.setState({
                 from: {value: "en", label: "English"},
                 to: {value: "en", label: "English"}
+            }, () => {
+                this.handleBackground();   
             });
         }else{
             let dataSessionStorage = JSON.parse(sessionStorage.getItem("translator"));
@@ -536,6 +910,7 @@ class WidgetTranslator extends Component{
                     this.props.defaultProps.showHidePopout(popoutAnimation, true);        
                 };
                 this.handleWordBreak();
+                this.handleBackground();
             });
         };
     };
@@ -546,6 +921,10 @@ class WidgetTranslator extends Component{
         };
         sessionStorage.setItem("translator", JSON.stringify(data));
         clearTimeout(timeoutCopy);
+        clearTimeout(timeoutDialogue);
+        clearTimeout(timeoutIdle);
+        clearTimeout(timeoutSleep);
+        clearInterval(intervalSleepTalk);
     };
     render(){
         return(
@@ -596,91 +975,140 @@ class WidgetTranslator extends Component{
                                 </button>
                                 : <></>}
                         </section>
-                        {/* Select */}
-                        <div className="flex-center space-nicely space-bottom">
-                            {/* Select From */}
-                            <Select id="translator-translate-from"
-                                className="select-match"
-                                value={this.state.from}
-                                defaultValue={optionsTranslateFrom[0]["options"][0]}
-                                onChange={this.handleFrom}
-                                options={optionsTranslateFrom}
-                                formatGroupLabel={this.props.formatGroupLabel}
-                                components={{
-                                    GroupHeading: this.props.selectHideGroupHeading,
-                                    MenuList: this.props.selectHideGroupMenuList
-                                }}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        ...this.props.selectTheme
-                                    }
-                                })}/>
-                            <button className="button-match inverse"
-                                onClick={this.handleSwap}>
-                                <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
-                                    <BsArrowLeftRight/>
-                                </IconContext.Provider>
-                            </button>
-                            {/* Select To */}
-                            <Select id="translator-translate-to"
-                                className="select-match"
-                                value={this.state.to}
-                                defaultValue={optionsTranslateTo[0]["options"][0]}
-                                onChange={this.handleTo}
-                                options={optionsTranslateTo}
-                                formatGroupLabel={this.props.formatGroupLabel}
-                                components={{
-                                    GroupHeading: this.props.selectHideGroupHeading,
-                                    MenuList: this.props.selectHideGroupMenuList
-                                }}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        ...this.props.selectTheme
-                                    }
-                                })}/>
-                        </div>
-                        {/* Display */}
-                        <div className="flex-center column">
-                            <div className="cut-scrollbar-corner-part-1 textarea">
-                                <textarea className="cut-scrollbar-corner-part-2 textarea"
-                                    name="translator-textarea-input"
-                                    onChange={this.handleChange}
-                                    value={this.state.input}></textarea>
-                            </div>
-                            <div id="translator-preview-cut-corner"
-                                className="cut-scrollbar-corner-part-1 p">
-                                <p id="translator-translated-text"
-                                    className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">
-                                    {DOMPurify.sanitize(this.state.converted)}
-                                </p>
-                            </div>
-                        </div>
-                        {/* Buttons */}
-                        <div className="element-ends float bottom">
-                            <div className="flex-center row">
-                                {/* Clipboard */}
-                                <button className="button-match fadded inversed"
-                                    onClick={() => this.handleCopy()}>
-                                    <IconContext.Provider value={{ className: "global-class-name" }}>
-                                        <FaRegPaste/>
-                                    </IconContext.Provider>
-                                </button>
-                                {/* Talk */}
-                                <button className="button-match fadded inversed"
-                                    onClick={() => this.handleTalk()}>
-                                    <IconContext.Provider value={{ className: "global-class-name" }}>
-                                        <FaVolumeHigh/>
-                                    </IconContext.Provider>
-                                </button>
-                            </div>
-                            {/* Random Sentence */}
-                            <button className="button-match fadded"
-                                onClick={this.handleRandSentence}>Random sentence</button>
-                        </div>
+                        <section className="flex-center row">
+                            {/* Image */}
+                            <img id="translator-image"
+                                alt="translator image"/>
+                            {/* Image Additions: Cunny Code */}
+                            {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")
+                                ? <div id="translator-image-additions-cunny-code"
+                                    className="font small">
+                                    <div id="translator-cunny-code-arona-body">
+                                        <div id="translator-cunny-code-arona-halo"
+                                            className="arona-action"></div>
+                                        <div id="translator-cunny-code-arona-head"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "head")}></div>
+                                        <div id="translator-cunny-code-arona-face"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "face")}></div>
+                                        <div id="translator-cunny-code-arona-chest"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "chest")}></div>
+                                        <div id="translator-cunny-code-arona-skirt"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "skirt")}></div>
+                                        <div id="translator-cunny-code-arona-leg1"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                        <div id="translator-cunny-code-arona-leg2"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                        <div id="translator-cunny-code-arona-leg3"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                        <div id="translator-cunny-code-arona-leg4"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                        <div id="translator-cunny-code-arona-shoes"
+                                            className="arona-action"
+                                            onClick={() => this.handleCunnyCode("touch", "shoe")}></div>
+                                    </div>
+                                    <div id="translator-cunny-code-arona-dialogue"
+                                        className="dialogue"></div>
+                                </div>
+                                : <></>}
+                            {/* Translator Container */}
+                            <section>
+                                {/* Select */}
+                                <div className="flex-center space-nicely space-bottom">
+                                    {/* Select From */}
+                                    <Select id="translator-translate-from"
+                                        className="select-match"
+                                        value={this.state.from}
+                                        defaultValue={optionsTranslateFrom[0]["options"][0]}
+                                        onChange={this.handleFrom}
+                                        options={optionsTranslateFrom}
+                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        components={{
+                                            GroupHeading: this.props.selectHideGroupHeading,
+                                            MenuList: this.props.selectHideGroupMenuList
+                                        }}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            colors: {
+                                                ...theme.colors,
+                                                ...this.props.selectTheme
+                                            }
+                                        })}/>
+                                    <button className="button-match inverse"
+                                        onClick={this.handleSwap}>
+                                        <IconContext.Provider value={{ size: this.props.smallIcon, className: "global-class-name" }}>
+                                            <BsArrowLeftRight/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    {/* Select To */}
+                                    <Select id="translator-translate-to"
+                                        className="select-match"
+                                        value={this.state.to}
+                                        defaultValue={optionsTranslateTo[0]["options"][0]}
+                                        onChange={this.handleTo}
+                                        options={optionsTranslateTo}
+                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        components={{
+                                            GroupHeading: this.props.selectHideGroupHeading,
+                                            MenuList: this.props.selectHideGroupMenuList
+                                        }}
+                                        theme={(theme) => ({
+                                            ...theme,
+                                            colors: {
+                                                ...theme.colors,
+                                                ...this.props.selectTheme
+                                            }
+                                        })}/>
+                                </div>
+                                {/* Display */}
+                                <div className="flex-center column">
+                                    <div className="cut-scrollbar-corner-part-1 textarea">
+                                        <textarea className="cut-scrollbar-corner-part-2 textarea"
+                                            name="translator-textarea-input"
+                                            onChange={this.handleChange}
+                                            value={this.state.input}></textarea>
+                                    </div>
+                                    <div id="translator-preview-cut-corner"
+                                        className="cut-scrollbar-corner-part-1 p">
+                                        <p id="translator-translated-text"
+                                            className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content"
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(this.state.converted)
+                                            }}>
+                                        </p>
+                                    </div>
+                                </div>
+                                {/* Buttons */}
+                                <div className="element-ends float relative bottom">
+                                    <div className="flex-center row">
+                                        {/* Clipboard */}
+                                        <button className="button-match fadded inversed"
+                                            onClick={() => this.handleCopy()}>
+                                            <IconContext.Provider value={{ className: "global-class-name" }}>
+                                                <FaRegPaste/>
+                                            </IconContext.Provider>
+                                        </button>
+                                        {/* Talk */}
+                                        <button className="button-match fadded inversed"
+                                            onClick={() => this.handleTalk()}>
+                                            <IconContext.Provider value={{ className: "global-class-name" }}>
+                                                <FaVolumeHigh/>
+                                            </IconContext.Provider>
+                                        </button>
+                                    </div>
+                                    {/* Random Sentence */}
+                                    <button className="button-match fadded"
+                                        onClick={this.handleRandSentence}>Random sentence</button>
+                                </div>
+                            </section>
+                        </section>
                         {/* Replace Popout */}
                         <Draggable
                             cancel="input, button"
@@ -773,7 +1201,16 @@ class WidgetTranslator extends Component{
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by Me</span>
+                            ? (this.state.author === "Me")
+                                ? <span className="font smaller transparent-normal author-name">Created by {this.state.author}</span>
+                                : <div className="author-name">
+                                    <span className="font smaller transparent-normal">
+                                        Created by
+                                        <a className="font transparent-normal link-match"
+                                            href={this.state.authorLink}
+                                            target="_blank"> {this.state.author}</a>
+                                    </span>
+                                </div>
                             : <></>}
                     </div>
                 </div>

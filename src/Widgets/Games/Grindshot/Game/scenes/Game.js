@@ -182,11 +182,13 @@ export class Game extends Scene{
     spawnEnemy(point){
         let enemiesKeys = Object.keys(enemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
+        let randomX = Math.random() * 100;
+        let randomY = Math.random() * 100;
         this.enemies.add(
             new Enemy(
                 this,
                 randomEnemy,
-                point.x, point.y,
+                point.x + randomX, point.y + randomY,
                 enemies[randomEnemy].stats.health,
                 enemies[randomEnemy].stats.radius.close,
                 enemies[randomEnemy].stats.radius.far,
