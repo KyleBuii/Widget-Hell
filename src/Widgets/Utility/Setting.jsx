@@ -630,13 +630,15 @@ class WidgetSetting extends Component{
         document.body.style.filter = `brightness(${brightness}%)`;
     };
     updateLive2D(){
-        let elementLive2DToggle = document.getElementById("waifu-toggle");
-        elementLive2DToggle.style.display = (!this.state.values.live2D) ? "none" : "block";
-        if(!elementLive2DToggle.classList.contains("waifu-toggle-active")
-            && !this.state.values.live2D){
-            document.getElementById("waifu-tool-quit").click();
-        }else{
-            elementLive2DToggle.click();   
+        if(document.getElementById("waifu-toggle") !== null){
+            let elementLive2DToggle = document.getElementById("waifu-toggle");
+            elementLive2DToggle.style.display = (!this.state.values.live2D) ? "none" : "block";
+            if(!elementLive2DToggle.classList.contains("waifu-toggle-active")
+                && !this.state.values.live2D){
+                document.getElementById("waifu-tool-quit").click();
+            }else{
+                elementLive2DToggle.click();   
+            };
         };
     };
     handlePageClick(event){
