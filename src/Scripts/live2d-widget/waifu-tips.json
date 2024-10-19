@@ -1,0 +1,99 @@
+{
+	"mouseover": [{
+		"selector": "#live2d",
+		"text": ["What are you doing, get your hands off me~", "Mouse...the mouse is in the wrong place!", "What are you doing?", "Meow meow meow?", "Afraid (ノ≧∇≦)ノ", "Molestation ah! Help!", "In that case, we can only use force!", "I'm going to be angry.", "Don't move your hand!", "Really...really shameless!", "Pervert!"]
+	}, {
+		"selector": "#waifu-tool-switch-side",
+		"text": ["This corner isn't cozy at all!", "Move me to the other corner!"]
+	}, {
+		"selector": "#waifu-tool-asteroids",
+		"text": ["Do you want to play airplane battle?", "This button says 'Don't click'.", "What, you want to come play a game with me?", "I heard you can dance like this!"]
+	}, {
+		"selector": "#waifu-tool-switch-model",
+		"text": ["You don't love me anymore, do you?", "Want to meet my sister?", "Want to see my sister?", "Want to switch to the poster girl?"]
+	}, {
+		"selector": "#waifu-tool-switch-texture",
+		"text": ["Like to play dress up?", "What are you going to play this time?", "Dress up!", "Let's see what happens next!"]
+	}, {
+		"selector": "#waifu-tool-photo",
+		"text": ["You want to take a picture of me? One, two, three ~ Cheese ~", "Why don't we take a picture together!", "How about we take a group photo!", "Just keep smiling~"]
+	}, {
+		"selector": "#waifu-tool-info",
+		"text": ["Want to know more about me?", "The history of my moving is recorded here.", "What do you want to know more about me?"]
+	}, {
+		"selector": "#waifu-tool-quit",
+		"text": ["Is it time to say goodbye?", "Ugh QAQ, see you later...", "Don't abandon me...", "Can we meet again...", "Hmph, you'll regret it!"]
+	}],
+	"click": [{
+		"selector": "#live2d",
+		"text": ["It's...it's an accidental touch, isn't it...", "What's a lolita?", "Have you seen my bear?", "If you touch me again, I will call the police! ⌇●﹏●⌇", "110, there is a pervert here who keeps touching me (ó﹏ò｡)", "Do not touch me, I will tell my wife to beat you!", "Why are you touching me? I'll bite you!", "Don't touch me, what's there to touch!"]
+	}],
+	"seasons": [{
+		"date": "01/01",
+		"text": "<span>New Year's Day</span> is here, a new year has begun~"
+	}, {
+		"date": "02/14",
+		"text": "It's <span>Valentine's Day</span> again, have you found a partner yet~"
+	}, {
+		"date": "03/08",
+		"text": "Today is <span>International Women's Day</span>!"
+	}, {
+		"date": "03/12",
+		"text": "Today is <span>Arbor Day</span>, protect the environment!"
+	}, {
+		"date": "04/01",
+		"text": "I'll tell you a secret~ <span>Today is April Fools' Day, don't be fooled~</span>"
+	}, {
+		"date": "05/01",
+		"text": "Today is <span>Labor Day</span>, have you planned where to go for the holiday~"
+	}, {
+		"date": "06/01",
+		"text": "It's <span>Children's Day</span>. The time for fun is always short... Wouldn't it be nice to never grow up..."
+	}, {
+		"date": "09/03",
+		"text": "<span>The Victory Day of the Chinese People's War of Resistance Against Japanese Aggression</span>, remember history, cherish the memory of the martyrs, cherish peace and create the future."
+	}, {
+		"date": "09/10",
+		"text": "<span>Teacher's Day</span>, say hello to your teacher at school~"
+	}, {
+		"date": "10/01",
+		"text": "<span>National Day</span> is here, celebrate Motherland!"
+	}, {
+		"date": "11/05-11/12",
+		"text": "Who did you spend this year's <span>Double Eleven</span> with~"
+	}, {
+		"date": "12/20-12/31",
+		"text": "It's <span>Christmas</span> these days, the owner must have gone shopping again~"
+	}],
+	"time": [{
+		"hour": "6-7",
+		"text": "Good morning! A good day is about to begin!"
+	}, {
+		"hour": "8-11",
+		"text": "Good morning! I hope your work goes well. Don’t sit for too long. Get up and walk around more!"
+	}, {
+		"hour": "12-13",
+		"text": "It's noon, after working for a whole morning, it's now lunch time!"
+	}, {
+		"hour": "14-17",
+		"text": "It's easy to get sleepy in the late afternoon, have you accomplished your exercise goals for the day?"
+	}, {
+		"hour": "18-19",
+		"text": "It's evening! The sunset outside the window is very beautiful. The most beautiful thing is the red sunset~"
+	}, {
+		"hour": "20-21",
+		"text": "Good evening, how are you today?"
+	}, {
+		"hour": "22-23",
+		"text": ["It's already so late, go to bed early, good night~", "Take care of your eyes late at night!"]
+	}, {
+		"hour": "0-5",
+		"text": "Are you a night owl? You're still up so late. How can you get up tomorrow?"
+	}],
+	"message": {
+		"default": ["It's been a long time, the days have flown by...", "Bad villain! How long have you been ignoring me, eh~", "Hey~ come and tease me!", "Punch your chest with a small fist!", "Remember to add Xiaojia to your favorites!"],
+		"console": "Haha, you opened the console to see my little secret?",
+		"copy": "What did you copy? Remember to add the source when reprinting!",
+		"visibilitychange": "Wow, you are finally back~"
+	}
+}

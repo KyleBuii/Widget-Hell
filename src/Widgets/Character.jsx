@@ -20,10 +20,10 @@ class WidgetCharacter extends Component{
         let equipmentImage = document.createElement("img");
         if(event.detail.side){
             equipmentElement = document.getElementById(`character-${event.detail.slot}-${event.detail.side}`);
-            equipmentImage.src = `/images/character/character-${modifiedName}-${event.detail.side}.png`;
+            equipmentImage.src = `/resources/character/character-${modifiedName}-${event.detail.side}.png`;
         }else{
             equipmentElement = document.getElementById(`character-${event.detail.slot}`);
-            equipmentImage.src = `/images/character/character-${modifiedName}.png`;
+            equipmentImage.src = `/resources/character/character-${modifiedName}.png`;
         };
         if(equipmentElement.hasChildNodes()){
             equipmentElement.innerHTML = "";
@@ -135,7 +135,7 @@ class WidgetCharacter extends Component{
                         <section id="character-container">
                             <img id="character-image"
                                 className="no-highlight"
-                                src={"/images/character/character.png"}
+                                src={"/resources/character/character.png"}
                                 alt="character"
                                 draggable="false"/>
                             <div id="character-headband"></div>

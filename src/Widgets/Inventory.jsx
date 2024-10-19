@@ -13,12 +13,12 @@ import SimpleBar from 'simplebar-react';
 
 /// Variables
 const regexItemsLeftAndRight = /bracelet|wrist|glove|ring|hidden|boot/;
-const audioItemOpen = new Audio("/sounds/switch_006.wav");
-const audioItemClose = new Audio("/sounds/switch_007.wav");
-const audioPageClick = new Audio("/sounds/magnet_on_reduced.wav");
-const audioItemEquip = new Audio("/sounds/cloth-inventory.wav");
-const audioItemEquipJewelry = new Audio("/sounds/ring_inventory.wav");
-const audioItemEquipConsumable = new Audio("/sounds/bite-small.wav");
+const audioItemOpen = new Audio("/resources/audio/switch_006.wav");
+const audioItemClose = new Audio("/resources/audio/switch_007.wav");
+const audioPageClick = new Audio("/resources/audio/magnet_on_reduced.wav");
+const audioItemEquip = new Audio("/resources/audio/cloth-inventory.wav");
+const audioItemEquipJewelry = new Audio("/resources/audio/ring_inventory.wav");
+const audioItemEquipConsumable = new Audio("/resources/audio/bite-small.wav");
 
 class WidgetInventory extends Component{
     constructor(props){

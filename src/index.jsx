@@ -39,16 +39,15 @@ import WidgetFacts from './Widgets/Fun/Facts.jsx';
 import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
 import SimpleBar from 'simplebar-react';
 import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
+import Cursor from './cursor.jsx';
 
 
 //////////////////// Temp Variables ////////////////////
 //#region
-var mouse = {
-    x: 0,
-    y: 0
-};
-var healthDisplay;
 let timeoutText;
+let timeoutHorrorLightOn;
+let intervalHorrorLightOff;
+var healthDisplay;
 var voices;
 window.username = "Anon";
 let currentHour = new Date().getHours();
@@ -57,37 +56,6 @@ let currentHour = new Date().getHours();
 
 //////////////////// Functions ////////////////////
 //#region
-function randColor(forcedColorR, forcedColorG, forcedColorB){
-    const r = document.documentElement;
-    var randColorOpacity, randColor, randColorLight;
-    if(forcedColorR){
-        randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
-        randColor = `rgb(${randColorOpacity})`;
-        randColorLight = `rgb(${forcedColorR + 50},${forcedColorG + 50},${forcedColorB + 50})`;
-    }else{
-        const colorR = Math.floor(Math.random() * colorRange);
-        const colorG = Math.floor(Math.random() * colorRange);
-        const colorB = Math.floor(Math.random() * colorRange);
-        randColorOpacity = `${colorR},${colorG},${colorB}`;
-        randColor = `rgb(${randColorOpacity})`;
-        randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
-    };
-    r.style.setProperty("--randColor", randColor);
-    r.style.setProperty("--randColorLight", randColorLight);
-    r.style.setProperty("--randColorOpacity", randColorOpacity);
-    color = randColor;
-    /// Set react-select colors
-    selectTheme = {
-        primary: randColor,         /// Currently selected option background color
-        primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
-        neutral20: randColor,       /// Border color of select
-        neutral30: randColorLight,  /// Hover border color
-        neutral40: randColorLight,  /// Hover arrow color
-        neutral60: randColorLight,  /// Active arrow color
-        neutral80: randColor        /// Placeholder text color
-    };
-};
-
 function dragStart(what){
     switch(what){
         case "settings":
@@ -184,8 +152,8 @@ function createPopup(text, type = "normal", randomPosition = false){
         popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
         popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
     }else{
-        popup.style.left = `${mouse.x - 50}px`;
-        popup.style.top = `${mouse.y + 10}px`;
+        popup.style.left = `${window.mouse.x - 50}px`;
+        popup.style.top = `${window.mouse.y + 10}px`;
     };
     elementText.className = "font medium bold white flex-center column";
     switch(type){
@@ -355,7 +323,7 @@ function renderHearts(health){
             if((calculateHearts[i] === 1) && (healthDisplay.value === "noredheart")){
             break; 
             };
-            elementHearts.push(<img src={`/images/hearts/heart${calculateHearts[i]}.png`}
+            elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.png`}
                 alt={`heart${calculateHearts[i]} ${i + 1}`}
                 key={`heart${calculateHearts[i]} ${i + 1}`}
                 draggable={false}/>);
@@ -370,6 +338,26 @@ function playAudio(audio){
     duplicateAudio.onended = () => {
         duplicateAudio.remove();
     };    
+};
+
+function hexToRgb(hex){
+    /// Input Format: #000000
+    /// Return Format: [0, 0, 0]
+    return hex.replace(
+            /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+            , (m, r, g, b) => '#' + r + r + g + g + b + b
+        ).substring(1)
+        .match(/.{2}/g)
+        .map(x => parseInt(x, 16));
+};
+
+function rgbToHex(rgb){
+    /// Input Format: [0, 0, 0]
+    /// Return Format: #00000
+    return "#" + rgb.map((x) => {
+        const hex = x.toString(16);
+        return (hex.length === 1) ? '0' + hex : hex;
+    }).join('');
 };
 //#endregion
 
@@ -976,7 +964,7 @@ const aronaMessages = {
         /// First person to crack the cunny code before the encoder/decoder was released
         /// https://x.com/Roxas13thXIII/status/1839909996383088696
         first_decoder: [
-            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/images/translator/cunny-code/kisaki-ball.png" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
+            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/resources/translator/cunny-code/kisaki-ball.png" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
         ],
         /// Emoji
         sob: [
@@ -1122,13 +1110,7 @@ const aronaMessages = {
         shoe: [
             ["Y-You can't take my shoes off, Sensei!<br>I saw what you did to Iori...!", 30]
         ]
-    },
-    /// Start and end dialogue for "show me your shoes" prompt
-    showShoes: {
-        start: ["Okay! Just give me a second!", 3],
-        end: ["What do you think of my shoes, Sensei?", 2],
-        shown: ["I already did, silly!", 12]
-    },
+    }
 };
 const items = {
     /// Mainly currency and cosmetic items (aesthetics)
@@ -1144,28 +1126,28 @@ const items = {
             slot: "eyewear",
             type: "cosmetic",
             description: `Uohhhhhhhhh! \uD83D\uDE2D`,
-            image: "/images/items/senseimask.png",
+            image: "/resources/items/senseimask.png",
             source: "Blue Archive"
         },
         "Carla's Hat": {
             slot: "helmet",
             type: "cosmetic",
             description: `\uD83D\uDE09\u270C`,
-            image: "/images/items/carlashat.png",
+            image: "/resources/items/carlashat.png",
             source: "Don't Hurt Me, My Healer!"
         },
         "Nina's Good Luck Charm": {
             slot: "undershirt",
             type: "cosmetic",
             description: "I'm perfectly prepared. I am fully and completely ready for this.",
-            image: "/images/items/ninasgoodluckcharm.png",
+            image: "/resources/items/ninasgoodluckcharm.png",
             source: "Cautious Hero: The Hero Is Overpowered but Overly Cautious"
         },
         "Creamy": {
             slot: "undershirt",
             type: "cosmetic",
             description: "Lemon's good luck charm.",
-            image: "/images/items/creamy.png",
+            image: "/resources/items/creamy.png",
             source: "Mashle"
         },
     },
@@ -1178,7 +1160,7 @@ const items = {
                 health: 1
             },
             description: "Nothing like a cream puff after pumping iron.",
-            image: "/images/items/creampuff.png",
+            image: "/resources/items/creampuff.png",
             source: "Mashle"
         },
         "Chunchunmaru": {
@@ -1188,7 +1170,7 @@ const items = {
                 luck: 99
             },
             description: "Yes, I'm Kazuma.",
-            image: "/images/items/chunchunmaru.png",
+            image: "/resources/items/chunchunmaru.png",
             source: "Konosuba"
         },
         "Seed": {
@@ -1198,7 +1180,7 @@ const items = {
                 health: 1
             },
             description: "Exclusive drop from skeletons in Tululu.",
-            image: "/images/items/seed.png",
+            image: "/resources/items/seed.png",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Mähne": {
@@ -1208,7 +1190,7 @@ const items = {
                 attack: 1
             },
             description: "Comprised of two large blades joined by a hilt with an extending holder.",
-            image: "/images/items/mahne.png",
+            image: "/resources/items/mahne.png",
             source: "Pumpkin Scissors"
         },
         "Belle Delphine's Bath Water": {
@@ -1228,7 +1210,7 @@ const items = {
                 luck: -99
             },
             description: "...",
-            image: "/images/items/belledelphinesbathwater.png",
+            image: "/resources/items/belledelphinesbathwater.png",
             source: "Meme"
         },
     },
@@ -1239,7 +1221,7 @@ const items = {
             type: "ability",
             information: "Places a grass block",
             description: "C418 - Sweden",
-            image: "/images/items/grassblock.png",
+            image: "/resources/items/grassblock.png",
             source: "Minecraft"
         },
         "Hestia Knife": {
@@ -1248,7 +1230,7 @@ const items = {
             information: "Becomes stronger according to the wielder's status",
             description: "A special knife created by Hephaestus with help from Hestia.",
             requirement: "Member of Hestia Familia",
-            image: "/images/items/hestiaknife.png",
+            image: "/resources/items/hestiaknife.png",
             source: "Danmachi"
         },
         "Code of Hammurabi": {
@@ -1256,7 +1238,7 @@ const items = {
             type: "ability",
             information: "Redirects every attack against the user back to the attacker",
             description: "An eye for an eye, a tooth for a tooth.",
-            image: "/images/items/codeofhammurabi.png",
+            image: "/resources/items/codeofhammurabi.png",
             source: "Tomb Raider King"
         },
         "Door Knocker": {
@@ -1269,7 +1251,7 @@ const items = {
             information: "Decreases the enemy morale",
             description: "Töten Sie. Töten Sie. Töten Sie.",
             requirement: "Must be at point blank range",
-            image: "/images/items/doorknocker.png",
+            image: "/resources/items/doorknocker.png",
             source: "Pumpkin Scissors"
         },
         "Necklace": {
@@ -1277,7 +1259,7 @@ const items = {
             type: "ability",
             information: "Doubles item drops",
             description: "Hello... Yoda?",
-            image: "/images/items/necklace.png",
+            image: "/resources/items/necklace.png",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Bicorn Horns": {
@@ -1285,7 +1267,7 @@ const items = {
             type: "ability",
             information: "Allows using level 1 magic with no limitations",
             description: "Magic: F",
-            image: "/images/items/bicornhorns.png",
+            image: "/resources/items/bicornhorns.png",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Slime Tear": {
@@ -1293,7 +1275,7 @@ const items = {
             type: "ability",
             information: "Reflects slime attacks",
             description: "Dead or carrot.",
-            image: "/images/items/slimetear.png",
+            image: "/resources/items/slimetear.png",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
     },
@@ -1304,7 +1286,7 @@ const items = {
             type: "ability",
             information: "Reflects all magic",
             description: "Most powerful accessory in Cross Reverie.",
-            image: "/images/items/demonlordsring.png",
+            image: "/resources/items/demonlordsring.png",
             source: "How Not to Summon a Demon Lord"
         }
     }
@@ -1593,7 +1575,14 @@ class Widgets extends Component{
                 rate: 0,
                 health: {value: "default", label: "Default"},
                 close: false,
-                randomText: false
+                randomText: false,
+                cursorTrail: false,
+                cursorTrailColor: [0, 0, 0],
+                cursorTrailFlat: false,
+                cursorTrailMode: "default",
+                cursorTrailThickness: 7,
+                cursorTrailDuration: 0.7,
+                horror: false
             },
             prevPosition: {
                 prevX: 0,
@@ -2173,6 +2162,7 @@ class Widgets extends Component{
             },
             abilities: []
         };
+        this.randomColor = this.randomColor.bind(this);
         this.handleShowHide = this.handleShowHide.bind(this);
         this.handleShowHidePopout = this.handleShowHidePopout.bind(this);
         this.handleHotbar = this.handleHotbar.bind(this);
@@ -2188,9 +2178,42 @@ class Widgets extends Component{
         this.updateGlobalValue = this.updateGlobalValue.bind(this);
         this.talk = this.talk.bind(this);
     };
+    randomColor(forcedColorR, forcedColorG, forcedColorB){
+        const r = document.documentElement;
+        var randColorOpacity, randColor, randColorLight;
+        if(forcedColorR){
+            randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
+            randColor = `rgb(${randColorOpacity})`;
+            randColorLight = `rgb(${forcedColorR + 50},${forcedColorG + 50},${forcedColorB + 50})`;
+        }else{
+            const colorR = Math.floor(Math.random() * colorRange);
+            const colorG = Math.floor(Math.random() * colorRange);
+            const colorB = Math.floor(Math.random() * colorRange);
+            randColorOpacity = `${colorR},${colorG},${colorB}`;
+            randColor = `rgb(${randColorOpacity})`;
+            randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
+        };
+        r.style.setProperty("--randColor", randColor);
+        r.style.setProperty("--randColorLight", randColorLight);
+        r.style.setProperty("--randColorOpacity", randColorOpacity);
+        color = randColor;
+        this.setState({
+            color: randColor
+        });
+        /// Set react-select colors
+        selectTheme = {
+            primary: randColor,         /// Currently selected option background color
+            primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
+            neutral20: randColor,       /// Border color of select
+            neutral30: randColorLight,  /// Hover border color
+            neutral40: randColorLight,  /// Hover arrow color
+            neutral60: randColorLight,  /// Active arrow color
+            neutral80: randColor        /// Placeholder text color
+        };
+    };    
     handleShowHide(what, where){
         if(this.state.widgets[where][what].active === false){
-            randColor();
+            this.randomColor();
             this.setState(prevState => ({
                 widgets: {
                     ...prevState.widgets,
@@ -2468,7 +2491,7 @@ class Widgets extends Component{
         };
     };
     handleMouseMove(event){
-        mouse = {
+        window.mouse = {
             x: event.clientX,
             y: event.clientY
         };
@@ -2551,29 +2574,33 @@ class Widgets extends Component{
             };
         };
     };
-    updateValue(what, where, type){
-        switch(where){
+    updateValue(value, what, type){
+        switch(what){
             case "customBorder":
-                this.updateCustomBorder("", what);
+                this.updateCustomBorder("", value);
                 break;
             case "health":
-                healthDisplay = what;
+                healthDisplay = value;
                 break;
             default:
-                this.updateDesign(where, what);
+                this.updateDesign(what, value);
                 break;
         };
         this.setState(prevState => ({
             [type]: {
                 ...prevState[type],
-                [where]: what
+                [what]: value
             }
         }), () => {
-            if(this.state.values.randomText && (where === "randomText")){
+            if(this.state.values.randomText && (what === "randomText")){
                 this.randomTimeoutText();
-            }else if(this.state.values.randomText === false){
-                clearTimeout(timeoutText);
-                timeoutText = undefined;
+            }else if(!this.state.values.randomText){
+                timeoutText = clearTimeout(timeoutText);
+            };
+            if(this.state.values.horror){
+                this.randomTimeoutHorror();
+            }else if(!this.state.values.horror){
+                intervalHorrorLightOff = clearInterval(intervalHorrorLightOff);
             };
         });
     };
@@ -2596,6 +2623,15 @@ class Widgets extends Component{
                 elementRandomText.style.animation = randomTextAnimation; 
             });
         };
+    };
+    randomTimeoutHorror(){
+        // let randomNumber = Math.random() * 180000 + 30000;
+        let randomNumber = Math.random() * 3000 + 2000;
+        intervalHorrorLightOff = setInterval(() => {
+            timeoutHorrorLightOn = setTimeout(() => {
+                randomNumber = Math.random() * 3000 + 2000;
+            }, 1000);
+        }, randomNumber);
     };
     updateWidgetsActive(what, where){
         switch(where){
@@ -2768,9 +2804,6 @@ class Widgets extends Component{
     };
     updateGlobalValue(what, value){
         switch(what){
-            case "name":
-                window.username = value;
-                break;
             case "hour":
                 currentHour = value;
                 break;
@@ -2800,19 +2833,7 @@ class Widgets extends Component{
                         ...data["utility"]["setting"],
                         values: {        
                             ...data["utility"]["setting"]["values"],
-                            animation: this.state.values.animation,
-                            customBorder: this.state.values.customBorder,
-                            authorNames: this.state.values.authorNames,
-                            fullscreen: this.state.values.fullscreen,
-                            resetPosition: this.state.values.resetPosition,
-                            savePositionPopout: this.state.values.savePositionPopout,
-                            shadow: this.state.values.shadow,
-                            voice: this.state.values.voice,
-                            pitch: this.state.values.pitch,
-                            rate: this.state.values.rate,
-                            health: this.state.values.health,
-                            close: this.state.values.close,
-                            randomText: this.state.values.randomText
+                            ...this.state.values
                         }
                     };
                 };
@@ -2850,20 +2871,9 @@ class Widgets extends Component{
                 if(i === "setting"){
                     data["utility"]["setting"] = {
                         ...data["utility"]["setting"],
-                        values: {        
-                            animation: this.state.values.animation,
-                            customBorder: this.state.values.customBorder,
-                            authorNames: this.state.values.authorNames,
-                            fullscreen: this.state.values.fullscreen,
-                            resetPosition: this.state.values.resetPosition,
-                            savePositionPopout: this.state.values.savePositionPopout,
-                            shadow: this.state.values.shadow,
-                            voice: this.state.values.voice,
-                            pitch: this.state.values.pitch,
-                            rate: this.state.values.rate,
-                            health: this.state.values.health,
-                            close: true,
-                            randomText: this.state.values.randomText
+                        values: {
+                            ...this.state.values,
+                            close: true
                         }
                     };
                 };
@@ -2901,7 +2911,7 @@ class Widgets extends Component{
         localStorage.setItem("abilities", JSON.stringify(this.state.abilities));
     };
     componentDidMount(){
-        randColor();
+        this.randomColor();
         window.addEventListener("beforeunload", this.storeData);
         window.addEventListener("new item", this.addItem);
         window.addEventListener("gold bag", this.addGoldBag);
@@ -2922,30 +2932,21 @@ class Widgets extends Component{
                 let localStorageValues = dataLocalStorage["utility"]["setting"]["values"];
                 switch(i){
                     case "setting":
+                        let objectValues = {};
+                        for(let i in this.state.values){
+                            objectValues[i] = localStorageValues[i];
+                        };
                         this.setState({
                             values: {
-                                ...this.state.values,
-                                animation: localStorageValues["animation"],
-                                customBorder: localStorageValues["customBorder"],    
-                                savePositionPopout: localStorageValues["savePositionPopout"],
-                                authorNames: localStorageValues["authorNames"],
-                                fullscreen: localStorageValues["fullscreen"],
-                                resetPosition: localStorageValues["resetPosition"],
-                                shadow: localStorageValues["shadow"],
-                                voice: localStorageValues["voice"],
-                                pitch: localStorageValues["pitch"],
-                                rate: localStorageValues["rate"],
-                                health: localStorageValues["health"],
-                                close: localStorageValues["close"],
-                                randomText: localStorageValues["randomText"]
-                            },
+                                ...objectValues
+                            }
                         }, () => {
                             if(this.state.values.shadow === true){
                                 this.updateDesign("shadow", true);
                             };
                             if(this.state.values.randomText){
                                 this.randomTimeoutText();
-                            };
+                            };   
                         });
                         /// Setting global variables
                         healthDisplay = localStorageValues["health"];
@@ -3039,6 +3040,25 @@ class Widgets extends Component{
         speechSynthesis.addEventListener("voiceschanged", () => {
             voices = window.speechSynthesis.getVoices();
         }, { once: true });
+        /// Modify live2d-widget
+        let elementWaifuToggle = document.getElementById("waifu-toggle");
+        elementWaifuToggle.innerHTML = "SHOW";
+        if(document.getElementById("waifu-tool") === null){
+            elementWaifuToggle.click();
+        };
+        let elementLive2DMove = document.createElement("span");
+        elementLive2DMove.id = "waifu-tool-switch-side";
+        elementLive2DMove.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM297 385c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l71-71L120 280c-13.3 0-24-10.7-24-24s10.7-24 24-24l214.1 0-71-71c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0L409 239c9.4 9.4 9.4 24.6 0 33.9L297 385z"/>
+            </svg>
+        `;
+        elementLive2DMove.onclick = () => {
+            let elementWaifu = document.getElementById("waifu");
+            elementWaifu.classList.toggle("waifu-right-side");
+        };
+        document.getElementById("waifu-tool")
+            .prepend(elementLive2DMove);
     };
     componentWillUnmount(){
         window.removeEventListener("beforeunload", this.storeData);
@@ -3098,6 +3118,14 @@ class Widgets extends Component{
         return(
             <div id="widget-container"
                 onMouseMove={(event) => this.handleMouseMove(event)}>
+                {/* Cursor */}
+                {(this.state.values.cursorTrail)
+                    ? <Cursor color={this.state.values.cursorTrailColor}
+                        flat={this.state.values.cursorTrailFlat}
+                        mode={this.state.values.cursorTrailMode}
+                        thickness={this.state.values.cursorTrailThickness}
+                        duration={this.state.values.cursorTrailDuration}/>
+                    : <></>}
                 {/* For copying to clipboard */}
                 <pre id="clipboard-dump"></pre>
                 {/* For Developers */}
@@ -3133,6 +3161,10 @@ class Widgets extends Component{
                         </button>
                     </section>
                     : <></>}
+                {/* Widgets: Special */}
+                {
+                    //#region
+                }
                 <WidgetSetting
                     widgets={widgets}
                     widgetActiveVariables={widgetActiveVariables}
@@ -3150,7 +3182,7 @@ class Widgets extends Component{
                     widgetsGamesActive={widgetsGamesActive}
                     widgetsFunActive={widgetsFunActive}
                     tricks={tricks}
-                    randColor={randColor}
+                    randomColor={this.randomColor}
                     formatGroupLabel={formatGroupLabel}
                     selectTheme={selectTheme}
                     selectStyleSmall={selectStyleSmall}
@@ -3170,6 +3202,8 @@ class Widgets extends Component{
                             y: this.state.widgets.utility.setting.popouts.settings.position.y
                         }
                     }}
+                    hexToRgb={hexToRgb}
+                    rgbToHex={rgbToHex}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
                 {this.state.widgets.utility.inventory.active === true
@@ -3212,6 +3246,9 @@ class Widgets extends Component{
                         equipment={this.state.equipment}
                         largeIcon={largeIcon}/>
                     : <></>}
+                {
+                    //#endregion
+                }
                 {/* Widgets: Utility */}
                 {
                     //#region
@@ -3232,7 +3269,7 @@ class Widgets extends Component{
                 {this.state.widgets.utility.translator.active === true
                     ? <WidgetTranslator
                         defaultProps={defaultProps}
-                        randColor={randColor}
+                        randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         grep={grep}
                         mergePunctuation={mergePunctuation}
@@ -3271,7 +3308,7 @@ class Widgets extends Component{
                 {this.state.widgets.utility.googletranslator.active === true
                     ? <WidgetGoogleTranslator
                         defaultProps={defaultProps}
-                        randColor={randColor}
+                        randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         randSentence={randSentence}
                         position={{
@@ -3402,7 +3439,7 @@ class Widgets extends Component{
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
-                        randColor={randColor}
+                        randomColor={this.randomColor}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {/* {this.state.widgets.utility.urlshortner.active
@@ -3424,7 +3461,7 @@ class Widgets extends Component{
                         }}
                         dragDisabled={this.state.widgets.utility.imagecolorpicker.drag.disabled}
                         copyToClipboard={copyToClipboard}
-                        randColor={randColor}
+                        randomColor={this.randomColor}
                         largeIcon={largeIcon}/>
                     : <></>}
                 {this.state.widgets.utility.musicplayer.active

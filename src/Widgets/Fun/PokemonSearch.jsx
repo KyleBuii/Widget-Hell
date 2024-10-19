@@ -198,7 +198,7 @@ class WidgetPokemonSearch extends Component{
                 let tempSpan = document.createElement("span");
                 let tempImg = document.createElement("img");
                 tempSpan.className = `circle pokemon ${data.types[i].type.name}`;
-                tempImg.src = `/images/pokemon/type/${data.types[i].type.name}.svg`;
+                tempImg.src = `/resources/pokemon/type/${data.types[i].type.name}.svg`;
                 tempSpan.appendChild(tempImg);
                 divPokemonTypes.prepend(tempSpan);
             };

@@ -265,7 +265,7 @@ class WidgetChess extends Component{
             });
             const elementCapturedPiecesBlack = document.getElementById("chess-captured-pieces-black");
             const elementImage = document.createElement("img");
-            elementImage.src = `/images/chess/b${move.captured.toUpperCase()}.png`;
+            elementImage.src = `/resources/chess/b${move.captured.toUpperCase()}.png`;
             elementImage.alt = `captured ${move.captured} black piece`;
             elementImage.draggable = false;
             elementCapturedPiecesBlack.appendChild(elementImage);

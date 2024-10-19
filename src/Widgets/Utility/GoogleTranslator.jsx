@@ -110,7 +110,7 @@ class WidgetGoogleTranslator extends Component{
     /// Swaps "from" language and "to" language
     handleSwap(){
         if(this.state.from.value !== this.state.to.value){
-            this.props.randColor();
+            this.props.randomColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,

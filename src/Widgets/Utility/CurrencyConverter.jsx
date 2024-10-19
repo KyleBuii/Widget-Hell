@@ -44,7 +44,7 @@ class WidgetCurrencyConverter extends Component{
     };
     handleSwap(){
         if(this.state.from.value !== this.state.to.value){
-            this.props.randColor();
+            this.props.randomColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,

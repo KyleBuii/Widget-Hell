@@ -73,7 +73,7 @@ class WidgetImageColorPicker extends Component{
         let numbers = this.state.rgb.replace(/rgb\(-?([0-9]+),[\s-]*?([0-9]+),[\s-]*?([0-9]+)\)/, "$1 $2 $3");
         if(numbers !== ""){
             let splitNumbers = numbers.split(" ");
-            this.props.randColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
+            this.props.randomColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
         };
     };
     handleMouseMove(){

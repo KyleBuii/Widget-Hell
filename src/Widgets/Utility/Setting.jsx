@@ -126,7 +126,8 @@ class WidgetSetting extends Component{
                 screenDimmerValue: 100,
                 background: {value: "default", label: "Default"},
                 timeBased: false,
-                randomTrick: false
+                randomTrick: false,
+                live2D: false
             },
             search: "",
             searched: [],
@@ -172,7 +173,7 @@ class WidgetSetting extends Component{
         switch(what){
             case "slider":
                 random = Math.random() * max + min;
-                this.handleSlider(random, `slider-${element}`);
+                this.handleSlider(random, element);
                 break;
             case "animation":
                 random = optionsAnimation[0].options[Math.floor(Math.random() * (optionsAnimation[0].options.length - 1)) + 1];
@@ -277,7 +278,7 @@ class WidgetSetting extends Component{
                 break;
         };
     };
-    /// Handles all pressable buttons (opacity: 0.5 on click)
+    /// Handles pressable buttons (opacity: 0.5 on click)
     handlePressableButton(what, where){
         switch(what){
             case "showHideWidgets":
@@ -342,11 +343,10 @@ class WidgetSetting extends Component{
                 break;
         };
     };
-    /// Handles all toggleable buttons (switch)
+    /// Handles toggleable buttons (switch)
     handleToggleableButton(value, what){
         switch(what){
             case "button-screen-dimmer":
-                const bg = document.getElementById("App");
                 this.setState({
                     values: {
                         ...this.state.values,
@@ -356,9 +356,9 @@ class WidgetSetting extends Component{
                 }, () => {
                     if(this.state.values.timeBased === false){
                         if(this.state.values.screenDimmer){
-                            bg.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
+                            document.body.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
                         }else{
-                            bg.style.filter = "brightness(100%)";
+                            document.body.style.filter = "brightness(100%)";
                             this.setState({
                                 values: {
                                     ...this.state.values,
@@ -370,20 +370,18 @@ class WidgetSetting extends Component{
                         if(this.state.values.screenDimmer){
                             this.handleInterval(value);
                         }else{
-                            bg.style.filter = "brightness(100%)";
+                            document.body.style.filter = "brightness(100%)";
                         };
                     };
                 });
                 break;
-            default:
-                break;
+            default: break;
         };
     };
-    /// Handles all sliders
+    /// Handles sliders
     handleSlider(value, what){
         switch(what){
             case "slider-screen-dimmer":
-                const bg = document.getElementById("App");
                 this.setState({
                     values: {
                         ...this.state.values,
@@ -391,7 +389,7 @@ class WidgetSetting extends Component{
                     }
                 }, () => {
                     if(this.state.values.screenDimmer === true){
-                        bg.style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
+                        document.body.style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
                     };
                 });
                 break;
@@ -416,10 +414,11 @@ class WidgetSetting extends Component{
                 });
                 break;
             default:
+                this.props.updateValue(value, what, "values");
                 break;
         };
     };
-    /// Handles all selects
+    /// Handles selects
     handleSelect(what, where){
         switch(where){
             case "background":
@@ -436,35 +435,46 @@ class WidgetSetting extends Component{
                 break;
         };
     };
-    /// Handles all checkboxes
-    handleCheckbox(what, where, type){
-        switch(where){
+    /// Handles checkboxes
+    handleCheckbox(checked, what, type){
+        switch(what){
             case "timeBased":
+            case "live2D":
                 this.setState({
                     values: {
                         ...this.state.values,
-                        [where]: what
+                        [what]: checked
                     }
                 }, () => {
-                    switch(where){
+                    switch(what){
                         case "timeBased":
                             this.setState({
                                 values: {
                                     ...this.state.values,
-                                    screenDimmerSlider: !what
+                                    screenDimmerSlider: !checked
                                 }
                             });
-                            this.handleInterval(what);
+                            this.handleInterval(checked);
                             break;
-                        default:
+                        case "live2D":
+                            this.updateLive2D();
                             break;
+                        default: break;
                     };    
                 });
                 break;
             default:
-                this.props.updateValue(what, where, type);
+                this.props.updateValue(checked, what, type);
                 break;
         };
+    };
+    /// Handles color inputs
+    handleColor(event){
+        this.props.updateValue(this.props.hexToRgb(event), "cursorTrailColor", "values");
+    };
+    /// Handles radios
+    handleRadio(event){
+        this.props.updateValue(event.target.value, event.target.name, "values");
     };
     handleTabSwitch(what){
         this.setState({
@@ -533,8 +543,7 @@ class WidgetSetting extends Component{
             this.updateScreenDimmer();
             intervalTimeBased = setInterval(this.updateScreenDimmer, 1800000);
         }else{
-            let app = document.getElementById("App");
-            app.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
+            document.body.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
             clearInterval(intervalTimeBased);
         };
     };
@@ -584,7 +593,6 @@ class WidgetSetting extends Component{
         /// 7-8 = 40% - 100% brightness: 2 hours:30 minutes x 4 -> 15% increase
         /// 8-18 = 100% brightness
         /// 19-24 = 100% to 40% brightness: 5 hours:30 minutes x 10 -> 6% decrease
-        let app = document.getElementById("App");
         let date = new Date();
         let brightness;
         let hour = date.getHours();
@@ -619,7 +627,17 @@ class WidgetSetting extends Component{
             default:
                 break;
         };
-        app.style.filter = `brightness(${brightness}%)`;
+        document.body.style.filter = `brightness(${brightness}%)`;
+    };
+    updateLive2D(){
+        let elementLive2DToggle = document.getElementById("waifu-toggle");
+        elementLive2DToggle.style.display = (!this.state.values.live2D) ? "none" : "block";
+        if(!elementLive2DToggle.classList.contains("waifu-toggle-active")
+            && !this.state.values.live2D){
+            document.getElementById("waifu-tool-quit").click();
+        }else{
+            elementLive2DToggle.click();   
+        };
     };
     handlePageClick(event){
         this.setState({
@@ -640,6 +658,7 @@ class WidgetSetting extends Component{
                     background: this.state.values.background,
                     timeBased: this.state.values.timeBased,
                     randomTrick: this.state.values.randomTrick,
+                    live2D: this.state.values.live2D
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -699,38 +718,46 @@ class WidgetSetting extends Component{
                             break;
                     };
                 };
-                if(localStorageValues["screenDimmer"] !== undefined){
-                    switch(i){
-                        case "setting":
-                            this.setState({
-                                values: {
-                                    ...this.state.values,
-                                    screenDimmer: localStorageValues["screenDimmer"],
-                                    screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
-                                    screenDimmerValue: localStorageValues["screenDimmerValue"],
-                                    background: localStorageValues["background"],
-                                    timeBased: localStorageValues["timeBased"],
-                                    randomTrick: localStorageValues["randomTrick"]
-                                }
-                            }, () => {
-                                /// Update Display
-                                if(this.state.values.screenDimmer && this.state.values.timeBased){
-                                    this.handleInterval(true);
-                                }else if(this.state.values.screenDimmer){
-                                    document.getElementById("App").style.filter = "brightness(" + this.state.values.screenDimmerValue + "%)";
-                                };
-                                /// Update Design
-                                this.updateBackground(this.state.values.background);
-                                /// Set random
-                                if(this.state.values.randomTrick){
-                                    this.randomTimeout("trick");
-                                };
-                            });
-                            break;
-                        default:
-                            break;
+            };
+            /// Values saved here
+            if(localStorageValues["screenDimmer"] !== undefined){
+                this.setState({
+                    values: {
+                        ...this.state.values,
+                        screenDimmer: localStorageValues["screenDimmer"],
+                        screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
+                        screenDimmerValue: localStorageValues["screenDimmerValue"],
+                        background: localStorageValues["background"],
+                        timeBased: localStorageValues["timeBased"],
+                        randomTrick: localStorageValues["randomTrick"],
+                        live2D: localStorageValues["live2D"]
+                    }
+                }, () => {
+                    /// Update Display
+                    if(this.state.values.screenDimmer && this.state.values.timeBased){
+                        this.handleInterval(true);
+                    }else if(this.state.values.screenDimmer){
+                        document.body.style.filter = `brightness(${this.state.values.screenDimmerValue}%)`;
                     };
-                };
+                    /// Update Design
+                    this.updateBackground(this.state.values.background);
+                    /// Set random
+                    if(this.state.values.randomTrick){
+                        this.randomTimeout("trick");
+                    };
+                    this.updateLive2D();
+                });
+            }else{
+                this.updateLive2D();
+            };
+            /// Values not saved here
+            if(localStorageValues["cursorTrailColor"] !== undefined){
+                document.getElementById("settings-popout-misc-cursor-trail-color")
+                    .defaultValue = this.props.rgbToHex(localStorageValues["cursorTrailColor"]);
+            };
+            if(localStorageValues["cursorTrailMode"] !== undefined){
+                document.getElementById(`settings-popout-misc-cursor-trail-${localStorageValues["cursorTrailMode"]}`)
+                    .checked = "true";
             };
         };
     };
@@ -799,7 +826,7 @@ class WidgetSetting extends Component{
                                 <button className="button-match option opt-medium"
                                     onClick={this.handleTrick}>Do a trick!</button>
                                 <button className="button-match option opt-medium"
-                                    onClick={() => this.props.randColor()}>Change color</button>
+                                    onClick={() => this.props.randomColor()}>Change color</button>
                             </section>
                         </section>
                         {/* Show/Hide Widgets Popout */}
@@ -1222,7 +1249,7 @@ class WidgetSetting extends Component{
                                                         Pitch
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "voice-pitch", 0, 2)}>
+                                                        onClick={() => this.randomOption("slider", "slider-voice-pitch", 0, 2)}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1246,7 +1273,7 @@ class WidgetSetting extends Component{
                                                         Rate
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "voice-rate", 0.1, 10)}>
+                                                        onClick={() => this.randomOption("slider", "slider-voice-rate", 0.1, 10)}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1274,7 +1301,7 @@ class WidgetSetting extends Component{
                                                 <section className="element-ends">
                                                     <label className="font small"
                                                         htmlFor="settings-popout-misc-savepositionpopup">
-                                                        Save Position: Popup
+                                                        Save Position
                                                     </label>
                                                     <input id="settings-popout-misc-savepositionpopup"
                                                         name="settings-input-popout-misc-savepositionpopout"
@@ -1283,7 +1310,142 @@ class WidgetSetting extends Component{
                                                         checked={this.props.values.savePositionPopout}/>
                                                 </section>
                                             </fieldset>
-                                            {/* Random */}
+                                            {/* Cursor */}
+                                            <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
+                                                <legend className="font small space-nicely space-bottom length-short">
+                                                    Cursor
+                                                </legend>
+                                                {/* Cursor Trail */}
+                                                <div className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-misc-cursor-trail">
+                                                        Trail
+                                                    </label>
+                                                    <input id="settings-popout-misc-cursor-trail"
+                                                        name="settings-popout-misc-cursor-trail"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "cursorTrail", "values")}
+                                                        checked={this.props.values.cursorTrail}/>
+                                                </div>
+                                                {/* Cursor Trail Color */}
+                                                <section className="grid col-2 spread-setting">
+                                                    {/* Flat */}
+                                                    <section className="element-ends">
+                                                        <label className="font small"
+                                                            htmlFor="settings-popout-misc-cursor-trail-flat">
+                                                            Flat
+                                                        </label>
+                                                        <input id="settings-popout-misc-cursor-trail-flat"
+                                                            name="settings-popout-misc-cursor-trail-flat"
+                                                            type="checkbox"
+                                                            onChange={(event) => this.handleCheckbox(event.target.checked, "cursorTrailFlat", "values")}
+                                                            checked={this.props.values.cursorTrailFlat}
+                                                            disabled={!this.props.values.cursorTrail}/>
+                                                    </section>
+                                                    {/* Cursor Color */}
+                                                    <input id="settings-popout-misc-cursor-trail-color"
+                                                        name="settings-popout-misc-cursor-trail-color"
+                                                        className="color-input-match boxxed"
+                                                        type="color"
+                                                        onBlur={(event) => this.handleColor(event.target.value)}
+                                                        disabled={!this.props.values.cursorTrail}/>
+                                                </section>
+                                                {/* Cursor Trail Modes */}
+                                                <section className="grid col-2 spread-setting">
+                                                    {/* Default */}
+                                                    <section className="element-ends">
+                                                        <label className="font small"
+                                                            htmlFor="settings-popout-misc-cursor-trail-default">
+                                                            Default
+                                                        </label>
+                                                        <input id="settings-popout-misc-cursor-trail-default"
+                                                            name="cursorTrailMode"
+                                                            type="radio"
+                                                            value="default"
+                                                            onChange={(event) => this.handleRadio(event)}
+                                                            disabled={!this.props.values.cursorTrail}/>
+                                                    </section>
+                                                    {/* Squiggly */}
+                                                    <section className="element-ends">
+                                                        <label className="font small"
+                                                            htmlFor="settings-popout-misc-cursor-trail-squiggly">
+                                                            Squiggly
+                                                        </label>
+                                                        <input id="settings-popout-misc-cursor-trail-squiggly"
+                                                            name="cursorTrailMode"
+                                                            type="radio"
+                                                            value="squiggly"
+                                                            onChange={(event) => this.handleRadio(event)}
+                                                            disabled={!this.props.values.cursorTrail}/>
+                                                    </section>
+                                                    {/* Circle */}
+                                                    <section className="element-ends">
+                                                        <label className="font small"
+                                                            htmlFor="settings-popout-misc-cursor-trail-circle">
+                                                            Circle
+                                                        </label>
+                                                        <input id="settings-popout-misc-cursor-trail-circle"
+                                                            name="cursorTrailMode"
+                                                            type="radio"
+                                                            value="circle"
+                                                            onChange={(event) => this.handleRadio(event)}
+                                                            disabled={!this.props.values.cursorTrail}/>
+                                                    </section>
+                                                </section>
+                                                {/* Thickness */}
+                                                <section className="element-ends space-nicely space-top length-medium">
+                                                    <span className="font small">
+                                                        Thickness
+                                                    </span>
+                                                    <button className="button-match inverse"
+                                                        onClick={() => this.randomOption("slider", "cursorTrailThickness", 0, 100)}
+                                                        disabled={!this.props.values.cursorTrail}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Slider className="slider space-nicely space-top length-medium"
+                                                    onChange={(value) => this.handleSlider(value, "cursorTrailThickness")}
+                                                    min={0}
+                                                    max={100}
+                                                    step={1}
+                                                    marks={{
+                                                        7: {
+                                                            label: 7,
+                                                            style: {display: "none" }
+                                                        }
+                                                    }}
+                                                    value={this.props.values.cursorTrailThickness}
+                                                    disabled={!this.props.values.cursorTrail}/>
+                                                {/* Duration */}
+                                                <section className="element-ends space-nicely space-top length-medium">
+                                                    <span className="font small">
+                                                        Duration
+                                                    </span>
+                                                    <button className="button-match inverse"
+                                                        onClick={() => this.randomOption("slider", "cursorTrailDuration", 0.1, 4)}
+                                                        disabled={!this.props.values.cursorTrail}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Slider className="slider space-nicely space-top length-medium"
+                                                    onChange={(value) => this.handleSlider(value, "cursorTrailDuration")}
+                                                    min={0.1}
+                                                    max={4}
+                                                    step={0.1}
+                                                    marks={{
+                                                        0.7: {
+                                                            label: 0.7,
+                                                            style: {display: "none" }
+                                                        }
+                                                    }}
+                                                    value={this.props.values.cursorTrailDuration}
+                                                    disabled={!this.props.values.cursorTrail}/>
+                                            </fieldset>
+                                            {/* Random Events */}
                                             <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
                                                 <legend className="font small space-nicely space-bottom length-short">
                                                     Random Events
@@ -1311,6 +1473,36 @@ class WidgetSetting extends Component{
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "randomText", "values")}
                                                         checked={this.props.values.randomText}/>
+                                                </section>
+                                                {/* Horror */}
+                                                {/* <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-misc-horror">
+                                                        Horror
+                                                    </label>
+                                                    <input id="settings-popout-misc-horror"
+                                                        name="settings-input-popout-misc-horror"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "horror", "values")}
+                                                        checked={this.props.values.horror}/>
+                                                </section> */}
+                                            </fieldset>
+                                            {/* Fun */}
+                                            <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
+                                                <legend className="font small space-nicely space-bottom length-short">
+                                                    Fun
+                                                </legend>
+                                                {/* Live2D */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-misc-fun-live2d">
+                                                        Live2D
+                                                    </label>
+                                                    <input id="settings-popout-misc-fun-live2d"
+                                                        name="settings-popout-misc-fun-live2d"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "live2D", "values")}
+                                                        checked={this.state.values.live2D}/>
                                                 </section>
                                             </fieldset>
                                         </section>

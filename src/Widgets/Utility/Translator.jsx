@@ -22,6 +22,10 @@ let cunnyCodeError = false;  /// Checks if encoding/decoding error is done once
 let cunnyCodeSpecial = false; /// Checks if a special message is done once
 let cunnyCodeArona = false; /// Checks if an arona compliment/hate message is done once
 let cunnyCodeAronaAnger = 0; /// Arona gets angry after 5 insults
+let cunnyCodeAudioAronaAh = new Audio("/resources/translator/cunny-code/arona/audio/ah.wav");
+let cunnyCodeAudioAronaFue = new Audio("/resources/translator/cunny-code/arona/audio/fue.wav");
+let cunnyCodeAudioAronaHeeHeeHee = new Audio("/resources/translator/cunny-code/arona/audio/heeheehee.wav");
+let cunnyCodeAudioAronaHuh = new Audio("/resources/translator/cunny-code/arona/audio/huh.wav");
 /// Select options
 const optionsTranslateFrom = [
     {
@@ -122,6 +126,8 @@ class WidgetTranslator extends Component{
         this.handleReplaceFrom = this.handleReplaceFrom.bind(this);
         this.handleReplaceTo = this.handleReplaceTo.bind(this);
         this.handleRandSentence = this.handleRandSentence.bind(this);
+        this.handleCunnyCodeAronaDrag = this.handleCunnyCodeAronaDrag.bind(this);
+        this.handleCunnyCodeAronaDragging = this.handleCunnyCodeAronaDragging.bind(this);
     };
     handleChange(event){
         if(event.target.value !== " "){
@@ -170,7 +176,77 @@ class WidgetTranslator extends Component{
             randomMessage = this.props.aronaMessages[type][Math.floor(Math.random() * this.props.aronaMessages[type].length)];
         };
         elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
-        elementImage.src = `./images/translator/cunny-code/arona/${randomMessage[1]}.png`;
+        elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.png`;
+    };
+    handleCunnyCodeAronaTouch(where){
+        let elementImage = document.getElementById("translator-image");
+        elementImage.style.animation = "unset";
+        this.handleCunnyCode("touch", where);
+        switch(where){
+            case "head":
+            case "leg":
+                window.requestAnimationFrame(() => {
+                    elementImage.style.animation = "characterJump 500ms ease-in-out";
+                });
+                this.props.defaultProps.playAudio(cunnyCodeAudioAronaHeeHeeHee);
+                break;
+            case "face":
+                window.requestAnimationFrame(() => {
+                    elementImage.style.animation = "characterLeanIn 600ms ease-in-out forwards";
+                });
+                this.props.defaultProps.playAudio(cunnyCodeAudioAronaHuh);
+                break;
+            case "chest":
+            case "skirt":
+            case "shoe":
+                window.requestAnimationFrame(() => {
+                    elementImage.style.animation = "characterShake 200ms linear";
+                });
+                this.props.defaultProps.playAudio(cunnyCodeAudioAronaAh);
+                break;
+            default: break;
+        };
+    };
+    handleCunnyCodeAronaDrag(action){
+        let elementImage = document.getElementById("translator-image");
+        let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
+        switch(action){
+            case "pickup":
+                this.handleCunnyCode("pickup");
+                window.requestAnimationFrame(() => {
+                    elementImage.style.animation = "characterSwing 3s infinite ease-in-out";
+                    elementImageAdditions.style.animation = "characterSwing 3s infinite ease-in-out";
+                });
+                this.props.defaultProps.playAudio(cunnyCodeAudioAronaFue);
+                elementImage.classList.add("dragging");
+                elementImage.style.animationFillMode = "none";
+                elementImageAdditions.classList.add("dragging");
+                document.addEventListener("mousemove", this.handleCunnyCodeAronaDragging);
+                document.addEventListener("mouseup", this.handleCunnyCodeAronaDrag);
+                this.handleCunnyCodeAronaDragging();
+                break;
+            default:
+                this.handleCunnyCode("putdown");
+                elementImage.style.animation = "none";
+                elementImage.classList.remove("dragging");
+                elementImage.style.left = "unset";
+                elementImage.style.top = "unset";
+                elementImageAdditions.style.animation = "none";
+                elementImageAdditions.classList.remove("dragging");
+                elementImageAdditions.style.left = "2.5em";
+                elementImageAdditions.style.top = "2em";
+                document.removeEventListener("mousemove", this.handleCunnyCodeAronaDragging);
+                document.removeEventListener("mouseup", this.handleCunnyCodeAronaDrag);
+                break;
+        };
+    };
+    handleCunnyCodeAronaDragging(){
+        let elementImage = document.getElementById("translator-image");
+        let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
+        elementImage.style.left = `${window.mouse.x - this.props.position.x - 210}px`;
+        elementImage.style.top = `${window.mouse.y - this.props.position.y - 360}px`;
+        elementImageAdditions.style.left = `${window.mouse.x - this.props.position.x - 200}px`;
+        elementImageAdditions.style.top = `${window.mouse.y - this.props.position.y - 360}px`;
     };
     /// Convert the "from" language to english
     convertFromText(swap){
@@ -430,12 +506,12 @@ class WidgetTranslator extends Component{
                                 this.setState({
                                     disableInput: true
                                 });
-                                elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleep.png)`;
+                                elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.png)`;
                                 elementImage.style.visibility = "hidden";
                                 elementAronaBody.style.visibility = "hidden";
                                 elementDialogue.style.visibility = "hidden";
                                 intervalSleepTalk = setInterval(() => {
-                                    elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleeptalk.png)`;
+                                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleeptalk.png)`;
                                     elementDialogue.style.visibility = "visible";
                                     elementDialogue.style.top = "-10em";
                                     this.handleCunnyCode("idleSleep");
@@ -446,7 +522,7 @@ class WidgetTranslator extends Component{
                                         });
                                     }, 10000);
                                     timeoutDialogueOut = setTimeout(() => {
-                                        elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg_sleep.png)`;
+                                        elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.png)`;
                                         elementDialogue.style.visibility = "hidden";
                                     }, 12000);
                                 }, 20000);
@@ -459,7 +535,7 @@ class WidgetTranslator extends Component{
                                 disableInput: false
                             });
                             this.handleCunnyCode("idleAwaken");
-                            elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg.png)`;
+                            elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.png)`;
                             elementImage.style.visibility = "visible";
                             elementAronaBody.style.visibility = "visible";
                             elementDialogue.style.top = "-16.2em";
@@ -522,7 +598,7 @@ class WidgetTranslator extends Component{
                             /// Name
                             }else if(/My name is \S+|Call me \S+/i.test(this.state.convert)){
                                 if(this.state.convert.match(/([\S]+)$/) !== null){
-                                    this.props.updateGlobalValue("name", this.state.convert.match(/([\S]+)$/)[0]);
+                                    window.username = this.state.convert.match(/([\S]+)$/)[0];
                                     this.handleCunnyCode("name", "set");
                                 }else{
                                     this.handleCunnyCode("name", "empty");
@@ -742,7 +818,7 @@ class WidgetTranslator extends Component{
                     toAuthorLink = "https://github.com/SethClydesdale/cunny-code";
                     this.props.updateGlobalValue("hour", new Date().getHours());
                     this.handleCunnyCode((swap) ? "swap" : "greetings");
-                    elementContainer.style.backgroundImage = `url(./images/translator/cunny-code/bg.png)`;
+                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.png)`;
                     elementImage.style.display = "block";
                 };
                 break;
@@ -802,7 +878,7 @@ class WidgetTranslator extends Component{
     /// Swaps "from" language and "to" language
     handleSwap(){
         if(this.state.from.value !== this.state.to.value){
-            this.props.randColor();
+            this.props.randomColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,
@@ -925,6 +1001,8 @@ class WidgetTranslator extends Component{
         clearTimeout(timeoutIdle);
         clearTimeout(timeoutSleep);
         clearInterval(intervalSleepTalk);
+        document.removeEventListener("mousemove", this.handleCunnyCodeAronaDragging);
+        document.removeEventListener("mouseup", this.handleCunnyCodeAronaDrag);
     };
     render(){
         return(
@@ -978,44 +1056,48 @@ class WidgetTranslator extends Component{
                         <section className="flex-center row">
                             {/* Image */}
                             <img id="translator-image"
-                                alt="translator image"/>
+                                className="no-highlight"
+                                alt="translator image"
+                                draggable="false"/>
                             {/* Image Additions: Cunny Code */}
                             {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")
                                 ? <div id="translator-image-additions-cunny-code"
-                                    className="font small">
+                                    className="font small"
+                                    draggable="false">
                                     <div id="translator-cunny-code-arona-body">
                                         <div id="translator-cunny-code-arona-halo"
-                                            className="arona-action"></div>
+                                            className="arona-action"
+                                            onMouseDown={() => this.handleCunnyCodeAronaDrag("pickup")}></div>
                                         <div id="translator-cunny-code-arona-head"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "head")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("head")}></div>
                                         <div id="translator-cunny-code-arona-face"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "face")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("face")}></div>
                                         <div id="translator-cunny-code-arona-chest"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "chest")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("chest")}></div>
                                         <div id="translator-cunny-code-arona-skirt"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "skirt")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("skirt")}></div>
                                         <div id="translator-cunny-code-arona-leg1"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
                                         <div id="translator-cunny-code-arona-leg2"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
                                         <div id="translator-cunny-code-arona-leg3"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
                                         <div id="translator-cunny-code-arona-leg4"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "leg")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
                                         <div id="translator-cunny-code-arona-shoes"
                                             className="arona-action"
-                                            onClick={() => this.handleCunnyCode("touch", "shoe")}></div>
+                                            onClick={() => this.handleCunnyCodeAronaTouch("shoe")}></div>
                                     </div>
                                     <div id="translator-cunny-code-arona-dialogue"
-                                        className="dialogue"></div>
+                                        className="dialogue no-highlight"></div>
                                 </div>
                                 : <></>}
                             {/* Translator Container */}

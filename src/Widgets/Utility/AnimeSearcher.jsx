@@ -660,7 +660,7 @@ class WidgetAnimeSearcher extends Component{
                                         style={{
                                             boxShadow: `0px 0px 10px ${this.state.coverImageColor}`
                                         }}
-                                        src={this.state.bannerImage || "/images/singles/animebackground.jpg"}
+                                        src={this.state.bannerImage || "/resources/singles/animebackground.jpg"}
                                         draggable="false"
                                         alt="banner"/>
                                     <div className="flex-center row gap medium-gap only-justify-content">
@@ -791,7 +791,7 @@ class WidgetAnimeSearcher extends Component{
                                                                         window.open(link.url);
                                                                     }}>
                                                                     <img className="image-site"
-                                                                        src={link.icon || "/images/singles/page.png"}
+                                                                        src={link.icon || "/resources/singles/page.png"}
                                                                         alt={link.site}/>
                                                                 </button>
                                                             })}
@@ -927,7 +927,7 @@ class WidgetAnimeSearcher extends Component{
                                                                     })}
                                                                 </div>
                                                                 : <></>}
-                                                            {(this.state.spoiler)
+                                                            {(this.state.spoiler && (this.state.characters[this.state.characterIndex].name.alternativeSpoiler.length !== 0))
                                                                 ? <div className="flex-center row gap only-align-items font spoiler bold small">
                                                                     {this.state.characters[this.state.characterIndex].name.alternativeSpoiler.map((name, index) => {
                                                                         if(index !== (this.state.characters[this.state.characterIndex].name.alternativeSpoiler.length - 1)){

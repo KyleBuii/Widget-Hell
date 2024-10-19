@@ -8,6 +8,7 @@ z-index guide
 5: Widget when dragging
 6: Drag icon
 7: Popup
+8: Cursor
 */
 
 :root{
@@ -46,8 +47,8 @@ z-index guide
     --sunpillar-clr-5: var(--sunpillar-5);
     --sunpillar-clr-6: var(--sunpillar-6);
     --cosmosbg: ;
-    --grain: url("/images/pokemon/rarity/grain.webp");
-    --glitter: url("/images/pokemon/rarity/glitter.png");
+    --grain: url("/resources/pokemon/rarity/grain.webp");
+    --glitter: url("/resources/pokemon/rarity/glitter.png");
     --glittersize: 25%;
     --space: 5%;
     --angle: 133deg;
@@ -71,6 +72,7 @@ z-index guide
 
 body{
     margin: 0rem;
+    overflow: hidden;
 }
 
 
@@ -614,6 +616,7 @@ body{
 }
 
 .select-match{
+    @extend .no-highlight;
     color: var(--randColor);
     font-size: 0.75em;
     width: 100%;
@@ -703,13 +706,23 @@ body{
     border-radius: 50%;
     inline-size: 2em;
     block-size: 2em;
-    padding: 3px;
+    padding: 2px;
     background-color: white;
     &::-webkit-color-swatch-wrapper{
         padding: 1px;
     }
     &::-webkit-color-swatch{
         border-radius: 50%;
+    }
+    &:disabled{
+        filter: brightness(85%);
+    }
+    &.boxxed{
+        border-radius: 8px;
+        width: 100%;
+        &::-webkit-color-swatch{
+            border-radius: 6px;
+        }
     }
 }
 
@@ -900,8 +913,8 @@ body{
             grid-template-columns: repeat(2, 9.38em);
         }
         &.spread-setting{
-            gap: 1.4em;
-            grid-template-columns: repeat(2, 4.3em);
+            column-gap: 1em;
+            grid-template-columns: repeat(2, 4.5em);
         }
     }
     &.col-3{
@@ -1463,7 +1476,7 @@ body{
             --space: 4%;
             clip-path: var(--clip);
             background-image: 
-                url("/images/pokemon/rarity/cosmos-bottom.png"), 
+                url("/resources/pokemon/rarity/cosmos-bottom.png"), 
                 repeating-linear-gradient(82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
                     hsl(93, 56%, 50%) calc(var(--space)*2), 
@@ -1497,7 +1510,7 @@ body{
                 z-index: 2;
               
                 background-image: 
-                  url("/images/pokemon/rarity/cosmos-middle-trans.png"), 
+                  url("/resources/pokemon/rarity/cosmos-middle-trans.png"), 
                   repeating-linear-gradient(
                     82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
@@ -1533,7 +1546,7 @@ body{
                 z-index: 3;
               
                 background-image: 
-                  url("/images/pokemon/rarity/cosmos-top-trans.png"), 
+                  url("/resources/pokemon/rarity/cosmos-top-trans.png"), 
                   repeating-linear-gradient(
                     82deg, 
                     hsl(53, 65%, 60%) calc(var(--space)*1), 
@@ -1592,7 +1605,7 @@ body{
             --space: 200px;
             --hue: 50;
             --mask: none;
-            --foil: url("/images/pokemon/rarity/trainerbg.png"); 
+            --foil: url("/resources/pokemon/rarity/trainerbg.png"); 
             --imgsize: 25% auto;
             background-image: 
                 radial-gradient(
@@ -1669,7 +1682,7 @@ body{
                 background-blend-mode: hard-light;
                 clip-path: var(--clip);
                 --mask: none;
-                --foil: url("/images/pokemon/rarity/trainerbg.png"); 
+                --foil: url("/resources/pokemon/rarity/trainerbg.png"); 
                 --imgsize: 25% auto;    
                 background-blend-mode: difference;          
             }
@@ -1781,7 +1794,7 @@ body{
             --r-clr-5: hsl(180, 60%, 35%);
             --r-clr-6: hsl(210, 57%, 39%);
             --r-clr-7: hsl(280, 55%, 31%);
-            --foil: url("/images/pokemon/rarity/illusion-mask.png"); 
+            --foil: url("/resources/pokemon/rarity/illusion-mask.png"); 
             --imgsize: 33%;
             background-image: 
                 linear-gradient(-45deg, var(--r-clr-1), var(--r-clr-5)), var(--glitter),
@@ -1987,7 +2000,7 @@ body{
     &[rarity="secretRare"]{
         .card-shine{
             --shift: 1px;
-            --foil: url("/images/pokemon/rarity/geometric.png"); 
+            --foil: url("/resources/pokemon/rarity/geometric.png"); 
             --imgsize: 33%;
             filter: brightness( calc( ( var( --pointer-from-center ) * 0.3 ) + 0.2 ) ) contrast(2) saturate(0.75);          
             background-image:
@@ -2056,7 +2069,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("/images/pokemon/rarity/illusion.png"); 
+            --foil: url("/resources/pokemon/rarity/illusion.png"); 
             --imgsize: 33%;
             -webkit-mask-image: var(--mask);
             mask-image: var(--mask);
@@ -2147,7 +2160,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("/images/pokemon/rarity/illusion.png"); 
+            --foil: url("/resources/pokemon/rarity/illusion.png"); 
             --imgsize: 33%;
             -webkit-mask-image: var(--mask);
             mask-image: var(--mask);
@@ -2337,7 +2350,7 @@ body{
     &[rarity="vmax"]{
         .card-shine, .card-shine::after{
             --mask: none;
-            --foil: url("/images/pokemon/rarity/vmaxbg.jpg"); 
+            --foil: url("/resources/pokemon/rarity/vmaxbg.jpg"); 
             --imgsize: 60% 30%;          
         }
         .card-shine{
@@ -2486,7 +2499,7 @@ body{
             --space: 5%;
             --angle: 133deg;
             --mask: none;
-            --foil: url("/images/pokemon/rarity/ancient.png"); 
+            --foil: url("/resources/pokemon/rarity/ancient.png"); 
             --imgsize: 18% 15%;
             background-blend-mode: exclusion, hue, hard-light;
             filter: brightness(calc((var(--pointer-from-center) * .25) + .35)) contrast(1.8) saturate(1.75);
@@ -3679,45 +3692,45 @@ body{
     }
     &.tile2 {
         background-color: #eee;
-        background-image: url(/images/2048/2.gif);
+        background-image: url(/resources/2048/2.gif);
     }
     &.tile4 {
         background-color: #eec;
-        background-image: url(/images/2048/4.gif);
+        background-image: url(/resources/2048/4.gif);
     }
     &.tile8 {
         color: #ffe;
-        background-image: url(/images/2048/8.gif);
+        background-image: url(/resources/2048/8.gif);
     }
     &.tile16 {
         color: #ffe;
-        background-image: url(/images/2048/16.gif);
+        background-image: url(/resources/2048/16.gif);
     }
     &.tile32 {
         color: #ffe;
-        background-image: url(/images/2048/32.gif);
+        background-image: url(/resources/2048/32.gif);
     }
     &.tile64 {
         color: #ffe;
-        background-image: url(/images/2048/64.gif);
+        background-image: url(/resources/2048/64.gif);
     }
     &.tile128 {
         color: #ffe;
-        background-image: url(/images/2048/128.gif);
+        background-image: url(/resources/2048/128.gif);
     }
     &.tile256 {
         color: #ffe;
-        background-image: url(/images/2048/256.gif);
+        background-image: url(/resources/2048/256.gif);
         font-size: 45px;
     }
     &.tile512 {
         color: #ffe;
-        background-image: url(/images/2048/512.gif);
+        background-image: url(/resources/2048/512.gif);
         font-size: 45px;
     }
     &.tile1024 {
         color: #fff;
-        background-image: url(/images/2048/1024.gif);
+        background-image: url(/resources/2048/1024.gif);
         font-size: 35px;
     }
     //#endregion
@@ -3931,15 +3944,25 @@ body{
     }
 }
 
+.dragging{
+    z-index: 6;
+    cursor: grabbing;
+    position: absolute !important;
+    transform: scale(0.6);
+}
+
 .arona-action{
     position: relative;
-    cursor: pointer;
+    cursor: grab;
     opacity: 0;
+    &:active{
+        cursor: grabbing;
+    }
 }
 //#endregion
 
 
-//////////////////// Class: Libraries ////////////////////
+//////////////////// Libraries & Scripts ////////////////////
 //#region
 //#region React tabs
 .react-tabs{
@@ -4054,6 +4077,46 @@ body{
 .simplebar-content-wrapper{
     &:focus{
         outline: none;
+    }
+}
+//#endregion
+
+//#region Live2D widget
+#waifu-toggle{
+    background-color: var(--randColorLight);
+}
+
+#waifu{
+	transform: unset;
+    margin-bottom: -13px;
+    &.waifu-right-side{
+        left: unset;
+        right: 20px;
+        #waifu-tool-switch-side{
+            transform: scaleX(-1);
+        }
+    }
+}
+
+#waifu-tips{
+    background-color: var(--randColorLight);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    text-align: center;
+    word-break: keep-all;
+    will-change: transform;
+}
+
+#waifu-tool{
+    svg{
+        fill: var(--randColorLight);
+        &:hover{
+            fill: var(--randColorLight);
+            filter: brightness(0.85);
+        }
+        &:active{
+            fill: var(--randColorLight);
+            filter: brightness(0.8);
+        }
     }
 }
 //#endregion
@@ -4273,7 +4336,7 @@ body{
         height: 100%;
         width: 100%;
         border-radius: 25px;
-        background-image: url(/images/singles/cherryblossom.png);
+        background-image: url(/resources/singles/cherryblossom.png);
         background-position: bottom left;
         background-size: 200px;
         background-repeat: no-repeat;
@@ -4317,11 +4380,14 @@ body{
         }
     }
     #translator-image{
+        pointer-events: none;
+        position: relative;
         max-height: 17em;
     }
     #translator-image-additions-cunny-code{
         position: absolute;
         left: 2.5em;
+        top: 2em;
         max-width: 8.5em;
         max-height: 21em;
         width: 100%;
@@ -4333,7 +4399,7 @@ body{
                 height: 1em;
                 width: 2.6em;
                 transform: rotate(28deg);
-                border-radius: 100%;   
+                border-radius: 100%;
             }
             #translator-cunny-code-arona-head{
                 left: 3.2em;
@@ -4567,7 +4633,7 @@ body{
             background: linear-gradient(
                 rgba(255, 255, 255, .8),
                 rgba(255, 255, 255, .8)),
-                url(/images/singles/dollar.jpg);
+                url(/resources/singles/dollar.jpg);
             background-position: center;
             background-size: cover;
             word-break: break-all;
@@ -5252,6 +5318,39 @@ body{
 @keyframes dialogueOut{
     from { opacity: 1; }
     to { opacity: 0; }
+}
+
+@keyframes characterJump{
+    0%   { top: 0px;   }
+    25%  { top: 8px;  }
+    50%  { top: 0px;   }
+    75%  { top: -8px; }
+    100% { top: 0px;   }
+}
+
+@keyframes characterLeanIn{
+    0%   { transform: scale(1);   }
+    100% { transform: scale(1.1); }
+}
+
+@keyframes characterShake{
+    0%   { left: 0px;  }
+    25%  { left: 8px;  }
+    50%  { left: 0px;  }
+    75%  { left: -8px; }
+    100% { left: 0px;  }
+}
+
+@keyframes characterSwing{
+    0%   { transform: scale(0.6) rotate(-5deg);
+           margin-left: 10px;
+           margin-top: 5px; }
+    50%  { transform: scale(0.61) rotate(5deg);
+           margin-left: 0px;
+           margin-top: 0px; }
+    100% { transform: scale(0.6) rotate(-5deg);
+           margin-left: 10px;
+           margin-top: 5px; }
 }
 
 //#region Text

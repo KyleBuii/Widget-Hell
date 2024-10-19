@@ -85,7 +85,7 @@ class WidgetQuote extends Component{
     loadFallingImage(){
         if(this.state.total !== 0){
             let fallingImage = new Image();
-            fallingImage.src = "/images/singles/petal.png";
+            fallingImage.src = "/resources/singles/petal.png";
             let images = [];
             for(let i = 0; i < this.state.total; i++){
                 images.push(new Falling(fallingImage));
