@@ -1,6 +1,6 @@
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BiBriefcase } from "react-icons/bi";

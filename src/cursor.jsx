@@ -1,4 +1,4 @@
-import { Component, createRef, memo, React } from 'react';
+import React, { Component, createRef, memo } from 'react';
 
 
 /// Variables
