@@ -306,7 +306,7 @@ class WidgetEquipment extends Component{
                                     {/* Level */}
                                     <div className="aesthetic-scale scale-span flex-center column">
                                         <span className="font medium bold">Level {this.props.stats.level}</span>
-                                        <span className="font micro transparent-normal">EXP: {this.props.stats.exp}</span>
+                                        <span className="font micro transparent-normal">EXP: {this.props.stats.exp} / {this.props.gameProps.formatNumber(this.props.stats.maxExp, 2)}</span>
                                     </div>
                                     {/* Armor Slots */}
                                     <div id="equipment-slots-armor"

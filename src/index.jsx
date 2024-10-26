@@ -40,13 +40,17 @@ import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
 import SimpleBar from 'simplebar-react';
 import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
 import Cursor from './cursor.jsx';
+import WidgetColorMemory from './Widgets/Games/ColorMemory.jsx';
+import Particle from './particle.jsx';
 
 
 //////////////////// Temp Variables ////////////////////
 //#region
 let timeoutText;
-let timeoutHorrorLightOn;
-let intervalHorrorLightOff;
+let intervalHorror;
+let intervalHorrorMessages;
+let color;
+let colorLight;
 var healthDisplay;
 var voices;
 window.username = "Anon";
@@ -373,7 +377,6 @@ const largeIcon = "5em";
 //#endregion
 const zIndexDefault = 2;
 const zIndexDrag = 5;
-let color;
 const colorRange = 200;
 //#region Data
 const tricks = ["spin", "flip", "hinge"];
@@ -588,6 +591,10 @@ const sentences = [
     , "I hope you die. How, you may ask? Well, I have specially selected 20 different types of torture methods/executions that I would like you to go through. 1. The Rack: A device that stretched the victim's body, often dislocating joints. 2. Iron Maiden: An iron cabinet with spikes that would impale the victim when closed. 3. The Brazen Bull: A hollow metal bull where victims were placed inside and roasted over a fire. 4. Judas Cradle: Victims were lowered onto a pyramid-shaped seat, causing severe pain. 5. Thumbscrews: A device that crushed fingers or toes with a tightening screw. 6. The Breaking Wheel: A large wheel used to break bones, leaving the victim to die slowly. 7. Scavenger's Daughter: A compression device that forced the victim's body into an agonizing position. 8. The Pear of Anguish: A pear-shaped instrument inserted into orifices, expanded to cause internal damage. 9. The Chair of Torture: A spiked chair where victims were strapped down to be pierced. 10. The Spanish Tickler: A claw-like device used to rip flesh from the body. 11. The Heretic's Fork: A two-pronged fork placed under the chin and chest, preventing movement 12. The Boot: A device that crushed the feet or legs by applying extreme pressure. 13. The Garrote: A device used to strangle or break the neck. 14. The Ducking Stool: A chair attached to a lever, used to dunk victims into water. 15. Water Torture: Methods involving the pouring of water to simulate drowning or other forms of psychological distress. 16. The Cat's Paw: A claw-like tool used to tear the flesh from the victim's body. 17. The Lead Sprinkler: A tool used to sprinkle molten lead or boiling oil onto the victim. 18. Saw Torture: Victims were hung upside down and sawed in half, ensuring they remained conscious for longer. 19. The Coffin: A cage that confined the victim in a restrictive posture, often left in public for humiliation. 20. The Brank: A metal mask with a spiked bit that was inserted into the mouth to prevent speech, mainly used on those accused of blasphemy or gossip."
     , "I was eating dinner at like a small little fold up table in the living room cuz im sick and dont wanna get everyone else sick and I was putting a water bottle cap back on and it got caught in one of my kinda loose bandaids and I went to get it out and it went flying then I went to pick it up but I tripped over one of the couch pillows that were on the ground and tried to grab onto the table for support and it fucking flipped over."
     , "Crazy? I was crazy once. They locked me in a shoebox. A shoebox on September. A shoebox on 21st September. And 21st September make me crazy. Crazy? I was crazy once."
+];
+const sentencesHorror = [
+    "Hello",
+    "Why don't you ever check under your bed for people like me?",
 ];
 /* Dictionary template (need to manually put in ` and change \ -> \\)
 /// Dictionary
@@ -1582,7 +1589,9 @@ class Widgets extends Component{
                 cursorTrailMode: "default",
                 cursorTrailThickness: 7,
                 cursorTrailDuration: 0.7,
-                horror: false
+                horror: false,
+                particle: {value: "default", label: "Default"},
+                particleMute: false
             },
             prevPosition: {
                 prevX: 0,
@@ -1933,6 +1942,17 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
+                    colormemory: {
+                        name: "Color Memory",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 fun: {
                     pokemonsearch: {
@@ -2148,6 +2168,7 @@ class Widgets extends Component{
             stats: {
                 level: 1,
                 exp: 0,
+                maxExp: 0,
                 health: 1,
                 mana: 1,
                 attack: 1,
@@ -2197,6 +2218,7 @@ class Widgets extends Component{
         r.style.setProperty("--randColorLight", randColorLight);
         r.style.setProperty("--randColorOpacity", randColorOpacity);
         color = randColor;
+        colorLight = randColorLight;
         this.setState({
             color: randColor
         });
@@ -2600,7 +2622,7 @@ class Widgets extends Component{
             if(this.state.values.horror){
                 this.randomTimeoutHorror();
             }else if(!this.state.values.horror){
-                intervalHorrorLightOff = clearInterval(intervalHorrorLightOff);
+                intervalHorror = clearInterval(intervalHorror);
             };
         });
     };
@@ -2625,12 +2647,49 @@ class Widgets extends Component{
         };
     };
     randomTimeoutHorror(){
-        // let randomNumber = Math.random() * 180000 + 30000;
-        let randomNumber = Math.random() * 3000 + 2000;
-        intervalHorrorLightOff = setInterval(() => {
-            timeoutHorrorLightOn = setTimeout(() => {
-                randomNumber = Math.random() * 3000 + 2000;
-            }, 1000);
+        /// Creating a shadow image
+        // let randomNumber = Math.random() * 1200000 + 300000;
+        let randomNumber = Math.random() * 10000;
+        let elementShadow = document.createElement("img");
+        elementShadow.src = "/resources/singles/guy.png";
+        let elementContainer = document.getElementById("widget-container");
+        let elementContainerSize = elementContainer.getBoundingClientRect();
+        elementShadow.onload = () => {
+            elementShadow.style.filter = "brightness(0%)";
+            elementShadow.style.maxHeight = "256px";
+            elementShadow.style.position = "absolute";
+        };
+        intervalHorror = setInterval(() => {
+            /// Displays a shadow outside of the screen that peaks its head
+            elementContainer.appendChild(elementShadow);
+            let sides = ["top", "right", "bottom", "left"];
+            let randomSide = sides[Math.floor(Math.random() * sides.length)];
+            let realWidth = 256 * (elementShadow.naturalWidth / elementShadow.naturalHeight);
+            if(/left|right/.test(randomSide)){
+                let randomY = Math.random() * (elementContainerSize.height - 256);
+                elementShadow.style.top = `${randomY}px`;
+                elementShadow.style[randomSide] = `-${realWidth}px`;
+            }else{
+                if(randomSide === "top"){
+                    elementShadow.style.transform = "scale(-1)";
+                };
+                let randomX = Math.random() * (elementContainerSize.width - realWidth);
+                elementShadow.style.left = `${randomX}px`;
+                elementShadow.style[randomSide] = "-256px";
+            };
+            window.requestAnimationFrame(() => {
+                elementShadow.style.animation = `characterPeak${randomSide.replace(/^./, char => char.toUpperCase())} 4s`;
+                elementShadow.onanimationend = () => {
+                    elementContainer.removeChild(elementShadow);
+                };
+            });
+            /// Changes text to a random horror message
+            let elementsText = document.getElementsByClassName("text-animation");
+            if(elementsText.length !== 0){
+                let randomElementText = elementsText[Math.floor(Math.random() * elementsText.length)];
+                let randomSentenceHorror = sentencesHorror[Math.floor(Math.random() * sentencesHorror.length)];
+                randomElementText.innerText = randomSentenceHorror;
+            };
         }, randomNumber);
     };
     updateWidgetsActive(what, where){
@@ -2772,6 +2831,30 @@ class Widgets extends Component{
                     gold: this.state.gold + value
                 });        
                 break;
+            case "exp":
+                this.setState({
+                    stats: {
+                        ...this.state.stats,
+                        exp: this.state.stats.exp + value
+                    }
+                }, () => {
+                    if(this.state.stats.exp >= this.state.stats.maxExp){
+                        let remainderExp = Math.abs(this.state.stats.maxExp - this.state.stats.exp);
+                        let allStats = Object.keys(this.state.stats).slice(3);
+                        let randomStat = allStats[Math.floor(Math.random() * allStats.length)];
+                        this.setState({
+                            stats: {
+                                ...this.state.stats,
+                                level: this.state.stats.level + 1,
+                                exp: remainderExp,
+                                [randomStat]: this.state.stats[randomStat] + 1
+                            }
+                        }, () => {
+                            this.calculateMaxExp();
+                        });
+                    };
+                });        
+                break;
             case "stats":
                 this.setState({
                     stats: {
@@ -2788,6 +2871,15 @@ class Widgets extends Component{
             default:
                 break;
         };
+    };
+    calculateMaxExp(){
+        const equationMaxExp = this.state.stats.level * 100 * 1.25;
+        this.setState({
+            stats: {
+                ...this.state.stats,
+                maxExp: equationMaxExp
+            }
+        });
     };
     talk(text){
         if(text !== ""){
@@ -2946,7 +3038,10 @@ class Widgets extends Component{
                             };
                             if(this.state.values.randomText){
                                 this.randomTimeoutText();
-                            };   
+                            };
+                            if(this.state.values.horror){
+                                this.randomTimeoutHorror();
+                            };
                         });
                         /// Setting global variables
                         healthDisplay = localStorageValues["health"];
@@ -3024,6 +3119,10 @@ class Widgets extends Component{
                 stats: {
                     ...dataLocalStorageStats
                 }
+            }, () => {
+                if(this.state.stats.maxExp === 0){
+                    this.calculateMaxExp();
+                };
             });
         };
         if(localStorage.getItem("abilities") !== null){
@@ -3047,6 +3146,7 @@ class Widgets extends Component{
         window.removeEventListener("gold bag", this.addGoldBag);
         window.removeEventListener("equip item", this.equipItem);
         clearTimeout(timeoutText);
+        clearInterval(intervalHorror);
     };
     render(){
         const defaultProps = {
@@ -3107,6 +3207,8 @@ class Widgets extends Component{
                         thickness={this.state.values.cursorTrailThickness}
                         duration={this.state.values.cursorTrailDuration}/>
                     : <></>}
+                <Particle choice={this.state.values.particle}
+                    mute={this.state.values.particleMute}/>
                 {/* For copying to clipboard */}
                 <pre id="clipboard-dump"></pre>
                 {/* For Developers */}
@@ -3203,6 +3305,7 @@ class Widgets extends Component{
                 {this.state.widgets.utility.equipment.active === true
                     ? <WidgetEquipment
                         defaultProps={defaultProps}
+                        gameProps={gameProps}
                         position={{
                             x: this.state.widgets.utility.equipment.position.x,
                             y: this.state.widgets.utility.equipment.position.y
@@ -3591,6 +3694,19 @@ class Widgets extends Component{
                             y: this.state.widgets.games.grindshot.position.y
                         }}
                         dragDisabled={this.state.widgets.games.grindshot.drag.disabled}
+                        largeIcon={largeIcon}/>
+                    : <></>}
+                {this.state.widgets.games.colormemory.active === true
+                    ? <WidgetColorMemory
+                        defaultProps={defaultProps}
+                        gameProps={gameProps}
+                        position={{
+                            x: this.state.widgets.games.colormemory.position.x,
+                            y: this.state.widgets.games.colormemory.position.y
+                        }}
+                        dragDisabled={this.state.widgets.games.colormemory.drag.disabled}
+                        hexToRgb={hexToRgb}
+                        randomColor={this.randomColor}
                         largeIcon={largeIcon}/>
                     : <></>}
                 { 

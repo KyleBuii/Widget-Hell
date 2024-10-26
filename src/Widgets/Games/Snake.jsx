@@ -483,6 +483,7 @@ class WidgetSnake extends Component{
             this.props.gameProps.randomItem(amount);
         };
         this.props.gameProps.updateGameValue("gold", this.state.goldEarned);
+        this.props.gameProps.updateGameValue("exp", this.state.goldEarned);
         this.setState({
             status: 2,
             highscore: (this.state.snake.length - 1 > this.state.highscore)

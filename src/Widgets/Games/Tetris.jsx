@@ -111,6 +111,7 @@ class WidgetTetris extends Component{
 		clearInterval(intervalTimer);
 		let gold = Math.floor(this.state.score / 1000);
 		this.props.gameProps.updateGameValue("gold", gold);
+		this.props.gameProps.updateGameValue("exp", gold);
 		if(this.state.score >= 5000){
 			let amount = Math.floor(this.state.score / 5000);
             this.props.gameProps.randomItem(amount);

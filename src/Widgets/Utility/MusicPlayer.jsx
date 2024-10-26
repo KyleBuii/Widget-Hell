@@ -1,3 +1,4 @@
+import Slider from 'rc-slider';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -17,6 +18,9 @@ let timeoutAnimationNext;
 class WidgetMusicPlayer extends Component{
     constructor(props){
         super(props);
+        this.ref = player => {
+            this.player = player;
+        };
         this.state = {
             music: [],
             urls: [
@@ -46,13 +50,14 @@ class WidgetMusicPlayer extends Component{
             currentDuration: "00:00",
             maxDuration: "00:00",
             rawMaxDuration: 0,
-            widthProgress: 0,
+            progress: 0,
             playing: false,
             songIndex: 0,
             autoplay: false,
             url: null,
             playerDisplay: "none",
-            discSwitch: false
+            discSwitch: false,
+            seeking: false
         };
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
@@ -163,7 +168,7 @@ class WidgetMusicPlayer extends Component{
             currentDuration: "00:00",
             maxDuration: "00:00",
             rawMaxDuration: 0,
-            widthProgress: 0,
+            progress: 0,
             playing: false,
             songIndex: 0,
             autoplay: false,
@@ -189,7 +194,7 @@ class WidgetMusicPlayer extends Component{
             this.setState({
                 currentDuration: "00:00",
                 maxDuration: "00:00",
-                widthProgress: 0,    
+                progress: 0,    
                 songIndex: musicIndex,
                 url: randomMusic.url,
                 playerDisplay: "block"
@@ -268,26 +273,26 @@ class WidgetMusicPlayer extends Component{
         };
     };
     updateDuration(event){
-        let minutes, seconds, progress;
-        if(event.playedSeconds){
-            minutes = Math.floor(event.playedSeconds / 60);
-            seconds = Math.floor(event.playedSeconds % 60);
-            progress = (event.playedSeconds / this.state.rawMaxDuration) * 100;
-        }else{
-            minutes = Math.floor(audio.currentTime / 60);
-            seconds = Math.floor(audio.currentTime % 60);
-            progress = (audio.currentTime / audio.duration) * 100;
+        if(!this.state.seeking){
+            let minutes, seconds;
+            if(event.playedSeconds){
+                minutes = Math.floor(event.playedSeconds / 60);
+                seconds = Math.floor(event.playedSeconds % 60);
+            }else{
+                minutes = Math.floor(audio.currentTime / 60);
+                seconds = Math.floor(audio.currentTime % 60);
+            };
+            if(minutes < 10){
+                minutes = `0${minutes}`;
+            };
+            if(seconds < 10){
+                seconds = `0${seconds}`;
+            };
+            this.setState({
+                currentDuration: `${minutes}:${seconds}`,
+                progress: event.played
+            });
         };
-        if(minutes < 10){
-            minutes = `0${minutes}`;
-        };
-        if(seconds < 10){
-            seconds = `0${seconds}`;
-        };
-        this.setState({
-            currentDuration: `${minutes}:${seconds}`,
-            widthProgress: progress
-        });
     };
     setMaxDuration(event){
         let minutes, seconds;
@@ -340,11 +345,13 @@ class WidgetMusicPlayer extends Component{
         /// Enter key
         if((event.keyCode === 13)
             && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))){
+            /// Remove querys
+            let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
             document.getElementById("musicplayer-input-add")
                 .classList.remove("musicplayer-animation-input-add");
             this.setState({
                 urls: [...this.state.urls, {
-                    url: event.target.value
+                    url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
                 }]
             }, () => {
                 this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
@@ -356,6 +363,28 @@ class WidgetMusicPlayer extends Component{
             timeoutAnimationRemove = setTimeout(() => {
                 elementDetails.classList.remove("musicplayer-animation-add-details");
             }, 400);
+        };
+    };
+    handleSeeking({ event, what }){
+        /// Default is onChange
+        switch(what){
+            case "down":
+                this.setState({
+                    seeking: true
+                });        
+                break;
+            case "up":
+                this.setState({
+                    seeking: false
+                });
+                this.updateDuration();   
+                this.player.seekTo(parseFloat(event.target.value));
+                break;
+            default:
+                this.setState({
+                    progress: parseFloat(event.target.value)
+                });
+                break;
         };
     };
     storeData(){
@@ -457,6 +486,7 @@ class WidgetMusicPlayer extends Component{
                                 className="circle no-highlight"
                                 onClick={() => this.discSwitch()}>
                                 <ReactPlayer id="musicplayer-player"
+                                    ref={this.ref}
                                     url={this.state.url}
                                     playing={this.state.playing && this.state.playerDisplay === "block"}
                                     height={"21em"}
@@ -490,12 +520,19 @@ class WidgetMusicPlayer extends Component{
                                         onClick={() => this.props.copyToClipboard(this.state.artist)}>{this.state.artist}</span>
                                 </div>
                                 <div>
-                                    <div className="flex-center only-align-items progress-bar">
-                                        <span style={{
-                                            width: `${this.state.widthProgress}%`
-                                        }}></span>
-                                    </div>
-                                    <div className="element-ends font small transparent-white">
+                                    <input className="progress-bar"
+                                        value={this.state.progress}
+                                        type="range"
+                                        min={0}
+                                        max={0.999999}
+                                        step={"any"}
+                                        onMouseDown={() => this.handleSeeking({ what: "down" })}
+                                        onChange={(event) => this.handleSeeking({ event: event })}
+                                        onMouseUp={(event) => this.handleSeeking({ event: event, what: "up" })}/>
+                                    <div className="element-ends font small transparent-white"
+                                        style={{
+                                            marginTop: "0.1rem"
+                                        }}>
                                         <span>{this.state.currentDuration}</span>
                                         <span>{this.state.maxDuration}</span>
                                     </div>

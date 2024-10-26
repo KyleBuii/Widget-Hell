@@ -106,6 +106,7 @@ class WidgetSimonGame extends Component{
             this.props.gameProps.randomItem(amount);
         };
         this.props.gameProps.updateGameValue("gold", this.state.goldEarned);
+        this.props.gameProps.updateGameValue("exp", this.state.goldEarned);
         this.setState({
             highscore: (this.state.highscore > this.state.score)
                 ? this.state.highscore

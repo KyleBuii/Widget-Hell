@@ -937,6 +937,9 @@ body{
 .space-nicely{
     &.space-top{
         margin: 0.9rem 0rem 0.3rem;
+        &.length-small{
+            margin-top: 0.3rem;
+        }
         &.length-medium{
             margin-top: 0.5rem;
         }
@@ -1165,14 +1168,18 @@ body{
 }
 
 .progress-bar{
+    @extend .flex-center;
     height: 0.8em;
-    border-radius: 25px;
-    background-color: #505050;
-    span{
-        height: 0.8em;
-        width: 0;
+    width: 100%;
+    margin: 0;
+    accent-color: var(--randColorLight);
+    &::-webkit-slider-thumb{
+        cursor: grab;
         border-radius: 25px;
-        background-color: var(--randColorLight);
+        box-shadow: inset 0px 0px 0px 1px gray;
+        &:active{
+            cursor: grabbing;
+        }
     }
 }
 
@@ -5072,6 +5079,29 @@ body{
         right: 11em;
     }
 }
+
+#colormemory-widget{
+    #colormemory-image{
+        width: 16em;
+        height: 16em;
+        background-color: var(--randColorLight);
+        background-repeat: no-repeat;
+        background-size: contain;
+        #colormemory-name{
+            display: block;
+            position: relative;
+            text-align: center;
+        }
+        #colormemory-button-start{
+            position: relative;
+        }
+    }
+    #colormemory-gameover-colors{
+        @include grid-auto(4);
+        word-break: break-word;
+        padding-bottom: 0.1em;
+    }
+}
 //#endregion
 
 
@@ -5351,6 +5381,26 @@ body{
     100% { transform: scale(0.6) rotate(-5deg);
            margin-left: 10px;
            margin-top: 5px; }
+}
+
+@keyframes characterPeakRight{
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(-50deg) translateX(-30px); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes characterPeakLeft{
+    0%   { transform: rotate(0deg); }
+    50%  { transform: rotate(50deg) translateX(30px); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes characterPeakTop{
+    50%  { translate: 0px 70px; }
+}
+
+@keyframes characterPeakBottom{
+    50%  { translate: 0px -70px; }
 }
 
 //#region Text

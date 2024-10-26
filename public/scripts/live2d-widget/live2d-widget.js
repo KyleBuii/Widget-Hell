@@ -34,7 +34,7 @@ if(screen.width >= 768){
     ]).then(() => {
         // 配置选项的具体用法见 README.md
         initWidget({
-            waifuPath: "/src/Scripts/live2d-widget/waifu-tips.json",
+            waifuPath: "/scripts/live2d-widget/waifu-tips.json",
             //apiPath: "https://live2d.fghrsh.net/api/",
             cdnPath: "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/",
             tools: ["asteroids", "switch-model", "switch-texture", "photo", "info", "quit"]
@@ -57,6 +57,7 @@ if(screen.width >= 768){
         };
         document.getElementById("waifu-tool")
             .prepend(elementLive2DMove);
+        elementWaifuToggle.click();
     });
 };
 

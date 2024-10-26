@@ -78,6 +78,7 @@ class Widget2048 extends Component{
             goldEarned: gold
         });
         this.props.gameProps.updateGameValue("gold", gold);
+        this.props.gameProps.updateGameValue("exp", gold);
         if(this.state.board.hasWon()){
             this.props.gameProps.randomItem(1);
         };

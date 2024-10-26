@@ -23,6 +23,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - [Grindshot Attacks](https://opengameart.org/content/pixelated-attackhit-animations) by Viktor Hahn
 - [Grindshot Bullets](https://github.com/phaserjs/phaser-ce-coding-tips/tree/master) by photonstorm
 - [Translator: Cunny Code Images](https://bluearchive.fandom.com/wiki/Arona/Gallery) - Blue Archive Wiki and Blue Archive
+- [Settings: Horror Shadow Image](https://pixabay.com/vectors/boy-cartoon-fashion-chibi-kawaii-8515729/) by Pixabay
 - **Grindshot Tiles**
     - [Tiny Battle](https://opengameart.org/content/tiny-battle) by Kenny
     - [Tiny Ski](https://opengameart.org/content/tiny-ski) by Kenny

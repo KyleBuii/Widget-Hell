@@ -241,6 +241,7 @@ class WidgetMinesweeper extends Component{
                 goldEarned: this.state.mines
             });
             this.props.gameProps.updateGameValue("gold", this.state.mines);
+            this.props.gameProps.updateGameValue("exp", this.state.mines);
         };
     };
     calculateHealth(){

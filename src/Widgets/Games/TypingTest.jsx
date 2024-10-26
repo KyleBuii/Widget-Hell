@@ -184,10 +184,12 @@ class WidgetTypingTest extends Component{
             this.props.gameProps.randomItem(amount);
         };
         clearInterval(timer);
+        let gold = this.state.wpm / 2;
         this.setState({
-            goldEarned: (this.state.wpm / 2)
+            goldEarned: gold
         });
-        this.props.gameProps.updateGameValue("gold", (this.state.wpm / 2));
+        this.props.gameProps.updateGameValue("gold", gold);
+        this.props.gameProps.updateGameValue("exp", gold);
     };
     handleResetGame(preset){
         clearInterval(timer);

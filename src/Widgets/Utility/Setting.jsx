@@ -12,6 +12,7 @@ import ReactPaginate from 'react-paginate';
 import Select from "react-select";
 import Switch from 'react-switch';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { BiVolumeMute } from "react-icons/bi";
 
 
 /// Variables
@@ -90,6 +91,26 @@ const optionsCustomBorder = [
             {value: "double", label: "Double"},
             {value: "map-inspired", label: "Map Inspired"},
             {value: "default-light", label: "Default Light"},
+        ]
+    }
+];
+const optionsParticle = [
+    {
+        label: "Particles",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "circleConnect", label: "Circle: Connect"},
+            {value: "circlePop", label: "Circle: Pop"},
+            {value: "circleFreeMovement", label: "Circle: Free Movement"},
+            {value: "circleZigZag", label: "Circle: Zig-Zag"},
+            {value: "circleWander", label: "Circle: Wander"},
+            {value: "circleInfection", label: "Circle: Infection"},
+            {value: "circlePush", label: "Circle: Push"},
+            {value: "firework", label: "Firework"},
+            {value: "confetti", label: "Confetti"},
+            {value: "mouseCircle", label: "Mouse: Circle"},
+            {value: "mouseMagnifyingGlass", label: "Mouse: Magnifying Glass"},
+            {value: "heart", label: "Heart"},
         ]
     }
 ];
@@ -187,6 +208,10 @@ class WidgetSetting extends Component{
                 random = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
                 this.handleSelect(random, "customBorder");
                 break;
+            case "particle":
+                random = optionsParticle[0].options[Math.floor(Math.random() * (optionsParticle[0].options.length - 1)) + 1];
+                this.handleSelect(random, "particle");
+                break;
             case "voice":
                 random = optionsVoice[0].options[Math.floor(Math.random() * (optionsVoice[0].options.length - 1)) + 1];
                 this.handleSelect(random, "voice");
@@ -199,6 +224,9 @@ class WidgetSetting extends Component{
                 break;
         };
 
+    };
+    mute(what){
+        this.props.updateValue(!this.props.values[`${what}Mute`], `${what}Mute`, "values");
     };
     randomTimeout(what){
         switch(what){
@@ -630,14 +658,11 @@ class WidgetSetting extends Component{
         document.body.style.filter = `brightness(${brightness}%)`;
     };
     updateLive2D(){
-        if(document.getElementById("waifu-toggle") !== null){
-            let elementLive2DToggle = document.getElementById("waifu-toggle");
+        let elementLive2DToggle = document.getElementById("waifu-toggle");
+        if(elementLive2DToggle !== null){
             elementLive2DToggle.style.display = (!this.state.values.live2D) ? "none" : "block";
-            if(!elementLive2DToggle.classList.contains("waifu-toggle-active")
-                && !this.state.values.live2D){
+            if(!this.state.values.live2D){
                 document.getElementById("waifu-tool-quit").click();
-            }else{
-                elementLive2DToggle.click();   
             };
         };
     };
@@ -674,6 +699,7 @@ class WidgetSetting extends Component{
         this.props.sortSelect(optionsAnimation);
         this.props.sortSelect(optionsBackground);
         this.props.sortSelect(optionsCustomBorder);
+        this.props.sortSelect(optionsParticle);
         this.props.sortSelect(optionsVoice);
         this.props.sortSelect(optionsHealth);
         /// Prevents typing in non-display selects
@@ -995,7 +1021,7 @@ class WidgetSetting extends Component{
                                                     height={15}
                                                     width={30}/>
                                             </section>
-                                            <Slider className="slider space-nicely space-top length-medium"
+                                            <Slider className="slider space-nicely space-top length-small"
                                                 onChange={(value) => this.handleSlider(value, "slider-screen-dimmer")}
                                                 min={5}
                                                 max={130}
@@ -1039,7 +1065,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-animation"
-                                                    className="select-match space-nicely space-top length-medium"
+                                                    className="select-match space-nicely space-top length-small"
                                                     value={this.props.values.animation}
                                                     defaultValue={optionsAnimation[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "animation")}
@@ -1071,7 +1097,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-background"
-                                                    className="select-match space-nicely space-top length-medium"
+                                                    className="select-match space-nicely space-top length-small"
                                                     value={this.state.values.background}
                                                     defaultValue={optionsBackground[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "background")}
@@ -1103,11 +1129,51 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-design-select-custom-border"
-                                                    className="select-match space-nicely space-top length-medium"
+                                                    className="select-match space-nicely space-top length-small"
                                                     value={this.props.values.customBorder}
                                                     defaultValue={optionsCustomBorder[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "customBorder")}
                                                     options={optionsCustomBorder}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Particle */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Particle
+                                                    </span>
+                                                    <div className="flex-center row">
+                                                        <button className="button-match inverse"
+                                                            onClick={() => this.mute("particle")}>
+                                                            <IconContext.Provider value={{ size: "0.7em", className: "global-class-name" }}>
+                                                                <BiVolumeMute/>
+                                                            </IconContext.Provider>
+                                                        </button>
+                                                        <button className="button-match inverse"
+                                                            onClick={() => this.randomOption("particle")}>
+                                                            <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                                <FaRandom/>
+                                                            </IconContext.Provider>
+                                                        </button>
+                                                    </div>
+                                                </section>
+                                                <Select id="settings-popout-design-select-particle"
+                                                    className="select-match space-nicely space-top length-small"
+                                                    value={this.props.values.particle}
+                                                    defaultValue={optionsParticle[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "particle")}
+                                                    options={optionsParticle}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
                                                     components={{
@@ -1228,7 +1294,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-misc-select-type"
-                                                    className="select-match space-nicely space-top length-medium"
+                                                    className="select-match space-nicely space-top length-small"
                                                     value={this.props.values.voice}
                                                     defaultValue={optionsVoice[0]["options"][0]}
                                                     onChange={(event) => this.handleSelect(event, "voice")}
@@ -1257,7 +1323,7 @@ class WidgetSetting extends Component{
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely space-top length-medium"
+                                                <Slider className="slider space-nicely space-top length-small"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-pitch")}
                                                     min={0}
                                                     max={2}
@@ -1281,7 +1347,7 @@ class WidgetSetting extends Component{
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely space-top length-medium"
+                                                <Slider className="slider space-nicely space-top length-small"
                                                     onChange={(value) => this.handleSlider(value, "slider-voice-rate")}
                                                     min={0.1}
                                                     max={10}
@@ -1395,7 +1461,7 @@ class WidgetSetting extends Component{
                                                     </section>
                                                 </section>
                                                 {/* Thickness */}
-                                                <section className="element-ends space-nicely space-top length-medium">
+                                                <section className="element-ends space-nicely space-top length-small">
                                                     <span className="font small">
                                                         Thickness
                                                     </span>
@@ -1407,7 +1473,7 @@ class WidgetSetting extends Component{
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely space-top length-medium"
+                                                <Slider className="slider space-nicely space-top length-small"
                                                     onChange={(value) => this.handleSlider(value, "cursorTrailThickness")}
                                                     min={0}
                                                     max={100}
@@ -1433,7 +1499,7 @@ class WidgetSetting extends Component{
                                                         </IconContext.Provider>
                                                     </button>
                                                 </section>
-                                                <Slider className="slider space-nicely space-top length-medium"
+                                                <Slider className="slider space-nicely space-top length-small"
                                                     onChange={(value) => this.handleSlider(value, "cursorTrailDuration")}
                                                     min={0.1}
                                                     max={4}
@@ -1477,7 +1543,7 @@ class WidgetSetting extends Component{
                                                         checked={this.props.values.randomText}/>
                                                 </section>
                                                 {/* Horror */}
-                                                {/* <section className="element-ends">
+                                                <section className="element-ends">
                                                     <label className="font small"
                                                         htmlFor="settings-popout-misc-horror">
                                                         Horror
@@ -1487,7 +1553,7 @@ class WidgetSetting extends Component{
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "horror", "values")}
                                                         checked={this.props.values.horror}/>
-                                                </section> */}
+                                                </section>
                                             </fieldset>
                                             {/* Fun */}
                                             <fieldset className="section-sub space-nicely space-top not-bottom length-medium">
@@ -1527,7 +1593,7 @@ class WidgetSetting extends Component{
                                                     </button>
                                                 </section>
                                                 <Select id="settings-popout-game-select-health"
-                                                    className="select-match space-nicely space-top length-medium"
+                                                    className="select-match space-nicely space-top length-small"
                                                     value={this.props.values.health}
                                                     defaultValue={optionsHealth[0]["options"][0]}
                                                     isDisabled={!this.state.settings}

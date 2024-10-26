@@ -25,6 +25,7 @@
 | | S/Down Arrow Key | Soft drop |
 | | Spacebar | Hard drop |
 | | F | Reset |
+| Color Memory | | |
 
 ## **Gold reward guide**
 | Game | Rate |
@@ -38,6 +39,7 @@
 | 2048 | Equal to 1/4 of score |
 | Trivia | Equal to correct guesses |
 | Tetris | Equal to 1 gold for every 1000 score |
+| Color Memory | Equal to correct guesses |
 
 ## **Item rewards guide**
 ### Drop rates
@@ -60,6 +62,7 @@
 | 2048 | On getting 2048 |
 | Trivia | Every 5 correct answers |
 | Tetris | Every 5000 score |
+| Color Memory | Every 10 correct guesses |
 
 ## **Stats guide [WIP]**
 <details>
@@ -93,6 +96,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | Allows a wrong guess for every 10 |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Mana</summary>
@@ -108,6 +112,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Attack</summary>
@@ -123,6 +128,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Defense</summary>
@@ -138,6 +144,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Strength</summary>
@@ -153,6 +160,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Agility</summary>
@@ -168,6 +176,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Vitality</summary>
@@ -183,6 +192,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Resilience</summary>
@@ -198,6 +208,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Intelligence</summary>
@@ -213,6 +224,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Dexterity</summary>
@@ -228,6 +240,7 @@ Health rounds down.
 | 2048 | N/A |
 | Trivia | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 <details>
     <summary>Luck</summary>
@@ -242,6 +255,7 @@ Health rounds down.
 | Chess | N/A |
 | 2048 | N/A |
 | Tetris | N/A |
+| Color Memory | N/A |
 </details>
 
 ## **Plans**
