@@ -2648,8 +2648,7 @@ class Widgets extends Component{
     };
     randomTimeoutHorror(){
         /// Creating a shadow image
-        // let randomNumber = Math.random() * 1200000 + 300000;
-        let randomNumber = Math.random() * 10000;
+        let randomNumber = Math.random() * 1200000 + 300000;
         let elementShadow = document.createElement("img");
         elementShadow.src = "/resources/singles/guy.png";
         let elementContainer = document.getElementById("widget-container");
