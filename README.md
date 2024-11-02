@@ -1,11 +1,13 @@
 # [**Widget Hell**](https://widget-hell.vercel.app/)
 > Navigate the Chaos, Customize the Experience.
 
+## **Description**
+Web application featuring a versatile array of draggable widgets! _EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more!_ You can display what widgets you want and move them however you will!
+
 ## **Features**
-- A versatile array of draggable widgets! _EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more!_
-- Display what widgets you want!
-- Move them however you will!
-- ...and more!
+- 30+ widgets
+- Customizable design
+- ...and more
 
 ## **Game controls**
 | Game | Control | Action |

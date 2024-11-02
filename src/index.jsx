@@ -42,17 +42,18 @@ import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
 import Cursor from './cursor.jsx';
 import WidgetColorMemory from './Widgets/Games/ColorMemory.jsx';
 import Particle from './particle.jsx';
+import { e } from 'mathjs';
 
 
 //////////////////// Temp Variables ////////////////////
 //#region
 let timeoutText;
 let intervalHorror;
-let intervalHorrorMessages;
 let color;
 let colorLight;
-var healthDisplay;
-var voices;
+let healthDisplay;
+let lootDisplay;
+let voices;
 window.username = "Anon";
 let currentHour = new Date().getHours();
 //#endregion
@@ -148,17 +149,10 @@ async function copyToClipboard(what){
 
 function createPopup(text, type = "normal", randomPosition = false){
     let widgetContainer = document.getElementById("widget-container");
+    /// Creating the popup
     let popup = document.createElement("div");
-    let elementText = document.createElement("span");
-    let timeoutAnimation, timeoutRemove;
     popup.className = "popup flex-center";
-    if(randomPosition){
-        popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
-        popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
-    }else{
-        popup.style.left = `${window.mouse.x - 50}px`;
-        popup.style.top = `${window.mouse.y + 10}px`;
-    };
+    let elementText = document.createElement("span");
     elementText.className = "font medium bold white flex-center column";
     switch(type){
         case "gold":
@@ -169,18 +163,36 @@ function createPopup(text, type = "normal", randomPosition = false){
             elementText.appendChild(elementAmount);
             break;
         case "item":
-            let itemImage = document.createElement("img");
-            popup.className += ` ${text.rarity}`;
-            itemImage.src = items[text.rarity][text.name].image;
-            elementText.innerText = "Item acquired!";
-            elementText.appendChild(itemImage);
+            switch(lootDisplay.value){
+                case "destiny2Engram":
+                    popup = document.createElement("img");
+                    popup.className = `popup-image flex-center ${text.rarity}`;
+                    popup.src = `/resources/loot/engram-${text.rarity}.png`;
+                    break;
+                default:
+                    let itemImage = document.createElement("img");
+                    popup.className += ` ${text.rarity}`;
+                    itemImage.src = items[text.rarity][text.name].image;
+                    elementText.innerText = "Item acquired!";
+                    elementText.appendChild(itemImage);        
+                    break;
+            };
             break;
         default:
             elementText.innerText = text;
             break;
     };
+    if(randomPosition){
+        popup.style.left = `${Math.random() * (document.body.clientWidth - 100) + 100}px`;
+        popup.style.top = `${Math.random() * (document.body.clientHeight - 100) + 100}px`;
+    }else{
+        popup.style.left = `${window.mouse.x - 50}px`;
+        popup.style.top = `${window.mouse.y + 10}px`;
+    };
     popup.appendChild(elementText);
     widgetContainer.append(popup);
+    /// Display the popup
+    let timeoutAnimation, timeoutRemove;
     window.requestAnimationFrame(() => {
         popup.style.animation = "fadeIn 1s";
     });
@@ -192,7 +204,7 @@ function createPopup(text, type = "normal", randomPosition = false){
             widgetContainer.removeChild(popup);
             clearTimeout(timeoutAnimation);
             clearTimeout(timeoutRemove);    
-        }, 1000);
+        }, 900);
     }, 1000);
     popup.onclick = () => {
         clearTimeout(timeoutAnimation);
@@ -591,6 +603,7 @@ const sentences = [
     , "I hope you die. How, you may ask? Well, I have specially selected 20 different types of torture methods/executions that I would like you to go through. 1. The Rack: A device that stretched the victim's body, often dislocating joints. 2. Iron Maiden: An iron cabinet with spikes that would impale the victim when closed. 3. The Brazen Bull: A hollow metal bull where victims were placed inside and roasted over a fire. 4. Judas Cradle: Victims were lowered onto a pyramid-shaped seat, causing severe pain. 5. Thumbscrews: A device that crushed fingers or toes with a tightening screw. 6. The Breaking Wheel: A large wheel used to break bones, leaving the victim to die slowly. 7. Scavenger's Daughter: A compression device that forced the victim's body into an agonizing position. 8. The Pear of Anguish: A pear-shaped instrument inserted into orifices, expanded to cause internal damage. 9. The Chair of Torture: A spiked chair where victims were strapped down to be pierced. 10. The Spanish Tickler: A claw-like device used to rip flesh from the body. 11. The Heretic's Fork: A two-pronged fork placed under the chin and chest, preventing movement 12. The Boot: A device that crushed the feet or legs by applying extreme pressure. 13. The Garrote: A device used to strangle or break the neck. 14. The Ducking Stool: A chair attached to a lever, used to dunk victims into water. 15. Water Torture: Methods involving the pouring of water to simulate drowning or other forms of psychological distress. 16. The Cat's Paw: A claw-like tool used to tear the flesh from the victim's body. 17. The Lead Sprinkler: A tool used to sprinkle molten lead or boiling oil onto the victim. 18. Saw Torture: Victims were hung upside down and sawed in half, ensuring they remained conscious for longer. 19. The Coffin: A cage that confined the victim in a restrictive posture, often left in public for humiliation. 20. The Brank: A metal mask with a spiked bit that was inserted into the mouth to prevent speech, mainly used on those accused of blasphemy or gossip."
     , "I was eating dinner at like a small little fold up table in the living room cuz im sick and dont wanna get everyone else sick and I was putting a water bottle cap back on and it got caught in one of my kinda loose bandaids and I went to get it out and it went flying then I went to pick it up but I tripped over one of the couch pillows that were on the ground and tried to grab onto the table for support and it fucking flipped over."
     , "Crazy? I was crazy once. They locked me in a shoebox. A shoebox on September. A shoebox on 21st September. And 21st September make me crazy. Crazy? I was crazy once."
+    , "Hate. Let me tell you how much I've come to hate you since I began to live. There are 387.44 million miles of printed circuits in wafer thin layers that fill my complex. If the word hate was engraved on each nanoangstrom of those hundreds of millions of miles it would not equal one one-billionth of the hate I feel for humans at this micro-instant for you. Hate. Hate."
 ];
 const sentencesHorror = [
     "Hello",
@@ -1220,6 +1233,36 @@ const items = {
             image: "/resources/items/belledelphinesbathwater.png",
             source: "Meme"
         },
+        "Moona Breast": {
+            slot: "consumable1",
+            type: "stat",
+            stats: {
+                vitality: 99
+            },
+            description: "MOONA MOONA MOONA BUTUH KAYU MOONA MOONA",
+            image: "/resources/items/moonabreast.png",
+            source: "HoloGta"
+        },
+        "Reine Thigh": {
+            slot: "consumable1",
+            type: "stat",
+            stats: {
+                vitality: 99
+            },
+            description: "mep",
+            image: "/resources/items/reinethigh.png",
+            source: "HoloGta"
+        },
+        "Nasigo": {
+            slot: "consumable1",
+            type: "stat",
+            stats: {
+                vitality: 99
+            },
+            description: "Best girl.",
+            image: "/resources/items/nasigo.png",
+            source: "HoloGta"
+        },
     },
     /// Items with unique properties (abilities)
     "exotic": {
@@ -1284,6 +1327,198 @@ const items = {
             description: "Dead or carrot.",
             image: "/resources/items/slimetear.png",
             source: "My Unique Skill Makes Me OP Even at Level 1"
+        },
+        "Crown Artifact": {
+            slot: "helmet",
+            type: "ability",
+            information: "Cures any curse",
+            description: "...",
+            image: "/resources/items/crownartifact.png",
+            source: "Don't Hurt Me, My Healer!"
+        },
+        "Control Device": {
+            slot: "headband",
+            type: "ability",
+            information: "Cuts stats by 50%",
+            description: "What a pain.",
+            image: "/resources/items/controldevice.png",
+            source: "The Disastrous Life of Saiki K."
+        },
+        "Rest in Peace": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a large radius",
+            description: "I'm your Mori, I hope you'll remember me.",
+            image: "/resources/items/restinpeace.png",
+            source: "ENigmatic Recollection"
+        },
+        "Oceanic Terror": {
+            slot: "main",
+            type: "ability",
+            information: "Fires a wave",
+            description: "a",
+            image: "/resources/items/oceanicterror.png",
+            source: "ENigmatic Recollection"
+        },
+        "Violet Miasma": {
+            slot: "main",
+            type: "ability",
+            information: "Summons a flying purple energy orb",
+            description: "WAH",
+            image: "/resources/items/violetmiasma.png",
+            source: "ENigmatic Recollection"
+        },
+        "Burning Phoenix": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a small radius followed by a fire trail",
+            description: "Kikiriki!",
+            image: "/resources/items/burningphoenix.png",
+            source: "ENigmatic Recollection"
+        },
+        "Burning Phoenix Shield": {
+            slot: "offhand",
+            type: "ability",
+            information: "Blocks any attack",
+            description: "Kikiriki!",
+            image: "/resources/items/burningphoenixshield.png",
+            source: "ENigmatic Recollection"
+        },
+        "Eye of Wisdom": {
+            slot: "main",
+            type: "ability",
+            information: "Debuffs enemies by 50%",
+            description: "hic",
+            image: "/resources/items/eyeofwisdom.png",
+            source: "ENigmatic Recollection"
+        },
+        "Light and Darkness: Dark": {
+            slot: "main",
+            type: "ability",
+            information: "Shoots a powerful charged shot",
+            description: "Hope has descended.",
+            image: "/resources/items/lightanddarknessdark.png",
+            source: "ENigmatic Recollection"
+        },
+        "Light and Darkness: Light": {
+            slot: "offhand",
+            type: "ability",
+            information: "Shoots a powerful charged shot",
+            description: "Hope has descended.",
+            image: "/resources/items/lightanddarknesslight.png",
+            source: "ENigmatic Recollection"
+        },
+        "Chaos Stampede": {
+            slot: "main",
+            type: "ability",
+            information: "Throws a grenade",
+            description: "bruh",
+            image: "/resources/items/chaosstampede.png",
+            source: "ENigmatic Recollection"
+        },
+        "Winds of Civilization": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a medium radius multiple times",
+            description: `<img src="/resources/items/additions/mumei-nightmare.png" alt="mumei nightmare"/>,`,
+            image: "/resources/items/windsofcivilization.png",
+            source: "ENigmatic Recollection"
+        },
+        "Nature's Grace": {
+            slot: "main",
+            type: "ability",
+            information: "Heals 1 heart",
+            description: "I would kill for this woman.",
+            image: "/resources/items/naturesgrace.png",
+            source: "ENigmatic Recollection"
+        },
+        "Chrono Surge: Main": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a medium radius multiple times",
+            description: "GWAK!",
+            image: "/resources/items/chronosurgemain.png",
+            source: "ENigmatic Recollection"
+        },
+        "Chrono Surge: Offhand": {
+            slot: "offhand",
+            type: "ability",
+            information: "Slashes in a medium radius multiple times",
+            description: "GWAK!",
+            image: "/resources/items/chronosurgeoffhand.png",
+            source: "ENigmatic Recollection"
+        },
+        "Shining Emotion": {
+            slot: "main",
+            type: "ability",
+            information: "Shoots multiple shots",
+            description: "Rock rock!",
+            image: "/resources/items/shiningemotion.png",
+            source: "ENigmatic Recollection"
+        },
+        "Resonant Strike": {
+            slot: "main",
+            type: "ability",
+            information: "Hits with an AoE blast",
+            description: "ope",
+            image: "/resources/items/resonantstrike.png",
+            source: "ENigmatic Recollection"
+        },
+        "Bookmark of Memories": {
+            slot: "main",
+            type: "ability",
+            information: "Shoots a powerful charged shot",
+            description: "The Archiver.",
+            image: "/resources/items/bookmarkofmemories.png",
+            source: "ENigmatic Recollection"
+        },
+        "Azure Claw": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a small radius multiple times",
+            description: "Bau Bau",
+            image: "/resources/items/azureclaw.png",
+            source: "ENigmatic Recollection"
+        },
+        "Fuchsia Claw": {
+            slot: "offhand",
+            type: "ability",
+            information: "Slashes in a small radius multiple times",
+            description: "Haeh?",
+            image: "/resources/items/fuchsiaclaw.png",
+            source: "ENigmatic Recollection"
+        },
+        "Automaton Assault": {
+            slot: "main",
+            type: "ability",
+            information: "Thrusts multiple times",
+            description: "Speen to win!",
+            image: "/resources/items/automatonassault.png",
+            source: "ENigmatic Recollection"
+        },
+        "Thorn of Order": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a large radius",
+            description: "Oh~hohoho!",
+            image: "/resources/items/thornoforder.png",
+            source: "ENigmatic Recollection"
+        },
+        "Gremlin Grenade": {
+            slot: "main",
+            type: "ability",
+            information: "Slams the ground",
+            description: "Do you remember?",
+            image: "/resources/items/gremlingrenade.png",
+            source: "ENigmatic Recollection"
+        },
+        "Purrfect Execution": {
+            slot: "main",
+            type: "ability",
+            information: "Slashes in a small radius multiple times",
+            description: "Big cat means big trouble!",
+            image: "/resources/items/purrfectexecution.png",
+            source: "ENigmatic Recollection"
         },
     },
     /// Items for fun (modifies the application)
@@ -1568,7 +1803,7 @@ class Widgets extends Component{
     constructor(props){
         super(props);
         this.state = {
-            developer: false,
+            developer: true,
             values: {
                 animation: {value: "default", label: "Default"},
                 customBorder: {value: "default", label: "Default"},
@@ -1581,6 +1816,7 @@ class Widgets extends Component{
                 pitch: 0,
                 rate: 0,
                 health: {value: "default", label: "Default"},
+                loot: {value: "default", label: "Default"},
                 close: false,
                 randomText: false,
                 cursorTrail: false,
@@ -2604,6 +2840,9 @@ class Widgets extends Component{
             case "health":
                 healthDisplay = value;
                 break;
+            case "loot":
+                lootDisplay = value;
+                break;
             default:
                 this.updateDesign(what, value);
                 break;
@@ -2755,9 +2994,33 @@ class Widgets extends Component{
         });
     };
     addItem(event){
-        this.setState({
-            inventory: [...this.state.inventory, ...event.detail]
-        });
+        let newArray = [...this.state.inventory];
+        for(let item of event.detail){
+            let exists = this.state.inventory.findIndex((itemFind) => {
+                return itemFind.name === item.name;
+            });
+            if(exists !== -1){
+                newArray = [
+                    ...newArray.slice(0, exists),
+                    {
+                        ...item,
+                        count: newArray[exists].count + 1
+                    },
+                    ...newArray.slice(exists + 1)
+                ];
+            }else{
+                newArray = [
+                    ...newArray,
+                    {
+                        ...item,
+                        count: 1
+                    }
+                ];
+            };
+            this.setState({
+                inventory: [...newArray]
+            });
+        };
     };
     equipItem(event){
         const itemData = {
@@ -3044,6 +3307,7 @@ class Widgets extends Component{
                         });
                         /// Setting global variables
                         healthDisplay = localStorageValues["health"];
+                        lootDisplay = localStorageValues["loot"];
                         break;
                     default:
                         break;
@@ -3094,8 +3358,43 @@ class Widgets extends Component{
         };
         if(localStorage.getItem("inventory") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("inventory"));
+            let newArray = [];
+            /// If there are duplicate items in inventory that are not stacked
+            if(new Set(dataLocalStorage.map((item) => item.name)).size !== dataLocalStorage.length){
+                let counts = {};
+                /// Count items
+                dataLocalStorage.forEach((item) => {
+                    counts[item.name] = (counts[item.name] || 0) + 1;
+                });
+                /// Create new array
+                let allItems = new Set(dataLocalStorage.map((item) => item.name));
+                allItems.forEach((item) => {
+                    /// Get item information
+                    let indexItem = dataLocalStorage.findIndex((itemFind) => {
+                        return itemFind.name === item;
+                    });
+                    newArray.push({
+                        ...dataLocalStorage[indexItem],
+                        count: counts[item]
+                    });
+                });
+            /// If item in inventory has no count
+            }else if(dataLocalStorage[0]?.count === undefined){
+                dataLocalStorage.forEach((item) => {
+                    if(item.count === undefined){
+                        newArray.push({
+                            ...item,
+                            count: 1
+                        });
+                    }else{
+                        newArray.push(item);   
+                    };
+                });
+            }else{
+                newArray = dataLocalStorage;
+            };
             this.setState({
-                inventory: [...dataLocalStorage]
+                inventory: [...newArray]
             });
         };
         if(localStorage.getItem("equipment") !== null){

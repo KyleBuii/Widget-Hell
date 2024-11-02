@@ -1,3 +1,4 @@
+import DOMPurify from 'dompurify';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -549,14 +550,19 @@ class WidgetEquipment extends Component{
                                 </table>
                             </section>
                             {/* Abilities */}
-                            <table className="table font">
-                                <thead>
-                                    <tr>
-                                        <th>Abilities</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="equipment-abilities"></tbody>
-                            </table>
+                            <SimpleBar className="table font"
+                                style={{
+                                    maxHeight: "14.7em"
+                                }}>
+                                <table className="fill-width">
+                                    <thead>
+                                        <tr>
+                                            <th>Abilities</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="equipment-abilities"></tbody>
+                                </table>
+                            </SimpleBar>
                         </section>
                         {/* View Item Popout */}
                         <section id="equipment-popout-view-item"
@@ -608,7 +614,9 @@ class WidgetEquipment extends Component{
                                     </table>
                                 </SimpleBar>
                             </div>
-                            <span>{this.props.items[this.state.item.rarity][this.state.item.name].description}</span>
+                            <span dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(this.props.items[this.state.item.rarity][this.state.item.name].description)
+                            }}></span>
                             {(this.props.items[this.state.item.rarity][this.state.item.name].requirement)
                                 ? <span className="font micro"
                                     style={{

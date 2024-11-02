@@ -135,6 +135,15 @@ const optionsHealth = [
         ]
     }
 ];
+const optionsLoot = [
+    {
+        label: "Loot",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "destiny2Engram", label: "Destiny 2: Engram"},
+        ]
+    }
+];
 
 
 class WidgetSetting extends Component{
@@ -189,7 +198,7 @@ class WidgetSetting extends Component{
         return arr;
     };
     /// Choose random option
-    randomOption(what, element, min, max){
+    randomOption({ what, element, min, max, options }){
         let random;
         switch(what){
             case "slider":
@@ -220,8 +229,11 @@ class WidgetSetting extends Component{
                 random = optionsHealth[0].options[Math.floor(Math.random() * (optionsHealth[0].options.length - 1)) + 1];
                 this.handleSelect(random, "health");
                 break;
-            default:
+            case "loot":
+                random = options[0].options[Math.floor(Math.random() * (options[0].options.length - 1)) + 1];
+                this.handleSelect(random, what);
                 break;
+            default: break;
         };
 
     };
@@ -1058,7 +1070,7 @@ class WidgetSetting extends Component{
                                                         Animation
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("animation")}>
+                                                        onClick={() => this.randomOption({ what: "animation", options: optionsAnimation })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1090,7 +1102,7 @@ class WidgetSetting extends Component{
                                                         Background
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("background")}>
+                                                        onClick={() => this.randomOption({ what: "background", options: optionsBackground })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1122,7 +1134,7 @@ class WidgetSetting extends Component{
                                                         Custom Border
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("customBorder")}>
+                                                        onClick={() => this.randomOption({ what: "customBorder", options: optionsCustomBorder })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1161,7 +1173,7 @@ class WidgetSetting extends Component{
                                                             </IconContext.Provider>
                                                         </button>
                                                         <button className="button-match inverse"
-                                                            onClick={() => this.randomOption("particle")}>
+                                                            onClick={() => this.randomOption({ what: "particle", options: optionsParticle })}>
                                                             <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                                 <FaRandom/>
                                                             </IconContext.Provider>
@@ -1287,7 +1299,7 @@ class WidgetSetting extends Component{
                                                         Type
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("voice")}>
+                                                        onClick={() => this.randomOption({ what: "voice", options: optionsVoice })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1317,7 +1329,7 @@ class WidgetSetting extends Component{
                                                         Pitch
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "slider-voice-pitch", 0, 2)}>
+                                                        onClick={() => this.randomOption({ what: "slider", element: "slider-voice-pitch", min: 0, max: 2 })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1341,7 +1353,7 @@ class WidgetSetting extends Component{
                                                         Rate
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "slider-voice-rate", 0.1, 10)}>
+                                                        onClick={() => this.randomOption({ what: "slider", element: "slider-voice-rate", min: 0.1, max: 10 })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1466,7 +1478,7 @@ class WidgetSetting extends Component{
                                                         Thickness
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "cursorTrailThickness", 0, 100)}
+                                                        onClick={() => this.randomOption({ what: "slider", element: "cursorTrailThickness", min: 0, max: 100 })}
                                                         disabled={!this.props.values.cursorTrail}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
@@ -1492,7 +1504,7 @@ class WidgetSetting extends Component{
                                                         Duration
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("slider", "cursorTrailDuration", 0.1, 4)}
+                                                        onClick={() => this.randomOption({ what: "slider", element: "cursorTrailDuration", min: 0.1, max: 4 })}
                                                         disabled={!this.props.values.cursorTrail}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
@@ -1586,7 +1598,7 @@ class WidgetSetting extends Component{
                                                         Health Display
                                                     </span>
                                                     <button className="button-match inverse"
-                                                        onClick={() => this.randomOption("health")}>
+                                                        onClick={() => this.randomOption({ what: "health", options: optionsHealth })}>
                                                         <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
                                                             <FaRandom/>
                                                         </IconContext.Provider>
@@ -1599,6 +1611,39 @@ class WidgetSetting extends Component{
                                                     isDisabled={!this.state.settings}
                                                     onChange={(event) => this.handleSelect(event, "health")}
                                                     options={optionsHealth}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Loot Display */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Loot Display
+                                                    </span>
+                                                    <button className="button-match inverse"
+                                                        onClick={() => this.randomOption({ what: "loot", options: optionsLoot })}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id="settings-popout-game-select-loot"
+                                                    className="select-match space-nicely space-top length-small"
+                                                    value={this.props.values.loot}
+                                                    defaultValue={optionsLoot[0]["options"][0]}
+                                                    isDisabled={!this.state.settings}
+                                                    onChange={(event) => this.handleSelect(event, "loot")}
+                                                    options={optionsLoot}
                                                     formatGroupLabel={this.props.formatGroupLabel}
                                                     styles={this.props.selectStyleSmall}
                                                     components={{

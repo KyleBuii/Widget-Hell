@@ -334,6 +334,34 @@ body{
     max-width: 100vmin;
 }
 
+.popup-image{
+    @extend .no-highlight;
+    z-index: 7;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    font-size: 1.2em;
+    text-wrap: nowrap;
+    //#region Items
+    &.common{
+                filter: drop-shadow(0px 0px 8px rgb(148, 148, 148));
+        -webkit-filter: drop-shadow(0px 0px 8px rgb(148, 148, 148));
+    }
+    &.rare{
+                filter: drop-shadow(0px 0px 8px rgb(4, 107, 189));
+        -webkit-filter: drop-shadow(0px 0px 8px rgb(4, 107, 189));
+    }
+    &.exotic{
+                filter: drop-shadow(0px 0px 8px rgb(195, 126, 25));
+        -webkit-filter: drop-shadow(0px 0px 8px rgb(195, 126, 25));
+    }
+    &.meme{
+                filter: drop-shadow(0px 0px 8px rgb(255, 0, 187));
+        -webkit-filter: drop-shadow(0px 0px 8px rgb(255, 0, 187));
+    }
+    //#endregion    
+}
+
 .popup{
     @extend .no-highlight;
     z-index: 7;
@@ -3956,6 +3984,15 @@ body{
     cursor: grabbing;
     position: absolute !important;
     transform: scale(0.6);
+}
+
+.item-count{
+    @extend .flex-center, .font, .smaller;
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    background-color: rgba(var(--randColorOpacity), 0.2);
+    width: 1.2em;
 }
 
 .arona-action{
