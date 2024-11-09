@@ -1026,11 +1026,11 @@ class WidgetAnimeSearcher extends Component{
                                                                 onClick={() => {
                                                                     this.fetchMedia(null, recommendation.mediaRecommendation.id);
                                                                 }}
-                                                                src={recommendation.mediaRecommendation.coverImage?.extraLarge || ""}
+                                                                src={recommendation.mediaRecommendation?.coverImage.extraLarge || ""}
                                                                 alt={`recommendation ${index}`}
                                                                 draggable="false"/>
                                                             <span className="font small text-boxed anime-searcher-normal">
-                                                                {recommendation.mediaRecommendation.type.charAt(0) + recommendation.mediaRecommendation.type.substring(1).toLowerCase()}
+                                                                {recommendation.mediaRecommendation?.type.charAt(0) + recommendation.mediaRecommendation?.type.substring(1).toLowerCase() || ""}
                                                             </span>
                                                         </div>
                                                     })}

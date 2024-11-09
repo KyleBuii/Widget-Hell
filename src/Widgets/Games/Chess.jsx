@@ -10,8 +10,8 @@ import { TbMoneybag } from 'react-icons/tb';
 
 
 /// Variables
-var timeoutRandomMove;
-var intervalTimer;
+let timeoutRandomMove;
+let intervalTimer;
 
 
 class WidgetChess extends Component{

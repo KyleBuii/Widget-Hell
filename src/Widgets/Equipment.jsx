@@ -58,7 +58,7 @@ class WidgetEquipment extends Component{
     unequipItem(event){
         event.stopPropagation();
         this.props.defaultProps.playAudio(audioItemUnequip);
-        var itemSlot;
+        let itemSlot;
         let newEquipment;
         if(this.state.item.side){
             itemSlot = document.getElementById(`equipment-slot-${this.state.item.slot}-${this.state.item.side}`);
@@ -109,7 +109,7 @@ class WidgetEquipment extends Component{
             "name": event.detail.name,
             "rarity": event.detail.rarity
         };
-        var itemSlot;
+        let itemSlot;
         if(event.detail.side){
             if(this.props.equipment[event.detail.slot][event.detail.side].name !== event.detail.name
                 && this.props.equipment[event.detail.slot][event.detail.side].name === ""){
@@ -197,7 +197,7 @@ class WidgetEquipment extends Component{
         audioItemOpen.volume = 0.5;
         audioItemClose.volume = 0.5;
         window.addEventListener("equip item", this.updateEquipment);
-        var itemSlot;
+        let itemSlot;
         /// Fill equipment slots with image of equipped item
         for(let i in this.props.equipment){
             if(this.props.equipment[i].name !== ""){

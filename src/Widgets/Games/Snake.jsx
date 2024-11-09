@@ -26,7 +26,7 @@ function shallowEquals(arr1, arr2) {
     if (!arr1 || !arr2 || arr1.length !== arr2.length)
         return false;
     let equals = true;
-    for (var i = 0; i < arr1.length; i++) {
+    for (let i = 0; i < arr1.length; i++) {
         if (arr1[i] !== arr2[i])
             equals = false;
     };
@@ -67,12 +67,12 @@ function GridCell(props) {
 
 
 //////////////////// Variables ////////////////////
-var intervalTimer;
-var timeoutDebrisLeft;
-var timeoutDebrisTop;
-var timeoutDebrisRight;
-var timeoutDebrisBottom;
-var timeoutInvulnerabilityFrames = undefined;
+let intervalTimer;
+let timeoutDebrisLeft;
+let timeoutDebrisTop;
+let timeoutDebrisRight;
+let timeoutDebrisBottom;
+let timeoutInvulnerabilityFrames = undefined;
 let delayDebrisLeft = 3000;
 let delayDebrisTop = 4000;
 let delayDebrisRight = 5000;
@@ -390,7 +390,7 @@ class WidgetSnake extends Component{
         if(newSnake.length > 1){
             lastPositionOptions[0] = arrayDiff(lastSegment, newSnake[newSnake.length - 2]);
         };
-        for(var i = 0; i < lastPositionOptions.length; i++){
+        for(let i = 0; i < lastPositionOptions.length; i++){
             let tempNewSnakeSegment = [
                 lastSegment[0] + lastPositionOptions[i][0],
                 lastSegment[1] + lastPositionOptions[i][1]

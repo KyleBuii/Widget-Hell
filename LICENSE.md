@@ -24,6 +24,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - [Grindshot Bullets](https://github.com/phaserjs/phaser-ce-coding-tips/tree/master) by photonstorm
 - [Translator: Cunny Code Images](https://bluearchive.fandom.com/wiki/Arona/Gallery) - Blue Archive Wiki and Blue Archive
 - [Settings: Horror Shadow Image](https://pixabay.com/vectors/boy-cartoon-fashion-chibi-kawaii-8515729/) by Pixabay
+- [Rock Paper Scissor Images](https://www.umop.com/rps101.htm) - by David C. Lovelace
 - **Grindshot Tiles**
     - [Tiny Battle](https://opengameart.org/content/tiny-battle) by Kenny
     - [Tiny Ski](https://opengameart.org/content/tiny-ski) by Kenny

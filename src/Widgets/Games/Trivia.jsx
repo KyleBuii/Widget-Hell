@@ -117,11 +117,11 @@ class WidgetTrivia extends Component{
                         sessionToken: resultSessionToken.token
                     });
                 };
-                var generatedCategories = [];
-                var generatedDifficulties = [];
-                var generatedQuestions = [];
-                var generatedChoices = [];
-                var generatedCorrectChoices = [];
+                let generatedCategories = [];
+                let generatedDifficulties = [];
+                let generatedQuestions = [];
+                let generatedChoices = [];
+                let generatedCorrectChoices = [];
                 for(let i of resultTrivia.results){
                     generatedCategories.push(i.category);
                     generatedDifficulties.push(i.difficulty

@@ -12,7 +12,7 @@ import { TbMoneybag } from "react-icons/tb";
 /// Variables
 let dx = 2;
 let dy = -2;
-var intervalGame, intervalTimer;
+let intervalGame, intervalTimer;
 
 
 class WidgetBreakout extends Component{

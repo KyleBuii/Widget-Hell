@@ -10,8 +10,8 @@ import { IoClose } from 'react-icons/io5';
 
 /// Variables
 let intervalDraw;
-var A = 1;
-var B = 1;
+let A = 1;
+let B = 1;
 
 
 class WidgetDonutAnimation extends Component{
@@ -47,41 +47,41 @@ class WidgetDonutAnimation extends Component{
         elementDonut.style.marginBottom = `${this.state.height + 34}em`;
     };
     drawAsciiFrame(){
-        var b = []; /// Acii characters
-        var z = []; /// Depth values
+        let b = []; /// Acii characters
+        let z = []; /// Depth values
         A += this.state.incrementA; // Increament angle a
         B += this.state.incrementB; // Increament angle b
         /// Sin and Cosine of angles
-        var cA = Math.cos(A),
+        let cA = Math.cos(A),
             sA = Math.sin(A),
             cB = Math.cos(B),
             sB = Math.sin(B);
         /// Initialize arrays with default angles
-        for(var k = 0; k < this.state.width * this.state.height; k++){
+        for(let k = 0; k < this.state.width * this.state.height; k++){
             /// Set default ascii character
             b[k] = (k % this.state.width === this.state.width - 1) ? '\n' : ' ';
             /// Set default depth
             z[k] = 0;
         };
         /// Generate the ascii frame
-        for(var j = 0; j < 6.28; j += 0.07){
-            var ct = Math.cos(j); /// Cosine of j
-            var st = Math.sin(j); /// Sin of j
-            for(var i = 0; i < 6.28; i += 0.02){
-                var sp = Math.sin(i); /// Sin of i
-                var cp = Math.cos(i), /// Cosine of i
+        for(let j = 0; j < 6.28; j += 0.07){
+            let ct = Math.cos(j); /// Cosine of j
+            let st = Math.sin(j); /// Sin of j
+            for(let i = 0; i < 6.28; i += 0.02){
+                let sp = Math.sin(i); /// Sin of i
+                let cp = Math.cos(i), /// Cosine of i
                     h = ct + 2, /// Height calculation
                     /// Distance calculation
                     D = 1 / (sp * h * sA + st * cA + 5),
                     /// Temporary variable
                     t = sp * h * cA - st * sA;
                 /// Calculate cordinates of ascii character
-                var x = Math.floor(this.state.width / 2 + (this.state.width / 1.6) * D * (cp * h * cB - t * sB));
-                var y = Math.floor(this.state.height / 2 + (this.state.height / 1.6) * D * (cp * h * sB + t * cB));
+                let x = Math.floor(this.state.width / 2 + (this.state.width / 1.6) * D * (cp * h * cB - t * sB));
+                let y = Math.floor(this.state.height / 2 + (this.state.height / 1.6) * D * (cp * h * sB + t * cB));
                 /// Calculate the index in the array
-                var o = x + this.state.width * y;
+                let o = x + this.state.width * y;
                 /// Calculate the ascii character index
-                var N = Math.floor(8 * ((st * sA - sp * ct * cA) * cB - sp * ct * sA - st * cA - cp * ct * sB));
+                let N = Math.floor(8 * ((st * sA - sp * ct * cA) * cB - sp * ct * sA - st * cA - cp * ct * sB));
                 /// Update ascii character and depth if conditions are met
                 if(y < this.state.height && y >= 0 && x >= 0 && x < this.state.width && D > z[o]){
                     z[o] = D;

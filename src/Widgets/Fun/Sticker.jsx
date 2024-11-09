@@ -94,7 +94,7 @@ class WidgetSticker extends Component{
         let maxSize = elementWidgetContainer.getBoundingClientRect();
         if(event.target.value !== ""){
             const elementWidgetContainer = document.getElementById("widget-container");
-            var sticker = elementWidgetContainer.children[childIndex];
+            let sticker = elementWidgetContainer.children[childIndex];
             if(coordinate === "x"){
                 if(event.target.value < maxSize.width){
                     sticker.style.left = `${event.target.value}px`;

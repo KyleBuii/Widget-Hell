@@ -28,7 +28,7 @@ class WidgetTetris extends Component{
     };
     handleKeyDown(event){
         if(/38|87|37|65|39|68|40|83|32|70/.test(event.keyCode)){
-			var key = event.keyCode || event.which;
+			let key = event.keyCode || event.which;
 			if(GM.IsAlive){
 				switch(key){
 					/// Up arrow OR W = Rotate     
@@ -251,7 +251,7 @@ class WidgetTetris extends Component{
 //    PAGE OBJECT & LOGIC                           //
 //--------------------------------------------------//
 //#region
-var Page = {
+let Page = {
 	IsSetup: false,
 	cvs: 0,
 	ctx: 0,
@@ -275,7 +275,7 @@ var Page = {
 	},
 	/// Redraws canvas visuals whenever the page is marked as dirty
 	Update: function(){
-		for(var i = 0; i < Page.AreaArr.length; i++){
+		for(let i = 0; i < Page.AreaArr.length; i++){
 			if(Page.AreaArr[i].IsDirty){
 				Page.AreaArr[i].Draw();
 				Page.AreaArr[i].IsDirty = false;
@@ -314,17 +314,17 @@ function DrawAreaObj(Left, Top, Width, Height, DrawFunction){
 
 Page.Game = new DrawAreaObj(0, 0, 10, 20, function(){
 	/// UnitSize minus a couple pixels of separation
-	var uDrawSize = Page.unitSize - 2,
+	let uDrawSize = Page.unitSize - 2,
 		drawL,
 		drawT;
 	/// Redraws the background elements for game area
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
 	Page.ctx.fillRect(this.left, this.top, this.W, this.H); 
 	/// Draw the static unit blocks
-	for(var i = 0; i < GM.StaticUnits.length; i++){
-		for(var j = 0; j < GM.StaticUnits[i].length; j++){
+	for(let i = 0; i < GM.StaticUnits.length; i++){
+		for(let j = 0; j < GM.StaticUnits[i].length; j++){
 			/// Get the unit value for this index pair
-			var uValue = GM.StaticUnits[i][j];
+			let uValue = GM.StaticUnits[i][j];
 			/// If this unit value is not 0, draw the unit
 			if(uValue !== 0){
 				drawL = i * Page.unitSize + 1;
@@ -337,8 +337,8 @@ Page.Game = new DrawAreaObj(0, 0, 10, 20, function(){
 	};
 	/// Draw the current active projection and piece (if exists)
 	if(GM.Pc.Cur !== 0 && GM.IsAlive){
-		var projColor = ColorWithAlpha(GM.Pc.Cur.color, 0.1);   
-		for(var k = 0; k < GM.Pc.Cur.UO.arr.length; k++){
+		let projColor = ColorWithAlpha(GM.Pc.Cur.color, 0.1);   
+		for(let k = 0; k < GM.Pc.Cur.UO.arr.length; k++){
 			drawL = (GM.Pc.Cur.x + GM.Pc.Cur.UO.arr[k].x) * Page.unitSize + 1;
 			drawT = (GM.Pc.Cur.y + GM.Pc.Cur.UO.arr[k].y) * Page.unitSize + 1;
 			Page.ctx.fillStyle = GM.Pc.Cur.color;
@@ -361,7 +361,7 @@ Page.Game = new DrawAreaObj(0, 0, 10, 20, function(){
 });
 
 Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function(){
-	var uDrawSize = Math.floor(Page.unitSize / 2),
+	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcA = GM.Pc.Upcoming[0];
 	/// Next box background
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
@@ -369,13 +369,13 @@ Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function(){
 	/// Draw the upcoming piece (if one exists)
 	if(pcA !== 0){
 		Page.ctx.fillStyle = pcA.color;	
-		var totalL = 0, 
+		let totalL = 0, 
 			totalT = 0,
 			countedL = [], 
 			countedT = [];
 		/// Calculate average positions of units in order to center
-		for(var i = 0; i < pcA.UO.arr.length; i++){
-			var curX = pcA.UO.arr[i].x,
+		for(let i = 0; i < pcA.UO.arr.length; i++){
+			let curX = pcA.UO.arr[i].x,
 				curY = pcA.UO.arr[i].y;	
 			if(countedL.indexOf(curX) < 0){
 				countedL.push(curX);
@@ -386,13 +386,13 @@ Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function(){
 				totalT += curY;
 			};
 		};
-		var avgL = uDrawSize * (totalL / countedL.length + 0.5),
+		let avgL = uDrawSize * (totalL / countedL.length + 0.5),
 			avgT = uDrawSize * (totalT / countedT.length + 0.5),
 			offsetL = this.left + this.W/2,
 			offsetT = this.top + this.H/2;
 		/// Now draw the upcoming piece, using avg vars to center
-		for(var j = 0; j < pcA.UO.arr.length; j++){
-			var drawL = Math.floor(offsetL - avgL + pcA.UO.arr[j].x * uDrawSize),
+		for(let j = 0; j < pcA.UO.arr.length; j++){
+			let drawL = Math.floor(offsetL - avgL + pcA.UO.arr[j].x * uDrawSize),
 				drawT = Math.floor(offsetT - avgT + pcA.UO.arr[j].y * uDrawSize); 
 			Page.ctx.fillRect(drawL,drawT,uDrawSize - 1,uDrawSize - 1);
 		};
@@ -400,7 +400,7 @@ Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function(){
 });
 
 Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function(){
-	var uDrawSize = Math.floor(Page.unitSize / 2),
+	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcB = GM.Pc.Upcoming[1];
 	/// Next box background
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
@@ -408,13 +408,13 @@ Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function(){
 	/// Draw the upcoming piece (if one exists)
 	if(pcB !== 0){
 		Page.ctx.fillStyle = pcB.color;
-		var totalL = 0, 
+		let totalL = 0, 
 			totalT = 0, 
 			countedL = [], 
 			countedT = [];
 		/// Calculate average positions of units in order to center
-		for(var i = 0; i < pcB.UO.arr.length; i++){
-			var curX = pcB.UO.arr[i].x,
+		for(let i = 0; i < pcB.UO.arr.length; i++){
+			let curX = pcB.UO.arr[i].x,
 				curY = pcB.UO.arr[i].y;
 			if(countedL.indexOf(curX) < 0){
 				countedL.push(curX);
@@ -425,13 +425,13 @@ Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function(){
 				totalT += curY;
 			};
 		};
-		var avgL = uDrawSize * (totalL / countedL.length + 0.5),
+		let avgL = uDrawSize * (totalL / countedL.length + 0.5),
 			avgT = uDrawSize * (totalT / countedT.length + 0.5),
 			offsetL = this.left + this.W/2,
 			offsetT = this.top + this.H/2;
 		/// Now draw the upcoming piece, using avg vars to center
-		for(var j = 0; j < pcB.UO.arr.length; j++){
-			var drawL = Math.floor(offsetL - avgL + pcB.UO.arr[j].x * uDrawSize),
+		for(let j = 0; j < pcB.UO.arr.length; j++){
+			let drawL = Math.floor(offsetL - avgL + pcB.UO.arr[j].x * uDrawSize),
 			drawT = Math.floor(offsetT - avgT + pcB.UO.arr[j].y * uDrawSize); 
 			Page.ctx.fillRect(drawL, drawT, uDrawSize - 1, uDrawSize - 1);
 		};
@@ -439,7 +439,7 @@ Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function(){
 });
 
 Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function(){
-	var uDrawSize = Math.floor(Page.unitSize / 2),
+	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcC = GM.Pc.Upcoming[2];
 	/// Next box background
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
@@ -447,13 +447,13 @@ Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function(){
 	/// Draw the upcoming piece (if one exists)
 	if(pcC !== 0){
 		Page.ctx.fillStyle = pcC.color;
-		var totalL = 0, 
+		let totalL = 0, 
 			totalT = 0, 
 			countedL = [], 
 			countedT = [];
 		/// Calculate average positions of units in order to center
-		for(var i = 0; i < pcC.UO.arr.length; i++){
-			var curX = pcC.UO.arr[i].x,
+		for(let i = 0; i < pcC.UO.arr.length; i++){
+			let curX = pcC.UO.arr[i].x,
 				curY = pcC.UO.arr[i].y;
 			if(countedL.indexOf(curX) < 0){
 				countedL.push(curX);
@@ -464,13 +464,13 @@ Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function(){
 				totalT += curY;
 			};
 		};
-		var avgL = uDrawSize * (totalL / countedL.length + 0.5),
+		let avgL = uDrawSize * (totalL / countedL.length + 0.5),
 			avgT = uDrawSize * (totalT / countedT.length + 0.5),
 			offsetL = this.left + this.W/2,
 			offsetT = this.top + this.H/2;
 		/// Now draw the upcoming piece, using avg vars to center
-		for(var j = 0; j < pcC.UO.arr.length; j++){
-			var drawL = Math.floor(offsetL - avgL + pcC.UO.arr[j].x * uDrawSize),
+		for(let j = 0; j < pcC.UO.arr.length; j++){
+			let drawL = Math.floor(offsetL - avgL + pcC.UO.arr[j].x * uDrawSize),
 				drawT = Math.floor(offsetT - avgT + pcC.UO.arr[j].y * uDrawSize); 
 			Page.ctx.fillRect(drawL,drawT,uDrawSize - 1,uDrawSize - 1);
 		};
@@ -482,7 +482,7 @@ Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function(){
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
 	Page.ctx.fillRect(this.left,this.top,this.W,this.H);
 	/// Draw the trophy symbol
-	var miniUnit, left, top, width, height;
+	let miniUnit, left, top, width, height;
 	miniUnit = Page.unitSize * 0.01;
 	Page.ctx.fillStyle = 'rgb(255,232,96)';
 	/// Trophy base
@@ -503,7 +503,7 @@ Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function(){
 	Page.ctx.arc(left, top, miniUnit * 24, 0, Math.PI);
 	Page.ctx.fill();
 	/// Draw the player's current score
-	var text, size;
+	let text, size;
 	text = ("00000000" + GM.ScoreHigh).slice(-7);
 	left = this.left + this.W - 4;
 	top = this.top + Page.unitSize * 0.8;
@@ -516,7 +516,7 @@ Page.ScoreBarCur = new DrawAreaObj(10.5, 1.1, 4.5, 1, function(){
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
 	Page.ctx.fillRect(this.left,this.top,this.W,this.H);
 	/// Draw the player's current level
-	var text, left, top, size, miniUnit;
+	let text, left, top, size, miniUnit;
 	miniUnit = Page.unitSize * 0.01;
 	text = ('00' + GM.Level).slice(-2);
 	left = this.left + Math.floor(miniUnit * 50);
@@ -535,7 +535,7 @@ Page.ScoreBarCur = new DrawAreaObj(10.5, 1.1, 4.5, 1, function(){
 //--------------------------------------------------//
 //    GAME MANAGER OBJECT & LOGIC                   //
 //--------------------------------------------------//
-var GM = {
+let GM = {
 	/// Timers
 	TimeCur: 0, TimeEvent: 0, TickRate: 0,
 	/// Player status & score
@@ -549,9 +549,9 @@ var GM = {
 		/// Reset current piece vars
 		this.Pc.Next = this.Pc.Cur = this.Pc.ProjY = 0;
 		/// Populate the GM's static unit array with 0's (empty)
-		for(var i = 0; i < 10; i++){
+		for(let i = 0; i < 10; i++){
 			this.StaticUnits[i] = [];
-			for(var j = 0; j < 20; j++){
+			for(let j = 0; j < 20; j++){
 				this.StaticUnits[i][j] = 0;
 			};
 		};
@@ -598,7 +598,7 @@ var GM = {
 	},
 	/// Check specified rows to see if any can be cleared
 	CheckUnits: function(checkRowsRaw){
-		var scoreMult = 0,
+		let scoreMult = 0,
 		pieceScore = 0,
 		checkRows = [];
 		/// Add the scoreBonus for dropping
@@ -606,22 +606,22 @@ var GM = {
 			pieceScore += this.ScoreBonus;      
 		};
 		/// Sort the rows
-		for(var a = 0; a < 20; a++){
+		for(let a = 0; a < 20; a++){
 			if(checkRowsRaw.indexOf(a) >= 0){
 				checkRows.push(a);
 			};
 		};
-		for(var i = 0; i < checkRows.length; i++){
-			var hasGap = false,
+		for(let i = 0; i < checkRows.length; i++){
+			let hasGap = false,
 			checkIndex = checkRows[i]; 
-			for(var j = 0; j < GM.StaticUnits.length; j++){
+			for(let j = 0; j < GM.StaticUnits.length; j++){
 				if(GM.StaticUnits[j][checkIndex] === 0){
 					hasGap = true;
 					break;
 				};
 			};
 			if(hasGap === false){
-				for(var k = 0; k < GM.StaticUnits.length; k++){
+				for(let k = 0; k < GM.StaticUnits.length; k++){
 					GM.StaticUnits[k].splice(checkIndex,1);
 					GM.StaticUnits[k].unshift(0);          
 				};
@@ -671,16 +671,16 @@ GM.PcObj = function(color, rotCount, units){
 	};
 	/// Set up the piece unit object linked list to define rotations
 	this.SetUO = function(rotCount, units){
-		var linkedListUO = [];
+		let linkedListUO = [];
 		linkedListUO[0] = { nextUO: 0, arr:[] };
 		linkedListUO[0].arr = units;
-		for(var i = 0; i < rotCount; i++){
+		for(let i = 0; i < rotCount; i++){
 			linkedListUO[i] = { nextUO: 0, arr:[]};
 			if(i > 0){
 				linkedListUO[i-1].nextUO = linkedListUO[i];
 			};
-			for(var j = 0; j < units.length; j++){
-				var unX,
+			for(let j = 0; j < units.length; j++){
+				let unX,
 					unY;
 				if(i === 0){
 					unX = units[j].x;
@@ -807,7 +807,7 @@ GM.Pc = {
 		this.Upcoming[1] = this.Upcoming[2];    
 		/// Check if the player lost
 		if(this.Cur !== 0){
-			var spawnCollisions = this.CheckCollisions(0,0,0);
+			let spawnCollisions = this.CheckCollisions(0,0,0);
 			if(spawnCollisions > 0){
 				GM.GameOver();
 				this.Freeze();
@@ -815,7 +815,7 @@ GM.Pc = {
 		};
 		/// If player is alive, generate random upcoming piece
 		if(GM.IsAlive !== 0){
-			var randInt = Math.floor(Math.random() * 7);
+			let randInt = Math.floor(Math.random() * 7);
 			switch(randInt){
 				case 0: this.Upcoming[2] = GM.O(); break;
 				case 1: this.Upcoming[2] = GM.I(); break;
@@ -838,9 +838,9 @@ GM.Pc = {
 	/// Freeze the current piece's position and rotation
 	Freeze: function(){
 		if(GM.IsAlive){
-			var affectedRows = [];    
-			for(var i = 0; i < this.Cur.UO.arr.length; i++){
-				var staticX = this.Cur.x + this.Cur.UO.arr[i].x,
+			let affectedRows = [];    
+			for(let i = 0; i < this.Cur.UO.arr.length; i++){
+				let staticX = this.Cur.x + this.Cur.UO.arr[i].x,
 					staticY = this.Cur.y + this.Cur.UO.arr[i].y;
 				if(staticY >= 0 && staticY <= GM.StaticUnits[0].length){
 					GM.StaticUnits[staticX][staticY] = this.Cur.color;
@@ -856,7 +856,7 @@ GM.Pc = {
 	/// Apply gravity to the current piece, checking for collisions
 	DoGravity: function(){
 		if(this.Cur !== 0){
-			var collisions = this.CheckCollisions(0,0,1);
+			let collisions = this.CheckCollisions(0,0,1);
 			if(collisions === 0){
 				this.Cur.y++;
 			}else{
@@ -868,7 +868,7 @@ GM.Pc = {
 	/// Attempt to rotate the current piece, returns bool
 	TryRotate: function(){
 		if(this.Cur !== 0){    
-			var collisions = this.CheckCollisions(1,0,0);
+			let collisions = this.CheckCollisions(1,0,0);
 			if(collisions === 0){
 				this.Cur.Rotate();
 				return true;
@@ -879,7 +879,7 @@ GM.Pc = {
 	/// Attempt to move current piece base on given XY, returns bool
 	TryMove: function(moveX, moveY){    
 		if(this.Cur !== 0){
-			var collisions = this.CheckCollisions(0,moveX,moveY);
+			let collisions = this.CheckCollisions(0,moveX,moveY);
 			if(collisions === 0){
 				this.Cur.x += moveX;
 				this.Cur.y += moveY;
@@ -894,7 +894,7 @@ GM.Pc = {
 	},
 	/// Attempt to drop the current piece until it collides, returns bool
 	TryDrop: function(){ 
-		var squaresDropped = 0;
+		let squaresDropped = 0;
 		if(this.Cur !== 0){
 			while(this.TryMove(0,1) === true && squaresDropped < 22){
 				squaresDropped++;
@@ -910,7 +910,7 @@ GM.Pc = {
 	},
 	/// Attempt to find (and return) projected drop point of current piece
 	TryProject: function(){
-		var squaresDropped = 0;
+		let squaresDropped = 0;
 		if(this.Cur !== 0){
 			while(this.CheckCollisions(0,0,squaresDropped) === 0 &&
 				squaresDropped < 22){
@@ -921,15 +921,15 @@ GM.Pc = {
 	},
 	/// Return collision count OR -1 if test piece out of bounds
 	CheckCollisions: function(doRot, offsetX, offsetY){
-		var unitArr,
+		let unitArr,
 			collisionCount = 0;    
 		if(doRot === 1){
 			unitArr = this.Cur.UO.nextUO.arr;
 		}else{
 			unitArr = this.Cur.UO.arr;
 		};
-		for(var i = 0; i < unitArr.length; i++){
-			var testX = this.Cur.x + unitArr[i].x + offsetX,
+		for(let i = 0; i < unitArr.length; i++){
+			let testX = this.Cur.x + unitArr[i].x + offsetX,
 				testY = this.Cur.y + unitArr[i].y + offsetY,
 				limitX = GM.StaticUnits.length,
 				limitY = GM.StaticUnits[0].length;
@@ -956,7 +956,7 @@ function DrawText(text, color, weight, alignment, size, left, top){
 };
 
 function ColorWithAlpha(color, alpha){
-	var retColor = 'rgba' + color.substring(3,color.length - 1);
+	let retColor = 'rgba' + color.substring(3,color.length - 1);
 	retColor += ',' + alpha + ')';
 	return retColor;
 };

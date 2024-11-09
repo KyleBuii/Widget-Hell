@@ -45,7 +45,7 @@ class WidgetCalculator extends Component{
             case "=":
                 if(this.state.input !== ""
                     && !/\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b/.test(this.state.input)){
-                    var ans;
+                    let ans;
                     const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.operation}])`);
                     if(this.state.lastComputation !== ""
                         && !reCheckOperationExist.test(this.state.input)){
@@ -203,7 +203,7 @@ class WidgetCalculator extends Component{
                 && this.state.input !== "UNDEFINED"
                 && this.state.memory.length !== 0){
                     let lastNumberMAdd = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
-                    var add;
+                    let add;
                     if(where !== undefined){
                         add = evaluate(this.state.memory[where] + "+" + lastNumberMAdd);
                         this.setState({
@@ -231,7 +231,7 @@ class WidgetCalculator extends Component{
                     && this.state.input !== "UNDEFINED"
                     && this.state.memory.length !== 0){
                     let lastNumberMSubtract = this.state.input.toString().match(/[-]?\d*[.]?\d+(?=\D*$)/);
-                    var subtract;
+                    let subtract;
                     if(where !== undefined){
                         subtract = evaluate(this.state.memory[where] + "-" + lastNumberMSubtract);
                         this.setState({

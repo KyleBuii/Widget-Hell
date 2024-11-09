@@ -12,7 +12,7 @@ import Select from "react-select";
 /// Variables
 let timeoutCopy;
 /// Select option
-var optionsTranslateFrom = [
+let optionsTranslateFrom = [
     {
         label: "Languages",
         options: [
@@ -20,7 +20,7 @@ var optionsTranslateFrom = [
         ]
     }
 ];
-var optionsTranslateTo = [
+let optionsTranslateTo = [
     {
         label: "Languages",
         options: []
@@ -146,7 +146,7 @@ class WidgetGoogleTranslator extends Component{
     };
     componentDidMount(){
         /// Populate select with 'languages' array
-        for(var curr = 0; curr < this.props.languages.length; curr+=2){
+        for(let curr = 0; curr < this.props.languages.length; curr+=2){
             optionsTranslateTo[0]["options"].push(
                 {value: this.props.languages[curr+1], label: this.props.languages[curr]}
             );

@@ -402,7 +402,7 @@ class WidgetTranslator extends Component{
                     )
                 );
                 /// Insert emoticon at random position
-                var randPosition;
+                let randPosition;
                 const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
                 if(stringConvertTo.length > 4){
                     randPosition = Math.floor(Math.random() * (stringConvertTo.length - 2) + 2);

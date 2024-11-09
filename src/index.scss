@@ -5139,6 +5139,19 @@ body{
         padding-bottom: 0.1em;
     }
 }
+
+#rockpaperscissor-widget{
+    #rockpaperscissor-choice-player, #rockpaperscissor-choice-computer{
+        max-height: 128px;
+    }
+    #rockpaperscissor-container-choices{
+        @include grid-auto(5);
+        row-gap: 0.2em;
+        img{
+            max-height: 64px;
+        }
+    }
+}
 //#endregion
 
 

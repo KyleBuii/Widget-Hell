@@ -64,7 +64,7 @@ class Cursor extends Component{
                 ctx.lineJoin = "round";
                 ctx.lineWidth = spreadRate;
                 /// As time increases decrease r and b, increase g to go from purple to green
-                var red, green, blue;
+                let red, green, blue;
                 if(this.props.flat){
                     red = this.props.color[0];
                     green = this.props.color[1];
@@ -74,9 +74,9 @@ class Cursor extends Component{
                     green = this.props.color[1];
                     blue = Math.floor(this.props.color[2] + 210 * lifePercent);
                 };
-                var pointDistance = this.distance(lastPoint, point);
-                var pointMidpoint = this.midPoint(lastPoint, point);
-                var pointAngle = this.angle(lastPoint, point);            
+                let pointDistance = this.distance(lastPoint, point);
+                let pointMidpoint = this.midPoint(lastPoint, point);
+                let pointAngle = this.angle(lastPoint, point);            
                 ctx.strokeStyle = `rgb(${red}, ${green}, ${blue})`;
                 ctx.beginPath();
                 switch(this.props.mode){
