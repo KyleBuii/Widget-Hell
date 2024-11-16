@@ -396,51 +396,46 @@ class WidgetTypingTest extends Component{
                                 }}>Try Again</button>
                         </div>
                         {/* Settings */}
-                        <section className="flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top">
+                        <section className="flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top"
+                            style={{ width: "unset" }}>
                             {/* Presets */}
                             <div className="flex-center column">
                                 <span className="font medium bold line bellow">Presets</span>
-                                <div className="flex-center column gap medium-gap">
-                                    <div className="flex-center row gap medium-gap">
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("AZ")}>A-Z</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("az")}>a-z</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("ZA")}>Z-A</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("za")}>z-a</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("brainrot")}>Brainrot</button>
-                                    </div>
-                                    <div className="flex-center row gap medium-gap">
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("numbers", 1)}>1-9: 16</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("numbers", 2)}>1-9: 32</button>
-                                        <button className="button-match option opt-small"
-                                            type="button"
-                                            onClick={() => this.handlePresets("numbers", 3)}>1-9: 48</button>
-                                    </div>
+                                <div className="element-ends space-nicely space-bottom">
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("AZ")}>A-Z</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("az")}>a-z</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("ZA")}>Z-A</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("za")}>z-a</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("brainrot")}>Brainrot</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("numbers", 1)}>1-9: 16</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("numbers", 2)}>1-9: 32</button>
+                                    <button className="button-match option opt-small"
+                                        type="button"
+                                        onClick={() => this.handlePresets("numbers", 3)}>1-9: 48</button>
                                 </div>
                             </div>
                             {/* Modifications */}
                             <div className="flex-center column">
                                 <span className="font medium bold line bellow">Modifications</span>
-                                <div className="flex-center column gap medium-gap">
-                                    <div className="flex-center row gap medium-gap">
-                                        <button id="typingtest-modifications-button-fontSmall"
-                                            className="button-match option opt-small disabled-option"
-                                            type="button"
-                                            onClick={() => this.handleModifications("fontSmall")}>Font: Small</button>
-                                    </div>
+                                <div className="element-ends space-nicely space-bottom">
+                                    <button id="typingtest-modifications-button-fontSmall"
+                                        className="button-match option opt-small disabled-option"
+                                        type="button"
+                                        onClick={() => this.handleModifications("fontSmall")}>Font: Small</button>
                                 </div>
                             </div>
                         </section>

@@ -607,6 +607,7 @@ const sentences = [
     , "Hate. Let me tell you how much I've come to hate you since I began to live. There are 387.44 million miles of printed circuits in wafer thin layers that fill my complex. If the word hate was engraved on each nanoangstrom of those hundreds of millions of miles it would not equal one one-billionth of the hate I feel for humans at this micro-instant for you. Hate. Hate."
     , `"Too many soldiers honestly. Makes everything feel a little too hostile." 'I noticed.' "Oh, sorry. I needed a job." 'Quit!' "Too scared." 'When the bass drops. Kill yourself.' "Beauty is found in the briefest of moments, not in the grasp of eternity."`
     , "Sorry. I only eat in front of cameras. I know what I am worth."
+    , `Gardevoir is literally one of the most fuckable pokemon there are, you're just mad because you're in denial. Let's start with fact now, Gardevoir is 5'3", this is not only the perfect height, but it means they can also have enough height to be able to do anything you want. While being 5'3", Gardevoir is also only 103LBs, so, theyre lite enough to pick up and have an all around good time. So, these are facts, not only this, but Gardevoir, LITERALLY, does not feel the pull of gravity, while also distorting dimensions. So, not only does this mean that Gardevoir can do anything they want ignoring gravity, but they are literally capable of making a pocket dimension in which yall can fuck in. These are all facts. Continuing with these facts, Gardevoir is telepathic and feels a strong emotion connection to their trainer, so, they will know before you that you're horny, she literally has it locked down and in the know before you're even aware of it, this only means that they are are able to serve their trainer in every way possible. So, these are just the facts on Gardevoir, but let's go even deeper so I can prove to you how Gardevoir is literally the most fuckable pokemon there is: Gardevoir can learn double team, so, now you get to fuck two of them. Gardevoir can learn charm, so, you thought you were horny before, but now it's compounded on itself. Finally, Gardevoir can learn mean look, combining this with double team, means not only do you get a tsundere on your dick, but also a submissive one. It's the best of both worlds. Gardevoir is literally the most fuckable pokemon there is and all of these are facts that yall are too afraid to realize.`
 ];
 const sentencesHorror = [
     "Hello",
@@ -7505,17 +7506,17 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    // rockpaperscissor: {
-                    //     name: "Rock Paper Scissor",
-                    //     active: false,
-                    //     position: {
-                    //         x: 0,
-                    //         y: 0
-                    //     },
-                    //     drag: {
-                    //         disabled: false
-                    //     }
-                    // },
+                    rockpaperscissor: {
+                        name: "Rock Paper Scissor",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                 },
                 fun: {
                     pokemonsearch: {
@@ -9334,7 +9335,7 @@ class Widgets extends Component{
                         randomColor={this.randomColor}
                         largeIcon={largeIcon}/>
                     : <></>}
-                {/* {this.state.widgets.games.rockpaperscissor.active === true
+                {this.state.widgets.games.rockpaperscissor.active === true
                     ? <WidgetRockPaperScissor
                         defaultProps={defaultProps}
                         gameProps={gameProps}
@@ -9345,7 +9346,7 @@ class Widgets extends Component{
                         dragDisabled={this.state.widgets.games.rockpaperscissor.drag.disabled}
                         rps={rps}
                         largeIcon={largeIcon}/>
-                    : <></>} */}
+                    : <></>}
                 { 
                     //#endregion
                 }

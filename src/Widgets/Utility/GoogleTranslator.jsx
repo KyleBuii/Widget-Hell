@@ -230,7 +230,7 @@ class WidgetGoogleTranslator extends Component{
                         <div className="flex-center space-nicely space-bottom">
                             {/* Select From */}
                             <Select id="googletranslator-translate-from"
-                                className="select-match"
+                                className="select-match select-length-medium"
                                 value={this.state.from}
                                 defaultValue={optionsTranslateFrom[0]["options"][0]}
                                 onChange={this.handleFrom}
@@ -254,7 +254,7 @@ class WidgetGoogleTranslator extends Component{
                             </button>
                             {/* Select To */}
                             <Select id="googletranslator-translate-to"
-                                className="select-match"
+                                className="select-match select-length-medium"
                                 value={this.state.to}
                                 defaultValue={optionsTranslateTo[0]["options"][0]}
                                 onChange={this.handleTo}
@@ -290,8 +290,9 @@ class WidgetGoogleTranslator extends Component{
                             <p id="googletranslator-translated-text"
                                 className="text-animation cut-scrollbar-corner-part-2 p flex-center only-justify-content">{this.state.converted}</p>
                         </div>
-                        {/* Bottom Buttons */}
-                        <div className="element-ends float bottom">
+                        {/* Buttons */}
+                        <div className="element-ends float relative bottom"
+                            style={{ width: "unset" }}>
                             <div className="flex-center row">
                                 {/* Clipboard */}
                                 <button className="button-match fadded inversed"

@@ -28,8 +28,9 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | | Spacebar | Hard drop |
 | | F | Reset |
 | Color Memory | | |
+| Rock Paper Scissor | | |
 
-## **Gold reward guide**
+## **Gold and EXP guide**
 | Game | Rate |
 | --- | --- |
 | Minesweeper | Equal to mines on complete |
@@ -42,6 +43,7 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | Trivia | Equal to correct guesses |
 | Tetris | Equal to 1 gold for every 1000 score |
 | Color Memory | Equal to correct guesses |
+| Rock Paper Scissor | Equal to correct guesses |
 
 ## **Item rewards guide**
 ### Drop rates
@@ -65,6 +67,7 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | Trivia | Every 5 correct answers |
 | Tetris | Every 5000 score |
 | Color Memory | Every 10 correct guesses |
+| Rock Paper Scissor | Every 2 correct guesses |
 
 ## **Stats guide [WIP]**
 <details>
@@ -99,6 +102,7 @@ Health rounds down.
 | Trivia | Allows a wrong guess for every 10 |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Mana</summary>
@@ -115,6 +119,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Attack</summary>
@@ -131,6 +136,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Defense</summary>
@@ -147,6 +153,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Strength</summary>
@@ -163,6 +170,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Agility</summary>
@@ -179,6 +187,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Vitality</summary>
@@ -195,6 +204,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Resilience</summary>
@@ -211,6 +221,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Intelligence</summary>
@@ -227,6 +238,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Dexterity</summary>
@@ -243,6 +255,7 @@ Health rounds down.
 | Trivia | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 <details>
     <summary>Luck</summary>
@@ -258,6 +271,7 @@ Health rounds down.
 | 2048 | N/A |
 | Tetris | N/A |
 | Color Memory | N/A |
+| Rock Paper Scissor | N/A |
 </details>
 
 ## **Plans**

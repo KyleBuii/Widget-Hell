@@ -1106,7 +1106,7 @@ class WidgetTranslator extends Component{
                                 <div className="flex-center space-nicely space-bottom">
                                     {/* Select From */}
                                     <Select id="translator-translate-from"
-                                        className="select-match"
+                                        className="select-match select-length-medium"
                                         value={this.state.from}
                                         defaultValue={optionsTranslateFrom[0]["options"][0]}
                                         onChange={this.handleFrom}
@@ -1131,7 +1131,7 @@ class WidgetTranslator extends Component{
                                     </button>
                                     {/* Select To */}
                                     <Select id="translator-translate-to"
-                                        className="select-match"
+                                        className="select-match select-length-medium"
                                         value={this.state.to}
                                         defaultValue={optionsTranslateTo[0]["options"][0]}
                                         onChange={this.handleTo}
@@ -1150,7 +1150,7 @@ class WidgetTranslator extends Component{
                                         })}/>
                                 </div>
                                 {/* Display */}
-                                <div className="flex-center column">
+                                <div className="flex-center column gap small-gap">
                                     <div className="cut-scrollbar-corner-part-1 textarea">
                                         <textarea className="cut-scrollbar-corner-part-2 textarea"
                                             name="translator-textarea-input"
@@ -1168,7 +1168,8 @@ class WidgetTranslator extends Component{
                                     </div>
                                 </div>
                                 {/* Buttons */}
-                                <div className="element-ends float relative bottom">
+                                <div className="element-ends float relative bottom"
+                                    style={{ width: "unset" }}>
                                     <div className="flex-center row">
                                         {/* Clipboard */}
                                         <button className="button-match fadded inversed"

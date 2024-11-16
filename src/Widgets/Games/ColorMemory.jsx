@@ -206,7 +206,7 @@ class WidgetColorMemory extends Component{
                                 {this.state.score}
                             </span>
                             {/* Gold Earned */}
-                            <span className="text-animation flex-center row float middle-left">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -214,7 +214,7 @@ class WidgetColorMemory extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle-right">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -254,13 +254,13 @@ class WidgetColorMemory extends Component{
                         {(this.state.gameover)
                             ? <SimpleBar style={{ maxHeight: "13.8em" }}>
                                 <section id="colormemory-gameover-colors"
-                                    className="aesthetic-scale scale-div flex-center gap space-nicely space-top not-bottom length-medium">
+                                    className="aesthetic-scale scale-div flex-center space-nicely space-top not-bottom length-medium">
                                     {seenColorsImage.map((image, index) => {
                                         return <div className="box"
                                             style={{
                                                 cursor: "pointer",
-                                                width: "2em",
-                                                height: "2em",
+                                                width: "3em",
+                                                height: "3em",
                                                 backgroundImage: `url(${image})`
                                             }}
                                             key={image}

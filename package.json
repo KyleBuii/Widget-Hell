@@ -19,6 +19,7 @@
     "chess.js": "^1.0.0-beta.8",
     "dompurify": "^3.1.7",
     "dotenv": "^16.3.1",
+    "dragscroll": "^0.0.8",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^4.6.2",

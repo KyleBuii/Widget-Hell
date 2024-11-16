@@ -293,7 +293,7 @@ class WidgetSimonGame extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>

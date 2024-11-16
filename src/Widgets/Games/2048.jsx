@@ -155,7 +155,7 @@ class Widget2048 extends Component{
                                 {this.state.board.score}
                             </span>
                             {/* Gold Earned */}
-                            <span className="text-animation flex-center row float middle-left">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -163,7 +163,7 @@ class Widget2048 extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle-right">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>

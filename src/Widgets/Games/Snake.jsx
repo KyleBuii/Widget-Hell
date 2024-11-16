@@ -85,7 +85,7 @@ class WidgetSnake extends Component{
         this.state = {
             goldEarned: 0,
             timer: 0,
-            size: 28,
+            size: 0,
             settings: false,
             help: false,
             startMoving: false,
@@ -116,6 +116,7 @@ class WidgetSnake extends Component{
         this.removeTimers = this.removeTimers.bind(this);
         this.changeSpeed = this.changeSpeed.bind(this);
         this.resetSpeed = this.resetSpeed.bind(this);
+        this.calculateSize = this.calculateSize.bind(this);
     };
     /// Randomly place a random snake food
     moveFood(){
@@ -534,6 +535,17 @@ class WidgetSnake extends Component{
             return Math.floor(this.props.gameProps.stats.health / 10);
         };
     };
+    calculateSize(){
+        let calculateSize;
+        if(window.innerWidth > 507){
+            calculateSize = 28;
+        }else{
+            calculateSize = Math.floor(window.innerWidth / 20);
+        };
+        this.setState({
+            size: calculateSize
+        });
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
@@ -555,7 +567,7 @@ class WidgetSnake extends Component{
     };
     componentDidMount(){
         window.addEventListener("beforeunload", this.storeData);
-        /// Load widget's data from local storage
+        window.addEventListener("resize", this.calculateSize);
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             let localStorageSnake = dataLocalStorage["games"]["snake"];
@@ -569,7 +581,7 @@ class WidgetSnake extends Component{
         document.getElementById("snake-overlay")
             .style
             .visibility = "visible";
-        /// Set stats
+        this.calculateSize();
         let calculateMaxHealth = this.calculateHealth();
         this.setState({
             maxHealth: calculateMaxHealth,
@@ -610,17 +622,14 @@ class WidgetSnake extends Component{
             });
         });
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y}}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("snake")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("snake");
                     this.props.defaultProps.updatePosition("snake", "games", data.x, data.y);
                 }}
-                cancel="button, section"
+                cancel="button, section, a"
                 bounds="parent">
                 <div id="snake-widget"
                     className="widget">
@@ -668,7 +677,7 @@ class WidgetSnake extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -768,7 +777,14 @@ class WidgetSnake extends Component{
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
-                            ? <span className="font smaller transparent-normal author-name">Created by ?&emsp;Modified by Me</span>
+                            ? <span className="font smaller transparent-normal author-name">
+                                Created by
+                                <a className="font transparent-normal link-match"
+                                    href="https://codepen.io/anh194/pen/LwVbew"
+                                    target="_blank"> anh</a>
+                                &emsp;
+                                Modified by Me
+                            </span>
                             : <></>}
                     </div>
                 </div>

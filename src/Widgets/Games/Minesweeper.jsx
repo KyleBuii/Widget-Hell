@@ -7,6 +7,7 @@ import { Fa0, FaBomb, FaExpand, FaRegClock } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { PiFlagPennantFill } from "react-icons/pi";
 import { TbMoneybag } from "react-icons/tb";
+import SimpleBar from 'simplebar-react';
 
 
 /// Variables
@@ -388,7 +389,7 @@ class WidgetMinesweeper extends Component{
                                 {this.state.minesLeft}
                             </span>
                             {/* Gold Earned */}
-                            <span className="text-animation flex-center row float middle-left">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -396,7 +397,7 @@ class WidgetMinesweeper extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle-right">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -412,7 +413,8 @@ class WidgetMinesweeper extends Component{
                         </section>
                         {/* Board */}
                         <div id="minesweeper-board"
-                            className="flex-center column">
+                            // classNames={{ contentWrapper: "dragscroll" }}
+                            className="flex-center column scrollable dragscroll">
                             {this.renderBoard()}
                         </div>
                         {/* Controller Container */}

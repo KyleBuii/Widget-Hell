@@ -280,7 +280,8 @@ class WidgetTimeConversion extends Component{
                                 : <></>}
                         </section>
                         {/* Time Conversion Container */}
-                        <section className="flex-center row gap medium-gap">
+                        <section id="timeconversion-container"
+                            className="flex-center row">
                             <section className="flex-center column gap">
                                 {/* Original date and time */}
                                 <section className="flex-center column gap">
@@ -387,7 +388,7 @@ class WidgetTimeConversion extends Component{
                                     </span>
                                 </section>
                             </section>
-                            <Calendar
+                            <Calendar id="timeconversion-calendar"
                                 onChange={(val) => this.handleChange("date", val)}
                                 value={this.state.date}/>
                         </section>

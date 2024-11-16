@@ -305,8 +305,7 @@ class WidgetChess extends Component{
                     className="widget flex-center column gap medium-gap">
                     {/* Chess Board */}
                     <section id="chess-board">
-                        <Chessboard
-                            animationDuration={200}
+                        <Chessboard animationDuration={200}
                             arePiecesDraggable={false}
                             position={this.state.game.fen()}
                             onSquareClick={this.onSquareClick}
@@ -364,7 +363,7 @@ class WidgetChess extends Component{
                                 {this.state.capturedWhitePiecesCount}
                             </span>
                             {/* Gold Earned */}
-                            <span className="text-animation flex-center row float middle-left">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>
@@ -372,7 +371,7 @@ class WidgetChess extends Component{
                                 {this.state.goldEarned}
                             </span>
                             {/* Total Gold */}
-                            <span className="text-animation flex-center row float middle-right">
+                            <span className="text-animation flex-center row">
                                 <IconContext.Provider value={{ size: this.props.smallIcon, color: "#f9d700", className: "global-class-name" }}>
                                     <TbMoneybag/>
                                 </IconContext.Provider>

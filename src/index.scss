@@ -94,10 +94,15 @@ body{
     grid-auto-flow: column;
 }
 
+@mixin grid-auto-fill($min){
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax($min, 1fr));
+}
+
 @mixin slide-on-hover($height, $width, $speed: 2s){
     position: relative;
     height: $height;
-    width: $width;
+    max-width: $width;
     overflow: hidden;
     span{
         position: absolute;
@@ -427,7 +432,6 @@ body{
 
 /// Makes element scrollable with no scrollbar
 .scrollable{
-    height: 42.5em;
     overflow-y: auto;
     scrollbar-width: none;
     &::-webkit-scrollbar{
@@ -485,6 +489,7 @@ body{
     background-color: white;
     &.textarea{
         height: 6.3em;
+        width: 100%;
         max-width: 29.8em;
         width: calc(100vmin - 4.05em);
         border: none;
@@ -495,7 +500,7 @@ body{
     &.p{
         height: 100%;
         max-width: 24em;
-        width: calc(100vmin - 4.05em);
+        width: calc(100vmin - 3.4em);
         word-wrap: break-word;
         outline: none;
         color: var(--randColorLight);
@@ -648,6 +653,11 @@ body{
     color: var(--randColor);
     font-size: 0.75em;
     width: 100%;
+    &.select-length-medium{
+        max-width: 14.7em;
+        min-width: 8em;
+        width: calc(100vmin - 20em);
+    }
 }
 
 .radio-match{
@@ -783,7 +793,9 @@ body{
     width: 100%;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: space-between;
+    row-gap: 0.5em;
     &.not-spaced{
         justify-content: unset;
     }
@@ -1066,8 +1078,7 @@ body{
             margin-bottom: -1.78em;
             bottom: 2.4em;
         }    
-        width: 21.3em;
-        margin-left: 0.5em;
+        margin: 0em 1.5em 0em 0.5em;
         bottom: 2.1em;
     }
     &.center{
@@ -1247,7 +1258,7 @@ body{
         border-top: 2px solid rgba(var(--randColorOpacity), 0.08);
     }
     &.bellow{
-        padding-bottom: 1em;
+        padding-bottom: 0.5em;
         margin-bottom: 1em;
         border-bottom: 2px solid rgba(var(--randColorOpacity), 0.08);
     }
@@ -3633,6 +3644,12 @@ body{
         border-left: 2px solid #ffffff;
         border-top: 2px solid #ffffff;
         border-right: 2px solid #7B7B7B;
+        &:not(.hidden){
+            cursor: grab;
+            &:active{
+                cursor: grabbing;
+            }
+        }
         &.hidden{
             background-color: var(--randColor);
             &:hover{
@@ -3683,8 +3700,12 @@ body{
     }
     &.twentyfortyeight{
         user-select: none;
-        width: 100px;
-        height: 100px;
+        max-width: 100px;
+        max-height: 100px;
+        min-width: 50px;
+        min-height: 50px;
+        width: calc(100vmin - 17.55em);
+        height: calc(100vmin - 17.55em);
         margin: 5px;
         display: inline-block;
         border-radius: 7px;
@@ -3694,9 +3715,14 @@ body{
 .tile{
     position: absolute;
     user-select: none;
-    cursor: default;  
-    width: 100px;
-    height: 100px;
+    cursor: default;
+    background-size: cover;
+    max-width: 100px;
+    max-height: 100px;
+    min-width: 50px;
+    min-height: 50px;
+    width: calc(100vmin - 7.1em);
+    height: calc(100vmin - 7.1em);
     margin: 5px;
     line-height: 90px;
     display: inline-block;
@@ -4060,6 +4086,7 @@ body{
 
 //#region React calendar
 .react-calendar{
+    width: unset !important;
     color: var(--randColor);
     border-color: var(--randColor) !important;
 }
@@ -4225,6 +4252,7 @@ body{
         }
     }
     #settings-popout-animation{
+        height: 42.5em;
         padding: 0.4rem;
     }
 }
@@ -4364,7 +4392,6 @@ body{
 
 #quote-widget{
     max-width: 50em;
-    max-height: 26.46em;
     #quote-widget-animation{
         padding: 0.3rem 1.9rem 1.58rem;
         text-align: center;
@@ -4411,13 +4438,14 @@ body{
 #translator-widget{
     font-size: 1.11em;
     #translator-widget-animation{
+        max-width: 23.4em;
+        width: calc(100vmin - 2.6em);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         will-change: background-image;
     }
     #translator-preview-cut-corner{
-        margin-top: 0.9rem;
         #translator-translated-text{
             transition: text-shadow 0.4s;
             white-space: pre-wrap;
@@ -4624,6 +4652,9 @@ body{
 #timeconversion-widget{
     max-width: 40em;
     width: 100vmin;
+    #timeconversion-container{
+        @include grid-auto-fill(220px);
+    }
 }
 
 #battery-widget{
@@ -4695,6 +4726,7 @@ body{
         img{
             max-height: 512px;
             max-width: 512px;
+            width: 100%;
         }
     }
     #imagecolorpicker-eye-dropper-button{
@@ -4753,7 +4785,8 @@ body{
     }
     #musicplayer-details{
         height: 7em;
-        width: 15em;
+        max-width: 15em;
+        width: calc(100vmin - 17em);
         border: 6px solid var(--randColorLight);
         border-bottom: none;
         border-radius: 25px 25px 0px 0px;
@@ -4780,12 +4813,12 @@ body{
     }
     #musicplayer-controls{
         height: 7em;
-        width: 30em;
+        max-width: 30em;
+        width: calc(100vmin - 2em);
         border-radius: 25px;
         background-color: white;
-        #musicplayer-remove{
-            position: absolute;
-            left: 10em;
+        #musicplayer-remove, #musicplayer-add{
+            position: relative;
         }
         #musicplayer-button-previous{
             position: relative;
@@ -4816,15 +4849,11 @@ body{
                 opacity: 0.5;
             }
         }
-        #musicplayer-add{
-            position: absolute;
-            left: 27.5em;
-        }
         #musicplayer-input-add{
-            position: absolute;
+            position: relative;
             width: 0;
-            top: 15.38em;
-            left: 28.5em;
+            top: -0.1em;
+            right: 1.5em;
             transition-property: height width padding;
             transition-duration: 1s;
             visibility: hidden;
@@ -4834,8 +4863,7 @@ body{
                 visibility: visible;
                 height: 2.5em;
                 width: 7em;
-                top: 14.15em;
-                left: 28em;
+                right: 2em;
                 padding-left: 0.8em;
             }
         }
@@ -4845,7 +4873,8 @@ body{
 #animesearcher-widget{
     #animesearcher-information{
         height: 45em;
-        width: 40em;
+        max-width: 40em;
+        width: calc(100vmin - 3.3em);
     }
     #animesearcher-image-uploaded{
         img{
@@ -4864,7 +4893,7 @@ body{
         top: -5em;
         #animesearcher-container-information-sidebar{
             max-width: 9em;
-            width: 100%;
+            width: 100vmin;
             #animesearcher-tags{
                 width: 9em;
             }
@@ -4877,7 +4906,7 @@ body{
     #animesearcher-container-description{
         position: relative;
         max-width: 25em;
-        width: 100%;
+        width: calc(100vmin - 18em);
         margin-right: 0.5em;
         #animesearcher-relations, #animesearcher-characters, #animesearcher-recommendations, #animesearcher-streaming-episodes{
             width: 100%;
@@ -4983,13 +5012,19 @@ body{
 }
 
 #simongame-widget{
+    max-width: 26.6em;
+    width: 100%;
     #simongame-container{
         background-color: black;
-        border-radius: 50%;
+        border-radius: calc(100vmin - 50%);
         div{
             cursor: pointer;
-            height: 8em;
-            width: 8em;
+            max-width: 8em;
+            max-height: 8em;
+            min-width: 4em;
+            min-height: 4em;
+            width: calc(100vmin - 16em);
+            height: calc(100vmin - 16em);
             margin: 0.2em;
             border: none;
             &:nth-child(1){
@@ -5011,8 +5046,8 @@ body{
         }
     }
     #simongame-counter-light{
-        height: 4em;
         width: 4em;
+        height: 4em;
         background-color: black;
         span:first-of-type{
             top: 25%;
@@ -5026,8 +5061,10 @@ body{
 
 #chess-widget{
     #chess-board{
-        height: 25em;
-        width: 25em;
+        max-width: 25em;
+        max-height: 25em;
+        width: 100vmin;
+        height: 100vmin;
         border-radius: 4px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
@@ -5042,12 +5079,24 @@ body{
 }
 
 #minesweeper-widget{
+    #minesweeper-board{
+        max-width: 20em;
+        max-height: 20em;
+        width: calc(100vmin - 3.3em);
+        height: 100vmin;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
     #minesweeper-health{
         @include grid-auto(8);
     }
 }
 
 #breakout-widget{
+    #breakout-canvas{
+        max-width: 700px;
+        width: 100%;
+    }
     #breakout-health{
         @include grid-auto(21);
     }
@@ -5055,8 +5104,7 @@ body{
 
 #twentyfortyeight-widget{
     #twentyfortyeight-board{
-        height: 100%;
-        width: 100%;
+        min-width: 15em;
         outline: none;
     }
     #twentyfortyeight-overlay-gameover{
@@ -5070,21 +5118,26 @@ body{
 
 #trivia-widget{
     #trivia-widget-animation{
+        max-width: 22em;
+        min-width: 10em;
+        width: calc(100vmin - 3.3em);
         height: 30em;
-        width: 22em;
     }
     #trivia-questions{
         text-align: center;
         button{
-            width: 22em;
+            max-width: 22em;
+            width: calc(100vmin - 4em);
         }
     };
     #trivia-overlay-customize{
         visibility: visible;
         display: none;
         background-color: white;
+        max-width: 22em;
+        min-width: 10em;
+        width: calc(100vmin - 3.3em);
         height: 20em;
-        width: 22em;
     }
     #trivia-reset{
         cursor: pointer;
@@ -5108,6 +5161,8 @@ body{
 
 #tetris-widget{
     #tetris-canvas{
+        max-width: 600px;
+        width: 100%;
         outline: none;
     }
     #tetris-health{
@@ -5118,9 +5173,16 @@ body{
 }
 
 #colormemory-widget{
+    max-width: 21em;
+    min-width: 14em;
+    width: 100vmin;
     #colormemory-image{
-        width: 16em;
-        height: 16em;
+        max-width: 15.5em;
+        max-height: 15.5em;
+        min-width: 9em;
+        min-height: 9em;
+        width: calc(100vmin - 5.5em);
+        height: calc(100vmin - 5.5em);
         background-color: var(--randColorLight);
         background-repeat: no-repeat;
         background-size: contain;
@@ -5134,18 +5196,32 @@ body{
         }
     }
     #colormemory-gameover-colors{
-        @include grid-auto(4);
+        @include grid-auto-fill(60px);
+        max-width: 17.6em;
+        min-width: 10em;
+        width: calc(100vmin - 4.7em);
+        gap: 1em;
         word-break: break-word;
         padding-bottom: 0.1em;
     }
 }
 
 #rockpaperscissor-widget{
-    #rockpaperscissor-choice-player, #rockpaperscissor-choice-computer{
-        max-height: 128px;
+    max-width: 33.5em;
+    width: 100vmin;
+    #rockpaperscissor-choice{
+        max-width: 30em;
+        width: calc(100vmin - 3.5em);
+        margin-bottom: 1em;
+        #rockpaperscissor-choice-player, #rockpaperscissor-choice-computer{
+            max-height: 128px;
+        }
+        #rockpaperscissor-message{
+            text-align: center;
+        }
     }
     #rockpaperscissor-container-choices{
-        @include grid-auto(5);
+        @include grid-auto-fill(64px);
         row-gap: 0.2em;
         img{
             max-height: 64px;
