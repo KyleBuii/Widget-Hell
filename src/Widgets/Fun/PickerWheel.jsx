@@ -295,7 +295,7 @@ class WidgetPickerWheel extends Component{
                                 : <></>}
                         </section>
                         {/* Input */}
-                        <section className="flex-center row gap space-nicely space-bottom length-longer">
+                        <section className="flex-center wrap row gap space-nicely space-bottom length-longer">
                             <input id="pickerwheel-input"
                                 className="input-match"/>
                             <button className="button-match with-input"

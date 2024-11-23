@@ -413,7 +413,6 @@ class WidgetMinesweeper extends Component{
                         </section>
                         {/* Board */}
                         <div id="minesweeper-board"
-                            // classNames={{ contentWrapper: "dragscroll" }}
                             className="flex-center column scrollable dragscroll">
                             {this.renderBoard()}
                         </div>

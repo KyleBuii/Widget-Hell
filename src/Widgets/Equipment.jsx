@@ -299,6 +299,7 @@ class WidgetEquipment extends Component{
                                 : <></>}
                         </section>
                         {/* Equipment Container */}
+                        <SimpleBar style={{ maxHeight: "36em" }}>
                         <section className="flex-center column gap medium-gap">
                             {/* Slots and Stats */}
                             <section className="flex-center row gap medium-gap">
@@ -494,7 +495,8 @@ class WidgetEquipment extends Component{
                                 </section>
                                 {/* Stats */}
                                 <table id="equipment-table-stats" 
-                                    className="aesthetic-scale scale-table table font">
+                                    className="aesthetic-scale scale-table table font"
+                                    style={{ width: "unset" }}>
                                     <thead>
                                         <tr>
                                             <th>Stat</th>
@@ -550,11 +552,11 @@ class WidgetEquipment extends Component{
                                 </table>
                             </section>
                             {/* Abilities */}
-                            <SimpleBar className="table font"
+                            <SimpleBar className="fill-width font"
                                 style={{
                                     maxHeight: "14.7em"
                                 }}>
-                                <table className="fill-width">
+                                <table className="table">
                                     <thead>
                                         <tr>
                                             <th>Abilities</th>
@@ -564,6 +566,7 @@ class WidgetEquipment extends Component{
                                 </table>
                             </SimpleBar>
                         </section>
+                        </SimpleBar>
                         {/* View Item Popout */}
                         <section id="equipment-popout-view-item"
                             className="flex-center column gap font no-highlight"

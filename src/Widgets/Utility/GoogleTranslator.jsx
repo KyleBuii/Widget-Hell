@@ -227,10 +227,10 @@ class WidgetGoogleTranslator extends Component{
                                 : <></>}
                         </section>
                         {/* Selects Container */}
-                        <div className="flex-center space-nicely space-bottom">
+                        <div className="flex-center wrap space-nicely space-bottom">
                             {/* Select From */}
                             <Select id="googletranslator-translate-from"
-                                className="select-match select-length-medium"
+                                className="select-match"
                                 value={this.state.from}
                                 defaultValue={optionsTranslateFrom[0]["options"][0]}
                                 onChange={this.handleFrom}
@@ -254,7 +254,7 @@ class WidgetGoogleTranslator extends Component{
                             </button>
                             {/* Select To */}
                             <Select id="googletranslator-translate-to"
-                                className="select-match select-length-medium"
+                                className="select-match"
                                 value={this.state.to}
                                 defaultValue={optionsTranslateTo[0]["options"][0]}
                                 onChange={this.handleTo}

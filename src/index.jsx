@@ -1,49 +1,48 @@
 import DOMPurify from 'dompurify';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom/client';
+import { IconContext } from 'react-icons';
+import { AiOutlineSetting } from 'react-icons/ai';
 import { components } from 'react-select';
+import SimpleBar from 'simplebar-react';
+import Cursor from './cursor.jsx';
 import './index.scss';
+import Particle from './particle.jsx';
 import WidgetCharacter from './Widgets/Character.jsx';
 import WidgetEquipment from './Widgets/Equipment.jsx';
 import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.jsx';
 import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.jsx';
+import WidgetFacts from './Widgets/Fun/Facts.jsx';
 import WidgetPickerWheel from './Widgets/Fun/PickerWheel.jsx';
 import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.jsx';
 import WidgetSticker from './Widgets/Fun/Sticker.jsx';
 import Widget2048 from './Widgets/Games/2048.jsx';
 import WidgetBreakout from './Widgets/Games/Breakout.jsx';
 import WidgetChess from './Widgets/Games/Chess.jsx';
+import WidgetColorMemory from './Widgets/Games/ColorMemory.jsx';
+import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
 import WidgetMinesweeper from './Widgets/Games/Minesweeper.jsx';
+import WidgetRockPaperScissor from './Widgets/Games/RockPaperScissor.jsx';
 import WidgetSimonGame from './Widgets/Games/SimonGame.jsx';
 import WidgetSnake from './Widgets/Games/Snake.jsx';
 import WidgetTetris from './Widgets/Games/Tetris.jsx';
 import WidgetTrivia from './Widgets/Games/Trivia.jsx';
 import WidgetTypingTest from './Widgets/Games/TypingTest.jsx';
 import WidgetInventory from './Widgets/Inventory.jsx';
+import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
 import WidgetBattery from './Widgets/Utility/Battery.jsx';
 import WidgetCalculator from './Widgets/Utility/Calculator.jsx';
 import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.jsx';
 import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.jsx';
 import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.jsx';
-import WidgetNotepad from './Widgets/Utility/Notepad.jsx';
+import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.jsx';
 import WidgetQRCode from './Widgets/Utility/QRCode.jsx';
 import WidgetQuote from './Widgets/Utility/Quote.jsx';
 import WidgetSetting from './Widgets/Utility/Setting.jsx';
 import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.jsx';
 import WidgetTimeConversion from './Widgets/Utility/TimeConversion.jsx';
 import WidgetTranslator from './Widgets/Utility/Translator.jsx';
-import WidgetURLShortner from './Widgets/Utility/URLShortner.jsx';
 import WidgetWeather from './Widgets/Utility/Weather.jsx';
-import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.jsx';
-import WidgetFacts from './Widgets/Fun/Facts.jsx';
-import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
-import SimpleBar from 'simplebar-react';
-import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
-import Cursor from './cursor.jsx';
-import WidgetColorMemory from './Widgets/Games/ColorMemory.jsx';
-import Particle from './particle.jsx';
-import { e } from 'mathjs';
-import WidgetRockPaperScissor from './Widgets/Games/RockPaperScissor.jsx';
 
 
 //////////////////// Temp Variables ////////////////////
@@ -165,10 +164,11 @@ function createPopup(text, type = "normal", randomPosition = false){
             break;
         case "item":
             switch(lootDisplay.value){
-                case "destiny2Engram":
+                case "destiny2":
+                case "rotmg":
                     popup = document.createElement("img");
                     popup.className = `popup-image flex-center ${text.rarity}`;
-                    popup.src = `/resources/loot/engram-${text.rarity}.png`;
+                    popup.src = `/resources/loot/${lootDisplay.value}/${lootDisplay.value}-${text.rarity}.png`;
                     break;
                 default:
                     let itemImage = document.createElement("img");
@@ -7936,7 +7936,7 @@ class Widgets extends Component{
                 if(inverse){
                     button.style.color = "rgba(var(--randColorOpacity), 1)";
                 }else{
-                    button.style.opacity = "1";
+                    button.classList.remove("disabled-option");
                 };
             };
             popout.style.visibility = "visible";
@@ -7969,7 +7969,7 @@ class Widgets extends Component{
                 if(inverse){
                     button.style.color = "rgba(var(--randColorOpacity), 0.2)";
                 }else{
-                    button.style.opacity = "0.5";
+                    button.classList.add("disabled-option");
                 };
             };
             popout.style.visibility = "hidden";
@@ -8493,6 +8493,17 @@ class Widgets extends Component{
                 break;
         };
     };
+    showSetting(){
+        const elementSetting = document.getElementById("settings-widget");
+        const elementButtonSetting = document.getElementById("widget-button-setting");
+        if(elementSetting.checkVisibility({ visibilityProperty: true })){
+            elementSetting.style.visibility = "hidden";
+            elementButtonSetting.classList.remove("button-setting-active");
+        }else{
+            elementSetting.style.visibility = "visible";
+            elementButtonSetting.classList.add("button-setting-active");
+        };
+    };
     storeData(){
         let data = {
             utility: {},
@@ -8837,6 +8848,13 @@ class Widgets extends Component{
                     mute={this.state.values.particleMute}/>
                 {/* For copying to clipboard */}
                 <pre id="clipboard-dump"></pre>
+                <button id="widget-button-setting"
+                    className="button-match inverse button-setting-active"
+                    onClick={() => this.showSetting()}>
+                    <IconContext.Provider value={{ size: "2em", className: "global-class-name" }}>
+                        <AiOutlineSetting/>
+                    </IconContext.Provider>
+                </button>
                 {/* For Developers */}
                 {(this.state.developer)
                     ? <section style={{
@@ -8913,6 +8931,8 @@ class Widgets extends Component{
                     }}
                     hexToRgb={hexToRgb}
                     rgbToHex={rgbToHex}
+                    showSetting={this.showSetting}
+                    valueClose={this.state.values.close}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
                 {this.state.widgets.utility.inventory.active === true

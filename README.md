@@ -76,19 +76,19 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 Health rounds down.
 | Heart | Hits |
 | --- | --- |
-| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart1.png) | 1 |
-| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart2.png) | 5 |
-| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart3.png) | 10 |
-| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart4.png) | 15 |
-| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart5.png) | 20|
-| ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart6.png) | 25 |
-| ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart7.png) | 30 |
-| ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart8.png) | 35 |
-| ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart9.png) | 40 |
-| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart10.png) | 45 |
-| ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart11.png) | 50 |
-| ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart12.png) | 55 |
-| ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/images/hearts/heart13.png) | 60 |
+| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart1.png) | 1 |
+| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart2.png) | 5 |
+| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart3.png) | 10 |
+| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart4.png) | 15 |
+| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart5.png) | 20|
+| ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart6.png) | 25 |
+| ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart7.png) | 30 |
+| ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart8.png) | 35 |
+| ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart9.png) | 40 |
+| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart10.png) | 45 |
+| ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart11.png) | 50 |
+| ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart12.png) | 55 |
+| ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart13.png) | 60 |
 
 | Game |  |
 | --- | --- |

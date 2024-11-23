@@ -198,7 +198,7 @@ class WidgetTrivia extends Component{
                 if(this.state.health <= 0){
                     this.gameOver();
                 }else{
-                    buttonChoice.style.opacity = "0.5";
+                    buttonChoice.classList.add("disabled-option");
                 };
             });
         };
@@ -243,7 +243,7 @@ class WidgetTrivia extends Component{
             if(buttonChoice.classList.contains("button-incorrect")){
                 buttonChoice.classList.remove("button-incorrect");
             };
-            buttonChoice.style.opacity = "1";
+            buttonChoice.classList.remove("disabled-option");
         };
     };
     calculateHealth(){

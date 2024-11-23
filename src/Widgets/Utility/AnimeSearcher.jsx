@@ -639,7 +639,8 @@ class WidgetAnimeSearcher extends Component{
                                 </div>
                                 {/* Media Information */}
                                 <SimpleBar id="animesearcher-information"
-                                    className="font">
+                                    className="font"
+                                    style={{ maxHeight: "34em" }}>
                                     <div className="character">
                                         {/* Uploaded Image */}
                                         <div id="animesearcher-image-uploaded"

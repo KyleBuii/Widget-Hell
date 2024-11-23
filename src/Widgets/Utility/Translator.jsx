@@ -1103,7 +1103,7 @@ class WidgetTranslator extends Component{
                             {/* Translator Container */}
                             <section>
                                 {/* Select */}
-                                <div className="flex-center space-nicely space-bottom">
+                                <div className="flex-center wrap space-nicely space-bottom">
                                     {/* Select From */}
                                     <Select id="translator-translate-from"
                                         className="select-match select-length-medium"

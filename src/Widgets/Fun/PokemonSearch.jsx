@@ -286,10 +286,21 @@ class WidgetPokemonSearch extends Component{
             r.style.setProperty("--background-y", `${springBackground.y}%`);
         }, delay);
     };
+    showExtraInformation(){
+        const elementExtraInformation = document.getElementById("pokemonsearch-extra-information");
+        const buttonExtraInformation = document.getElementById("pokemonsearch-button-extra-information");
+        if(elementExtraInformation.checkVisibility({ visibilityProperty: true })){
+            buttonExtraInformation.innerText = "Expand Information";
+        }else{
+            buttonExtraInformation.innerText = "Collapse Information";
+        };
+        elementExtraInformation.classList.toggle("animation-table");
+    };
     componentDidMount(){
         let inputPokemonSearch = document.getElementById("pokemonsearch-input-search");
         inputPokemonSearch.addEventListener("keydown", this.handleKeyPress);
         this.fetchPokemon("furret");
+        this.showExtraInformation();
     };
     componentWillUnmount(){
         const inputPokemonSearch = document.getElementById("pokemonsearch-input-search");
@@ -385,9 +396,9 @@ class WidgetPokemonSearch extends Component{
                             </div>
                         </div>
                         {/* Pokemon Information */}
-                        <div className="flex-center column gap large-gap">
+                        <div className="flex-center column">
                             {/* Pokemon Card */}
-                            <div className="card">
+                            <div className="card space-nicely space-bottom length-longer">
                                 <div className="card-translater">
                                     <div className="card-rotator flex-center"
                                         onPointerMove={this.handleInteract}
@@ -446,7 +457,11 @@ class WidgetPokemonSearch extends Component{
                                 </div>
                             </div>
                             {/* Extra Information */}
-                            <table className="aesthetic-scale scale-table table font">
+                            <button id="pokemonsearch-button-extra-information"
+                                className="button-expand"
+                                onClick={() => this.showExtraInformation()}>Collapse Information</button>
+                            <table id="pokemonsearch-extra-information"
+                                className="aesthetic-scale scale-table table font">
                                 <thead>
                                     <tr>
                                         <th>Base</th>
@@ -478,8 +493,7 @@ class WidgetPokemonSearch extends Component{
                             </table>
                         </div>
                         {/* Settings Popout */}
-                        <Draggable
-                            cancel="button, .radio-match"
+                        <Draggable cancel="button, .radio-match"
                             defaultPosition={{x: 290, y: -750}}
                             bounds={{top: -845, left: -285, right: 322, bottom: 15}}>
                             <section id="pokemonsearch-popout-setting"

@@ -7,7 +7,7 @@ import { BiBriefcase } from "react-icons/bi";
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { GiAxeSword } from "react-icons/gi";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { IoBodyOutline } from "react-icons/io5";
+import { IoBodyOutline, IoClose } from "react-icons/io5";
 import ReactPaginate from 'react-paginate';
 import Select from "react-select";
 import Switch from 'react-switch';
@@ -140,7 +140,8 @@ const optionsLoot = [
         label: "Loot",
         options: [
             {value: "default", label: "Default"},
-            {value: "destiny2Engram", label: "Destiny 2: Engram"},
+            {value: "destiny2", label: "Destiny 2"},
+            {value: "rotmg", label: "RotMG"},
         ]
     }
 ];
@@ -359,10 +360,10 @@ class WidgetSetting extends Component{
                 const button = document.getElementById("show-hide-widgets-popout-button-" + what);
                 this.props.showHide(what, where);
                 if(this.props.widgetActiveVariables[what] === false){
-                    button.style.opacity = "1";
+                    button.classList.remove("disabled-option");
                     this.props.updateWidgetsActive(what, where);
                 }else{
-                    button.style.opacity = "0.5";
+                    button.classList.add("disabled-option");
                     switch(where){
                         case "utility":
                             const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
@@ -854,6 +855,16 @@ class WidgetSetting extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        {/* Hotbar */}
+                        <section className="hotbar">
+                            {/* Close */}
+                            {(this.props.valueClose)
+                                ? <button className="button-match inverse when-elements-are-not-straight"
+                                    onClick={() => this.props.showSetting()}>
+                                    <IoClose/>
+                                </button>
+                                : <></>}
+                        </section>
                         {/* Buttons */}
                         <section className="font large-medium no-color flex-center column gap">
                             <button id="settings-button-show-hide-widgets"
@@ -870,8 +881,7 @@ class WidgetSetting extends Component{
                             </section>
                         </section>
                         {/* Show/Hide Widgets Popout */}
-                        <Draggable
-                            cancel="button, #show-hide-widgets-popout-tabs"
+                        <Draggable cancel="button, #show-hide-widgets-popout-tabs"
                             position={{
                                 x: this.props.positionPopout.showhidewidgets.x,
                                 y: this.props.positionPopout.showhidewidgets.y}}
@@ -890,7 +900,7 @@ class WidgetSetting extends Component{
                                                 <Tab onClick={() => this.handleTabSwitch("fun")}>Fun</Tab>
                                             </div>
                                             {/* Other Stuff */}
-                                            <div className="flex-center">
+                                            <div className="flex-center wrap">
                                                 <button id="show-hide-widgets-popout-button-inventory"
                                                     className="button-match inverse disabled"
                                                     type="button"
@@ -926,7 +936,7 @@ class WidgetSetting extends Component{
                                         {/* Utility */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-utility"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                className="font large-medium no-color space-nicely space-all">
                                                 {(this.state.searched.length !== 0)
                                                     ? this.state.searched.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
                                                         return <span key={`widget-${widget.props.widgetname}`}>
@@ -941,7 +951,7 @@ class WidgetSetting extends Component{
                                         {/* Games */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-games"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                className="font large-medium no-color space-nicely space-all">
                                                 {(this.state.searched.length !== 0)
                                                     ? this.state.searched.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
                                                         return <span key={`widget-${widget.props.widgetname}`}>
@@ -956,7 +966,7 @@ class WidgetSetting extends Component{
                                         {/* Fun */}
                                         <TabPanel>
                                             <section id="show-hide-widgets-popout-button-fun"
-                                                className="font large-medium no-color grid col-3 spread-long space-nicely space-all">
+                                                className="font large-medium no-color space-nicely space-all">
                                                 {(this.state.searched.length !== 0)
                                                     ? this.state.searched.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
                                                         return <span key={`widget-${widget.props.widgetname}`}>

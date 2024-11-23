@@ -155,7 +155,8 @@ class WidgetDonutAnimation extends Component{
                             <pre id="donutanimation-donut"
                                 className="text-animation no-highlight"></pre>
                             {/* Modifications Container */}
-                            <div className="aesthetic-scale scale-span flex-center column section-group group-medium font">
+                            <div id="donutanimation-modifications"
+                                className="aesthetic-scale scale-span flex-center column section-group group-medium font">
                                 <span className="leave-me-alone font medium bold line bellow">Modifications</span>
                                 {/* Height */}
                                 <div className="element-ends">
