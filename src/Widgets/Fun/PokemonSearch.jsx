@@ -3,8 +3,6 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
-import { Fa0, FaExpand } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -309,10 +307,7 @@ class WidgetPokemonSearch extends Component{
     };
     render(){
         return(
-            <Draggable 
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("pokemonsearch")}
                 onStop={(event, data) => {
@@ -332,35 +327,12 @@ class WidgetPokemonSearch extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "resetPosition", "fun")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "fullscreen", "fun")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pokemonsearch", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("pokemonsearch", "fun")}
                         {/* Pokemon Search */}
                         <div className="flex-center column gap space-nicely space-bottom length-longer">
                             <label className="aesthetic-scale scale-self font medium bold"
                                 htmlFor="pokemonsearch-input-search">Search for Pokémon Name or ID:</label>
-                            <div className="flex-center row gap">
+                            <div className="flex-center row gap wrap">
                                 <div className="input-with-button-inside">
                                     {/* Search Field */}
                                     <input id="pokemonsearch-input-search"
@@ -464,8 +436,8 @@ class WidgetPokemonSearch extends Component{
                                 className="aesthetic-scale scale-table table font">
                                 <thead>
                                     <tr>
-                                        <th>Base</th>
-                                        <th>Stats</th>
+                                        <th scope="col">Base</th>
+                                        <th scope="col">Stats</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -494,8 +466,8 @@ class WidgetPokemonSearch extends Component{
                         </div>
                         {/* Settings Popout */}
                         <Draggable cancel="button, .radio-match"
-                            defaultPosition={{x: 290, y: -750}}
-                            bounds={{top: -845, left: -285, right: 322, bottom: 15}}>
+                            defaultPosition={{ x: 15, y: 85 }}
+                            bounds={this.props.defaultProps.calculateBounds("pokemonsearch-widget", "pokemonsearch-popout-setting")}>
                             <section id="pokemonsearch-popout-setting"
                                 className="popout">
                                 <section id="pokemonsearch-popout-animation-setting"

@@ -2,11 +2,10 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
+let audioSpin = new Audio("/resources/audio/spin.wav");
 let size = 290;
 let centerX = 300;
 let centerY = 300;
@@ -79,6 +78,7 @@ class WidgetPickerWheel extends Component{
     };
     spin(){
         if(!intervalSpin && this.state.segments.length){
+            this.props.defaultProps.playAudio(audioSpin);
             this.setState({
                 finished: false,
                 maxSpeed: Math.PI / this.state.segments.length,
@@ -247,10 +247,7 @@ class WidgetPickerWheel extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("pickerwheel")}
                 onStop={(event, data) => {
@@ -270,30 +267,7 @@ class WidgetPickerWheel extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "resetPosition", "fun")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "fullscreen", "fun")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("pickerwheel", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("pickerwheel", "fun")}
                         {/* Input */}
                         <section className="flex-center wrap row gap space-nicely space-bottom length-longer">
                             <input id="pickerwheel-input"

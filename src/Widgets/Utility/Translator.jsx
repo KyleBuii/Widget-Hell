@@ -4,24 +4,19 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaArrowRightLong, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaArrowRightLong, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import Select from "react-select";
 
 
 /// Variables
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
-let timeoutCopy;
-let timeoutDialogue;
-let timeoutDialogueOut;
-let timeoutIdle;
-let timeoutSleep;
+let timeoutCopy, timeoutDialogue, timeoutDialogueOut, timeoutIdle, timeoutSleep;
 let intervalSleepTalk;
-let cunnyCodeEncode = false; /// Checks if encoding/decoding is done once OR an error was dismissed
-let cunnyCodeError = false;  /// Checks if encoding/decoding error is done once
+let cunnyCodeEncode = false;  /// Checks if encoding/decoding is done once OR an error was dismissed
+let cunnyCodeError = false;   /// Checks if encoding/decoding error is done once
 let cunnyCodeSpecial = false; /// Checks if a special message is done once
-let cunnyCodeArona = false; /// Checks if an arona compliment/hate message is done once
-let cunnyCodeAronaAnger = 0; /// Arona gets angry after 5 insults
+let cunnyCodeArona = false;   /// Checks if an arona compliment/hate message is done once
+let cunnyCodeAronaAnger = 0;  /// Arona gets angry after 5 insults
 let cunnyCodeAudioAronaAh = new Audio("/resources/translator/cunny-code/arona/audio/ah.wav");
 let cunnyCodeAudioAronaFue = new Audio("/resources/translator/cunny-code/arona/audio/fue.wav");
 let cunnyCodeAudioAronaHeeHeeHee = new Audio("/resources/translator/cunny-code/arona/audio/heeheehee.wav");
@@ -42,6 +37,7 @@ const optionsTranslateFrom = [
             {value: "moorseCode", label: "Moorse Code"},
             {value: "phoneticAlphabet", label: "Phonetic Alphabet"},
             {value: "cunnyCode", label: "Cunny Code"},
+            {value: "dayo", label: "Dayo"},
         ]
     },
     {
@@ -74,6 +70,7 @@ const optionsTranslateTo = [
             {value: "mirrorWriting", label: "Mirror Writing"},
             {value: "enchantingTable", label: "Enchanting Table"},
             {value: "cunnyCode", label: "Cunny Code"},
+            {value: "dayo", label: "Dayo"},
         ]
     },
     {
@@ -245,30 +242,19 @@ class WidgetTranslator extends Component{
         let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
         elementImage.style.left = `${window.mouse.x - this.props.position.x - 210}px`;
         elementImage.style.top = `${window.mouse.y - this.props.position.y - 360}px`;
-        elementImageAdditions.style.left = `${window.mouse.x - this.props.position.x - 200}px`;
-        elementImageAdditions.style.top = `${window.mouse.y - this.props.position.y - 360}px`;
+        elementImageAdditions.style.setProperty("left", `${window.mouse.x - this.props.position.x - 200}px`, "important");
+        elementImageAdditions.style.setProperty("top", `${window.mouse.y - this.props.position.y - 360}px`, "important");
     };
     /// Convert the "from" language to english
     convertFromText(swap){
         let stringConvertFrom = "";
         switch(this.state.from.value){
             /// Other languages
-            case "pekofy":
-                stringConvertFrom = this.state.input
-                    .replace(/\s(peko)/ig, "");
-                break;
             case "braille":
                 stringConvertFrom = this.state.input
                     .toString()
                     .split("")
                     .map(letter => this.props.brailleFromDictionary[letter])
-                    .join("");
-                break;
-            case "moorseCode":
-            case "phoneticAlphabet":
-                stringConvertFrom = this.state.input
-                    .split(" ")
-                    .map((char) => this.props[`${this.state.from.value}FromDictionary`][char] || "")
                     .join("");
                 break;
             case "cunnyCode":
@@ -328,6 +314,21 @@ class WidgetTranslator extends Component{
                     };
                 };
                 break;
+            case "dayo":
+                stringConvertFrom = this.state.input
+                    .replace(/\s(dayo)/ig, "");
+                break;
+            case "pekofy":
+                stringConvertFrom = this.state.input
+                    .replace(/\s(peko)/ig, "");
+                break;
+            case "moorseCode":
+            case "phoneticAlphabet":
+                stringConvertFrom = this.state.input
+                    .split(" ")
+                    .map((char) => this.props[`${this.state.from.value}FromDictionary`][char] || "")
+                    .join("");
+                break;
             /// Encryption
             case "base64":
                 if(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(this.state.input)){
@@ -361,106 +362,12 @@ class WidgetTranslator extends Component{
         let stringConvertTo = "";
         switch(this.state.to.value){
             /// Other languages
-            case "pigLatin":
-                stringConvertTo = this.state.convert
-                    .toString()
-                    .toLowerCase()
-                    .split(" ")
-                    .map(curr => curr
-                        .replace(/^[aioue]\w*/i, "$&way")
-                        .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
-                    .join(" ")
-                break;
-            case "pekofy":
-                stringConvertTo = this.state.convert
-                    .replace(/[^.!?]$/i, "$& peko")
-                    .replace(/[.]/ig, " peko.")
-                    .replace(/[!]/ig, " peko!")
-                    .replace(/[?]/ig, " peko?")
-                break;
-            case "uwu":
-                let wordsUwu = Object.keys(this.props.uwuDictionary)
-                    .join("|");
-                let regexUwuDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsUwu})(?![\\w${this.props.punctuation}])`, "i");
-                stringConvertTo = this.props.mergePunctuation(
-                    this.props.grep(this.state.convert
-                        .toString()
-                        .toLowerCase()
-                        .split(this.props.matchAll))
-                        .map((word) => {
-                            return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
-                                : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
-                                : (regexUwuDictionary.test(word)) ? word.replace(regexUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
-                                : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, "ww")
-                                : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, "ww")
-                                : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
-                                : (/[h]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([h])(\w*)/, "$1b$3")
-                                : (/[f]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([f])(\w*)/, "$1b$3")
-                                : (/^\d/.test(word)) ? word
-                                : word.replace(/(?=\w{3,})^([^\Ww])(\w*)/, "$1w$2");
-                        }
-                    )
-                );
-                /// Insert emoticon at random position
-                let randPosition;
-                const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
-                if(stringConvertTo.length > 4){
-                    randPosition = Math.floor(Math.random() * (stringConvertTo.length - 2) + 2);
-                    stringConvertTo = [...stringConvertTo.slice(0, randPosition)
-                        , this.props.uwuEmoticons[randEmoticon]
-                        , ...stringConvertTo.slice(randPosition)]
-                        .join(" ");
-                }else if(stringConvertTo.length <= 4){
-                    stringConvertTo = stringConvertTo.join(" ");
-                };          
-                break;
             case "braille":
                 stringConvertTo = this.state.convert
                     .split("")
                     .map((letter) => this.props.brailleDictionary[letter.toLowerCase()] || "")
                     .join("")
                     .replace(/\s+/g, " ");
-                break;
-            case "emojify":
-                let wordsEmojify = Object.keys(this.props.emojifyDictionary)
-                    .join("|");
-                let regexEmojifyDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsEmojify})(?![\\w${this.props.punctuation}])`, "i");
-                stringConvertTo = this.props.mergePunctuation(
-                    this.props.grep(this.state.convert
-                        .split(this.props.matchAll)
-                        .map((word) => {
-                            return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][
-                                Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)
-                            ]) : word;
-                        })
-                    )
-                ).join(" ");
-                break;
-            case "moorseCode":
-            case "phoneticAlphabet":
-                stringConvertTo = this.state.convert
-                    .split("")
-                    .map((char) => this.props[`${this.state.to.value}Dictionary`][char.toLowerCase()] || "")
-                    .join(" ")
-                    .replace(/\s+/g, " ");
-                break;
-            case "spaced":
-                stringConvertTo = this.state.convert
-                    .split("")
-                    .join(" ");
-                break;
-            case "mirrorWriting":
-                stringConvertTo = this.state.convert
-                    .split("")
-                    .reverse()
-                    .map((char) => this.props.mirrorWrittingDictionary[char] || char)
-                    .join("");
-                break;
-            case "enchantingTable":
-                stringConvertTo = this.state.convert
-                    .split("")
-                    .map((char) => this.props.enchantingTableDictionary[char.toLowerCase()] || char)
-                    .join("");
                 break;
             case "cunnyCode":
                 let encodeError = false; /// If an error exist
@@ -682,6 +589,107 @@ class WidgetTranslator extends Component{
                     };
                 };
                 break;
+            case "dayo":
+                stringConvertTo = this.state.convert
+                    .replace(/[^.!?]$/i, "$& dayo")
+                    .replace(/[.]/ig, " dayo.")
+                    .replace(/[!]/ig, " dayo!")
+                    .replace(/[?]/ig, " dayo?")
+                break;
+            case "emojify":
+                let wordsEmojify = Object.keys(this.props.emojifyDictionary)
+                    .join("|");
+                let regexEmojifyDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsEmojify})(?![\\w${this.props.punctuation}])`, "i");
+                stringConvertTo = this.props.mergePunctuation(
+                    this.props.grep(this.state.convert
+                        .split(this.props.matchAll)
+                        .map((word) => {
+                            return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + " " + this.props.emojifyDictionary[word.toLowerCase()][
+                                Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)
+                            ]) : word;
+                        })
+                    )
+                ).join(" ");
+                break;
+            case "enchantingTable":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .map((char) => this.props.enchantingTableDictionary[char.toLowerCase()] || char)
+                    .join("");
+                break;
+            case "mirrorWriting":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .reverse()
+                    .map((char) => this.props.mirrorWrittingDictionary[char] || char)
+                    .join("");
+                break;    
+            case "pekofy":
+                stringConvertTo = this.state.convert
+                    .replace(/[^.!?]$/i, "$& peko")
+                    .replace(/[.]/ig, " peko.")
+                    .replace(/[!]/ig, " peko!")
+                    .replace(/[?]/ig, " peko?")
+                break;    
+            case "pigLatin":
+                stringConvertTo = this.state.convert
+                    .toString()
+                    .toLowerCase()
+                    .split(" ")
+                    .map(curr => curr
+                        .replace(/^[aioue]\w*/i, "$&way")
+                        .replace(/(^[^aioue]+)(\w*)/i, "$2$1ay"))
+                    .join(" ")
+                break;
+            case "spaced":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .join(" ");
+                break;
+            case "uwu":
+                let wordsUwu = Object.keys(this.props.uwuDictionary)
+                    .join("|");
+                let regexUwuDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsUwu})(?![\\w${this.props.punctuation}])`, "i");
+                stringConvertTo = this.props.mergePunctuation(
+                    this.props.grep(this.state.convert
+                        .toString()
+                        .toLowerCase()
+                        .split(this.props.matchAll))
+                        .map((word) => {
+                            return (/[?]+/.test(word)) ? word.replace(/[?]+/, "???")
+                                : (/[!]+/.test(word)) ? word.replace(/[!]+/, "!!11")
+                                : (regexUwuDictionary.test(word)) ? word.replace(regexUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
+                                : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, "ww")
+                                : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, "ww")
+                                : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, "$1w$3")
+                                : (/[h]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([h])(\w*)/, "$1b$3")
+                                : (/[f]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([f])(\w*)/, "$1b$3")
+                                : (/^\d/.test(word)) ? word
+                                : word.replace(/(?=\w{3,})^([^\Ww])(\w*)/, "$1w$2");
+                        }
+                    )
+                );
+                /// Insert emoticon at random position
+                let randPosition;
+                const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
+                if(stringConvertTo.length > 4){
+                    randPosition = Math.floor(Math.random() * (stringConvertTo.length - 2) + 2);
+                    stringConvertTo = [...stringConvertTo.slice(0, randPosition)
+                        , this.props.uwuEmoticons[randEmoticon]
+                        , ...stringConvertTo.slice(randPosition)]
+                        .join(" ");
+                }else if(stringConvertTo.length <= 4){
+                    stringConvertTo = stringConvertTo.join(" ");
+                };          
+                break;
+            case "moorseCode":
+            case "phoneticAlphabet":
+                stringConvertTo = this.state.convert
+                    .split("")
+                    .map((char) => this.props[`${this.state.to.value}Dictionary`][char.toLowerCase()] || "")
+                    .join(" ")
+                    .replace(/\s+/g, " ");
+                break;
             /// Encryption
             case "base64":
                 stringConvertTo = btoa(unescape(encodeURIComponent(this.state.convert)));
@@ -701,6 +709,40 @@ class WidgetTranslator extends Component{
                 stringConvertTo = stringConvertedHexadecimal;
                 break;
             /// Modify
+            case "caseTransform":
+                if(this.state.caseTransformUpper){
+                    /// Case Transform Upper
+                    stringConvertTo = this.state.convert
+                        .toUpperCase();
+                }else if(this.state.caseTransformLower){
+                    /// Case Transform Lower
+                    stringConvertTo = this.state.convert
+                        .toLowerCase();
+                }else if(this.state.caseTransformCapitalize){
+                    /// Case Transform Capitalize
+                    stringConvertTo = this.state.convert
+                        .replace(/\b\w/g, (char) => {
+                            return char.toUpperCase()
+                        });
+                }else if(this.state.caseTransformAlternate){
+                    /// Case Transform Alternate
+                    stringConvertTo = this.state.convert
+                        .toLowerCase()
+                        .split("")
+                        .map((val, i) => {
+                            return (i % 2 === 0) ? val.toUpperCase() : val;
+                        })
+                        .join("");
+                }else if(this.state.caseTransformInverse){
+                    /// Case Transform Inverse
+                    stringConvertTo = this.state.convert
+                        .replace(/[a-z]/gi, (char) => {
+                            return (char === char.toUpperCase()) ? char.toLowerCase() : char.toUpperCase();
+                        });
+                }else{
+                    stringConvertTo = this.state.convert;
+                };
+                break;
             case "replace":
                 stringConvertTo = this.state.convert
                     .replace(this.state.replaceFrom, this.state.replaceTo)
@@ -742,40 +784,6 @@ class WidgetTranslator extends Component{
                                 .join(" ")
                         })
                     ).join(" ");
-                }else{
-                    stringConvertTo = this.state.convert;
-                };
-                break;
-            case "caseTransform":
-                if(this.state.caseTransformUpper){
-                    /// Case Transform Upper
-                    stringConvertTo = this.state.convert
-                        .toUpperCase();
-                }else if(this.state.caseTransformLower){
-                    /// Case Transform Lower
-                    stringConvertTo = this.state.convert
-                        .toLowerCase();
-                }else if(this.state.caseTransformCapitalize){
-                    /// Case Transform Capitalize
-                    stringConvertTo = this.state.convert
-                        .replace(/\b\w/g, (char) => {
-                            return char.toUpperCase()
-                        });
-                }else if(this.state.caseTransformAlternate){
-                    /// Case Transform Alternate
-                    stringConvertTo = this.state.convert
-                        .toLowerCase()
-                        .split("")
-                        .map((val, i) => {
-                            return (i % 2 === 0) ? val.toUpperCase() : val;
-                        })
-                        .join("");
-                }else if(this.state.caseTransformInverse){
-                    /// Case Transform Inverse
-                    stringConvertTo = this.state.convert
-                        .replace(/[a-z]/gi, (char) => {
-                            return (char === char.toUpperCase()) ? char.toLowerCase() : char.toUpperCase();
-                        });
                 }else{
                     stringConvertTo = this.state.convert;
                 };
@@ -825,7 +833,7 @@ class WidgetTranslator extends Component{
             default:
                 toAuthor = "Me";
                 toAuthorLink = "";
-                elementContainer.style.backgroundImage = "";
+                elementContainer.style.backgroundImage = `url(./resources/translator/bg-${this.state.to.value}.png)`;
                 elementImage.src = "";
                 elementImage.style.display = "none";
                 break;
@@ -1006,10 +1014,7 @@ class WidgetTranslator extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("translator")}
                 onStop={(event, data) => {
@@ -1029,77 +1034,59 @@ class WidgetTranslator extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("translator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
-                        <section className="flex-center row">
-                            {/* Image */}
-                            <img id="translator-image"
-                                className="no-highlight"
-                                alt="translator image"
-                                draggable="false"/>
-                            {/* Image Additions: Cunny Code */}
-                            {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")
-                                ? <div id="translator-image-additions-cunny-code"
-                                    className="font small"
-                                    draggable="false">
-                                    <div id="translator-cunny-code-arona-body">
-                                        <div id="translator-cunny-code-arona-halo"
-                                            className="arona-action"
-                                            onMouseDown={() => this.handleCunnyCodeAronaDrag("pickup")}></div>
-                                        <div id="translator-cunny-code-arona-head"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("head")}></div>
-                                        <div id="translator-cunny-code-arona-face"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("face")}></div>
-                                        <div id="translator-cunny-code-arona-chest"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("chest")}></div>
-                                        <div id="translator-cunny-code-arona-skirt"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("skirt")}></div>
-                                        <div id="translator-cunny-code-arona-leg1"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
-                                        <div id="translator-cunny-code-arona-leg2"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
-                                        <div id="translator-cunny-code-arona-leg3"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
-                                        <div id="translator-cunny-code-arona-leg4"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
-                                        <div id="translator-cunny-code-arona-shoes"
-                                            className="arona-action"
-                                            onClick={() => this.handleCunnyCodeAronaTouch("shoe")}></div>
+                        {this.props.defaultProps.renderHotbar("translator", "utility")}
+                        <section className="flex-center row wrap"
+                            style={{
+                                flexWrap: "wrap-reverse"
+                            }}>
+                            <section>
+                                {/* Image */}
+                                <img id="translator-image"
+                                    className="no-highlight"
+                                    alt="translator image"
+                                    draggable="false"/>
+                                {/* Image Additions: Cunny Code */}
+                                {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")
+                                    ? <div id="translator-image-additions-cunny-code"
+                                        className="font small"
+                                        draggable="false">
+                                        <div id="translator-cunny-code-arona-body">
+                                            <div id="translator-cunny-code-arona-halo"
+                                                className="arona-action"
+                                                onMouseDown={() => this.handleCunnyCodeAronaDrag("pickup")}></div>
+                                            <div id="translator-cunny-code-arona-head"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("head")}></div>
+                                            <div id="translator-cunny-code-arona-face"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("face")}></div>
+                                            <div id="translator-cunny-code-arona-chest"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("chest")}></div>
+                                            <div id="translator-cunny-code-arona-skirt"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("skirt")}></div>
+                                            <div id="translator-cunny-code-arona-leg1"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
+                                            <div id="translator-cunny-code-arona-leg2"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
+                                            <div id="translator-cunny-code-arona-leg3"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
+                                            <div id="translator-cunny-code-arona-leg4"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("leg")}></div>
+                                            <div id="translator-cunny-code-arona-shoes"
+                                                className="arona-action"
+                                                onClick={() => this.handleCunnyCodeAronaTouch("shoe")}></div>
+                                        </div>
+                                        <div id="translator-cunny-code-arona-dialogue"
+                                            className="dialogue no-highlight"></div>
                                     </div>
-                                    <div id="translator-cunny-code-arona-dialogue"
-                                        className="dialogue no-highlight"></div>
-                                </div>
-                                : <></>}
+                                    : <></>}
+                            </section>
                             {/* Translator Container */}
                             <section>
                                 {/* Select */}
@@ -1193,10 +1180,9 @@ class WidgetTranslator extends Component{
                             </section>
                         </section>
                         {/* Replace Popout */}
-                        <Draggable
-                            cancel="input, button"
-                            defaultPosition={{x: 20, y: 0}}
-                            bounds={{top: -135, left: -375, right: 425, bottom: 270}}>
+                        <Draggable cancel="input, button"
+                            defaultPosition={{ x: 50, y: 74 }}
+                            bounds={this.props.defaultProps.calculateBounds("translator-widget", "replace-popout")}>
                             <section id="replace-popout"
                                 className="popout">
                                 <section id="replace-popout-animation"
@@ -1224,10 +1210,9 @@ class WidgetTranslator extends Component{
                             </section>
                         </Draggable>
                         {/* Reverse Popout */}
-                        <Draggable
-                            cancel="input, button"
-                            defaultPosition={{x: 60, y: 0}}
-                            bounds={{top: -120, left: -300, right: 425, bottom: 270}}>
+                        <Draggable cancel="input, button"
+                            defaultPosition={{x: 90, y: 74}}
+                            bounds={this.props.defaultProps.calculateBounds("translator-widget", "reverse-popout")}>
                             <section id="reverse-popout"
                                 className="popout">
                                 <section id="reverse-popout-animation"
@@ -1248,10 +1233,9 @@ class WidgetTranslator extends Component{
                             </section>
                         </Draggable>
                         {/* Case Transform Popout */}
-                        <Draggable
-                            cancel="input, button"
-                            defaultPosition={{x: 60, y: 0}}
-                            bounds={{top: -145, left: -300, right: 425, bottom: 270}}>
+                        <Draggable cancel="input, button"
+                            defaultPosition={{x: 90, y: 74}}
+                            bounds={this.props.defaultProps.calculateBounds("translator-widget", "caseTransform-popout")}>
                             <section id="caseTransform-popout"
                                 className="popout">
                                 <section id="caseTransform-popout-animation"

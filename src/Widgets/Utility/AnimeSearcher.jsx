@@ -1,12 +1,10 @@
-import { React, Component, memo } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
+import DOMPurify from 'dompurify';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-import DOMPurify from 'dompurify';
 
 
 class WidgetAnimeSearcher extends Component{
@@ -571,10 +569,7 @@ class WidgetAnimeSearcher extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("animesearcher")}
                 onStop={(event, data) => {
@@ -594,30 +589,7 @@ class WidgetAnimeSearcher extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("animesearcher", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("animesearcher", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("animesearcher", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("animesearcher", "utility")}
                         <section className="flex-center row gap">
                             <div className="flex-center column gap">
                                 {/* Search bar */}

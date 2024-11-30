@@ -3,8 +3,6 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
 import SimpleBar from 'simplebar-react';
 
 
@@ -251,10 +249,7 @@ class WidgetEquipment extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("equipment")}
                 onStop={(event, data) => {
@@ -274,30 +269,7 @@ class WidgetEquipment extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("equipment", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("equipment", "utility")}
                         {/* Equipment Container */}
                         <SimpleBar style={{ maxHeight: "36em" }}>
                         <section className="flex-center column gap medium-gap">
@@ -499,8 +471,8 @@ class WidgetEquipment extends Component{
                                     style={{ width: "unset" }}>
                                     <thead>
                                         <tr>
-                                            <th>Stat</th>
-                                            <th>Value</th>
+                                            <th scope="col">Stat</th>
+                                            <th scope="col">Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -559,7 +531,7 @@ class WidgetEquipment extends Component{
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Abilities</th>
+                                            <th scope="col">Abilities</th>
                                         </tr>
                                     </thead>
                                     <tbody id="equipment-abilities"></tbody>
@@ -585,11 +557,11 @@ class WidgetEquipment extends Component{
                                     <table className="flex-center column font small">
                                         <tbody>
                                             <tr>
-                                                <td>Rarity:</td>
+                                                <td scope="row">Rarity:</td>
                                                 <td>{this.state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
                                             </tr>
                                             <tr>
-                                                <td>Slot:</td>
+                                                <td scope="row">Slot:</td>
                                                 <td>{this.state.item.slot
                                                     .replace(/^./, (char) => char.toUpperCase())
                                                     .replace(/[0-9]/, "")}</td>
@@ -598,7 +570,7 @@ class WidgetEquipment extends Component{
                                                 ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name].stats)
                                                     .map((value, index) => {
                                                         return <tr key={`row-stat-${index}`}>
-                                                            <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
+                                                            <td scope="row">{value.replace(/^./, (char) => char.toUpperCase())}:</td>
                                                             <td>
                                                                 {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
                                                                     ? ""

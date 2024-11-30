@@ -2,10 +2,8 @@ import { Component, createRef, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { PhaserGame } from './Game/PhaserGame';
 import { EventBus } from './Game/EventBus';
+import { PhaserGame } from './Game/PhaserGame';
 
 
 class WidgetGrindshot extends Component{
@@ -27,10 +25,7 @@ class WidgetGrindshot extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("grindshot")}
                 onStop={(event, data) => {
@@ -50,30 +45,7 @@ class WidgetGrindshot extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("grindshot", "resetPosition", "games")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("grindshot", "fullscreen", "games")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("grindshot", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("grindshot", "games")}
                         <PhaserGame ref={this.phaserRef}
                             currentActiveScene={this.currentScene}/>
                         {/* Author */}

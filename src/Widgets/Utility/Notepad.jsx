@@ -2,8 +2,7 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold, FaExpand, FaHighlighter, FaIndent, FaLink, FaLinkSlash, FaListOl, FaListUl, FaOutdent, FaRotateLeft, FaRotateRight, FaSubscript, FaSuperscript } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold, FaHighlighter, FaIndent, FaLink, FaLinkSlash, FaListOl, FaListUl, FaOutdent, FaRotateLeft, FaRotateRight, FaSubscript, FaSuperscript } from 'react-icons/fa6';
 import { MdFormatColorText } from 'react-icons/md';
 
 
@@ -80,10 +79,7 @@ class WidgetNotepad extends Component{
     };
     render(){
         return(
-            <Draggable 
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("notepad")}
                 onStop={(event, data) => {
@@ -103,30 +99,7 @@ class WidgetNotepad extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("notepad", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("notepad", "utility")}
                         {/* Utility Bar */}
                         <section className="flex-center row gap small-gap space-nicely space-bottom">
                             {/* Buttons */}

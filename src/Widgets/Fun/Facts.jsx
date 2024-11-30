@@ -1,9 +1,7 @@
-import { React, Component, memo } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaExpand, Fa0 } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import { IconContext } from 'react-icons';
+import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
 
 
 class WidgetFacts extends Component{
@@ -71,10 +69,7 @@ class WidgetFacts extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("facts")}
                 onStop={(event, data) => {
@@ -94,30 +89,7 @@ class WidgetFacts extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("facts", "resetPosition", "fun")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("facts", "fullscreen", "fun")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("facts", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("facts", "fun")}
                         {/* Facts */}
                         <section className="aesthetic-scale scale-span flex-center column gap only-justify-content">
                             {/* Cat */}

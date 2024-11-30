@@ -2,8 +2,6 @@ import { Component, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegArrowAltCircleLeft, FaRegArrowAltCircleRight } from 'react-icons/fa';
-import { Fa0, FaExpand } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
 import { MdOutlineInventory2 } from "react-icons/md";
 import { TbMoneybag } from "react-icons/tb";
 // import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
@@ -202,10 +200,7 @@ class WidgetInventory extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("inventory")}
                 onStop={(event, data) => {
@@ -225,30 +220,7 @@ class WidgetInventory extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("inventory", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("inventory", "utility")}
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>
@@ -292,9 +264,7 @@ class WidgetInventory extends Component{
                             </section>
                         </section>
                         {/* Inventory Bar */}
-                        <section style={{
-                            marginTop: "0.4em"
-                        }}>
+                        <section style={{ marginTop: "0.4em" }}>
                             <div className="aesthetic-scale scale-div element-ends font bold">
                                 {/* Item Count */}
                                 <div className="flex-center row gap">
@@ -341,18 +311,15 @@ class WidgetInventory extends Component{
                             <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name]?.image}
                                     alt="viewed inventory item"/>
-                                <SimpleBar style={{
-                                    maxHeight: 80,
-                                    width: 150
-                                }}>
+                                <SimpleBar style={{ maxHeight: 80, width: 150 }}>
                                     <table className="flex-center column font small">
                                         <tbody>
                                             <tr>
-                                                <td>Rarity:</td>
+                                                <td scope="row">Rarity:</td>
                                                 <td>{this.state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
                                             </tr>
                                             <tr>
-                                                <td>Slot:</td>
+                                                <td scope="row">Slot:</td>
                                                 <td>{this.props.items[this.state.item.rarity][this.state.item.name]?.slot
                                                     .replace(/^./, (char) => char.toUpperCase())
                                                     .replace(/[0-9]/, "")}</td>
@@ -361,7 +328,7 @@ class WidgetInventory extends Component{
                                                 ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name]?.stats)
                                                     .map((value, index) => {
                                                         return <tr key={`row-stat-${index}`}>
-                                                            <td>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
+                                                            <td scope="row">{value.replace(/^./, (char) => char.toUpperCase())}:</td>
                                                             <td>
                                                                 {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
                                                                     ? ""

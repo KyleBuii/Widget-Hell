@@ -43,6 +43,10 @@ import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.jsx';
 import WidgetTimeConversion from './Widgets/Utility/TimeConversion.jsx';
 import WidgetTranslator from './Widgets/Utility/Translator.jsx';
 import WidgetWeather from './Widgets/Utility/Weather.jsx';
+import { Fa0 } from 'react-icons/fa6';
+import { FaExpand } from 'react-icons/fa';
+import { IoClose } from 'react-icons/io5';
+import { IoIosArrowUp } from 'react-icons/io';
 
 
 //////////////////// Temp Variables ////////////////////
@@ -376,6 +380,25 @@ function rgbToHex(rgb){
         return (hex.length === 1) ? '0' + hex : hex;
     }).join('');
 };
+
+function calculateBounds(parent, popout){
+    let bounds = {};
+    if(document.getElementById(parent) !== null){
+        let sizeParent = document.getElementById(parent).getBoundingClientRect();
+        let sizePopout = document.getElementById(popout).getBoundingClientRect();
+        bounds = {
+            top: -sizePopout.height,
+            right: (sizePopout.width < sizeParent.width)
+                ? sizeParent.width
+                : sizePopout.width - Math.abs(sizeParent.width - sizePopout.width),
+            bottom: (sizePopout.height < sizeParent.height)
+                ? sizeParent.height
+                : sizePopout.height - Math.abs(sizeParent.height - sizePopout.height),
+            left: -sizePopout.width
+        };
+    };
+    return bounds;
+};
 //#endregion
 
 
@@ -608,6 +631,7 @@ const sentences = [
     , `"Too many soldiers honestly. Makes everything feel a little too hostile." 'I noticed.' "Oh, sorry. I needed a job." 'Quit!' "Too scared." 'When the bass drops. Kill yourself.' "Beauty is found in the briefest of moments, not in the grasp of eternity."`
     , "Sorry. I only eat in front of cameras. I know what I am worth."
     , `Gardevoir is literally one of the most fuckable pokemon there are, you're just mad because you're in denial. Let's start with fact now, Gardevoir is 5'3", this is not only the perfect height, but it means they can also have enough height to be able to do anything you want. While being 5'3", Gardevoir is also only 103LBs, so, theyre lite enough to pick up and have an all around good time. So, these are facts, not only this, but Gardevoir, LITERALLY, does not feel the pull of gravity, while also distorting dimensions. So, not only does this mean that Gardevoir can do anything they want ignoring gravity, but they are literally capable of making a pocket dimension in which yall can fuck in. These are all facts. Continuing with these facts, Gardevoir is telepathic and feels a strong emotion connection to their trainer, so, they will know before you that you're horny, she literally has it locked down and in the know before you're even aware of it, this only means that they are are able to serve their trainer in every way possible. So, these are just the facts on Gardevoir, but let's go even deeper so I can prove to you how Gardevoir is literally the most fuckable pokemon there is: Gardevoir can learn double team, so, now you get to fuck two of them. Gardevoir can learn charm, so, you thought you were horny before, but now it's compounded on itself. Finally, Gardevoir can learn mean look, combining this with double team, means not only do you get a tsundere on your dick, but also a submissive one. It's the best of both worlds. Gardevoir is literally the most fuckable pokemon there is and all of these are facts that yall are too afraid to realize.`
+    , `You are once again in the Soul Stream. Before you, Nao is giggling to herself. Greetings, Milletian! Heehee. I heard a great joke from one of your compatriots the other day. Would you like to hear it? Thrilled to see Nao so happy, you nod. Wonderful! Follow me! With a flash, you are transported to Tir Chonaill. Nao points you towards a new tavern, the paint on the sign still fresh. The sign is a subtle joke. The shop is called "Sneed's Feed & Seed", where feed and seed both end in the sound "-eed", thus rhyming with the names of the owner, Sneed. The sign says that the shop was "Formerly Chuck's", implying that the two words beginning with "F" and "S" would have ended with "-uck", rhyming wth "Chuck". So, when Chuck owned the shop, it would have been called "Chuck's Feeduck and Seeduck".`
 ];
 const sentencesHorror = [
     "Hello",
@@ -7128,6 +7152,7 @@ class Widgets extends Component{
                 authorNames: false,
                 fullscreen: false,
                 resetPosition: false,
+                showOnTop: false,
                 shadow: false,
                 voice: {value: "0", label: "David"},
                 pitch: 0,
@@ -7144,6 +7169,7 @@ class Widgets extends Component{
                 cursorTrailDuration: 0.7,
                 horror: false,
                 particle: {value: "default", label: "Default"},
+                decoration: {value: "default", label: "Default"},
                 particleMute: false
             },
             prevPosition: {
@@ -7762,6 +7788,7 @@ class Widgets extends Component{
         this.updateGameValue = this.updateGameValue.bind(this);
         this.updateGlobalValue = this.updateGlobalValue.bind(this);
         this.talk = this.talk.bind(this);
+        this.renderHotbar = this.renderHotbar.bind(this);
     };
     randomColor(forcedColorR, forcedColorG, forcedColorB){
         const r = document.documentElement;
@@ -7818,11 +7845,9 @@ class Widgets extends Component{
                 let e = document.getElementById(`${what}-widget-animation`);
                 let elementSelects = e.querySelectorAll(".select-match");
                 widgetsTextActive = [...document.querySelectorAll(".text-animation")];
-                /// Show react-selects
                 for(let i of elementSelects){
                     i.style.display = "block";
                 };
-                /// Add animation if it exists
                 if(this.state.values.animation.value !== "default"){
                     e.style.animation = "none";
                     window.requestAnimationFrame(() => {
@@ -7846,11 +7871,12 @@ class Widgets extends Component{
                         };
                     });    
                 };
-                /// Add custom border if it exists
                 if(this.state.values.customBorder.value !== "default"){
                     this.updateCustomBorder(what);
                 };
-                /// Add shadow if it exist
+                if(this.state.values.decoration.value !== "default"){
+                    this.updateDecoration(what);
+                };
                 if(this.state.values.shadow === true){
                     this.updateDesign("shadow", true, what);
                 };
@@ -8072,6 +8098,15 @@ class Widgets extends Component{
                     }
                 }));
                 break;
+            case "showOnTop":
+                let checkWidget = document.getElementsByClassName("show-on-top");
+                console.log(checkWidget)
+                if(checkWidget.length !== 0){
+                    checkWidget[0].classList.remove("show-on-top");
+                };
+                let widget = document.getElementById(element + "-widget");
+                widget.classList.add("show-on-top");
+                break;
             default:
                 break;
         };
@@ -8138,32 +8173,13 @@ class Widgets extends Component{
                 break;
         };
     };
-    updateCustomBorder(what, value){
-        let widget, popout, widgetAll;
-        if(what !== undefined && what !== ""){
-            widget = document.getElementById(what + "-widget-animation");
-            popout = widget.querySelectorAll(".popout-animation");
-            widgetAll = [widget, ...popout];
-        }else{
-            widget = document.querySelectorAll(".widget-animation");
-            popout = document.querySelectorAll(".popout-animation");
-            widgetAll = [...widget, ...popout];
-        };
-        if(value !== undefined){
-            for(const element of widgetAll){
-                element.classList.remove(`border-${this.state.values.customBorder.value}`);
-                element.classList.add(`border-${value.value}`);
-            };
-        }else{
-            for(const element of widgetAll){
-                element.classList.add(`border-${this.state.values.customBorder.value}`);
-            };
-        };
-    };
     updateValue(value, what, type){
         switch(what){
             case "customBorder":
                 this.updateCustomBorder("", value);
+                break;
+            case "decoration":
+                this.updateDecoration("", value);
                 break;
             case "health":
                 healthDisplay = value;
@@ -8192,6 +8208,89 @@ class Widgets extends Component{
                 intervalHorror = clearInterval(intervalHorror);
             };
         });
+    };
+    updateCustomBorder(what, value){
+        let widget, popout, widgetAll;
+        if(what !== undefined && what !== ""){
+            widget = document.getElementById(what + "-widget-animation");
+            popout = widget.querySelectorAll(".popout-animation");
+            widgetAll = [widget, ...popout];
+        }else{
+            widget = document.querySelectorAll(".widget-animation");
+            popout = document.querySelectorAll(".popout-animation");
+            widgetAll = [...widget, ...popout];
+        };
+        if(value !== undefined){
+            for(const element of widgetAll){
+                element.classList.remove(`border-${this.state.values.customBorder.value}`);
+                element.classList.add(`border-${value.value}`);
+            };
+        }else{
+            for(const element of widgetAll){
+                element.classList.add(`border-${this.state.values.customBorder.value}`);
+            };
+        };
+    };
+    updateDecoration(what, value){
+        let widget, popout, widgetAll;
+        if(what !== undefined && what !== ""){
+            widget = document.getElementById(what + "-widget-animation");
+            popout = widget.querySelectorAll(".popout-animation");
+            widgetAll = [widget, ...popout];
+        }else{
+            widget = document.querySelectorAll(".widget-animation");
+            popout = document.querySelectorAll(".popout-animation");
+            widgetAll = [...widget, ...popout];
+        };
+        if(value !== undefined){
+            if(value.value !== "default"){
+                for(const element of widgetAll){
+                    const elementDecoration = element.getElementsByClassName("decoration");
+                    if(elementDecoration.length === 1){
+                        elementDecoration[0].src = `/resources/decoration/${value.value}.png`;
+                        elementDecoration[0].alt = value.value;
+                        elementDecoration[0].className = `decoration ${value.value}`;
+                    }else if(elementDecoration.length > 1){
+                        elementDecoration[elementDecoration.length - 1].src = `/resources/decoration/${value.value}.png`;
+                        elementDecoration[elementDecoration.length - 1].alt = value.value;
+                        elementDecoration[elementDecoration.length - 1].className = `decoration ${value.value}`;
+                    }else{
+                        const elementImage = document.createElement("img");
+                        elementImage.src = `/resources/decoration/${value.value}.png`;
+                        elementImage.alt = value.value;
+                        elementImage.className = `decoration ${value.value}`;
+                        element.appendChild(elementImage);        
+                    };
+                };
+            }else{
+                for(const element of widgetAll){
+                    const elementDecoration = element.getElementsByClassName("decoration");
+                    if(elementDecoration.length === 1){
+                        elementDecoration[0].parentNode.removeChild(elementDecoration[0]);
+                    }else if(elementDecoration.length > 1){
+                        element.removeChild(elementDecoration[elementDecoration.length - 1]);
+                    };
+                };
+            };
+        }else{
+            if(this.state.values.decoration.value !== "default"){
+                const valueDecoration = this.state.values.decoration.value;
+                for(const element of widgetAll){
+                    const elementDecoration = element.getElementsByClassName("decoration");
+                    if(elementDecoration.length !== 0){
+                        elementDecoration[0].src = `/resources/decoration/${valueDecoration}.png`;
+                        elementDecoration[0].alt = valueDecoration;
+                        elementDecoration[0].className = `decoration ${valueDecoration}`;
+                    }else{
+                        const elementImage = document.createElement("img");
+                        elementImage.src = `/resources/decoration/${valueDecoration}.png`;
+                        elementImage.alt = valueDecoration;
+                        elementImage.className = `decoration ${valueDecoration}`;
+                        element.appendChild(elementImage);        
+                    };
+                };
+            };
+        };
     };
     randomTimeoutText(){
         if(this.state.values.randomText && (timeoutText === undefined)){
@@ -8504,6 +8603,35 @@ class Widgets extends Component{
             elementButtonSetting.classList.add("button-setting-active");
         };
     };
+    renderHotbar(widget, type){
+        return <section id={`${widget}-hotbar`}
+            className="hotbar">
+            {(this.state.values.showOnTop)
+                ? <button className="button-match inverse when-elements-are-not-straight"
+                    onClick={() => this.handleHotbar(widget, "showOnTop", type)}>
+                    <IoIosArrowUp/>
+                </button>
+                : <></>}
+            {(this.state.values.resetPosition)
+                ? <button className="button-match inverse when-elements-are-not-straight"
+                    onClick={() => this.handleHotbar(widget, "resetPosition", type)}>
+                    <Fa0/>
+                </button>
+                : <></>}
+            {(this.state.values.fullscreen)
+                ? <button className="button-match inverse when-elements-are-not-straight"
+                    onClick={() => this.handleHotbar(widget, "fullscreen", type)}>
+                    <FaExpand/>
+                </button>
+                : <></>}
+            {(this.state.values.close)
+                ? <button className="button-match inverse when-elements-are-not-straight"
+                    onClick={() => this.handleHotbar(widget, "close", type)}>
+                    <IoClose/>
+                </button>
+                : <></>}
+        </section>
+    };    
     storeData(){
         let data = {
             utility: {},
@@ -8690,6 +8818,7 @@ class Widgets extends Component{
                 }
             }, () => {
                 this.updateCustomBorder();
+                this.updateDecoration();
                 widgetsTextActive = [...document.querySelectorAll(".text-animation")];
             });
         }else{
@@ -8795,12 +8924,9 @@ class Widgets extends Component{
             values: {
                 authorNames: this.state.values.authorNames
             },
-            hotbar: {
-                fullscreen: this.state.values.fullscreen,
-                resetPosition: this.state.values.resetPosition,
-                close: this.state.values.close
-            },
-            playAudio: playAudio
+            playAudio: playAudio,
+            calculateBounds: calculateBounds,
+            renderHotbar: this.renderHotbar
         };
         const gameProps = {
             gold: this.state.gold,
@@ -8932,6 +9058,7 @@ class Widgets extends Component{
                     hexToRgb={hexToRgb}
                     rgbToHex={rgbToHex}
                     showSetting={this.showSetting}
+                    calculateBounds={calculateBounds}
                     valueClose={this.state.values.close}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
@@ -9460,18 +9587,13 @@ class Widgets extends Component{
 //#region Widget template
 // import { React, Component, memo } from 'react';
 // import { FaGripHorizontal } from 'react-icons/fa';
-// import { FaExpand, Fa0 } from 'react-icons/fa6';
-// import { IoClose } from 'react-icons/io5';
 // import { IconContext } from 'react-icons';
 // import Draggable from 'react-draggable';
 
 // class Widget[] extends Component{
 //     render(){
 //         return(
-//             <Draggable
-//                 position={{
-//                     x: this.props.position.x,
-//                     y: this.props.position.y}}
+//             <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
 //                 disabled={this.props.dragDisabled}
 //                 onStart={() => this.props.defaultProps.dragStart("[]")}
 //                 onStop={(event, data) => {
@@ -9492,29 +9614,7 @@ class Widgets extends Component{
 //                             </IconContext.Provider>
 //                         </span>
 //                         {/* Hotbar */}
-//                         <section className="hotbar">
-//                             {/* Reset Position */}
-//                             {(this.props.defaultProps.hotbar.resetPosition)
-//                                 ? <button className="button-match inverse when-elements-are-not-straight"
-//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "resetPosition", "[WIDGET TYPE]")}>
-//                                     <Fa0/>
-//                                 </button>
-//                                 : <></>}
-//                             {/* Fullscreen */}
-//                             {(this.props.defaultProps.hotbar.fullscreen)
-//                                 ? <button className="button-match inverse when-elements-are-not-straight"
-//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "fullscreen", "[WIDGET TYPE]")}>
-//                                     <FaExpand/>
-//                                 </button>
-//                                 : <></>}
-//                             {/* Close */}
-//                             {(this.props.defaultProps.hotbar.close)
-//                                 ? <button className="button-match inverse when-elements-are-not-straight"
-//                                     onClick={() => this.props.defaultProps.handleHotbar("[]", "close", "[WIDGET TYPE]")}>
-//                                     <IoClose/>
-//                                 </button>
-//                                 : <></>}
-//                         </section>
+//                         {this.props.defaultProps.renderHotbar("donutanimation", "fun")}
 //                         {/* Author */}
 //                         {(this.props.defaultProps.values.authorNames)
 //                             ? <span className="font smaller transparent-normal author-name">Created by [AUTHOR NAME]</span>

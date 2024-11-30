@@ -4,8 +4,7 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaArrowRightFromBracket, FaExpand, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaArrowRightFromBracket, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import Select from "react-select";
 
 
@@ -179,10 +178,7 @@ class WidgetGoogleTranslator extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("googletranslator")}
                 onStop={(event, data) => {
@@ -202,30 +198,7 @@ class WidgetGoogleTranslator extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("googletranslator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("googletranslator", "utility")}
                         {/* Selects Container */}
                         <div className="flex-center wrap space-nicely space-bottom">
                             {/* Select From */}

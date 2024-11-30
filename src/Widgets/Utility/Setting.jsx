@@ -114,6 +114,17 @@ const optionsParticle = [
         ]
     }
 ];
+const optionsDecoration = [
+    {
+        label: "Decorations",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "ribbon", label: "Ribbon"},
+            {value: "santa-hat", label: "Santa Hat"},
+            {value: "witch", label: "Witch"},
+        ]
+    }
+];
 const optionsVoice = [
     {
         label: "Voices",
@@ -145,6 +156,17 @@ const optionsLoot = [
         ]
     }
 ];
+const optionsCursor = [
+    {
+        label: "Cursor",
+        options: [
+            {value: "default", label: "Default"},
+            {value: "delicatepink", label: "Delicate Pink"},
+            {value: "cutesquid", label: "Cute Squid"},
+            {value: "cutekoicarp", label: "Cute Koi Carp"},
+        ]
+    }
+];
 
 
 class WidgetSetting extends Component{
@@ -158,7 +180,8 @@ class WidgetSetting extends Component{
                 background: {value: "default", label: "Default"},
                 timeBased: false,
                 randomTrick: false,
-                live2D: false
+                live2D: false,
+                cursor: {value: "default", label: "Default"},
             },
             search: "",
             searched: [],
@@ -206,35 +229,10 @@ class WidgetSetting extends Component{
                 random = Math.random() * max + min;
                 this.handleSlider(random, element);
                 break;
-            case "animation":
-                random = optionsAnimation[0].options[Math.floor(Math.random() * (optionsAnimation[0].options.length - 1)) + 1];
-                this.handleSelect(random, "animation");
-                break;
-            case "background":
-                random = optionsBackground[0].options[Math.floor(Math.random() * (optionsBackground[0].options.length - 1)) + 1];
-                this.handleSelect(random, "background");
-                break;
-            case "customBorder":
-                random = optionsCustomBorder[0].options[Math.floor(Math.random() * (optionsCustomBorder[0].options.length - 1)) + 1];
-                this.handleSelect(random, "customBorder");
-                break;
-            case "particle":
-                random = optionsParticle[0].options[Math.floor(Math.random() * (optionsParticle[0].options.length - 1)) + 1];
-                this.handleSelect(random, "particle");
-                break;
-            case "voice":
-                random = optionsVoice[0].options[Math.floor(Math.random() * (optionsVoice[0].options.length - 1)) + 1];
-                this.handleSelect(random, "voice");
-                break;
-            case "health":
-                random = optionsHealth[0].options[Math.floor(Math.random() * (optionsHealth[0].options.length - 1)) + 1];
-                this.handleSelect(random, "health");
-                break;
-            case "loot":
+            default:
                 random = options[0].options[Math.floor(Math.random() * (options[0].options.length - 1)) + 1];
                 this.handleSelect(random, what);
                 break;
-            default: break;
         };
 
     };
@@ -298,7 +296,7 @@ class WidgetSetting extends Component{
                     elementButton.classList.add("disabled");
                     break;
                 default:
-                    elementButton.style.opacity = "0.5";
+                    elementButton.classList.add("disabled-option");
                     break;
             };
         };
@@ -463,13 +461,14 @@ class WidgetSetting extends Component{
     handleSelect(what, where){
         switch(where){
             case "background":
-                this.updateBackground(what);
+            case "cursor":
+                this[`update${where.replace(/^./, (char) => char.toUpperCase())}`](what);
                 this.setState({
                     values: {
                         ...this.state.values,
                         [where]: what
                     }
-                });        
+                });
                 break;
             default:
                 this.props.updateValue(what, where, "values");
@@ -578,6 +577,17 @@ class WidgetSetting extends Component{
         let e = document.getElementById("App");
         e.classList.remove(`background-${this.state.values.background.value}`);
         e.classList.add(`background-${what.value}`);    
+    };
+    updateCursor(what){
+        if(what.value === "default"){
+            document.body.classList.remove("cursor-unset");
+            document.body.classList.remove("cursor-custom");
+        }else{
+            document.body.classList.add("cursor-unset");
+            document.body.classList.add("cursor-custom");
+            document.documentElement.style.setProperty("--cursorDefault", `url(/resources/cursor/${what.value}/${what.value}-default.png)`);
+            document.documentElement.style.setProperty("--cursorHover", `url(/resources/cursor/${what.value}/${what.value}-hover.png)`);
+        };
     };
     handleInterval(what){
         if(what === true){
@@ -689,16 +699,18 @@ class WidgetSetting extends Component{
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            let keyValues = Object.keys(this.state.values);
+            let dontStoreValues = ["screenDimmerSlider"];
+            let filteredValues = keyValues.filter((value) => !dontStoreValues.includes(value));
+            let objectValues = {};
+            filteredValues.forEach((value) => {
+                objectValues[value] = this.state.values[value];
+            });
             dataLocalStorage["utility"]["setting"] = {
                 ...dataLocalStorage["utility"]["setting"],
                 values: {
                     ...dataLocalStorage["utility"]["setting"]["values"],
-                    screenDimmer: this.state.values.screenDimmer,
-                    screenDimmerValue: this.state.values.screenDimmerValue,
-                    background: this.state.values.background,
-                    timeBased: this.state.values.timeBased,
-                    randomTrick: this.state.values.randomTrick,
-                    live2D: this.state.values.live2D
+                    ...objectValues
                 }
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
@@ -762,16 +774,18 @@ class WidgetSetting extends Component{
             };
             /// Values saved here
             if(localStorageValues["screenDimmer"] !== undefined){
+                let keyValues = Object.keys(this.state.values);
+                let dontStoreValues = ["screenDimmerSlider"];
+                let filteredValues = keyValues.filter((value) => !dontStoreValues.includes(value));
+                let objectValues = {};
+                filteredValues.forEach((value) => {
+                    objectValues[value] = localStorageValues[value];
+                });    
                 this.setState({
                     values: {
                         ...this.state.values,
-                        screenDimmer: localStorageValues["screenDimmer"],
+                        ...objectValues,
                         screenDimmerSlider: (localStorageValues["timeBased"]) ? false : localStorageValues["screenDimmer"],
-                        screenDimmerValue: localStorageValues["screenDimmerValue"],
-                        background: localStorageValues["background"],
-                        timeBased: localStorageValues["timeBased"],
-                        randomTrick: localStorageValues["randomTrick"],
-                        live2D: localStorageValues["live2D"]
                     }
                 }, () => {
                     /// Update Display
@@ -782,6 +796,7 @@ class WidgetSetting extends Component{
                     };
                     /// Update Design
                     this.updateBackground(this.state.values.background);
+                    this.updateCursor(this.state.values.cursor);
                     /// Set random
                     if(this.state.values.randomTrick){
                         this.randomTimeout("trick");
@@ -833,10 +848,7 @@ class WidgetSetting extends Component{
             };    
         };
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 onStart={() => this.props.dragStart("settings")}
                 onStop={(event, data) => {
                     this.props.dragStop("settings");
@@ -884,9 +896,10 @@ class WidgetSetting extends Component{
                         <Draggable cancel="button, #show-hide-widgets-popout-tabs"
                             position={{
                                 x: this.props.positionPopout.showhidewidgets.x,
-                                y: this.props.positionPopout.showhidewidgets.y}}
+                                y: this.props.positionPopout.showhidewidgets.y
+                            }}
                             onStop={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "showhidewidgets")}
-                            bounds={{top: -240, left: -360, right: 420, bottom: 8}}>
+                            bounds={this.props.calculateBounds("settings-widget", "show-hide-widgets-popout")}>
                             <section id="show-hide-widgets-popout"
                                 className="popout">
                                 <section id="show-hide-widgets-popout-animation"
@@ -1004,13 +1017,13 @@ class WidgetSetting extends Component{
                             </section>
                         </Draggable>
                         {/* Settings Popout */}
-                        <Draggable
-                            cancel="span, .toggleable, .slider, input, button, .select-match"
+                        <Draggable cancel="span, .toggleable, .slider, input, button, .select-match"
                             position={{
                                 x: this.props.positionPopout.settings.x,
-                                y: this.props.positionPopout.settings.y}}
+                                y: this.props.positionPopout.settings.y
+                            }}
                             onStop={(event, data) => this.props.updatePosition("setting", "utility", data.x, data.y, "popout", "settings")}
-                            bounds={{top: -445, left: -200, right: 410, bottom: 14}}>
+                            bounds={this.props.calculateBounds("settings-widget", "settings-popout")}>
                             <section id="settings-popout"
                                 className="popout">
                                 <section id="settings-popout-animation"
@@ -1209,6 +1222,40 @@ class WidgetSetting extends Component{
                                                         }
                                                     })}/>
                                             </section>
+                                            {/* Decoration */}
+                                            <section>
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Decoration
+                                                    </span>
+                                                    <div className="flex-center row">
+                                                        <button className="button-match inverse"
+                                                            onClick={() => this.randomOption({ what: "decoration", options: optionsDecoration })}>
+                                                            <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                                <FaRandom/>
+                                                            </IconContext.Provider>
+                                                        </button>
+                                                    </div>
+                                                </section>
+                                                <Select id="settings-popout-design-select-decoration"
+                                                    className="select-match space-nicely space-top length-small"
+                                                    value={this.props.values.decoration}
+                                                    defaultValue={optionsDecoration[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "decoration")}
+                                                    options={optionsDecoration}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
                                             {/* Checkboxes */}
                                             <section className="grid col-2 spread-setting">
                                                 {/* Shadow */}
@@ -1257,7 +1304,7 @@ class WidgetSetting extends Component{
                                                 {/* Close */}
                                                 <section className="element-ends">
                                                     <label className="font small"
-                                                        htmlFor="settings-popout-feature-resetPosition">
+                                                        htmlFor="settings-popout-feature-close">
                                                         Close
                                                     </label>
                                                     <input id="settings-popout-feature-close"
@@ -1288,8 +1335,19 @@ class WidgetSetting extends Component{
                                                         name="settings-input-popout-feature-resetPosition"
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "resetPosition", "values")}
-                                                        checked={this.props.values.resetPosition}
-                                                        />
+                                                        checked={this.props.values.resetPosition}/>
+                                                </section>
+                                                {/* Show on Top */}
+                                                <section className="element-ends">
+                                                    <label className="font small"
+                                                        htmlFor="settings-popout-feature-showOnTop">
+                                                        Show on Top
+                                                    </label>
+                                                    <input id="settings-popout-feature-showOnTop"
+                                                        name="settings-input-popout-feature-resetPosition"
+                                                        type="checkbox"
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, "showOnTop", "values")}
+                                                        checked={this.props.values.showOnTop}/>
                                                 </section>
                                             </fieldset>
                                         </section>
@@ -1405,8 +1463,38 @@ class WidgetSetting extends Component{
                                                 <legend className="font small space-nicely space-bottom length-short">
                                                     Cursor
                                                 </legend>
+                                                {/* Cursor Type */}
+                                                <section className="element-ends">
+                                                    <span className="font small">
+                                                        Type
+                                                    </span>
+                                                    <button className="button-match inverse"
+                                                        onClick={() => this.randomOption({ what: "cursor", options: optionsCursor })}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: "global-class-name" }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id="settings-popout-misc-cursor-select-type"
+                                                    className="select-match space-nicely space-top length-small"
+                                                    value={this.state.values.cursor}
+                                                    defaultValue={optionsCursor[0]["options"][0]}
+                                                    onChange={(event) => this.handleSelect(event, "cursor")}
+                                                    options={optionsCursor}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
                                                 {/* Cursor Trail */}
-                                                <div className="element-ends">
+                                                <section className="element-ends">
                                                     <label className="font small"
                                                         htmlFor="settings-popout-misc-cursor-trail">
                                                         Trail
@@ -1416,7 +1504,7 @@ class WidgetSetting extends Component{
                                                         type="checkbox"
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, "cursorTrail", "values")}
                                                         checked={this.props.values.cursorTrail}/>
-                                                </div>
+                                                </section>
                                                 {/* Cursor Trail Color */}
                                                 <section className="grid col-2 spread-setting">
                                                     {/* Flat */}

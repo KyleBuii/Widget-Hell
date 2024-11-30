@@ -1,5 +1,4 @@
-/*
-z-index guide
+/* z-index guide
 0: Sliders
 1: Stickers
 2: DEFAULT
@@ -68,9 +67,12 @@ z-index guide
     --gradient-color-yellow: linear-gradient(90deg,hsl(54,89%,46%) 15%,hsl(92,90%,45%)100%);
     --gradient-color-green: linear-gradient(90deg,hsl(92,89%,46%) 15%,hsl(92,90%,68%)100%);
     //#endregion
+    --cursorDefault: ;
+    --cursorHover: ;
 }
 
 body{
+    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0rem;
     overflow: hidden;
 }
@@ -328,6 +330,8 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    top: 0;
+    left: 0;
 }
 
 .popout-animation{
@@ -4068,6 +4072,42 @@ body{
         cursor: grabbing;
     }
 }
+
+.cursor-unset{
+    *{
+        cursor: unset !important;
+    }
+}
+
+.cursor-custom{
+    cursor: var(--cursorDefault), auto;
+    button{
+        cursor: var(--cursorHover), auto !important;
+    }
+    .toggleable{
+        cursor: var(--cursorHover), auto !important;
+    }
+}
+
+.show-on-top{
+    z-index: 3 !important;
+}
+
+.decoration{
+    position: absolute;
+    max-height: 128px;
+    top: -3em;
+    left: -3.5em;
+    pointer-events: none;
+    rotate: -20deg;
+    &.santa-hat{
+        top: -4.3em;
+    }
+    &.witch{
+        top: -6.5em;
+        left: -4em;
+    }
+}
 //#endregion
 
 
@@ -4241,7 +4281,6 @@ body{
 
 #App{
     position: relative;
-    font-family: 'Tahoma', sans-serif;
     overflow: hidden;
     transition-property: background-color, border;
     transition-duration: 500ms;
@@ -4353,6 +4392,9 @@ body{
             width: 100vmin;
             #animesearcher-tags{
                 width: 9em;
+                span{
+                    max-width: 7em
+                }
             }
             #animesearcher-external-sources{
                 @include grid-auto(4);
@@ -4381,7 +4423,8 @@ body{
             position: fixed;
             top: 40%;
             max-height: 35em;
-            width: 35em;
+            max-width: 35em;
+            width: 100%;
             background-color: white;
             padding: 1em;
             scale: 0;
@@ -4873,8 +4916,6 @@ body{
 #translator-widget{
     font-size: 1.11em;
     #translator-widget-animation{
-        max-width: 23.4em;
-        width: calc(100vmin - 2.6em);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -4893,8 +4934,8 @@ body{
     }
     #translator-image-additions-cunny-code{
         position: absolute;
-        left: 2.5em;
         top: 2em;
+        left: 2.5em;
         max-width: 8.5em;
         max-height: 21em;
         width: 100%;
@@ -5014,10 +5055,7 @@ body{
     }
     #weather-help-popout{
         ul{
-            height: 12.64em;
-            width: 18em;    
-            margin: .7rem 2.35rem;
-            padding: 0.2rem;
+            margin-right: 1em;
         }
     }
 }
@@ -5358,6 +5396,10 @@ body{
 }
 
 #pokemonsearch-widget{
+    #pokemonsearch-card-pokemon{
+        max-width: 18.2em;
+        width: 100vmin;
+    }
     #pokemonsearch-span-subtype{
         position: absolute;
         top: -2px;
@@ -5778,5 +5820,19 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active{
     -webkit-box-shadow: 0 0 0 0.88em white inset;
+}
+//#endregion
+
+
+//////////////////// Media Queries ////////////////////
+//#region
+@media screen and (max-width: 613px){
+    #translator-widget{
+        #translator-image-additions-cunny-code{
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%);
+        }
+    }
 }
 //#endregion

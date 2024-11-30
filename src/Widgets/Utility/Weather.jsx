@@ -2,8 +2,7 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaDroplet, FaExpand, FaLocationDot, FaRegCircleQuestion, FaWind } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaDroplet, FaLocationDot, FaRegCircleQuestion, FaWind } from 'react-icons/fa6';
 import { MdWaves } from "react-icons/md";
 import { WiCloudyGusts } from "react-icons/wi";
 
@@ -147,10 +146,7 @@ class WidgetWeather extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("weather")}
                 onStop={(event, data) => {
@@ -170,30 +166,7 @@ class WidgetWeather extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("weather", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("weather", "utility")}
                         {/* Search Container */}
                         <div className="flex-center row gap small-gap space-nicely space-bottom">
                             <div id="weather-search-input">
@@ -218,13 +191,14 @@ class WidgetWeather extends Component{
                             </button>
                         </div>
                         {/* Search help popout */}
-                        <Draggable
-                            cancel="li"
+                        <Draggable cancel="li"
+                            defaultPosition={{ x: 12, y: 70 }}
                             position={{
                                 x: this.props.positionPopout.searchhelp.x,
-                                y: this.props.positionPopout.searchhelp.y}}
+                                y: this.props.positionPopout.searchhelp.y
+                            }}
                             onStop={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
-                            bounds={{top: -135, left: -325, right: 325, bottom: 350}}>
+                            bounds={this.props.defaultProps.calculateBounds("weather-widget", "weather-help-popout")}>
                             <section id="weather-help-popout"
                                 className="popout">
                                 <section id="weather-help-popout-animation"

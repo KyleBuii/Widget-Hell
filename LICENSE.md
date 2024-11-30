@@ -10,27 +10,46 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 ## **Asset License**
-### Images
-- Equipment Slots by [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) [Crawl Tiles](http://code.google.com/p/crawl-tiles/) [Cheshire](https://jeevo.itch.io/dungeoneering-eq-icon-pack) [Craftpix](https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/) [7Soul](https://opengameart.org/content/98-pixel-art-rpg-icons) [Alex's Assets](https://alexs-assets.itch.io/16x16-rpg-item-pack)
-- [Currency Converter Image](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by Pixabay
-- [Heart Images](https://opengameart.org/content/2d-heart-2-animations) by skristi
-- [Door Knocker Item Image](https://www.deviantart.com/theguardiantempest/art/Doorknocker-Custom-371217359) by TheGuardianTempest
-- [Quote Petal Image](https://codepen.io/rudtjd2548/pen/qBpVzxP) by Evan Jin (진경성)
-- [Quote Cherry Blossom Image](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by Pixabay
-- [Anime Searcher Page Image](https://pixabay.com/vectors/file-generic-icon-icons-matt-1294459/) by Pixabay
-- [Anime Searcher Default Background Image](https://pixabay.com/photos/poppies-flowers-field-red-poppies-6982527/) by Pixabay
-- [Grindshot Player Image](https://opengameart.org/content/blue-grass) by pboop
-- [Grindshot Attacks](https://opengameart.org/content/pixelated-attackhit-animations) by Viktor Hahn
-- [Grindshot Bullets](https://github.com/phaserjs/phaser-ce-coding-tips/tree/master) by photonstorm
-- [Translator: Cunny Code Images](https://bluearchive.fandom.com/wiki/Arona/Gallery) - Blue Archive Wiki and Blue Archive
-- [Settings: Horror Shadow Image](https://pixabay.com/vectors/boy-cartoon-fashion-chibi-kawaii-8515729/) by Pixabay
-- [Rock Paper Scissor Images](https://www.umop.com/rps101.htm) - by David C. Lovelace
-- **Grindshot Tiles**
+- **Anime Searcher**
+    - [Default Background](https://pixabay.com/photos/poppies-flowers-field-red-poppies-6982527/) by Camera-man
+    - [Page](https://pixabay.com/vectors/file-generic-icon-icons-matt-1294459/) by OpenClipart-Vectors
+- **Currency Converter**
+    - [Hundred Dollar Bill](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by PublicDomainPictures
+- **Equipment**
+    - Equipment Slots by [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) [Crawl Tiles](http://code.google.com/p/crawl-tiles/) [Cheshire](https://jeevo.itch.io/dungeoneering-eq-icon-pack) [Craftpix](https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/) [7Soul](https://opengameart.org/content/98-pixel-art-rpg-icons) [Alex's Assets](https://alexs-assets.itch.io/16x16-rpg-item-pack)
+- **Grindshot**
+    - [Attacks](https://opengameart.org/content/pixelated-attackhit-animations) by Viktor Hahn
+    - [Bullets](https://github.com/phaserjs/phaser-ce-coding-tips/tree/master) by photonstorm
+    - [Monochrome Pirates](https://opengameart.org/content/monochrome-pirates) by Kenny
+    - [Player](https://opengameart.org/content/blue-grass) by pboop
     - [Tiny Battle](https://opengameart.org/content/tiny-battle) by Kenny
     - [Tiny Ski](https://opengameart.org/content/tiny-ski) by Kenny
-    - [Monochrome Pirates](https://opengameart.org/content/monochrome-pirates) by Kenny
-### Sounds
-- [Kenny Interface Sounds Pack](https://www.kenney.nl/assets/interface-sounds) by Kenny
-- [Inventory Sound Effects](https://opengameart.org/content/inventory-sound-effects) by artisticdude
-- [RPG Sound Pack](https://opengameart.org/content/rpg-sound-pack) by artisticdude
-- [Interface Sounds Starter Pack](https://opengameart.org/content/interface-sounds-starter-pack) by p0ss
+- **Items**
+    - [Door Knocker Item Image](https://www.deviantart.com/theguardiantempest/art/Doorknocker-Custom-371217359) by TheGuardianTempest
+- **Misc**
+    - [Heart Images](https://opengameart.org/content/2d-heart-2-animations) by skristi
+    - [Interface Sounds Starter Pack](https://opengameart.org/content/interface-sounds-starter-pack) by p0ss
+    - [Inventory Sound Effects](https://opengameart.org/content/inventory-sound-effects) by artisticdude
+    - [Kenny Interface Sounds Pack](https://www.kenney.nl/assets/interface-sounds) by Kenny
+    - [RPG Sound Pack](https://opengameart.org/content/rpg-sound-pack) by artisticdude
+- **Picker Wheel**
+    - **Audio**
+        - [Spin](https://pixabay.com/sound-effects/spin-232536/) - by victorabdo
+- **Quote**
+    - [Cherry Blossom](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by dandelion_tea
+    - [Petal](https://codepen.io/rudtjd2548/pen/qBpVzxP) by Evan Jin (진경성)
+- **Rock Paper Scissor**
+    - [Choices](https://www.umop.com/rps101.htm) - by David C. Lovelace
+- **Setting**
+    - **Cursor**
+        - [Cute Koi Carp](https://custom-cursor.com/en/collection/cute-cursors/cute-koi-carp) by Custom Cursor
+        - [Cute Squid](https://custom-cursor.com/en/collection/kawaii/cute-squid) by Custom Cursor
+        - [Delicate Pink](https://custom-cursor.com/en/collection/color/delicate-pink) by Custom Cursor
+    - **Decoration**
+        - [Ribbon](https://pixabay.com/illustrations/bow-ribbon-flat-ribbon-bow-8952489/) by Chaudaryumair
+        - [Santa Hat](https://pixabay.com/vectors/santa-hat-christmas-red-clipart-7602300/) by OseBoi
+    - **Horror**
+        - [Shadow](https://pixabay.com/vectors/boy-cartoon-fashion-chibi-kawaii-8515729/) by u_fg0tkeqgiy
+- **Translator**
+    - **Cunny Code**
+        - [Arona](https://bluearchive.fandom.com/wiki/Arona/Gallery) - Blue Archive Wiki and Blue Archive

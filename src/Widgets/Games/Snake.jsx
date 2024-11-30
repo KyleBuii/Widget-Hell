@@ -5,8 +5,7 @@ import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaRegClock } from 'react-icons/fa6';
 import { TbMoneybag } from "react-icons/tb";
 
 
@@ -622,7 +621,7 @@ class WidgetSnake extends Component{
             });
         });
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("snake")}
                 onStop={(event, data) => {
@@ -642,30 +641,7 @@ class WidgetSnake extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "resetPosition", "games")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "fullscreen", "games")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("snake", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("snake", "games")}
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Gold Earned */}
@@ -738,10 +714,9 @@ class WidgetSnake extends Component{
                             </section>
                             : <></>}
                         {/* Settings Popout */}
-                        <Draggable
-                            cancel="span, .slider, button"
-                            defaultPosition={{x: 120, y: -25}}
-                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                        <Draggable cancel="span, .slider, button"
+                            defaultPosition={{ x: 145, y: 325 }}
+                            bounds={this.props.defaultProps.calculateBounds("snake-widget", "snake-popout-settings")}>
                             <section id="snake-popout-settings"
                                 className="popout">
                                 <section id="snake-popout-animation-settings"

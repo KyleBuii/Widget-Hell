@@ -1,11 +1,10 @@
 import { Component, React } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
+import { FaRegClock } from 'react-icons/fa6';
 // import { AiOutlineSetting } from 'react-icons/ai';
 import { memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
-import { IoClose } from 'react-icons/io5';
 import { TbMoneybag } from "react-icons/tb";
 
 
@@ -350,10 +349,7 @@ class WidgetBreakout extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("breakout")}
                 onStop={(event, data) => {
@@ -373,30 +369,7 @@ class WidgetBreakout extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "resetPosition", "games")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "fullscreen", "games")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("breakout", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("breakout", "games")}
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold">
                             {/* Gold Earned */}

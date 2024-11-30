@@ -5,8 +5,7 @@ import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaRegClock } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaRegClock } from 'react-icons/fa6';
 import { TbMoneybag } from "react-icons/tb";
 
 
@@ -234,10 +233,7 @@ class WidgetSimonGame extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("simongame")}
                 onStop={(event, data) => {
@@ -257,30 +253,7 @@ class WidgetSimonGame extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "resetPosition", "games")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "fullscreen", "games")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("simongame", "close", "games")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("simongame", "games")}
                         {/* Information Container */}
                         <section className="aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold"
                             style={{zIndex: 300}}>
@@ -363,10 +336,9 @@ class WidgetSimonGame extends Component{
                             </button>
                         </section>
                         {/* Settings Popout */}
-                        <Draggable
-                            cancel="span, .slider, button"
-                            defaultPosition={{x: 120, y: -25}}
-                            bounds={{top: -200, left: -250, right: 200, bottom: 0}}>
+                        <Draggable cancel="span, .slider, button"
+                            defaultPosition={{ x: 105, y: 290 }}
+                            bounds={this.props.defaultProps.calculateBounds("simongame-widget", "simongame-popout-settings")}>
                             <section id="simongame-popout-settings"
                                 className="popout">
                                 <section id="simongame-popout-animation-settings"

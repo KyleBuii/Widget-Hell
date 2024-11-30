@@ -3,8 +3,7 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaDownload, FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaRegCircleQuestion } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
+import { FaRegCircleQuestion } from 'react-icons/fa6';
 import Select from 'react-select';
 
 
@@ -144,10 +143,7 @@ class WidgetAiImageGenerator extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("aiimagegenerator")}
                 onStop={(event, data) => {
@@ -167,30 +163,7 @@ class WidgetAiImageGenerator extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("aiimagegenerator", "resetPosition", "fun")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("aiimagegenerator", "fullscreen", "fun")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("aiimagegenerator", "close", "fun")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("aiimagegenerator", "fun")}
                         <section className="flex-center column gap small-gap">
                             {/* Inputs */}
                             <div id="aiimagegenerator-inputs"
@@ -251,13 +224,14 @@ class WidgetAiImageGenerator extends Component{
                             </button>
                         </section>
                         {/* Prompt Help Popout */}
-                        <Draggable
-                            cancel="li"
+                        <Draggable cancel="li"
+                            defaultPosition={{ x: 230, y: 50 }}
                             position={{
                                 x: this.props.positionPopout.prompthelp.x,
-                                y: this.props.positionPopout.prompthelp.y}}
+                                y: this.props.positionPopout.prompthelp.y
+                            }}
                             onStop={(event, data) => this.props.defaultProps.updatePosition("aiimagegenerator", "fun", data.x, data.y, "popout", "prompthelp")}
-                            bounds={{top: -335, left: -325, right: 425, bottom: 100}}>
+                            bounds={this.props.defaultProps.calculateBounds("aiimagegenerator-widget", "aiimagegenerator-popout-help")}>
                             <section id="aiimagegenerator-popout-help"
                                 className="popout">
                                 <section id="aiimagegenerator-popout-animation-help"

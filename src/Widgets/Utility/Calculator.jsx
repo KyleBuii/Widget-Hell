@@ -459,10 +459,7 @@ class WidgetCalculator extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("calculator")}
                 onStop={(event, data) => { 
@@ -482,30 +479,7 @@ class WidgetCalculator extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("calculator", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("calculator", "utility")}
                         {/* Display */}
                         <div id="calculator-display-container"
                             className="flex-center column">
@@ -567,7 +541,7 @@ class WidgetCalculator extends Component{
                                 value="Mv">M&#709;</button>
                         </div>
                         {/* Buttons */}
-                        <section className="grid col-4">
+                        <section className="grid col-4 font">
                             {/* Memory Display */}
                             <div id="calculator-button-memory-display">
                                 <div id="calculator-button-memory-container"></div>
@@ -654,15 +628,16 @@ class WidgetCalculator extends Component{
                                 value="=">=</button>
                         </section>
                         {/* Expand Input Popout */}
-                        <Draggable
-                            cancel="p"
+                        <Draggable cancel="p"
+                            defaultPosition={{ x: 60, y: 115 }}
                             position={{
                                 x: this.props.positionPopout.expandinput.x,
-                                y: this.props.positionPopout.expandinput.y}}
+                                y: this.props.positionPopout.expandinput.y
+                            }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput");
                             }}
-                            bounds={{top: -460, left: -150, right: 190, bottom: 10}}>
+                            bounds={this.props.defaultProps.calculateBounds("calculator-widget", "calculator-input-expand-popout")}>
                             <section id="calculator-input-expand-popout"
                                 className="popout">
                                 <section id="calculator-input-expand-popout-animation"

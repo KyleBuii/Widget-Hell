@@ -1,10 +1,9 @@
-import Slider from 'rc-slider';
 import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay } from 'react-icons/fa6';
-import { IoClose, IoPlayBack, IoPlayForward } from 'react-icons/io5';
+import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay } from 'react-icons/fa6';
+import { IoPlayBack, IoPlayForward } from 'react-icons/io5';
 import ReactPlayer from 'react-player/lazy';
 
 
@@ -431,10 +430,7 @@ class WidgetMusicPlayer extends Component{
     };
     render(){
         return(
-            <Draggable
-                position={{
-                    x: this.props.position.x,
-                    y: this.props.position.y}}
+            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 disabled={this.props.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("musicplayer")}
                 onStop={(event, data) => {
@@ -454,31 +450,7 @@ class WidgetMusicPlayer extends Component{
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
-                        <section id="musicplayer-hotbar"
-                            className="hotbar">
-                            {/* Reset Position */}
-                            {(this.props.defaultProps.hotbar.resetPosition)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("musicplayer", "resetPosition", "utility")}>
-                                    <Fa0/>
-                                </button>
-                                : <></>}
-                            {/* Fullscreen */}
-                            {(this.props.defaultProps.hotbar.fullscreen)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("musicplayer", "fullscreen", "utility")}>
-                                    <FaExpand/>
-                                </button>
-                                : <></>}
-                            {/* Close */}
-                            {(this.props.defaultProps.hotbar.close)
-                                ? <button className="button-match inverse when-elements-are-not-straight"
-                                    onClick={() => this.props.defaultProps.handleHotbar("musicplayer", "close", "utility")}>
-                                    <IoClose/>
-                                </button>
-                                : <></>}
-                        </section>
+                        {this.props.defaultProps.renderHotbar("musicplayer", "utility")}
                         {/* Song */}
                         <section className="flex-center column">
                             {/* Song Disc */}
