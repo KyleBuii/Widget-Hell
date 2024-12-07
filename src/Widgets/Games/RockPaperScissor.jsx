@@ -24,7 +24,7 @@ class WidgetRockPaperScissor extends Component{
     };
     changeChoice(side, choice){
         let elementChoice = document.getElementById(`rockpaperscissor-choice-${side}`);
-        elementChoice.src = `/resources/rockpaperscissor/${choice}.png`;
+        elementChoice.src = `/resources/rockpaperscissor/${choice}.webp`;
         elementChoice.onerror = () => {
             elementChoice.onerror = null;
             elementChoice.src = `/resources/rockpaperscissor/${choice}.gif`;
@@ -106,8 +106,8 @@ class WidgetRockPaperScissor extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("rockpaperscissor")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("rockpaperscissor");
@@ -158,9 +158,10 @@ class WidgetRockPaperScissor extends Component{
                             <div className="flex-center column gap">
                                 <img id="rockpaperscissor-choice-player"
                                     style={{ transform: "scaleX(-1)" }}
-                                    src={"/resources/rockpaperscissor/rock.png"}
+                                    src={"/resources/rockpaperscissor/rock.webp"}
                                     alt="player rock"
-                                    draggable="false"/>
+                                    draggable="false"
+                                    decoding="async"/>
                                 <span>{this.state.choicePlayer.replace(/^./, (char) => char.toUpperCase())}</span>
                             </div>
                             <div className="flex-center column gap">
@@ -179,9 +180,10 @@ class WidgetRockPaperScissor extends Component{
                             </div>
                             <div className="flex-center column gap">
                                 <img id="rockpaperscissor-choice-computer"
-                                    src={"/resources/rockpaperscissor/rock.png"}
+                                    src={"/resources/rockpaperscissor/rock.webp"}
                                     alt="computer rock"
-                                    draggable="false"/>
+                                    draggable="false"
+                                    decoding="async"/>
                                 <span>{this.state.choiceComputer.replace(/^./, (char) => char.toUpperCase())}</span>
                             </div>
                         </section>
@@ -195,14 +197,15 @@ class WidgetRockPaperScissor extends Component{
                                             this.changeChoice("player", choice);
                                         }}
                                         disabled={this.state.gameover}>
-                                        <img src={`/resources/rockpaperscissor/${choice}.png`}
+                                        <img src={`/resources/rockpaperscissor/${choice}.webp`}
                                             onError={({ currentTarget }) => {
                                                 currentTarget.onerror = null;
                                                 currentTarget.src = `/resources/rockpaperscissor/${choice}.gif`;
                                             }}
                                             key={choice}
                                             alt={choice}
-                                            draggable="false"></img>
+                                            draggable="false"
+                                            decoding="async"/>
                                     </button>
                                 })}
                             </div>

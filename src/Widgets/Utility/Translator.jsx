@@ -173,7 +173,7 @@ class WidgetTranslator extends Component{
             randomMessage = this.props.aronaMessages[type][Math.floor(Math.random() * this.props.aronaMessages[type].length)];
         };
         elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
-        elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.png`;
+        elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.webp`;
     };
     handleCunnyCodeAronaTouch(where){
         let elementImage = document.getElementById("translator-image");
@@ -413,12 +413,12 @@ class WidgetTranslator extends Component{
                                 this.setState({
                                     disableInput: true
                                 });
-                                elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.png)`;
+                                elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.webp)`;
                                 elementImage.style.visibility = "hidden";
                                 elementAronaBody.style.visibility = "hidden";
                                 elementDialogue.style.visibility = "hidden";
                                 intervalSleepTalk = setInterval(() => {
-                                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleeptalk.png)`;
+                                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleeptalk.webp)`;
                                     elementDialogue.style.visibility = "visible";
                                     elementDialogue.style.top = "-10em";
                                     this.handleCunnyCode("idleSleep");
@@ -429,7 +429,7 @@ class WidgetTranslator extends Component{
                                         });
                                     }, 10000);
                                     timeoutDialogueOut = setTimeout(() => {
-                                        elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.png)`;
+                                        elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg_sleep.webp)`;
                                         elementDialogue.style.visibility = "hidden";
                                     }, 12000);
                                 }, 20000);
@@ -442,7 +442,7 @@ class WidgetTranslator extends Component{
                                 disableInput: false
                             });
                             this.handleCunnyCode("idleAwaken");
-                            elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.png)`;
+                            elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.webp)`;
                             elementImage.style.visibility = "visible";
                             elementAronaBody.style.visibility = "visible";
                             elementDialogue.style.top = "-16.2em";
@@ -826,14 +826,14 @@ class WidgetTranslator extends Component{
                     toAuthorLink = "https://github.com/SethClydesdale/cunny-code";
                     this.props.updateGlobalValue("hour", new Date().getHours());
                     this.handleCunnyCode((swap) ? "swap" : "greetings");
-                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.png)`;
+                    elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.webp)`;
                     elementImage.style.display = "block";
                 };
                 break;
             default:
                 toAuthor = "Me";
                 toAuthorLink = "";
-                elementContainer.style.backgroundImage = `url(./resources/translator/bg-${this.state.to.value}.png)`;
+                elementContainer.style.backgroundImage = `url(./resources/translator/bg-${this.state.to.value}.webp)`;
                 elementImage.src = "";
                 elementImage.style.display = "none";
                 break;
@@ -1014,8 +1014,8 @@ class WidgetTranslator extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("translator")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("translator");
@@ -1044,7 +1044,8 @@ class WidgetTranslator extends Component{
                                 <img id="translator-image"
                                     className="no-highlight"
                                     alt="translator image"
-                                    draggable="false"/>
+                                    draggable="false"
+                                    decoding="async"/>
                                 {/* Image Additions: Cunny Code */}
                                 {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")
                                     ? <div id="translator-image-additions-cunny-code"
@@ -1181,7 +1182,13 @@ class WidgetTranslator extends Component{
                         </section>
                         {/* Replace Popout */}
                         <Draggable cancel="input, button"
-                            defaultPosition={{ x: 50, y: 74 }}
+                            position={{
+                                x: this.props.positionPopout.replace.x,
+                                y: this.props.positionPopout.replace.y
+                            }}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "replace");
+                            }}
                             bounds={this.props.defaultProps.calculateBounds("translator-widget", "replace-popout")}>
                             <section id="replace-popout"
                                 className="popout">
@@ -1211,7 +1218,13 @@ class WidgetTranslator extends Component{
                         </Draggable>
                         {/* Reverse Popout */}
                         <Draggable cancel="input, button"
-                            defaultPosition={{x: 90, y: 74}}
+                            position={{
+                                x: this.props.positionPopout.reverse.x,
+                                y: this.props.positionPopout.reverse.y
+                            }}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "reverse");
+                            }}
                             bounds={this.props.defaultProps.calculateBounds("translator-widget", "reverse-popout")}>
                             <section id="reverse-popout"
                                 className="popout">
@@ -1234,7 +1247,13 @@ class WidgetTranslator extends Component{
                         </Draggable>
                         {/* Case Transform Popout */}
                         <Draggable cancel="input, button"
-                            defaultPosition={{x: 90, y: 74}}
+                            position={{
+                                x: this.props.positionPopout.casetransform.x,
+                                y: this.props.positionPopout.casetransform.y
+                            }}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "casetransform");
+                            }}
                             bounds={this.props.defaultProps.calculateBounds("translator-widget", "caseTransform-popout")}>
                             <section id="caseTransform-popout"
                                 className="popout">

@@ -307,8 +307,8 @@ class WidgetPokemonSearch extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("pokemonsearch")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("pokemonsearch");
@@ -466,7 +466,11 @@ class WidgetPokemonSearch extends Component{
                         </div>
                         {/* Settings Popout */}
                         <Draggable cancel="button, .radio-match"
-                            defaultPosition={{ x: 15, y: 85 }}
+                            position={{
+                                x: this.props.defaultProps.popouts.settings.position.x,
+                                y: this.props.defaultProps.popouts.settings.position.y
+                            }}
+                            onStop={(event, data) => this.props.defaultProps.updatePosition("pokemonsearch", "fun", data.x, data.y, "popout", "settings")}
                             bounds={this.props.defaultProps.calculateBounds("pokemonsearch-widget", "pokemonsearch-popout-setting")}>
                             <section id="pokemonsearch-popout-setting"
                                 className="popout">

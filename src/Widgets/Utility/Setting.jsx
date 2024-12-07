@@ -209,6 +209,7 @@ class WidgetSetting extends Component{
         this.handleSearch = this.handleSearch.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
         this.storeData = this.storeData.bind(this);
+        this.handleScriptLoaded = this.handleScriptLoaded.bind(this);
     };
     /// Remove element at index "i" where order doesn't matter
     unorderedRemove(arr, i){
@@ -585,8 +586,8 @@ class WidgetSetting extends Component{
         }else{
             document.body.classList.add("cursor-unset");
             document.body.classList.add("cursor-custom");
-            document.documentElement.style.setProperty("--cursorDefault", `url(/resources/cursor/${what.value}/${what.value}-default.png)`);
-            document.documentElement.style.setProperty("--cursorHover", `url(/resources/cursor/${what.value}/${what.value}-hover.png)`);
+            document.documentElement.style.setProperty("--cursorDefault", `url(/resources/cursor/${what.value}/${what.value}-default.webp)`);
+            document.documentElement.style.setProperty("--cursorHover", `url(/resources/cursor/${what.value}/${what.value}-hover.webp)`);
         };
     };
     handleInterval(what){
@@ -680,12 +681,24 @@ class WidgetSetting extends Component{
         };
         document.body.style.filter = `brightness(${brightness}%)`;
     };
+    handleScriptLoaded(event){
+        switch(event.detail.name){
+            case "live2d":
+                this.updateLive2D();
+                break;
+            default: break;
+        };
+    };
     updateLive2D(){
         let elementLive2DToggle = document.getElementById("waifu-toggle");
         if(elementLive2DToggle !== null){
-            elementLive2DToggle.style.display = (!this.state.values.live2D) ? "none" : "block";
             if(!this.state.values.live2D){
+                elementLive2DToggle.style.display = "none";
                 document.getElementById("waifu-tool-quit").click();
+            }else{
+                elementLive2DToggle.style.display = "block";
+                let elementWaifu = document.getElementById("waifu");
+                elementWaifu.style.visibility = "visible";        
             };
         };
     };
@@ -718,8 +731,8 @@ class WidgetSetting extends Component{
     };
     async componentDidMount(){
         window.addEventListener("close", this.handleClose);
-        /// Save widget's data to local storage
         window.addEventListener("beforeunload", this.storeData);
+        window.addEventListener("script loaded", this.handleScriptLoaded);
         /// Sort selects
         this.props.sortSelect(optionsAnimation);
         this.props.sortSelect(optionsBackground);
@@ -767,7 +780,7 @@ class WidgetSetting extends Component{
                             break;
                         default:
                             let button = document.getElementById("show-hide-widgets-popout-button-" + i);
-                            button.style.opacity = "1";
+                            button.classList.remove("disabled-option");
                             break;
                     };
                 };
@@ -801,7 +814,6 @@ class WidgetSetting extends Component{
                     if(this.state.values.randomTrick){
                         this.randomTimeout("trick");
                     };
-                    this.updateLive2D();
                 });
             }else{
                 this.updateLive2D();

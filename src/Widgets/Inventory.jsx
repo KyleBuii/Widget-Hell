@@ -200,8 +200,8 @@ class WidgetInventory extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("inventory")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("inventory");
@@ -310,7 +310,8 @@ class WidgetInventory extends Component{
                             <span className="font bold large-medium">{this.state.item.name}</span>
                             <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name]?.image}
-                                    alt="viewed inventory item"/>
+                                    alt="viewed inventory item"
+                                    decoding="async"/>
                                 <SimpleBar style={{ maxHeight: 80, width: 150 }}>
                                     <table className="flex-center column font small">
                                         <tbody>

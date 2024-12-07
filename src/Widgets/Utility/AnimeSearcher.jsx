@@ -569,14 +569,14 @@ class WidgetAnimeSearcher extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("animesearcher")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("animesearcher");
                     this.props.defaultProps.updatePosition("animesearcher", "utility", data.x, data.y);
                 }}
-                cancel="input, button, span, a, img, .popout, .simplebar-track, #animesearcher-characters, #animesearcher-recommendations, #animesearcher-relations, #animesearcher-staff, #animesearcher-streaming-episodes"
+                cancel="input, button, span, a, img, .popout, .simplebar-track, #animesearcher-information"
                 bounds="parent">
                 <div id="animesearcher-widget"
                     className="widget">
@@ -600,11 +600,12 @@ class WidgetAnimeSearcher extends Component{
                                             name="animesearcher-link"
                                             onKeyDown={(event) => this.handleKeyDown(event)}
                                             type="url"
-                                            placeholder="Anilist ID / Name / Image"
+                                            placeholder="Anilist ID / Name / Image URL"
                                             disabled={this.state.running}/>
                                         <button id="animesearcher-button-spoiler"
                                             className="disabled-active font bold button-match inverse disabled"
-                                            onClick={() => this.handleButtonSpoiler()}>SPOILER</button>
+                                            onClick={() => this.handleButtonSpoiler()}
+                                            disabled={this.state.running}>SPOILER</button>
                                     </div>
                                     <button className="button-match"
                                         onClick={() => this.handleSearch()}>Search</button>
@@ -633,9 +634,10 @@ class WidgetAnimeSearcher extends Component{
                                         style={{
                                             boxShadow: `0px 0px 10px ${this.state.coverImageColor}`
                                         }}
-                                        src={this.state.bannerImage || "/resources/singles/animebackground.jpg"}
+                                        src={this.state.bannerImage || "/resources/singles/animebackground.webp"}
                                         draggable="false"
-                                        alt="banner"/>
+                                        alt="banner"
+                                        decoding="async"/>
                                     <div className="flex-center row gap medium-gap only-justify-content">
                                         {/* Information Container */}
                                         <div id="animesearcher-container-information"
@@ -652,7 +654,8 @@ class WidgetAnimeSearcher extends Component{
                                                 }}
                                                 src={this.state.coverImageLink}
                                                 draggable="false"
-                                                alt="cover"/>
+                                                alt="cover"
+                                                decoding="async"/>
                                             <div id="animesearcher-container-information-sidebar"
                                                 className="text-animation aesthetic-scale scale-span alternating-text-color fade-color flex-center column gap small-gap align-items-left box dimmed-border">
                                                 {/* Type */}
@@ -764,8 +767,9 @@ class WidgetAnimeSearcher extends Component{
                                                                         window.open(link.url);
                                                                     }}>
                                                                     <img className="image-site"
-                                                                        src={link.icon || "/resources/singles/page.png"}
-                                                                        alt={link.site}/>
+                                                                        src={link.icon || "/resources/singles/page.webp"}
+                                                                        alt={link.site}
+                                                                        decoding="async"/>
                                                                 </button>
                                                             })}
                                                         </div>
@@ -840,7 +844,8 @@ class WidgetAnimeSearcher extends Component{
                                                                 }}
                                                                 src={relation.coverImage.extraLarge}
                                                                 alt={`relation ${index}`}
-                                                                draggable="false"/>
+                                                                draggable="false"
+                                                                decoding="async"/>
                                                             <span className="font small text-boxed anime-searcher-normal">
                                                                 {relation.type.charAt(0) + relation.type.substring(1).toLowerCase()}
                                                             </span>
@@ -862,7 +867,8 @@ class WidgetAnimeSearcher extends Component{
                                                                 onClick={() => this.characterClick(index)}
                                                                 src={character.image.large}
                                                                 alt={`character ${character.name.full}`}
-                                                                draggable="false"/>
+                                                                draggable="false"
+                                                                decoding="async"/>
                                                             <span className="font small text-boxed anime-searcher-normal">
                                                                 {this.state.charactersRole[index].role.charAt(0) + this.state.charactersRole[index].role.substring(1).toLowerCase()}
                                                             </span>
@@ -880,7 +886,8 @@ class WidgetAnimeSearcher extends Component{
                                                     {/* Image */}
                                                     <img className="image-character large-image"
                                                         src={this.state.characters[this.state.characterIndex]?.image.large}
-                                                        alt={`character ${this.state.characters[this.state.characterIndex].name?.full}`}/>
+                                                        alt={`character ${this.state.characters[this.state.characterIndex].name?.full}`}
+                                                        decoding="async"/>
                                                     {/* Information */}
                                                     <div className="flex-center column gap align-items-left">
                                                         {/* Name */}
@@ -977,7 +984,8 @@ class WidgetAnimeSearcher extends Component{
                                                                 }}
                                                                 src={episode.thumbnail}
                                                                 alt={`episode ${index}`}
-                                                                draggable="false"/>
+                                                                draggable="false"
+                                                                decoding="async"/>
                                                             <span className="font small text-boxed anime-searcher-wide">
                                                                 {episode.title}
                                                             </span>
@@ -1001,7 +1009,8 @@ class WidgetAnimeSearcher extends Component{
                                                                 }}
                                                                 src={recommendation.mediaRecommendation?.coverImage.extraLarge || ""}
                                                                 alt={`recommendation ${index}`}
-                                                                draggable="false"/>
+                                                                draggable="false"
+                                                                decoding="async"/>
                                                             <span className="font small text-boxed anime-searcher-normal">
                                                                 {recommendation.mediaRecommendation?.type.charAt(0) + recommendation.mediaRecommendation?.type.substring(1).toLowerCase() || ""}
                                                             </span>

@@ -143,8 +143,8 @@ class WidgetAiImageGenerator extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("aiimagegenerator")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("aiimagegenerator");
@@ -225,10 +225,9 @@ class WidgetAiImageGenerator extends Component{
                         </section>
                         {/* Prompt Help Popout */}
                         <Draggable cancel="li"
-                            defaultPosition={{ x: 230, y: 50 }}
                             position={{
-                                x: this.props.positionPopout.prompthelp.x,
-                                y: this.props.positionPopout.prompthelp.y
+                                x: this.props.defaultProps.popouts.prompthelp.position.x,
+                                y: this.props.defaultProps.popouts.prompthelp.position.y
                             }}
                             onStop={(event, data) => this.props.defaultProps.updatePosition("aiimagegenerator", "fun", data.x, data.y, "popout", "prompthelp")}
                             bounds={this.props.defaultProps.calculateBounds("aiimagegenerator-widget", "aiimagegenerator-popout-help")}>

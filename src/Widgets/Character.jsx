@@ -18,10 +18,10 @@ class WidgetCharacter extends Component{
         let equipmentImage = document.createElement("img");
         if(event.detail.side){
             equipmentElement = document.getElementById(`character-${event.detail.slot}-${event.detail.side}`);
-            equipmentImage.src = `/resources/character/character-${modifiedName}-${event.detail.side}.png`;
+            equipmentImage.src = `/resources/character/character-${modifiedName}-${event.detail.side}.webp`;
         }else{
             equipmentElement = document.getElementById(`character-${event.detail.slot}`);
-            equipmentImage.src = `/resources/character/character-${modifiedName}.png`;
+            equipmentImage.src = `/resources/character/character-${modifiedName}.webp`;
         };
         if(equipmentElement.hasChildNodes()){
             equipmentElement.innerHTML = "";
@@ -82,14 +82,14 @@ class WidgetCharacter extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("character")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("character");
                     this.props.defaultProps.updatePosition("character", "utility", data.x, data.y);
                 }}
-                cancel=""
+                cancel="button"
                 bounds="parent">
                 <div id="character-widget"
                     className="widget">
@@ -107,9 +107,10 @@ class WidgetCharacter extends Component{
                         <section id="character-container">
                             <img id="character-image"
                                 className="no-highlight"
-                                src={"/resources/character/character.png"}
+                                src={"/resources/character/character.webp"}
                                 alt="character"
-                                draggable="false"/>
+                                draggable="false"
+                                decoding="async"/>
                             <div id="character-headband"></div>
                             <div id="character-eyewear"></div>
                             <div id="character-helmet"></div>

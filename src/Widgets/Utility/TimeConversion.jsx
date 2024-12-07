@@ -231,8 +231,8 @@ class WidgetTimeConversion extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("timeconversion")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("timeconversion");

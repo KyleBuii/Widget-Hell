@@ -96,8 +96,8 @@ class Widget2048 extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("twentyfortyeight")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("twentyfortyeight");
@@ -203,13 +203,15 @@ class Widget2048 extends Component{
                             {this.state.board.hasWon()
                                 ? <div className="flex-center">
                                     <img src="/resources/2048/2048.gif"
-                                    draggable="false"
-                                        alt="2048 gif"/>
+                                        draggable="false"
+                                        alt="2048 gif"
+                                        decoding="async"/>
                                 </div>
                                 : <div className="flex-center">
                                     <img src="/resources/2048/game-over.gif"
-                                    draggable="false"
-                                        alt="game over gif"/>
+                                        draggable="false"
+                                        alt="game over gif"
+                                        decoding="async"/>
                                 </div>}
                         </div>
                         {/* Author */}

@@ -84,7 +84,7 @@ class WidgetQuote extends Component{
     loadFallingImage(){
         if(this.state.total !== 0){
             let fallingImage = new Image();
-            fallingImage.src = "/resources/singles/petal.png";
+            fallingImage.src = "/resources/singles/petal.webp";
             let images = [];
             for(let i = 0; i < this.state.total; i++){
                 images.push(new Falling(fallingImage));
@@ -120,8 +120,8 @@ class WidgetQuote extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("quote")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("quote");

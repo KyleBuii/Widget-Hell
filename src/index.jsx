@@ -172,7 +172,7 @@ function createPopup(text, type = "normal", randomPosition = false){
                 case "rotmg":
                     popup = document.createElement("img");
                     popup.className = `popup-image flex-center ${text.rarity}`;
-                    popup.src = `/resources/loot/${lootDisplay.value}/${lootDisplay.value}-${text.rarity}.png`;
+                    popup.src = `/resources/loot/${lootDisplay.value}/${lootDisplay.value}-${text.rarity}.webp`;
                     break;
                 default:
                     let itemImage = document.createElement("img");
@@ -344,7 +344,7 @@ function renderHearts(health){
             if((calculateHearts[i] === 1) && (healthDisplay.value === "noredheart")){
             break; 
             };
-            elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.png`}
+            elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.webp`}
                 alt={`heart${calculateHearts[i]} ${i + 1}`}
                 key={`heart${calculateHearts[i]} ${i + 1}`}
                 draggable={false}/>);
@@ -1012,7 +1012,7 @@ const aronaMessages = {
         /// First person to crack the cunny code before the encoder/decoder was released
         /// https://x.com/Roxas13thXIII/status/1839909996383088696
         first_decoder: [
-            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/resources/translator/cunny-code/kisaki-ball.png" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
+            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/resources/translator/cunny-code/kisaki-ball.webp" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
         ],
         /// Emoji
         sob: [
@@ -1174,28 +1174,28 @@ const items = {
             slot: "eyewear",
             type: "cosmetic",
             description: `Uohhhhhhhhh! \uD83D\uDE2D`,
-            image: "/resources/items/senseimask.png",
+            image: "/resources/items/senseimask.webp",
             source: "Blue Archive"
         },
         "Carla's Hat": {
             slot: "helmet",
             type: "cosmetic",
             description: `\uD83D\uDE09\u270C`,
-            image: "/resources/items/carlashat.png",
+            image: "/resources/items/carlashat.webp",
             source: "Don't Hurt Me, My Healer!"
         },
         "Nina's Good Luck Charm": {
             slot: "undershirt",
             type: "cosmetic",
             description: "I'm perfectly prepared. I am fully and completely ready for this.",
-            image: "/resources/items/ninasgoodluckcharm.png",
+            image: "/resources/items/ninasgoodluckcharm.webp",
             source: "Cautious Hero: The Hero Is Overpowered but Overly Cautious"
         },
         "Creamy": {
             slot: "undershirt",
             type: "cosmetic",
             description: "Lemon's good luck charm.",
-            image: "/resources/items/creamy.png",
+            image: "/resources/items/creamy.webp",
             source: "Mashle"
         },
     },
@@ -1208,7 +1208,7 @@ const items = {
                 vitality: 10
             },
             description: "Nothing like a cream puff after pumping iron.",
-            image: "/resources/items/creampuff.png",
+            image: "/resources/items/creampuff.webp",
             source: "Mashle"
         },
         "Chunchunmaru": {
@@ -1218,7 +1218,7 @@ const items = {
                 luck: 99
             },
             description: "Yes, I'm Kazuma.",
-            image: "/resources/items/chunchunmaru.png",
+            image: "/resources/items/chunchunmaru.webp",
             source: "Konosuba"
         },
         "Seed": {
@@ -1228,7 +1228,7 @@ const items = {
                 health: 1
             },
             description: "Exclusive drop from skeletons in Tululu.",
-            image: "/resources/items/seed.png",
+            image: "/resources/items/seed.webp",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Mähne": {
@@ -1238,7 +1238,7 @@ const items = {
                 attack: 1
             },
             description: "Comprised of two large blades joined by a hilt with an extending holder.",
-            image: "/resources/items/mahne.png",
+            image: "/resources/items/mahne.webp",
             source: "Pumpkin Scissors"
         },
         "Belle Delphine's Bath Water": {
@@ -1258,7 +1258,7 @@ const items = {
                 luck: -99
             },
             description: "...",
-            image: "/resources/items/belledelphinesbathwater.png",
+            image: "/resources/items/belledelphinesbathwater.webp",
             source: "Meme"
         },
         "Moona Breast": {
@@ -1268,7 +1268,7 @@ const items = {
                 vitality: 99
             },
             description: "MOONA MOONA MOONA BUTUH KAYU MOONA MOONA",
-            image: "/resources/items/moonabreast.png",
+            image: "/resources/items/moonabreast.webp",
             source: "HoloGta"
         },
         "Reine Thigh": {
@@ -1278,7 +1278,7 @@ const items = {
                 vitality: 99
             },
             description: "mep",
-            image: "/resources/items/reinethigh.png",
+            image: "/resources/items/reinethigh.webp",
             source: "HoloGta"
         },
         "Nasigo": {
@@ -1288,7 +1288,7 @@ const items = {
                 vitality: 99
             },
             description: "Best girl.",
-            image: "/resources/items/nasigo.png",
+            image: "/resources/items/nasigo.webp",
             source: "HoloGta"
         },
         "Reine Burger": {
@@ -1298,7 +1298,7 @@ const items = {
                 intelligence: 10
             },
             description: "mep",
-            image: "/resources/items/reineburger.png",
+            image: "/resources/items/reineburger.webp",
             source: "HoloGta"
         },
         "Moona Burger": {
@@ -1308,7 +1308,7 @@ const items = {
                 intelligence: 10
             },
             description: "MOONA MOONA MOONA BUTUH KAYU MOONA MOONA",
-            image: "/resources/items/moonaburger.png",
+            image: "/resources/items/moonaburger.webp",
             source: "HoloGta"
         },
         "Pavonova Drink": {
@@ -1318,7 +1318,7 @@ const items = {
                 agility: 10
             },
             description: "mep",
-            image: "/resources/items/pavonovadrink.png",
+            image: "/resources/items/pavonovadrink.webp",
             source: "HoloGta"
         },
         "Pavonofries": {
@@ -1328,7 +1328,7 @@ const items = {
                 strength: 10
             },
             description: "mep",
-            image: "/resources/items/pavonofries.png",
+            image: "/resources/items/pavonofries.webp",
             source: "HoloGta"
         },
         "Ankimo Latte Art": {
@@ -1338,7 +1338,7 @@ const items = {
                 agility: 10
             },
             description: "Nun-nun!(๑╹ᆺ╹)",
-            image: "/resources/items/ankimolatteart.png",
+            image: "/resources/items/ankimolatteart.webp",
             source: "HoloGta"
         },
         "Strawberry Popsicle": {
@@ -1348,7 +1348,7 @@ const items = {
                 vitality: 10
             },
             description: "Not Just-Ice!",
-            image: "/resources/items/strawberrypopsicle.png",
+            image: "/resources/items/strawberrypopsicle.webp",
             source: "HoloGta"
         },
         "Choco Mint Popsicle": {
@@ -1358,7 +1358,7 @@ const items = {
                 intelligence: 10
             },
             description: "Not Just-Ice!",
-            image: "/resources/items/chocomintpopsicle.png",
+            image: "/resources/items/chocomintpopsicle.webp",
             source: "HoloGta"
         },
         "Caramel Popsicle": {
@@ -1368,7 +1368,7 @@ const items = {
                 dexterity: 10
             },
             description: "Not Just-Ice!",
-            image: "/resources/items/caramelpopsicle.png",
+            image: "/resources/items/caramelpopsicle.webp",
             source: "HoloGta"
         },
     },
@@ -1379,7 +1379,7 @@ const items = {
             type: "ability",
             information: "Places a grass block",
             description: "C418 - Sweden",
-            image: "/resources/items/grassblock.png",
+            image: "/resources/items/grassblock.webp",
             source: "Minecraft"
         },
         "Hestia Knife": {
@@ -1388,7 +1388,7 @@ const items = {
             information: "Becomes stronger according to the wielder's status",
             description: "A special knife created by Hephaestus with help from Hestia.",
             requirement: "Member of Hestia Familia",
-            image: "/resources/items/hestiaknife.png",
+            image: "/resources/items/hestiaknife.webp",
             source: "Danmachi"
         },
         "Code of Hammurabi": {
@@ -1396,7 +1396,7 @@ const items = {
             type: "ability",
             information: "Redirects every attack against the user back to the attacker",
             description: "An eye for an eye, a tooth for a tooth.",
-            image: "/resources/items/codeofhammurabi.png",
+            image: "/resources/items/codeofhammurabi.webp",
             source: "Tomb Raider King"
         },
         "Door Knocker": {
@@ -1409,7 +1409,7 @@ const items = {
             information: "Decreases the enemy morale",
             description: "Töten Sie. Töten Sie. Töten Sie.",
             requirement: "Must be at point blank range",
-            image: "/resources/items/doorknocker.png",
+            image: "/resources/items/doorknocker.webp",
             source: "Pumpkin Scissors"
         },
         "Necklace": {
@@ -1417,7 +1417,7 @@ const items = {
             type: "ability",
             information: "Doubles item drops",
             description: "Hello... Yoda?",
-            image: "/resources/items/necklace.png",
+            image: "/resources/items/necklace.webp",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Bicorn Horns": {
@@ -1425,7 +1425,7 @@ const items = {
             type: "ability",
             information: "Allows using level 1 magic with no limitations",
             description: "Magic: F",
-            image: "/resources/items/bicornhorns.png",
+            image: "/resources/items/bicornhorns.webp",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Slime Tear": {
@@ -1433,7 +1433,7 @@ const items = {
             type: "ability",
             information: "Reflects slime attacks",
             description: "Dead or carrot.",
-            image: "/resources/items/slimetear.png",
+            image: "/resources/items/slimetear.webp",
             source: "My Unique Skill Makes Me OP Even at Level 1"
         },
         "Crown Artifact": {
@@ -1441,7 +1441,7 @@ const items = {
             type: "ability",
             information: "Cures any curse",
             description: "...",
-            image: "/resources/items/crownartifact.png",
+            image: "/resources/items/crownartifact.webp",
             source: "Don't Hurt Me, My Healer!"
         },
         "Control Device": {
@@ -1449,7 +1449,7 @@ const items = {
             type: "ability",
             information: "Cuts stats by 50%",
             description: "What a pain.",
-            image: "/resources/items/controldevice.png",
+            image: "/resources/items/controldevice.webp",
             source: "The Disastrous Life of Saiki K."
         },
         "Rest in Peace": {
@@ -1457,7 +1457,7 @@ const items = {
             type: "ability",
             information: "Slashes in a large radius",
             description: "I'm your Mori, I hope you'll remember me.",
-            image: "/resources/items/restinpeace.png",
+            image: "/resources/items/restinpeace.webp",
             source: "ENigmatic Recollection"
         },
         "Oceanic Terror": {
@@ -1465,7 +1465,7 @@ const items = {
             type: "ability",
             information: "Fires a wave",
             description: "a",
-            image: "/resources/items/oceanicterror.png",
+            image: "/resources/items/oceanicterror.webp",
             source: "ENigmatic Recollection"
         },
         "Violet Miasma": {
@@ -1473,7 +1473,7 @@ const items = {
             type: "ability",
             information: "Summons a flying purple energy orb",
             description: "WAH",
-            image: "/resources/items/violetmiasma.png",
+            image: "/resources/items/violetmiasma.webp",
             source: "ENigmatic Recollection"
         },
         "Burning Phoenix": {
@@ -1481,7 +1481,7 @@ const items = {
             type: "ability",
             information: "Slashes in a small radius followed by a fire trail",
             description: "Kikiriki!",
-            image: "/resources/items/burningphoenix.png",
+            image: "/resources/items/burningphoenix.webp",
             source: "ENigmatic Recollection"
         },
         "Burning Phoenix Shield": {
@@ -1489,7 +1489,7 @@ const items = {
             type: "ability",
             information: "Blocks any attack",
             description: "Kikiriki!",
-            image: "/resources/items/burningphoenixshield.png",
+            image: "/resources/items/burningphoenixshield.webp",
             source: "ENigmatic Recollection"
         },
         "Eye of Wisdom": {
@@ -1497,7 +1497,7 @@ const items = {
             type: "ability",
             information: "Debuffs enemies by 50%",
             description: "hic",
-            image: "/resources/items/eyeofwisdom.png",
+            image: "/resources/items/eyeofwisdom.webp",
             source: "ENigmatic Recollection"
         },
         "Light and Darkness: Dark": {
@@ -1505,7 +1505,7 @@ const items = {
             type: "ability",
             information: "Shoots a powerful charged shot",
             description: "Hope has descended.",
-            image: "/resources/items/lightanddarknessdark.png",
+            image: "/resources/items/lightanddarknessdark.webp",
             source: "ENigmatic Recollection"
         },
         "Light and Darkness: Light": {
@@ -1513,7 +1513,7 @@ const items = {
             type: "ability",
             information: "Shoots a powerful charged shot",
             description: "Hope has descended.",
-            image: "/resources/items/lightanddarknesslight.png",
+            image: "/resources/items/lightanddarknesslight.webp",
             source: "ENigmatic Recollection"
         },
         "Chaos Stampede": {
@@ -1521,15 +1521,15 @@ const items = {
             type: "ability",
             information: "Throws a grenade",
             description: "bruh",
-            image: "/resources/items/chaosstampede.png",
+            image: "/resources/items/chaosstampede.webp",
             source: "ENigmatic Recollection"
         },
         "Winds of Civilization": {
             slot: "main",
             type: "ability",
             information: "Slashes in a medium radius multiple times",
-            description: `<img src="/resources/items/additions/mumei-nightmare.png" alt="mumei nightmare"/>,`,
-            image: "/resources/items/windsofcivilization.png",
+            description: `<img src="/resources/items/additions/mumei-nightmare.webp" alt="mumei nightmare"/>,`,
+            image: "/resources/items/windsofcivilization.webp",
             source: "ENigmatic Recollection"
         },
         "Nature's Grace": {
@@ -1537,7 +1537,7 @@ const items = {
             type: "ability",
             information: "Heals 1 heart",
             description: "I would kill for this woman.",
-            image: "/resources/items/naturesgrace.png",
+            image: "/resources/items/naturesgrace.webp",
             source: "ENigmatic Recollection"
         },
         "Chrono Surge: Main": {
@@ -1545,7 +1545,7 @@ const items = {
             type: "ability",
             information: "Slashes in a medium radius multiple times",
             description: "GWAK!",
-            image: "/resources/items/chronosurgemain.png",
+            image: "/resources/items/chronosurgemain.webp",
             source: "ENigmatic Recollection"
         },
         "Chrono Surge: Offhand": {
@@ -1553,7 +1553,7 @@ const items = {
             type: "ability",
             information: "Slashes in a medium radius multiple times",
             description: "GWAK!",
-            image: "/resources/items/chronosurgeoffhand.png",
+            image: "/resources/items/chronosurgeoffhand.webp",
             source: "ENigmatic Recollection"
         },
         "Shining Emotion": {
@@ -1561,7 +1561,7 @@ const items = {
             type: "ability",
             information: "Shoots multiple shots",
             description: "Rock rock!",
-            image: "/resources/items/shiningemotion.png",
+            image: "/resources/items/shiningemotion.webp",
             source: "ENigmatic Recollection"
         },
         "Resonant Strike": {
@@ -1569,7 +1569,7 @@ const items = {
             type: "ability",
             information: "Hits with an AoE blast",
             description: "ope",
-            image: "/resources/items/resonantstrike.png",
+            image: "/resources/items/resonantstrike.webp",
             source: "ENigmatic Recollection"
         },
         "Bookmark of Memories": {
@@ -1577,7 +1577,7 @@ const items = {
             type: "ability",
             information: "Shoots a powerful charged shot",
             description: "The Archiver.",
-            image: "/resources/items/bookmarkofmemories.png",
+            image: "/resources/items/bookmarkofmemories.webp",
             source: "ENigmatic Recollection"
         },
         "Azure Claw": {
@@ -1585,7 +1585,7 @@ const items = {
             type: "ability",
             information: "Slashes in a small radius multiple times",
             description: "Bau Bau",
-            image: "/resources/items/azureclaw.png",
+            image: "/resources/items/azureclaw.webp",
             source: "ENigmatic Recollection"
         },
         "Fuchsia Claw": {
@@ -1593,7 +1593,7 @@ const items = {
             type: "ability",
             information: "Slashes in a small radius multiple times",
             description: "Haeh?",
-            image: "/resources/items/fuchsiaclaw.png",
+            image: "/resources/items/fuchsiaclaw.webp",
             source: "ENigmatic Recollection"
         },
         "Automaton Assault": {
@@ -1601,7 +1601,7 @@ const items = {
             type: "ability",
             information: "Thrusts multiple times",
             description: "Speen to win!",
-            image: "/resources/items/automatonassault.png",
+            image: "/resources/items/automatonassault.webp",
             source: "ENigmatic Recollection"
         },
         "Thorn of Order": {
@@ -1609,7 +1609,7 @@ const items = {
             type: "ability",
             information: "Slashes in a large radius",
             description: "Oh~hohoho!",
-            image: "/resources/items/thornoforder.png",
+            image: "/resources/items/thornoforder.webp",
             source: "ENigmatic Recollection"
         },
         "Gremlin Grenade": {
@@ -1617,7 +1617,7 @@ const items = {
             type: "ability",
             information: "Slams the ground",
             description: "Do you remember?",
-            image: "/resources/items/gremlingrenade.png",
+            image: "/resources/items/gremlingrenade.webp",
             source: "ENigmatic Recollection"
         },
         "Purrfect Execution": {
@@ -1625,7 +1625,7 @@ const items = {
             type: "ability",
             information: "Slashes in a small radius multiple times",
             description: "Big cat means big trouble!",
-            image: "/resources/items/purrfectexecution.png",
+            image: "/resources/items/purrfectexecution.webp",
             source: "ENigmatic Recollection"
         },
     },
@@ -1636,7 +1636,7 @@ const items = {
             type: "ability",
             information: "Reflects all magic",
             description: "Most powerful accessory in Cross Reverie.",
-            image: "/resources/items/demonlordsring.png",
+            image: "/resources/items/demonlordsring.webp",
             source: "How Not to Summon a Demon Lord"
         }
     }
@@ -7186,14 +7186,14 @@ class Widgets extends Component{
                         popouts: {
                             showhidewidgets: {
                                 position: {
-                                    x: 30,
-                                    y: -55
+                                    x: -22,
+                                    y: 60
                                 }
                             },
                             settings: {
                                 position: {
-                                    x: 85,
-                                    y: -25
+                                    x: 114,
+                                    y: 90
                                 }
                             }
                         }
@@ -7246,6 +7246,26 @@ class Widgets extends Component{
                             x: 0,
                             y: 0
                         },
+                        popouts: {
+                            replace: {
+                                position: {
+                                    x: 50,
+                                    y: 74
+                                }
+                            },
+                            reverse: {
+                                position: {
+                                    x: 90,
+                                    y: 74
+                                }
+                            },
+                            casetransform: {
+                                position: {
+                                    x: 90,
+                                    y: 74
+                                }
+                            }
+                        },
                         drag: {
                             disabled: false
                         }   
@@ -7271,8 +7291,8 @@ class Widgets extends Component{
                         popouts: {
                             expandinput: {
                                 position: {
-                                    x: 180,
-                                    y: -305
+                                    x: 60,
+                                    y: 115
                                 }
                             }
                         },
@@ -7290,8 +7310,8 @@ class Widgets extends Component{
                         popouts: {
                             searchhelp: {
                                 position: {
-                                    x: 0,
-                                    y: 125
+                                    x: 12,
+                                    y: 70
                                 }
                             }
                         },
@@ -7418,6 +7438,14 @@ class Widgets extends Component{
                             x: 0,
                             y: 0
                         },
+                        popouts: {
+                            settings: {
+                                position: {
+                                    x: 145,
+                                    y: 325
+                                }
+                            }
+                        },
                         drag: {
                             disabled: false
                         }
@@ -7439,6 +7467,14 @@ class Widgets extends Component{
                         position: {
                             x: 0,
                             y: 0
+                        },
+                        popouts: {
+                            settings: {
+                                position: {
+                                    x: 105,
+                                    y: 290
+                                }
+                            }
                         },
                         drag: {
                             disabled: false
@@ -7552,6 +7588,14 @@ class Widgets extends Component{
                             x: 0,
                             y: 0
                         },
+                        popouts: {
+                            settings: {
+                                position: {
+                                    x: 15,
+                                    y: 85
+                                }
+                            }
+                        },
                         drag: {
                             disabled: false
                         }
@@ -7588,8 +7632,8 @@ class Widgets extends Component{
                         popouts: {
                             prompthelp: {
                                 position: {
-                                    x: 0,
-                                    y: 0
+                                    x: 230,
+                                    y: 50
                                 }
                             }
                         },
@@ -8247,16 +8291,16 @@ class Widgets extends Component{
                 for(const element of widgetAll){
                     const elementDecoration = element.getElementsByClassName("decoration");
                     if(elementDecoration.length === 1){
-                        elementDecoration[0].src = `/resources/decoration/${value.value}.png`;
+                        elementDecoration[0].src = `/resources/decoration/${value.value}.webp`;
                         elementDecoration[0].alt = value.value;
                         elementDecoration[0].className = `decoration ${value.value}`;
                     }else if(elementDecoration.length > 1){
-                        elementDecoration[elementDecoration.length - 1].src = `/resources/decoration/${value.value}.png`;
+                        elementDecoration[elementDecoration.length - 1].src = `/resources/decoration/${value.value}.webp`;
                         elementDecoration[elementDecoration.length - 1].alt = value.value;
                         elementDecoration[elementDecoration.length - 1].className = `decoration ${value.value}`;
                     }else{
                         const elementImage = document.createElement("img");
-                        elementImage.src = `/resources/decoration/${value.value}.png`;
+                        elementImage.src = `/resources/decoration/${value.value}.webp`;
                         elementImage.alt = value.value;
                         elementImage.className = `decoration ${value.value}`;
                         element.appendChild(elementImage);        
@@ -8278,12 +8322,12 @@ class Widgets extends Component{
                 for(const element of widgetAll){
                     const elementDecoration = element.getElementsByClassName("decoration");
                     if(elementDecoration.length !== 0){
-                        elementDecoration[0].src = `/resources/decoration/${valueDecoration}.png`;
+                        elementDecoration[0].src = `/resources/decoration/${valueDecoration}.webp`;
                         elementDecoration[0].alt = valueDecoration;
                         elementDecoration[0].className = `decoration ${valueDecoration}`;
                     }else{
                         const elementImage = document.createElement("img");
-                        elementImage.src = `/resources/decoration/${valueDecoration}.png`;
+                        elementImage.src = `/resources/decoration/${valueDecoration}.webp`;
                         elementImage.alt = valueDecoration;
                         elementImage.className = `decoration ${valueDecoration}`;
                         element.appendChild(elementImage);        
@@ -8316,7 +8360,7 @@ class Widgets extends Component{
         /// Creating a shadow image
         let randomNumber = Math.random() * 1200000 + 300000;
         let elementShadow = document.createElement("img");
-        elementShadow.src = "/resources/singles/guy.png";
+        elementShadow.src = "/resources/singles/guy.webp";
         let elementContainer = document.getElementById("widget-container");
         let elementContainerSize = elementContainer.getBoundingClientRect();
         elementShadow.onload = () => {
@@ -8631,7 +8675,32 @@ class Widgets extends Component{
                 </button>
                 : <></>}
         </section>
-    };    
+    };
+    generateDefaultProps(widget, type){
+        let defaultProps = {
+            position: {
+                x: this.state.widgets[type][widget].position.x,
+                y: this.state.widgets[type][widget].position.y
+            },
+            dragDisabled: this.state.widgets[type][widget].drag.disabled,
+            dragStart: dragStart,
+            dragStop: dragStop,
+            updatePosition: this.updatePosition,
+            handleHotbar: this.handleHotbar,
+            showHidePopout: this.handleShowHidePopout,
+            values: {
+                authorNames: this.state.values.authorNames
+            },
+            playAudio: playAudio,
+            calculateBounds: calculateBounds,
+            renderHotbar: this.renderHotbar,
+            largeIcon: largeIcon
+        };
+        if(this.state.widgets[type][widget].popouts !== null){
+            defaultProps.popouts = this.state.widgets[type][widget].popouts;
+        };
+        return defaultProps;
+    };
     storeData(){
         let data = {
             utility: {},
@@ -8915,19 +8984,6 @@ class Widgets extends Component{
         clearInterval(intervalHorror);
     };
     render(){
-        const defaultProps = {
-            dragStart: dragStart,
-            dragStop: dragStop,
-            updatePosition: this.updatePosition,
-            handleHotbar: this.handleHotbar,
-            showHidePopout: this.handleShowHidePopout,
-            values: {
-                authorNames: this.state.values.authorNames
-            },
-            playAudio: playAudio,
-            calculateBounds: calculateBounds,
-            renderHotbar: this.renderHotbar
-        };
         const gameProps = {
             gold: this.state.gold,
             stats: this.state.stats,
@@ -8962,17 +9018,14 @@ class Widgets extends Component{
         return(
             <div id="widget-container"
                 onMouseMove={(event) => this.handleMouseMove(event)}>
-                {/* Cursor */}
                 {(this.state.values.cursorTrail)
-                    ? <Cursor color={this.state.values.cursorTrailColor}
+                    && <Cursor color={this.state.values.cursorTrailColor}
                         flat={this.state.values.cursorTrailFlat}
                         mode={this.state.values.cursorTrailMode}
                         thickness={this.state.values.cursorTrailThickness}
-                        duration={this.state.values.cursorTrailDuration}/>
-                    : <></>}
+                        duration={this.state.values.cursorTrailDuration}/>}
                 <Particle choice={this.state.values.particle}
                     mute={this.state.values.particleMute}/>
-                {/* For copying to clipboard */}
                 <pre id="clipboard-dump"></pre>
                 <button id="widget-button-setting"
                     className="button-match inverse button-setting-active"
@@ -8981,9 +9034,8 @@ class Widgets extends Component{
                         <AiOutlineSetting/>
                     </IconContext.Provider>
                 </button>
-                {/* For Developers */}
                 {(this.state.developer)
-                    ? <section style={{
+                    && <section style={{
                         display: "flex",
                         flexDirection: "column",
                         position: "absolute",
@@ -9012,14 +9064,12 @@ class Widgets extends Component{
                             this.setState({inventory: []});}}>
                             Reset inventory
                         </button>
-                    </section>
-                    : <></>}
+                    </section>}
                 {/* Widgets: Special */}
                 {
                     //#region
                 }
-                <WidgetSetting
-                    widgets={widgets}
+                <WidgetSetting widgets={widgets}
                     widgetActiveVariables={widgetActiveVariables}
                     values={this.state.values}
                     showHide={this.handleShowHide}
@@ -9062,47 +9112,26 @@ class Widgets extends Component{
                     valueClose={this.state.values.close}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
-                {this.state.widgets.utility.inventory.active === true
-                    ? <WidgetInventory
-                        defaultProps={defaultProps}
+                {this.state.widgets.utility.inventory.active
+                    && <WidgetInventory defaultProps={this.generateDefaultProps("inventory", "utility")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.utility.inventory.position.x,
-                            y: this.state.widgets.utility.inventory.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.inventory.drag.disabled}
                         inventory={this.state.inventory}
                         items={items}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.equipment.active === true
-                    ? <WidgetEquipment
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.equipment.active
+                    && <WidgetEquipment defaultProps={this.generateDefaultProps("equipment", "utility")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.utility.equipment.position.x,
-                            y: this.state.widgets.utility.equipment.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.equipment.drag.disabled}
                         updateGameValue={this.updateGameValue}
                         equipment={this.state.equipment}
                         items={items}
                         stats={this.state.stats}
                         abilities={this.state.abilities}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.character.active === true
-                    ? <WidgetCharacter
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.character.position.x,
-                            y: this.state.widgets.utility.character.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.character.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.character.active
+                    && <WidgetCharacter defaultProps={this.generateDefaultProps("character", "utility")}
                         punctuation={punctuation}
                         equipment={this.state.equipment}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {
                     //#endregion
                 }
@@ -9110,33 +9139,20 @@ class Widgets extends Component{
                 {
                     //#region
                 }
-                {this.state.widgets.utility.quote.active === true
-                    ? <WidgetQuote
-                        defaultProps={defaultProps}
+                {this.state.widgets.utility.quote.active
+                    && <WidgetQuote defaultProps={this.generateDefaultProps("quote", "utility")}
                         copyToClipboard={copyToClipboard}
                         quotes={quotes}
-                        position={{
-                            x: this.state.widgets.utility.quote.position.x,
-                            y: this.state.widgets.utility.quote.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.quote.drag.disabled}
                         talk={this.talk}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.translator.active === true
-                    ? <WidgetTranslator
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.translator.active
+                    && <WidgetTranslator defaultProps={this.generateDefaultProps("translator", "utility")}
                         randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         grep={grep}
                         mergePunctuation={mergePunctuation}
                         randSentence={randSentence}
                         sortSelect={sortSelect}
-                        position={{
-                            x: this.state.widgets.utility.translator.position.x,
-                            y: this.state.widgets.utility.translator.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.translator.drag.disabled}
                         brailleDictionary={brailleDictionary}
                         brailleFromDictionary={brailleFromDictionary}
                         moorseCodeDictionary={moorseCodeDictionary}
@@ -9160,189 +9176,85 @@ class Widgets extends Component{
                         selectHideGroupMenuList={selectHideGroupMenuList}
                         updateGlobalValue={this.updateGlobalValue}
                         smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.googletranslator.active === true
-                    ? <WidgetGoogleTranslator
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.googletranslator.active
+                    && <WidgetGoogleTranslator defaultProps={this.generateDefaultProps("googletranslator", "utility")}
                         randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         randSentence={randSentence}
-                        position={{
-                            x: this.state.widgets.utility.googletranslator.position.x,
-                            y: this.state.widgets.utility.googletranslator.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.googletranslator.drag.disabled}
                         languages={languages}
                         talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.calculator.active === true
-                    ? <WidgetCalculator
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.calculator.active
+                    && <WidgetCalculator defaultProps={this.generateDefaultProps("calculator", "utility")}
                         copyToClipboard={copyToClipboard}
-                        position={{
-                            x: this.state.widgets.utility.calculator.position.x,
-                            y: this.state.widgets.utility.calculator.position.y
-                        }}
-                        positionPopout={{
-                            expandinput: {
-                                x: this.state.widgets.utility.calculator.popouts.expandinput.position.x,
-                                y: this.state.widgets.utility.calculator.popouts.expandinput.position.y
-                            }
-                        }}
-                        dragDisabled={this.state.widgets.utility.calculator.drag.disabled}
                         medIcon={medIcon}
-                        operation={operation}/>
-                    : <></>}
-                {this.state.widgets.utility.weather.active === true
-                    ? <WidgetWeather
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.weather.position.x,
-                            y: this.state.widgets.utility.weather.position.y
-                        }}
-                        positionPopout={{
-                            searchhelp: {
-                                x: this.state.widgets.utility.weather.popouts.searchhelp.position.x,
-                                y: this.state.widgets.utility.weather.popouts.searchhelp.position.y
-                            }
-                        }}
-                        dragDisabled={this.state.widgets.utility.weather.drag.disabled}
+                        operation={operation}/>}
+                {this.state.widgets.utility.weather.active
+                    && <WidgetWeather defaultProps={this.generateDefaultProps("weather", "utility")}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}
                         medIcon={medIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.timeconversion.active === true
-                    ? <WidgetTimeConversion
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.timeconversion.position.x,
-                            y: this.state.widgets.utility.timeconversion.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.timeconversion.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.timeconversion.active
+                    && <WidgetTimeConversion defaultProps={this.generateDefaultProps("timeconversion", "utility")}
                         sortSelect={sortSelect}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.utility.spreadsheet.active === true
-                    ? <WidgetSpreadsheet
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.spreadsheet.position.x,
-                            y: this.state.widgets.utility.spreadsheet.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.spreadsheet.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.spreadsheet.active
+                    && <WidgetSpreadsheet defaultProps={this.generateDefaultProps("spreadsheet", "utility")}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {/* {this.state.widgets.utility.notepad.active
-                    ? <WidgetNotepad
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.notepad.position.x,
-                            y: this.state.widgets.utility.notepad.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.notepad.drag.disabled}
+                    && <WidgetNotepad defaultProps={this.generateDefaultProps("notepad", "utility")}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>} */}
+                        largeIcon={largeIcon}/>} */}
                 {this.state.widgets.utility.qrcode.active
-                    ? <WidgetQRCode
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.qrcode.position.x,
-                            y: this.state.widgets.utility.qrcode.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.qrcode.drag.disabled}
+                    && <WidgetQRCode defaultProps={this.generateDefaultProps("qrcode", "utility")}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {this.state.widgets.utility.battery.active
-                    ? <WidgetBattery
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.battery.position.x,
-                            y: this.state.widgets.utility.battery.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.battery.drag.disabled}
+                    && <WidgetBattery defaultProps={this.generateDefaultProps("battery", "utility")}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {this.state.widgets.utility.currencyconverter.active
-                    ? <WidgetCurrencyConverter
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.currencyconverter.position.x,
-                            y: this.state.widgets.utility.currencyconverter.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.currencyconverter.drag.disabled}
+                    && <WidgetCurrencyConverter defaultProps={this.generateDefaultProps("currencyconverter", "utility")}
                         moneyConversions={moneyConversions}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {/* {this.state.widgets.utility.urlshortner.active
-                    ? <WidgetURLShortner
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.urlshortner.position.x,
-                            y: this.state.widgets.utility.urlshortner.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.urlshortner.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>} */}
+                    && <WidgetURLShortner defaultProps={this.generateDefaultProps("urlshortner", "utility")}
+                        largeIcon={largeIcon}/>} */}
                 {this.state.widgets.utility.imagecolorpicker.active
-                    ? <WidgetImageColorPicker
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.imagecolorpicker.position.x,
-                            y: this.state.widgets.utility.imagecolorpicker.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.imagecolorpicker.drag.disabled}
+                    && <WidgetImageColorPicker defaultProps={this.generateDefaultProps("imagecolorpicker", "utility")}
                         copyToClipboard={copyToClipboard}
                         randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {this.state.widgets.utility.musicplayer.active
-                    ? <WidgetMusicPlayer
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.musicplayer.position.x,
-                            y: this.state.widgets.utility.musicplayer.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.musicplayer.drag.disabled}
+                    && <WidgetMusicPlayer defaultProps={this.generateDefaultProps("musicplayer", "utility")}
                         copyToClipboard={copyToClipboard}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {this.state.widgets.utility.animesearcher.active
-                    ? <WidgetAnimeSearcher
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.utility.animesearcher.position.x,
-                            y: this.state.widgets.utility.animesearcher.position.y
-                        }}
-                        dragDisabled={this.state.widgets.utility.animesearcher.drag.disabled}
+                    && <WidgetAnimeSearcher defaultProps={this.generateDefaultProps("animesearcher", "utility")}
                         copyToClipboard={copyToClipboard}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 {
                     //#endregion
                 }
@@ -9350,150 +9262,66 @@ class Widgets extends Component{
                 {
                     //#region
                 }
-                {this.state.widgets.games.snake.active === true
-                    ? <WidgetSnake
-                        defaultProps={defaultProps}
+                {this.state.widgets.games.snake.active
+                    && <WidgetSnake defaultProps={this.generateDefaultProps("snake", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.snake.position.x,
-                            y: this.state.widgets.games.snake.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.snake.drag.disabled}
                         foodTypes={foodTypes}
                         debris={debrisPatterns}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.typingtest.active === true
-                    ? <WidgetTypingTest
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.typingtest.active
+                    && <WidgetTypingTest defaultProps={this.generateDefaultProps("typingtest", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.typingtest.position.x,
-                            y: this.state.widgets.games.typingtest.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.typingtest.drag.disabled}
                         randSentence={randSentence}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.simongame.active === true
-                    ? <WidgetSimonGame
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.simongame.active
+                    && <WidgetSimonGame defaultProps={this.generateDefaultProps("simongame", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.simongame.position.x,
-                            y: this.state.widgets.games.simongame.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.simongame.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.minesweeper.active === true
-                    ? <WidgetMinesweeper
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.minesweeper.active
+                    && <WidgetMinesweeper defaultProps={this.generateDefaultProps("minesweeper", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.minesweeper.position.x,
-                            y: this.state.widgets.games.minesweeper.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.minesweeper.drag.disabled}
                         smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.breakout.active === true
-                    ? <WidgetBreakout
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.breakout.active
+                    && <WidgetBreakout defaultProps={this.generateDefaultProps("breakout", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.breakout.position.x,
-                            y: this.state.widgets.games.breakout.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.breakout.drag.disabled}
                         patterns={breakoutPatterns}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.chess.active === true
-                    ? <WidgetChess
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.chess.active
+                    && <WidgetChess defaultProps={this.generateDefaultProps("chess", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.chess.position.x,
-                            y: this.state.widgets.games.chess.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.chess.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.twentyfortyeight.active === true
-                    ? <Widget2048
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.twentyfortyeight.active
+                    && <Widget2048 defaultProps={this.generateDefaultProps("twentyfortyeight", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.twentyfortyeight.position.x,
-                            y: this.state.widgets.games.twentyfortyeight.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.twentyfortyeight.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.trivia.active === true
-                    ? <WidgetTrivia
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.trivia.active
+                    && <WidgetTrivia defaultProps={this.generateDefaultProps("trivia", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.trivia.position.x,
-                            y: this.state.widgets.games.trivia.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.trivia.drag.disabled}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         sortSelect={sortSelect}
                         menuListScrollbar={menuListScrollbar}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.tetris.active === true
-                    ? <WidgetTetris
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.tetris.active
+                    && <WidgetTetris defaultProps={this.generateDefaultProps("tetris", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.tetris.position.x,
-                            y: this.state.widgets.games.tetris.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.tetris.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.grindshot.active === true
-                    ? <WidgetGrindshot
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.grindshot.active
+                    && <WidgetGrindshot defaultProps={this.generateDefaultProps("grindshot", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.grindshot.position.x,
-                            y: this.state.widgets.games.grindshot.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.grindshot.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.colormemory.active === true
-                    ? <WidgetColorMemory
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.colormemory.active
+                    && <WidgetColorMemory defaultProps={this.generateDefaultProps("colormemory", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.colormemory.position.x,
-                            y: this.state.widgets.games.colormemory.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.colormemory.drag.disabled}
                         hexToRgb={hexToRgb}
                         randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.games.rockpaperscissor.active === true
-                    ? <WidgetRockPaperScissor
-                        defaultProps={defaultProps}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.games.rockpaperscissor.active
+                    && <WidgetRockPaperScissor defaultProps={this.generateDefaultProps("rockpaperscissor", "games")}
                         gameProps={gameProps}
-                        position={{
-                            x: this.state.widgets.games.rockpaperscissor.position.x,
-                            y: this.state.widgets.games.rockpaperscissor.position.y
-                        }}
-                        dragDisabled={this.state.widgets.games.rockpaperscissor.drag.disabled}
                         rps={rps}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
                 { 
                     //#endregion
                 }
@@ -9501,82 +9329,34 @@ class Widgets extends Component{
                 {
                     //#region
                 }
-                {this.state.widgets.fun.pokemonsearch.active === true
-                    ? <WidgetPokemonSearch
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.pokemonsearch.position.x,
-                            y: this.state.widgets.fun.pokemonsearch.position.y
-                        }}
-                        dragDisabled={this.state.widgets.fun.pokemonsearch.drag.disabled}
+                {this.state.widgets.fun.pokemonsearch.active
+                    && <WidgetPokemonSearch defaultProps={this.generateDefaultProps("pokemonsearch", "fun")}
                         microIcon={microIcon}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.fun.pickerwheel.active === true
-                    ? <WidgetPickerWheel
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.pickerwheel.position.x,
-                            y: this.state.widgets.fun.pickerwheel.position.y
-                        }}
-                        dragDisabled={this.state.widgets.fun.pickerwheel.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.fun.pickerwheel.active
+                    && <WidgetPickerWheel defaultProps={this.generateDefaultProps("pickerwheel", "fun")}
                         color={color}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.fun.donutanimation.active === true
-                    ? <WidgetDonutAnimation
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.donutanimation.position.x,
-                            y: this.state.widgets.fun.donutanimation.position.y
-                        }}
-                        dragDisabled={this.state.widgets.fun.donutanimation.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.fun.aiimagegenerator.active === true
-                    ? <WidgetAiImageGenerator
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.aiimagegenerator.position.x,
-                            y: this.state.widgets.fun.aiimagegenerator.position.y
-                        }}
-                        positionPopout={{
-                            prompthelp: {
-                                x: this.state.widgets.fun.aiimagegenerator.popouts.prompthelp.position.x,
-                                y: this.state.widgets.fun.aiimagegenerator.popouts.prompthelp.position.y
-                            }
-                        }}
-                        dragDisabled={this.state.widgets.fun.aiimagegenerator.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.fun.donutanimation.active
+                    && <WidgetDonutAnimation defaultProps={this.generateDefaultProps("donutanimation", "fun")}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.fun.aiimagegenerator.active
+                    && <WidgetAiImageGenerator defaultProps={this.generateDefaultProps("aiimagegenerator", "fun")}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.fun.sticker.active === true
-                    ? <WidgetSticker
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.sticker.position.x,
-                            y: this.state.widgets.fun.sticker.position.y
-                        }}
-                        dragDisabled={this.state.widgets.fun.sticker.drag.disabled}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.fun.sticker.active
+                    && <WidgetSticker defaultProps={this.generateDefaultProps("sticker", "fun")}
                         stickers={this.state.stickers}
                         updateStickers={this.updateStickers}
-                        largeIcon={largeIcon}/>
-                    : <></>}
-                {this.state.widgets.fun.facts.active === true
-                    ? <WidgetFacts
-                        defaultProps={defaultProps}
-                        position={{
-                            x: this.state.widgets.fun.facts.position.x,
-                            y: this.state.widgets.fun.facts.position.y
-                        }}
-                        dragDisabled={this.state.widgets.fun.facts.drag.disabled}
-                        largeIcon={largeIcon}/>
-                    : <></>}
+                        largeIcon={largeIcon}/>}
+                {this.state.widgets.fun.facts.active
+                    && <WidgetFacts defaultProps={this.generateDefaultProps("facts", "fun")}
+                        largeIcon={largeIcon}/>}
                 {
                     //#endregion
                 }
@@ -9593,14 +9373,14 @@ class Widgets extends Component{
 // class Widget[] extends Component{
 //     render(){
 //         return(
-//             <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-//                 disabled={this.props.dragDisabled}
+//             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+//                 disabled={this.props.defaultProps.dragDisabled}
 //                 onStart={() => this.props.defaultProps.dragStart("[]")}
 //                 onStop={(event, data) => {
 //                     this.props.defaultProps.dragStop("[]");
 //                     this.props.defaultProps.updatePosition("[]", "[WIDGET TYPE]", data.x, data.y);
 //                 }}
-//                 cancel=""
+//                 cancel="button"
 //                 bounds="parent">
 //                 <div id="[]-widget"
 //                     className="widget">

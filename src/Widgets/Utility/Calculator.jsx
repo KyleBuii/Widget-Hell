@@ -459,8 +459,8 @@ class WidgetCalculator extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("calculator")}
                 onStop={(event, data) => { 
                     this.props.defaultProps.dragStop("calculator");
@@ -629,10 +629,9 @@ class WidgetCalculator extends Component{
                         </section>
                         {/* Expand Input Popout */}
                         <Draggable cancel="p"
-                            defaultPosition={{ x: 60, y: 115 }}
                             position={{
-                                x: this.props.positionPopout.expandinput.x,
-                                y: this.props.positionPopout.expandinput.y
+                                x: this.props.defaultProps.popouts.expandinput.position.x,
+                                y: this.props.defaultProps.popouts.expandinput.position.y
                             }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition("calculator", "utility", data.x, data.y, "popout", "expandinput");

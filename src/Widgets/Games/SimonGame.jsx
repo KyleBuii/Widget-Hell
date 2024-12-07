@@ -233,8 +233,8 @@ class WidgetSimonGame extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("simongame")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("simongame");
@@ -337,7 +337,13 @@ class WidgetSimonGame extends Component{
                         </section>
                         {/* Settings Popout */}
                         <Draggable cancel="span, .slider, button"
-                            defaultPosition={{ x: 105, y: 290 }}
+                            position={{
+                                x: this.props.defaultProps.popouts.settings.position.x,
+                                y: this.props.defaultProps.popouts.settings.position.y
+                            }}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("simongame", "games", data.x, data.y, "popout", "settings");
+                            }}
                             bounds={this.props.defaultProps.calculateBounds("simongame-widget", "simongame-popout-settings")}>
                             <section id="simongame-popout-settings"
                                 className="popout">

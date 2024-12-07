@@ -621,8 +621,8 @@ class WidgetSnake extends Component{
             });
         });
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("snake")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("snake");
@@ -715,7 +715,13 @@ class WidgetSnake extends Component{
                             : <></>}
                         {/* Settings Popout */}
                         <Draggable cancel="span, .slider, button"
-                            defaultPosition={{ x: 145, y: 325 }}
+                            position={{
+                                x: this.props.defaultProps.popouts.settings.position.x,
+                                y: this.props.defaultProps.popouts.settings.position.y
+                            }}
+                            onStop={(event, data) => {
+                                this.props.defaultProps.updatePosition("snake", "games", data.x, data.y, "popout", "settings");
+                            }}
                             bounds={this.props.defaultProps.calculateBounds("snake-widget", "snake-popout-settings")}>
                             <section id="snake-popout-settings"
                                 className="popout">

@@ -264,7 +264,7 @@ class WidgetChess extends Component{
             });
             const elementCapturedPiecesBlack = document.getElementById("chess-captured-pieces-black");
             const elementImage = document.createElement("img");
-            elementImage.src = `/resources/chess/b${move.captured.toUpperCase()}.png`;
+            elementImage.src = `/resources/chess/b${move.captured.toUpperCase()}.webp`;
             elementImage.alt = `captured ${move.captured} black piece`;
             elementImage.draggable = false;
             elementCapturedPiecesBlack.appendChild(elementImage);
@@ -288,8 +288,8 @@ class WidgetChess extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("chess")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("chess");

@@ -146,8 +146,8 @@ class WidgetWeather extends Component{
     };
     render(){
         return(
-            <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                disabled={this.props.dragDisabled}
+            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+                disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart("weather")}
                 onStop={(event, data) => {
                     this.props.defaultProps.dragStop("weather");
@@ -192,10 +192,9 @@ class WidgetWeather extends Component{
                         </div>
                         {/* Search help popout */}
                         <Draggable cancel="li"
-                            defaultPosition={{ x: 12, y: 70 }}
                             position={{
-                                x: this.props.positionPopout.searchhelp.x,
-                                y: this.props.positionPopout.searchhelp.y
+                                x: this.props.defaultProps.popouts.searchhelp.position.x,
+                                y: this.props.defaultProps.popouts.searchhelp.position.y
                             }}
                             onStop={(event, data) => this.props.defaultProps.updatePosition("weather", "utility", data.x, data.y, "popout", "searchhelp")}
                             bounds={this.props.defaultProps.calculateBounds("weather-widget", "weather-help-popout")}>
@@ -232,7 +231,8 @@ class WidgetWeather extends Component{
                             <img className="no-highlight"
                                 src={this.state.weatherIcon}
                                 alt="weather icon"
-                                style={{height: this.props.largeIcon, width: this.props.largeIcon}}></img>
+                                style={{height: this.props.largeIcon, width: this.props.largeIcon}}
+                                decoding="async"/>
                             {/* Temperature */}
                             <div id="weather-temperature"
                                 className="flex-center row gap larger-gap">
