@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+import { e } from 'mathjs';
 import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -12,6 +13,7 @@ import Select from "react-select";
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
 let timeoutCopy, timeoutDialogue, timeoutDialogueOut, timeoutIdle, timeoutSleep;
 let intervalSleepTalk;
+let isMobile = false;
 let cunnyCodeEncode = false;  /// Checks if encoding/decoding is done once OR an error was dismissed
 let cunnyCodeError = false;   /// Checks if encoding/decoding error is done once
 let cunnyCodeSpecial = false; /// Checks if a special message is done once
@@ -204,7 +206,7 @@ class WidgetTranslator extends Component{
             default: break;
         };
     };
-    handleCunnyCodeAronaDrag(action){
+    handleCunnyCodeAronaDrag(action, event){
         let elementImage = document.getElementById("translator-image");
         let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
         switch(action){
@@ -218,9 +220,14 @@ class WidgetTranslator extends Component{
                 elementImage.classList.add("dragging");
                 elementImage.style.animationFillMode = "none";
                 elementImageAdditions.classList.add("dragging");
-                document.addEventListener("mousemove", this.handleCunnyCodeAronaDragging);
-                document.addEventListener("mouseup", this.handleCunnyCodeAronaDrag);
-                this.handleCunnyCodeAronaDragging();
+                if(isMobile){
+                    document.addEventListener("touchmove", this.handleCunnyCodeAronaDragging);
+                    document.addEventListener("touchend", this.handleCunnyCodeAronaDrag);
+                }else{
+                    document.addEventListener("mousemove", this.handleCunnyCodeAronaDragging);
+                    document.addEventListener("mouseup", this.handleCunnyCodeAronaDrag);
+                };
+                this.handleCunnyCodeAronaDragging(event);
                 break;
             default:
                 this.handleCunnyCode("putdown");
@@ -237,13 +244,22 @@ class WidgetTranslator extends Component{
                 break;
         };
     };
-    handleCunnyCodeAronaDragging(){
-        let elementImage = document.getElementById("translator-image");
-        let elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
-        elementImage.style.left = `${window.mouse.x - this.props.position.x - 210}px`;
-        elementImage.style.top = `${window.mouse.y - this.props.position.y - 360}px`;
-        elementImageAdditions.style.setProperty("left", `${window.mouse.x - this.props.position.x - 200}px`, "important");
-        elementImageAdditions.style.setProperty("top", `${window.mouse.y - this.props.position.y - 360}px`, "important");
+    handleCunnyCodeAronaDragging(event){
+        const elementImageContainer = document.getElementById("translator-container-image").getBoundingClientRect();
+        const elementImage = document.getElementById("translator-image");
+        const elementImageAdditions = document.getElementById("translator-image-additions-cunny-code");
+        if(isMobile){
+            const touch = event.touches[0];
+            elementImage.style.left = `${touch.clientX - elementImageContainer.left - 66}px`;
+            elementImage.style.top = `${touch.clientY - elementImageContainer.top + 108}px`;
+            elementImageAdditions.style.setProperty("left", `${touch.clientX - elementImageContainer.left - 56}px`, "important");
+            elementImageAdditions.style.setProperty("top", `${touch.clientY - elementImageContainer.top + 108}px`, "important");
+        }else{
+            elementImage.style.left = `${event.clientX - elementImageContainer.left - 66}px`;
+            elementImage.style.top = `${event.clientY - elementImageContainer.top + 108}px`;
+            elementImageAdditions.style.setProperty("left", `${event.clientX - elementImageContainer.left - 56}px`, "important");
+            elementImageAdditions.style.setProperty("top", `${event.clientY - elementImageContainer.top + 108}px`, "important");
+        };
     };
     /// Convert the "from" language to english
     convertFromText(swap){
@@ -997,6 +1013,9 @@ class WidgetTranslator extends Component{
                 this.handleBackground();
             });
         };
+        if("maxTouchPoints" in navigator){
+            isMobile = navigator.maxTouchPoints > 0;
+        };
     };
     componentWillUnmount(){
         let data = {
@@ -1039,7 +1058,7 @@ class WidgetTranslator extends Component{
                             style={{
                                 flexWrap: "wrap-reverse"
                             }}>
-                            <section>
+                            <section id="translator-container-image">
                                 {/* Image */}
                                 <img id="translator-image"
                                     className="no-highlight"
@@ -1054,7 +1073,8 @@ class WidgetTranslator extends Component{
                                         <div id="translator-cunny-code-arona-body">
                                             <div id="translator-cunny-code-arona-halo"
                                                 className="arona-action"
-                                                onMouseDown={() => this.handleCunnyCodeAronaDrag("pickup")}></div>
+                                                onMouseDown={(event) => this.handleCunnyCodeAronaDrag("pickup", event)}
+                                                onTouchStart={(event) => this.handleCunnyCodeAronaDrag("pickup", event)}></div>
                                             <div id="translator-cunny-code-arona-head"
                                                 className="arona-action"
                                                 onClick={() => this.handleCunnyCodeAronaTouch("head")}></div>
@@ -1183,8 +1203,8 @@ class WidgetTranslator extends Component{
                         {/* Replace Popout */}
                         <Draggable cancel="input, button"
                             position={{
-                                x: this.props.positionPopout.replace.x,
-                                y: this.props.positionPopout.replace.y
+                                x: this.props.defaultProps.popouts.replace.position.x,
+                                y: this.props.defaultProps.popouts.replace.position.y
                             }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "replace");
@@ -1219,8 +1239,8 @@ class WidgetTranslator extends Component{
                         {/* Reverse Popout */}
                         <Draggable cancel="input, button"
                             position={{
-                                x: this.props.positionPopout.reverse.x,
-                                y: this.props.positionPopout.reverse.y
+                                x: this.props.defaultProps.popouts.reverse.position.x,
+                                y: this.props.defaultProps.popouts.reverse.position.y
                             }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "reverse");
@@ -1248,8 +1268,8 @@ class WidgetTranslator extends Component{
                         {/* Case Transform Popout */}
                         <Draggable cancel="input, button"
                             position={{
-                                x: this.props.positionPopout.casetransform.x,
-                                y: this.props.positionPopout.casetransform.y
+                                x: this.props.defaultProps.popouts.casetransform.position.x,
+                                y: this.props.defaultProps.popouts.casetransform.position.y
                             }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition("translator", "utility", data.x, data.y, "popout", "casetransform");

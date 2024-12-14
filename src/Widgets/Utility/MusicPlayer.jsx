@@ -499,8 +499,10 @@ class WidgetMusicPlayer extends Component{
                                         max={0.999999}
                                         step={"any"}
                                         onMouseDown={() => this.handleSeeking({ what: "down" })}
+                                        onTouchStart={() => this.handleSeeking({ what: "down" })}
                                         onChange={(event) => this.handleSeeking({ event: event })}
-                                        onMouseUp={(event) => this.handleSeeking({ event: event, what: "up" })}/>
+                                        onMouseUp={(event) => this.handleSeeking({ event: event, what: "up" })}
+                                        onTouchEnd={(event) => this.handleSeeking({ event: event, what: "up" })}/>
                                     <div className="element-ends font small transparent-white"
                                         style={{
                                             marginTop: "0.1rem"
