@@ -122,7 +122,7 @@ class WidgetRockPaperScissor extends Component{
                         {/* Drag Handle */}
                         <span id="rockpaperscissor-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>

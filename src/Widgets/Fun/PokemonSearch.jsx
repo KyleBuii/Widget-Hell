@@ -323,7 +323,7 @@ class WidgetPokemonSearch extends Component{
                         {/* Drag Handle */}
                         <span id="pokemonsearch-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>

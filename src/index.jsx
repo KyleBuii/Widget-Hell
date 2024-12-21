@@ -47,6 +47,7 @@ import { Fa0 } from 'react-icons/fa6';
 import { FaExpand } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import { IoIosArrowUp } from 'react-icons/io';
+import WidgetBulletHell from './Widgets/Games/BulletHell/BulletHell.jsx';
 
 
 //////////////////// Temp Variables ////////////////////
@@ -7198,7 +7199,59 @@ class Widgets extends Component{
                             }
                         }
                     },
-                    inventory: {
+                    animesearcher: {
+                        name: "Anime Searcher",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    battery: {
+                        name: "Battery",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    calculator: {
+                        name: "Calculator",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        popouts: {
+                            expandinput: {
+                                position: {
+                                    x: 60,
+                                    y: 115
+                                }
+                            }
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    character: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    currencyconverter: {
+                        name: "Currency Converter",
                         active: false,
                         position: {
                             x: 0,
@@ -7218,7 +7271,51 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    character: {
+                    googletranslator: {
+                        name: "Google Translator",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }   
+                    },
+                    imagecolorpicker: {
+                        name: "Image Color Picker",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    inventory: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    musicplayer: {
+                        name: "Music Player",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    qrcode: {
+                        name: "QR Code",
                         active: false,
                         position: {
                             x: 0,
@@ -7230,6 +7327,28 @@ class Widgets extends Component{
                     },
                     quote: {
                         name: "Quote",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    spreadsheet: {
+                        name: "Spreadsheet",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    timeconversion: {
+                        name: "Time Conversion",
                         active: false,
                         position: {
                             x: 0,
@@ -7270,36 +7389,6 @@ class Widgets extends Component{
                             disabled: false
                         }   
                     },
-                    googletranslator: {
-                        name: "Google Translator",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }   
-                    },
-                    calculator: {
-                        name: "Calculator",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        popouts: {
-                            expandinput: {
-                                position: {
-                                    x: 60,
-                                    y: 115
-                                }
-                            }
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
                     weather: {
                         name: "Weather",
                         active: false,
@@ -7319,28 +7408,6 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    timeconversion: {
-                        name: "Time Conversion",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    spreadsheet: {
-                        name: "Spreadsheet",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
                     // notepad: {
                     //     name: "Notepad",
                     //     active: false,
@@ -7352,39 +7419,6 @@ class Widgets extends Component{
                     //         disabled: false
                     //     }
                     // },
-                    qrcode: {
-                        name: "QR Code",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    battery: {
-                        name: "Battery",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    currencyconverter: {
-                        name: "Currency Converter",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
                     // urlshortner: {
                     //     name: "URL Shortner",
                     //     active: false,
@@ -7396,62 +7430,76 @@ class Widgets extends Component{
                     //         disabled: false
                     //     }
                     // },
-                    imagecolorpicker: {
-                        name: "Image Color Picker",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    musicplayer: {
-                        name: "Music Player",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    animesearcher: {
-                        name: "Anime Searcher",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
                 },
                 games: {
-                    snake: {
-                        name: "Snake",
+                    breakout: {
+                        name: "Breakout",
                         active: false,
                         position: {
                             x: 0,
                             y: 0
                         },
-                        popouts: {
-                            settings: {
-                                position: {
-                                    x: 145,
-                                    y: 325
-                                }
-                            }
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    bullethell: {
+                        name: "Bullet Hell",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
                         },
                         drag: {
                             disabled: false
                         }
                     },
-                    typingtest: {
-                        name: "Typing Test",
+                    chess: {
+                        name: "Chess",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    colormemory: {
+                        name: "Color Memory",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    grindshot: {
+                        name: "Grindshot",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    minesweeper: {
+                        name: "Minesweeper",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    rockpaperscissor: {
+                        name: "Rock Paper Scissor",
                         active: false,
                         position: {
                             x: 0,
@@ -7480,41 +7528,27 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    minesweeper: {
-                        name: "Minesweeper",
+                    snake: {
+                        name: "Snake",
                         active: false,
                         position: {
                             x: 0,
                             y: 0
                         },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    breakout: {
-                        name: "Breakout",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
+                        popouts: {
+                            settings: {
+                                position: {
+                                    x: 145,
+                                    y: 325
+                                }
+                            }
                         },
                         drag: {
                             disabled: false
                         }
                     },
-                    chess: {
-                        name: "Chess",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    twentyfortyeight: {
-                        name: "2048",
+                    tetris: {
+                        name: "Tetris",
                         active: false,
                         position: {
                             x: 0,
@@ -7535,8 +7569,8 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    tetris: {
-                        name: "Tetris",
+                    twentyfortyeight: {
+                        name: "2048",
                         active: false,
                         position: {
                             x: 0,
@@ -7546,30 +7580,8 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    grindshot: {
-                        name: "Grindshot",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    colormemory: {
-                        name: "Color Memory",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    rockpaperscissor: {
-                        name: "Rock Paper Scissor",
+                    typingtest: {
+                        name: "Typing Test",
                         active: false,
                         position: {
                             x: 0,
@@ -7581,47 +7593,6 @@ class Widgets extends Component{
                     },
                 },
                 fun: {
-                    pokemonsearch: {
-                        name: "Pokemon Search",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        popouts: {
-                            settings: {
-                                position: {
-                                    x: 15,
-                                    y: 85
-                                }
-                            }
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    pickerwheel: {
-                        name: "Picker Wheel",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
-                    donutanimation: {
-                        name: "Donut Animation",
-                        active: false,
-                        position: {
-                            x: 0,
-                            y: 0
-                        },
-                        drag: {
-                            disabled: false
-                        }
-                    },
                     aiimagegenerator: {
                         name: "Ai Image Generator",
                         active: false,
@@ -7641,8 +7612,8 @@ class Widgets extends Component{
                             disabled: false
                         }
                     },
-                    sticker: {
-                        name: "Sticker",
+                    donutanimation: {
+                        name: "Donut Animation",
                         active: false,
                         position: {
                             x: 0,
@@ -7654,6 +7625,47 @@ class Widgets extends Component{
                     },
                     facts: {
                         name: "Facts",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    pickerwheel: {
+                        name: "Picker Wheel",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    pokemonsearch: {
+                        name: "Pokemon Search",
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        popouts: {
+                            settings: {
+                                position: {
+                                    x: 15,
+                                    y: 85
+                                }
+                            }
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    sticker: {
+                        name: "Sticker",
                         active: false,
                         position: {
                             x: 0,
@@ -8144,7 +8156,6 @@ class Widgets extends Component{
                 break;
             case "showOnTop":
                 let checkWidget = document.getElementsByClassName("show-on-top");
-                console.log(checkWidget)
                 if(checkWidget.length !== 0){
                     checkWidget[0].classList.remove("show-on-top");
                 };
@@ -9112,12 +9123,10 @@ class Widgets extends Component{
                     valueClose={this.state.values.close}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
-                {this.state.widgets.utility.inventory.active
-                    && <WidgetInventory defaultProps={this.generateDefaultProps("inventory", "utility")}
-                        gameProps={gameProps}
-                        inventory={this.state.inventory}
-                        items={items}
-                        largeIcon={largeIcon}/>}
+                {this.state.widgets.utility.character.active
+                    && <WidgetCharacter defaultProps={this.generateDefaultProps("character", "utility")}
+                        punctuation={punctuation}
+                        equipment={this.state.equipment}/>}
                 {this.state.widgets.utility.equipment.active
                     && <WidgetEquipment defaultProps={this.generateDefaultProps("equipment", "utility")}
                         gameProps={gameProps}
@@ -9125,13 +9134,12 @@ class Widgets extends Component{
                         equipment={this.state.equipment}
                         items={items}
                         stats={this.state.stats}
-                        abilities={this.state.abilities}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.character.active
-                    && <WidgetCharacter defaultProps={this.generateDefaultProps("character", "utility")}
-                        punctuation={punctuation}
-                        equipment={this.state.equipment}
-                        largeIcon={largeIcon}/>}
+                        abilities={this.state.abilities}/>}
+                {this.state.widgets.utility.inventory.active
+                    && <WidgetInventory defaultProps={this.generateDefaultProps("inventory", "utility")}
+                        gameProps={gameProps}
+                        inventory={this.state.inventory}
+                        items={items}/>}
                 {
                     //#endregion
                 }
@@ -9139,12 +9147,64 @@ class Widgets extends Component{
                 {
                     //#region
                 }
+                {this.state.widgets.utility.animesearcher.active
+                    && <WidgetAnimeSearcher defaultProps={this.generateDefaultProps("animesearcher", "utility")}
+                        copyToClipboard={copyToClipboard}/>}
+                {this.state.widgets.utility.battery.active
+                    && <WidgetBattery defaultProps={this.generateDefaultProps("battery", "utility")}
+                        smallMedIcon={smallMedIcon}/>}
+                {this.state.widgets.utility.calculator.active
+                    && <WidgetCalculator defaultProps={this.generateDefaultProps("calculator", "utility")}
+                        copyToClipboard={copyToClipboard}
+                        medIcon={medIcon}
+                        operation={operation}/>}
+                {this.state.widgets.utility.currencyconverter.active
+                    && <WidgetCurrencyConverter defaultProps={this.generateDefaultProps("currencyconverter", "utility")}
+                        moneyConversions={moneyConversions}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
+                        randomColor={this.randomColor}/>}
+                {this.state.widgets.utility.googletranslator.active
+                    && <WidgetGoogleTranslator defaultProps={this.generateDefaultProps("googletranslator", "utility")}
+                        randomColor={this.randomColor}
+                        copyToClipboard={copyToClipboard}
+                        randSentence={randSentence}
+                        languages={languages}
+                        talk={this.talk}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}
+                        smallIcon={smallIcon}/>}
+                {this.state.widgets.utility.imagecolorpicker.active
+                    && <WidgetImageColorPicker defaultProps={this.generateDefaultProps("imagecolorpicker", "utility")}
+                        copyToClipboard={copyToClipboard}
+                        randomColor={this.randomColor}/>}
+                {this.state.widgets.utility.musicplayer.active
+                    && <WidgetMusicPlayer defaultProps={this.generateDefaultProps("musicplayer", "utility")}
+                        copyToClipboard={copyToClipboard}/>}
+                {this.state.widgets.utility.qrcode.active
+                    && <WidgetQRCode defaultProps={this.generateDefaultProps("qrcode", "utility")}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.quote.active
                     && <WidgetQuote defaultProps={this.generateDefaultProps("quote", "utility")}
                         copyToClipboard={copyToClipboard}
                         quotes={quotes}
-                        talk={this.talk}
-                        largeIcon={largeIcon}/>}
+                        talk={this.talk}/>}
+                {this.state.widgets.utility.spreadsheet.active
+                    && <WidgetSpreadsheet defaultProps={this.generateDefaultProps("spreadsheet", "utility")}
+                        formatGroupLabel={formatGroupLabel}
+                        selectStyleSmall={selectStyleSmall}
+                        selectTheme={selectTheme}
+                        smallMedIcon={smallMedIcon}/>}
+                {this.state.widgets.utility.timeconversion.active
+                    && <WidgetTimeConversion defaultProps={this.generateDefaultProps("timeconversion", "utility")}
+                        sortSelect={sortSelect}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.utility.translator.active
                     && <WidgetTranslator defaultProps={this.generateDefaultProps("translator", "utility")}
                         randomColor={this.randomColor}
@@ -9175,86 +9235,20 @@ class Widgets extends Component{
                         selectHideGroupHeading={selectHideGroupHeading}
                         selectHideGroupMenuList={selectHideGroupMenuList}
                         updateGlobalValue={this.updateGlobalValue}
-                        smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.googletranslator.active
-                    && <WidgetGoogleTranslator defaultProps={this.generateDefaultProps("googletranslator", "utility")}
-                        randomColor={this.randomColor}
-                        copyToClipboard={copyToClipboard}
-                        randSentence={randSentence}
-                        languages={languages}
-                        talk={this.talk}
-                        formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
-                        menuListScrollbar={menuListScrollbar}
-                        smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.calculator.active
-                    && <WidgetCalculator defaultProps={this.generateDefaultProps("calculator", "utility")}
-                        copyToClipboard={copyToClipboard}
-                        medIcon={medIcon}
-                        operation={operation}/>}
+                        smallIcon={smallIcon}/>}
                 {this.state.widgets.utility.weather.active
                     && <WidgetWeather defaultProps={this.generateDefaultProps("weather", "utility")}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}
-                        medIcon={medIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.timeconversion.active
-                    && <WidgetTimeConversion defaultProps={this.generateDefaultProps("timeconversion", "utility")}
-                        sortSelect={sortSelect}
-                        formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
-                        menuListScrollbar={menuListScrollbar}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.spreadsheet.active
-                    && <WidgetSpreadsheet defaultProps={this.generateDefaultProps("spreadsheet", "utility")}
-                        formatGroupLabel={formatGroupLabel}
-                        selectStyleSmall={selectStyleSmall}
-                        selectTheme={selectTheme}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>}
+                        medIcon={medIcon}/>}
                 {/* {this.state.widgets.utility.notepad.active
                     && <WidgetNotepad defaultProps={this.generateDefaultProps("notepad", "utility")}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>} */}
-                {this.state.widgets.utility.qrcode.active
-                    && <WidgetQRCode defaultProps={this.generateDefaultProps("qrcode", "utility")}
-                        formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.battery.active
-                    && <WidgetBattery defaultProps={this.generateDefaultProps("battery", "utility")}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.currencyconverter.active
-                    && <WidgetCurrencyConverter defaultProps={this.generateDefaultProps("currencyconverter", "utility")}
-                        moneyConversions={moneyConversions}
-                        formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
-                        menuListScrollbar={menuListScrollbar}
-                        randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>}
+                        smallMedIcon={smallMedIcon}/>} */}
                 {/* {this.state.widgets.utility.urlshortner.active
-                    && <WidgetURLShortner defaultProps={this.generateDefaultProps("urlshortner", "utility")}
-                        largeIcon={largeIcon}/>} */}
-                {this.state.widgets.utility.imagecolorpicker.active
-                    && <WidgetImageColorPicker defaultProps={this.generateDefaultProps("imagecolorpicker", "utility")}
-                        copyToClipboard={copyToClipboard}
-                        randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.musicplayer.active
-                    && <WidgetMusicPlayer defaultProps={this.generateDefaultProps("musicplayer", "utility")}
-                        copyToClipboard={copyToClipboard}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.utility.animesearcher.active
-                    && <WidgetAnimeSearcher defaultProps={this.generateDefaultProps("animesearcher", "utility")}
-                        copyToClipboard={copyToClipboard}
-                        largeIcon={largeIcon}/>}
+                    && <WidgetURLShortner defaultProps={this.generateDefaultProps("urlshortner", "utility")}/>} */}
                 {
                     //#endregion
                 }
@@ -9262,66 +9256,57 @@ class Widgets extends Component{
                 {
                     //#region
                 }
+                {this.state.widgets.games.breakout.active
+                    && <WidgetBreakout defaultProps={this.generateDefaultProps("breakout", "games")}
+                        gameProps={gameProps}
+                        patterns={breakoutPatterns}/>}
+                {this.state.widgets.games.bullethell.active
+                    && <WidgetBulletHell defaultProps={this.generateDefaultProps("bullethell", "games")}
+                        gameProps={gameProps}/>}
+                {this.state.widgets.games.chess.active
+                    && <WidgetChess defaultProps={this.generateDefaultProps("chess", "games")}
+                        gameProps={gameProps}/>}
+                {this.state.widgets.games.colormemory.active
+                    && <WidgetColorMemory defaultProps={this.generateDefaultProps("colormemory", "games")}
+                        gameProps={gameProps}
+                        hexToRgb={hexToRgb}
+                        randomColor={this.randomColor}/>}
+                {this.state.widgets.games.grindshot.active
+                    && <WidgetGrindshot defaultProps={this.generateDefaultProps("grindshot", "games")}
+                        gameProps={gameProps}/>}
+                {this.state.widgets.games.minesweeper.active
+                    && <WidgetMinesweeper defaultProps={this.generateDefaultProps("minesweeper", "games")}
+                        gameProps={gameProps}
+                        smallIcon={smallIcon}/>}
+                {this.state.widgets.games.rockpaperscissor.active
+                    && <WidgetRockPaperScissor defaultProps={this.generateDefaultProps("rockpaperscissor", "games")}
+                        gameProps={gameProps}
+                        rps={rps}/>}
+                {this.state.widgets.games.simongame.active
+                    && <WidgetSimonGame defaultProps={this.generateDefaultProps("simongame", "games")}
+                        gameProps={gameProps}/>}
                 {this.state.widgets.games.snake.active
                     && <WidgetSnake defaultProps={this.generateDefaultProps("snake", "games")}
                         gameProps={gameProps}
                         foodTypes={foodTypes}
-                        debris={debrisPatterns}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.typingtest.active
-                    && <WidgetTypingTest defaultProps={this.generateDefaultProps("typingtest", "games")}
-                        gameProps={gameProps}
-                        randSentence={randSentence}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.simongame.active
-                    && <WidgetSimonGame defaultProps={this.generateDefaultProps("simongame", "games")}
-                        gameProps={gameProps}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.minesweeper.active
-                    && <WidgetMinesweeper defaultProps={this.generateDefaultProps("minesweeper", "games")}
-                        gameProps={gameProps}
-                        smallIcon={smallIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.breakout.active
-                    && <WidgetBreakout defaultProps={this.generateDefaultProps("breakout", "games")}
-                        gameProps={gameProps}
-                        patterns={breakoutPatterns}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.chess.active
-                    && <WidgetChess defaultProps={this.generateDefaultProps("chess", "games")}
-                        gameProps={gameProps}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.twentyfortyeight.active
-                    && <Widget2048 defaultProps={this.generateDefaultProps("twentyfortyeight", "games")}
-                        gameProps={gameProps}
-                        largeIcon={largeIcon}/>}
+                        debris={debrisPatterns}/>}
+                {this.state.widgets.games.tetris.active
+                    && <WidgetTetris defaultProps={this.generateDefaultProps("tetris", "games")}
+                        gameProps={gameProps}/>}
                 {this.state.widgets.games.trivia.active
                     && <WidgetTrivia defaultProps={this.generateDefaultProps("trivia", "games")}
                         gameProps={gameProps}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         sortSelect={sortSelect}
-                        menuListScrollbar={menuListScrollbar}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.tetris.active
-                    && <WidgetTetris defaultProps={this.generateDefaultProps("tetris", "games")}
+                        menuListScrollbar={menuListScrollbar}/>}
+                {this.state.widgets.games.twentyfortyeight.active
+                    && <Widget2048 defaultProps={this.generateDefaultProps("twentyfortyeight", "games")}
+                        gameProps={gameProps}/>}
+                {this.state.widgets.games.typingtest.active
+                    && <WidgetTypingTest defaultProps={this.generateDefaultProps("typingtest", "games")}
                         gameProps={gameProps}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.grindshot.active
-                    && <WidgetGrindshot defaultProps={this.generateDefaultProps("grindshot", "games")}
-                        gameProps={gameProps}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.colormemory.active
-                    && <WidgetColorMemory defaultProps={this.generateDefaultProps("colormemory", "games")}
-                        gameProps={gameProps}
-                        hexToRgb={hexToRgb}
-                        randomColor={this.randomColor}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.games.rockpaperscissor.active
-                    && <WidgetRockPaperScissor defaultProps={this.generateDefaultProps("rockpaperscissor", "games")}
-                        gameProps={gameProps}
-                        rps={rps}
-                        largeIcon={largeIcon}/>}
+                        randSentence={randSentence}/>}
                 { 
                     //#endregion
                 }
@@ -9329,34 +9314,28 @@ class Widgets extends Component{
                 {
                     //#region
                 }
-                {this.state.widgets.fun.pokemonsearch.active
-                    && <WidgetPokemonSearch defaultProps={this.generateDefaultProps("pokemonsearch", "fun")}
-                        microIcon={microIcon}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.fun.pickerwheel.active
-                    && <WidgetPickerWheel defaultProps={this.generateDefaultProps("pickerwheel", "fun")}
-                        color={color}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.fun.donutanimation.active
-                    && <WidgetDonutAnimation defaultProps={this.generateDefaultProps("donutanimation", "fun")}
-                        largeIcon={largeIcon}/>}
                 {this.state.widgets.fun.aiimagegenerator.active
                     && <WidgetAiImageGenerator defaultProps={this.generateDefaultProps("aiimagegenerator", "fun")}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
-                        smallMedIcon={smallMedIcon}
-                        largeIcon={largeIcon}/>}
+                        smallMedIcon={smallMedIcon}/>}
+                {this.state.widgets.fun.donutanimation.active
+                    && <WidgetDonutAnimation defaultProps={this.generateDefaultProps("donutanimation", "fun")}/>}
+                {this.state.widgets.fun.facts.active
+                    && <WidgetFacts defaultProps={this.generateDefaultProps("facts", "fun")}/>}
+                {this.state.widgets.fun.pickerwheel.active
+                    && <WidgetPickerWheel defaultProps={this.generateDefaultProps("pickerwheel", "fun")}
+                        color={color}/>}
+                {this.state.widgets.fun.pokemonsearch.active
+                    && <WidgetPokemonSearch defaultProps={this.generateDefaultProps("pokemonsearch", "fun")}
+                        microIcon={microIcon}
+                        smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.fun.sticker.active
                     && <WidgetSticker defaultProps={this.generateDefaultProps("sticker", "fun")}
                         stickers={this.state.stickers}
-                        updateStickers={this.updateStickers}
-                        largeIcon={largeIcon}/>}
-                {this.state.widgets.fun.facts.active
-                    && <WidgetFacts defaultProps={this.generateDefaultProps("facts", "fun")}
-                        largeIcon={largeIcon}/>}
+                        updateStickers={this.updateStickers}/>}
                 {
                     //#endregion
                 }
@@ -9389,7 +9368,7 @@ class Widgets extends Component{
 //                         {/* Drag Handle */}
 //                         <span id="[]-widget-draggable"
 //                             className="draggable">
-//                             <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+//                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: "global-class-name" }}>
 //                                 <FaGripHorizontal/>
 //                             </IconContext.Provider>
 //                         </span>

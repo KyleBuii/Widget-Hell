@@ -905,7 +905,7 @@ class WidgetSetting extends Component{
                             </section>
                         </section>
                         {/* Show/Hide Widgets Popout */}
-                        <Draggable cancel="button, #show-hide-widgets-popout-tabs"
+                        <Draggable cancel="button, #show-hide-widgets-popout-tabs, .paginate-pages"
                             position={{
                                 x: this.props.positionPopout.showhidewidgets.x,
                                 y: this.props.positionPopout.showhidewidgets.y

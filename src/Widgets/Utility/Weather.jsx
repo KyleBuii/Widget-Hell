@@ -162,7 +162,7 @@ class WidgetWeather extends Component{
                         {/* Drag Handle */}
                         <span id="weather-widget-draggable"
                             className="draggable">
-                            <IconContext.Provider value={{ size: this.props.largeIcon, className: "global-class-name" }}>
+                            <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: "global-class-name" }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
@@ -231,7 +231,7 @@ class WidgetWeather extends Component{
                             <img className="no-highlight"
                                 src={this.state.weatherIcon}
                                 alt="weather icon"
-                                style={{height: this.props.largeIcon, width: this.props.largeIcon}}
+                                style={{ height: this.props.defaultProps.largeIcon, width: this.props.defaultProps.largeIcon }}
                                 decoding="async"/>
                             {/* Temperature */}
                             <div id="weather-temperature"
