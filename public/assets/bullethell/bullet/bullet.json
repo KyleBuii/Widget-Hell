@@ -1,0 +1,4012 @@
+{
+    "frames": [
+        {
+            "filename": "laser-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "laser-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-mine-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 256,
+                "y": 16
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-2-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 32
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "arrow-3-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 48
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "icicle-mine-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 256,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "icicle-mine-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 272,
+                "y": 64
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-2-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 80
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "icicle-3-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 96
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "card-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "card-mine-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 256,
+                "y": 112
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "bullet-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 144
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "void-2-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 160
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "star-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-cyan-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 128,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-black",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 128,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-green",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 136,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-red",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 136,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-green-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 144,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-red-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 144,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-green-lighter",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 152,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "orb-small-pink",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 152,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-green-lighterer",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 160,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-pink-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 160,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-green-lightererer",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 168,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-purple",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 168,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-yellow",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 176,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-purple-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 176,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-white",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 184,
+                "y": 192
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "orb-small-cyan",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 184,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "disc-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 208
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "plasma-2-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 224
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-2-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-2-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-2-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-2-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-2-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-cyan-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 160,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-black",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 160,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-green",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 168,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-red",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 168,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-green-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 176,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "circle-small-red-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 176,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-green-lighterer",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 184,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-purple",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 184,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-yellow",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 192,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-pink",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 192,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-yellow-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 200,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-purple-light",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 200,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-orange",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 208,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-blue",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 208,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-white",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 216,
+                "y": 240
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "circle-small-cyan",
+            "frame": {
+                "w": 8,
+                "h": 8,
+                "x": 216,
+                "y": 248
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-purple",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "heart-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-red-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-pink-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-blue-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-cyan-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 144,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-green-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 160,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-green-lighter",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 176,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 192,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-yellow-light",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 208,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 224,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "ring-white",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 240,
+                "y": 272
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },        {
+            "filename": "butterfly-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 288
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-pink",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-purple",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "sword-mine-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 128,
+                "y": 304
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-purple",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "music-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 320
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-black",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 0,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-red",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 16,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-purple",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 32,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-blue",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 48,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-cyan",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 64,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-green",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 80,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-yellow",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 96,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "squiggle-orange",
+            "frame": {
+                "w": 16,
+                "h": 16,
+                "x": 112,
+                "y": 336
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    ]
+}

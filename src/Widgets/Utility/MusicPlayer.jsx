@@ -2,9 +2,11 @@ import { Component, memo, React } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay } from 'react-icons/fa6';
+import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay, FaShuffle } from 'react-icons/fa6';
 import { IoPlayBack, IoPlayForward } from 'react-icons/io5';
+import { RiPlayListFill } from "react-icons/ri";
 import ReactPlayer from 'react-player/lazy';
+import SimpleBar from 'simplebar-react';
 
 
 /// Variables
@@ -12,6 +14,11 @@ const audio = new Audio();
 let timeoutAnimationRemove;
 let timeoutAnimationPrevious;
 let timeoutAnimationNext;
+let urlsAdd = [];
+let dataSongsAdd = [];
+let activePlaylistItem = -1;
+let seekedTime = -1;
+let playedTimeSeek = 0;
 
 
 class WidgetMusicPlayer extends Component{
@@ -26,27 +33,32 @@ class WidgetMusicPlayer extends Component{
                 {
                     name: "Origin | Original by Kilia Kurayami",
                     artist: "Kilia Kurayami Ch. 【EIEN Project】",
-                    url: "https://www.youtube.com/watch?v=7Rb5fxeqVxs"
+                    url: "https://www.youtube.com/watch?v=7Rb5fxeqVxs",
+                    timePlayed: 0
                 },
                 {
                     name: "Asian Hideout - ERROR 403: paradise x paradigm",
                     artist: "Asian Hideout",
-                    url: "https://www.youtube.com/watch?v=ymxBpO5U2KY"
+                    url: "https://www.youtube.com/watch?v=ymxBpO5U2KY",
+                    timePlayed: 0
                 },
                 {
                     name: "We are cool【轟はじめ/古石ビジュー】",
                     artist: "おだまよ",
-                    url: "https://www.youtube.com/watch?v=70PIxN3XM5k"
+                    url: "https://www.youtube.com/watch?v=70PIxN3XM5k",
+                    timePlayed: 0
                 },
                 {
                     name: "【MV】ABOVE BELOW【hololive English -Justice- Debut Song】",
                     artist: "hololive English",
-                    url: "https://www.youtube.com/watch?v=ilLEj-SCCn8"
+                    url: "https://www.youtube.com/watch?v=ilLEj-SCCn8",
+                    timePlayed: 0
                 },
             ],
             name: "",
             artist: "",
             currentDuration: "00:00",
+            rawCurrentDuration: 0,
             maxDuration: "00:00",
             rawMaxDuration: 0,
             progress: 0,
@@ -56,7 +68,9 @@ class WidgetMusicPlayer extends Component{
             url: null,
             playerDisplay: "none",
             discSwitch: false,
-            seeking: false
+            seeking: false,
+            shuffle: false,
+            ready: false
         };
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
@@ -65,11 +79,16 @@ class WidgetMusicPlayer extends Component{
         this.storeData = this.storeData.bind(this);
     };
     ended(){
+        this.saveDataMusic(this.state.name, this.state.rawMaxDuration);
         this.setState({
             currentDuration: "00:00",
             maxDuration: "00:00"
         });
-        this.loadMusic();
+        this.handleNextMusic();
+        if(activePlaylistItem !== -1){
+            activePlaylistItem.classList.remove("musicplayer-playlist-active");
+            activePlaylistItem = -1;
+        };
     };
     handleButton(type){
         let combineArrays = [...this.state.music, ...this.state.urls];
@@ -133,6 +152,7 @@ class WidgetMusicPlayer extends Component{
                     .classList.add("musicplayer-animation-input-add");
                 break;
             case "previous":
+                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
                 if(combineArrays.length > 1){
                     let musicIndex = ((this.state.songIndex - 1) < 0)
                         ? combineArrays.length - 1
@@ -145,12 +165,21 @@ class WidgetMusicPlayer extends Component{
                     }, 300);
                 };
                 break;
+            case "shuffle":
+                this.setState({
+                    shuffle: !this.state.shuffle
+                });
+                const buttonShuffle = document.getElementById("musicplayer-button-shuffle");
+                buttonShuffle.classList.toggle("disabled");
+                break;
+            case "playlist":
+                const elementPlaylist = document.getElementById("musicplayer-playlist");
+                elementPlaylist.classList.toggle("musicplayer-playlist-show");
+                break;
             default:
+                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
                 if(combineArrays.length > 1){
-                    let musicIndex = ((this.state.songIndex + 1) > combineArrays.length - 1)
-                            ? 0
-                            : this.state.songIndex + 1;
-                    this.loadMusic(musicIndex);
+                    this.handleNextMusic();
                     let elementButtonPrevious = document.getElementById("musicplayer-button-next");
                     elementButtonPrevious.classList.add("musicplayer-animation-button-next");
                     timeoutAnimationNext = setTimeout(() => {
@@ -158,6 +187,19 @@ class WidgetMusicPlayer extends Component{
                     }, 300);
                 };
                 break;
+        };
+    };
+    handleNextMusic(){
+        if(this.state.shuffle){
+            this.loadMusic();
+        }else{
+            let combineArrays = [...this.state.music, ...this.state.urls];
+            if(combineArrays.length > 1){
+                let musicIndex = ((this.state.songIndex + 1) > combineArrays.length - 1)
+                    ? 0
+                    : this.state.songIndex + 1;
+                this.loadMusic(musicIndex);
+            };
         };
     };
     clearMusic(){
@@ -234,11 +276,38 @@ class WidgetMusicPlayer extends Component{
                 urls: [...this.state.urls.slice(0, -1), {
                     name: data.title,
                     artist: data.author_name,
-                    url: URL    
+                    url: URL,
+                    timePlayed: 0 
                 }],
                 name: data.title,
                 artist: data.author_name
             });
+        }catch(err){
+            console.error(err);
+        };
+    };
+    async fetchYoutubePlaylist(ID, pageToken = ""){
+        try{
+            const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${ID}&key=${import.meta.env.VITE_MUSIC_PLAYER_API_KEY}&pageToken=${pageToken}`;
+            const result = await fetch(url);
+            const data = await result.json();
+            data.items.forEach((item) => {
+                urlsAdd.push({
+                    name: item.snippet.title,
+                    artist: item.snippet.videoOwnerChannelTitle,
+                    url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
+                    timePlayed: 0
+                });
+            });
+            if(data.nextPageToken){
+                this.fetchYoutubePlaylist(ID, data.nextPageToken);
+            }else{
+                this.setState({
+                    urls: [...this.state.urls, ...urlsAdd]
+                }, () => {
+                    this.loadMusic(Math.abs(this.state.urls.length - urlsAdd.length));
+                });
+            };
         }catch(err){
             console.error(err);
         };
@@ -289,6 +358,7 @@ class WidgetMusicPlayer extends Component{
             };
             this.setState({
                 currentDuration: `${minutes}:${seconds}`,
+                rawCurrentDuration: event.playedSeconds,
                 progress: event.played
             });
         };
@@ -344,17 +414,23 @@ class WidgetMusicPlayer extends Component{
         /// Enter key
         if((event.keyCode === 13)
             && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))){
-            /// Remove querys
-            let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
+            if(/playlist/.test(event.target.value)){
+                let playlistID = event.target.value.match(/(?:list=)(.*)/);
+                this.fetchYoutubePlaylist(playlistID[1]);
+            }else{
+                /// Remove queries
+                let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
+                this.setState({
+                    urls: [...this.state.urls, {
+                        url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
+                    }]
+                }, () => {
+                    if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
+                    this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
+                });
+            };
             document.getElementById("musicplayer-input-add")
                 .classList.remove("musicplayer-animation-input-add");
-            this.setState({
-                urls: [...this.state.urls, {
-                    url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
-                }]
-            }, () => {
-                this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
-            });
             document.getElementById("musicplayer-input-add")
                 .value = "";
             let elementDetails = document.getElementById("musicplayer-details");
@@ -378,6 +454,10 @@ class WidgetMusicPlayer extends Component{
                 });
                 this.updateDuration();   
                 this.player.seekTo(parseFloat(event.target.value));
+                // if(seekedTime !== -1){
+                //     playedTimeSeek = playedTimeSeek + (this.state.rawCurrentDuration - seekedTime);
+                // };
+                seekedTime = event.target.value * (this.state.rawMaxDuration - this.state.rawCurrentDuration);
                 break;
             default:
                 this.setState({
@@ -386,12 +466,52 @@ class WidgetMusicPlayer extends Component{
                 break;
         };
     };
+    handlePlaylist(index, element){
+        this.loadMusic(index);
+        if(activePlaylistItem !== -1){
+            activePlaylistItem.classList.remove("musicplayer-playlist-active");
+        };
+        activePlaylistItem = element.target;
+        element.target.classList.add("musicplayer-playlist-active");
+    };
+    saveDataMusic(music, duration){
+        let calculateTimePlayed;
+        if(seekedTime !== -1){
+            // calculateTimePlayed = playedTimeSeek + (this.state.rawMaxDuration - seekedTime);
+            // playedTimeSeek = 0;
+            calculateTimePlayed = this.state.rawMaxDuration - seekedTime;
+            seekedTime = -1;
+        }else{
+            calculateTimePlayed = duration;   
+        };
+        let dataSong = dataSongsAdd.find((song) => song.name === music);
+        if(dataSong !== undefined){
+            dataSong = {
+                ...dataSong,
+                timePlayed: dataSong.timePlayed + calculateTimePlayed
+            };
+        }else{
+            dataSongsAdd.push({
+                name: music,
+                timePlayed: calculateTimePlayed
+            });
+        };
+    };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
+            if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
+            const addTimePlayed = Object.values([...this.state.urls, ...dataSongsAdd].reduce((prev, curr) => {
+                if(prev[curr.name]){
+                    prev[curr.name].timePlayed += curr.timePlayed;
+                }else{
+                    prev[curr.name] = { ...curr };
+                };
+                return prev;
+            }, {}));
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
             dataLocalStorage["utility"]["musicplayer"] = {
                 ...dataLocalStorage["utility"]["musicplayer"],
-                urls: [...this.state.urls]
+                urls: [...addTimePlayed]
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
         };
@@ -437,7 +557,7 @@ class WidgetMusicPlayer extends Component{
                     this.props.defaultProps.dragStop("musicplayer");
                     this.props.defaultProps.updatePosition("musicplayer", "utility", data.x, data.y);
                 }}
-                cancel="button, span, input, #musicplayer-disc"
+                cancel="button, span, input, #musicplayer-disc, #musicplayer-playlist"
                 bounds="parent">
                 <div id="musicplayer-widget"
                     className="widget">
@@ -451,96 +571,88 @@ class WidgetMusicPlayer extends Component{
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar("musicplayer", "utility")}
-                        {/* Song */}
-                        <section className="flex-center column">
-                            {/* Song Disc */}
-                            <div id="musicplayer-disc"
-                                className="circle no-highlight"
-                                onClick={() => this.discSwitch()}>
-                                <ReactPlayer id="musicplayer-player"
-                                    ref={this.ref}
-                                    url={this.state.url}
-                                    playing={this.state.playing && this.state.playerDisplay === "block"}
-                                    height={"21em"}
-                                    width={"21em"}
-                                    onDuration={(event) => this.setMaxDuration(event)}
-                                    onProgress={(event) => this.updateDuration(event)}
-                                    onEnded={this.ended}
-                                    onReady={() => {}}
-                                    style={{
-                                        display: this.state.playerDisplay
-                                    }}
-                                    config={{
-                                        youtube: {
-                                            playerVars: {
-                                                fs: 0,
-                                                rel: 0
-                                            },
-                                        }
-                                    }}/>
-                            </div>
-                            {/* Song Information */}
-                            <div id="musicplayer-details"
-                                className="no-highlight flex-center column gap small-gap only-justify-content">
-                                <div className="flex-center column gap only-justify-content">
-                                    <div id="musicplayer-name">
-                                        <span className="text-animation font bold white large-medium"
-                                            onClick={() => this.props.copyToClipboard(this.state.name)}>{this.state.name}</span>
-                                    </div>
-                                    <span id="musicplayer-author" 
-                                        className="text-animation aesthetic-scale scale-self origin-left font white small"
-                                        onClick={() => this.props.copyToClipboard(this.state.artist)}>{this.state.artist}</span>
-                                </div>
-                                <div>
-                                    <input className="progress-bar"
-                                        value={this.state.progress}
-                                        type="range"
-                                        min={0}
-                                        max={0.999999}
-                                        step={"any"}
-                                        onMouseDown={() => this.handleSeeking({ what: "down" })}
-                                        onTouchStart={() => this.handleSeeking({ what: "down" })}
-                                        onChange={(event) => this.handleSeeking({ event: event })}
-                                        onMouseUp={(event) => this.handleSeeking({ event: event, what: "up" })}
-                                        onTouchEnd={(event) => this.handleSeeking({ event: event, what: "up" })}/>
-                                    <div className="element-ends font small transparent-white"
+                        <section className="flex-center row">
+                            {/* Song */}
+                            <section className="flex-center column">
+                                {/* Song Disc */}
+                                <div id="musicplayer-disc"
+                                    className="circle no-highlight"
+                                    onClick={() => this.discSwitch()}>
+                                    <ReactPlayer id="musicplayer-player"
+                                        ref={this.ref}
+                                        url={this.state.url}
+                                        playing={this.state.playing && this.state.playerDisplay === "block"}
+                                        height={"21em"}
+                                        width={"21em"}
+                                        onDuration={(event) => this.setMaxDuration(event)}
+                                        onProgress={(event) => this.updateDuration(event)}
+                                        onEnded={this.ended}
+                                        onReady={() => {}}
                                         style={{
-                                            marginTop: "0.1rem"
-                                        }}>
-                                        <span>{this.state.currentDuration}</span>
-                                        <span>{this.state.maxDuration}</span>
+                                            display: this.state.playerDisplay
+                                        }}
+                                        config={{
+                                            youtube: {
+                                                playerVars: {
+                                                    fs: 0,
+                                                    rel: 0
+                                                },
+                                            }
+                                        }}/>
+                                </div>
+                                {/* Song Information */}
+                                <div id="musicplayer-details"
+                                    className="no-highlight flex-center column gap small-gap only-justify-content">
+                                    <div className="flex-center column gap only-justify-content">
+                                        <div id="musicplayer-name">
+                                            <span className="text-animation font bold white large-medium"
+                                                onClick={() => this.props.copyToClipboard(this.state.name)}>{this.state.name}</span>
+                                        </div>
+                                        <span id="musicplayer-author" 
+                                            className="text-animation aesthetic-scale scale-self origin-left font white small"
+                                            onClick={() => this.props.copyToClipboard(this.state.artist)}>{this.state.artist}</span>
+                                    </div>
+                                    <div>
+                                        <input className="progress-bar"
+                                            value={this.state.progress}
+                                            type="range"
+                                            min={0}
+                                            max={0.999999}
+                                            step={"any"}
+                                            onMouseDown={() => this.handleSeeking({ what: "down" })}
+                                            onTouchStart={() => this.handleSeeking({ what: "down" })}
+                                            onChange={(event) => this.handleSeeking({ event: event })}
+                                            onMouseUp={(event) => this.handleSeeking({ event: event, what: "up" })}
+                                            onTouchEnd={(event) => this.handleSeeking({ event: event, what: "up" })}/>
+                                        <div className="element-ends font small transparent-white"
+                                            style={{
+                                                marginTop: "0.1rem"
+                                            }}>
+                                            <span>{this.state.currentDuration}</span>
+                                            <span>{this.state.maxDuration}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            {/* Song Controls */}
-                            <div id="musicplayer-controls"
-                                className="flex-center row gap">
-                                <button id="musicplayer-remove" 
-                                    className="button-match inverse disabled"
-                                    onClick={() => this.handleButton("remove")}>
-                                    <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
-                                        <FaMinus/>
-                                    </IconContext.Provider>
-                                </button>
-                                <button id="musicplayer-button-previous"
-                                    className="button-match inverse"
-                                    onClick={() => this.handleButton("previous")}>
-                                    <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
-                                        <IoPlayBack/>
-                                    </IconContext.Provider>
-                                </button>
-                                <button id="musicplayer-button-play"
-                                    className="button-match inverse"
-                                    onClick={() => this.toggleMusic()}>
-                                    {(this.state.playing)
-                                        ? <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
-                                            <FaRegCirclePause/>
+                                {/* Song Controls */}
+                                <div id="musicplayer-controls"
+                                    className="flex-center row gap">
+                                    <button id="musicplayer-remove" 
+                                        className="button-match inverse disabled"
+                                        onClick={() => this.handleButton("remove")}>
+                                        <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                            <FaMinus/>
                                         </IconContext.Provider>
-                                        : <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
-                                            <FaRegCirclePlay/>
-                                        </IconContext.Provider>}
-                                    <div id="musicplayer-button-clone-play"
-                                        className="button-match inverse">
+                                    </button>
+                                    <button id="musicplayer-button-previous"
+                                        className="button-match inverse"
+                                        onClick={() => this.handleButton("previous")}>
+                                        <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
+                                            <IoPlayBack/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    <button id="musicplayer-button-play"
+                                        className="button-match inverse"
+                                        onClick={() => this.toggleMusic()}>
                                         {(this.state.playing)
                                             ? <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
                                                 <FaRegCirclePause/>
@@ -548,33 +660,71 @@ class WidgetMusicPlayer extends Component{
                                             : <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
                                                 <FaRegCirclePlay/>
                                             </IconContext.Provider>}
-                                    </div>
-                                </button>
-                                <button id="musicplayer-button-next"
-                                    className="button-match inverse"
-                                    onClick={() => this.handleButton("next")}>
-                                    <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
-                                        <IoPlayForward/>
-                                    </IconContext.Provider>
-                                </button>
-                                <button id="musicplayer-add" 
-                                    className="button-match inverse disabled"
-                                    onClick={() => this.handleButton("add")}>
-                                    <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
-                                        <FaPlus/>
-                                    </IconContext.Provider>
-                                </button>
-                                <input id="musicplayer-input-add"
-                                    className="input-match"
-                                    onKeyDown={(event) => this.handleInputSubmit(event)}
-                                    onBlur={() => {
-                                        document.getElementById("musicplayer-input-add")
-                                            .classList.remove("musicplayer-animation-input-add");
-                                    }}
-                                    autoComplete="off"
-                                    type="text"
-                                    name="musicplayer-input-add"/>
-                            </div>
+                                        <div id="musicplayer-button-clone-play"
+                                            className="button-match inverse">
+                                            {(this.state.playing)
+                                                ? <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
+                                                    <FaRegCirclePause/>
+                                                </IconContext.Provider>
+                                                : <IconContext.Provider value={{ size: "4.5em", className: "global-class-name" }}>
+                                                    <FaRegCirclePlay/>
+                                                </IconContext.Provider>}
+                                        </div>
+                                    </button>
+                                    <button id="musicplayer-button-next"
+                                        className="button-match inverse"
+                                        onClick={() => this.handleButton("next")}>
+                                        <IconContext.Provider value={{ size: "4em", className: "global-class-name" }}>
+                                            <IoPlayForward/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    <button id="musicplayer-add" 
+                                        className="button-match inverse disabled"
+                                        onClick={() => this.handleButton("add")}>
+                                        <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                            <FaPlus/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    <input id="musicplayer-input-add"
+                                        className="input-match"
+                                        onKeyDown={(event) => this.handleInputSubmit(event)}
+                                        onBlur={() => {
+                                            document.getElementById("musicplayer-input-add")
+                                                .classList.remove("musicplayer-animation-input-add");
+                                        }}
+                                        autoComplete="off"
+                                        type="text"
+                                        name="musicplayer-input-add"/>
+                                </div>
+                                {/* Song Expanded Controls */}
+                                <div id="musicplayer-controls-expanded">
+                                    <button id="musicplayer-button-shuffle"
+                                        className="button-match inverse disabled"
+                                        onClick={() => this.handleButton("shuffle")}>
+                                        <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                            <FaShuffle/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    <button id="musicplayer-button-playlist"
+                                        className="button-match inverse"
+                                        onClick={() => this.handleButton("playlist")}>
+                                        <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                            <RiPlayListFill/>
+                                        </IconContext.Provider>
+                                    </button>
+                                </div>
+                            </section>
+                            <SimpleBar id="musicplayer-playlist"
+                                style={{ maxHeight: "10em" }}>
+                                {this.state.urls.map((url, index) => {
+                                    return <section className="flex-center column align-items-left box no-highlight"
+                                        onClick={(event) => this.handlePlaylist(index, event)}
+                                        key={`playlist-item-${index}`}>
+                                        <span>{url.name}</span>
+                                        <span className="font transparent-normal">{url.artist}</span>
+                                    </section>
+                                })}
+                            </SimpleBar>
                         </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)

@@ -30,13 +30,7 @@ export class Preloader extends Scene{
         this.load.image('boss-smug', 'boss/boss-smug.webp');
         this.load.image('boss-X3', 'boss/boss-X3.webp');
         /// Bullet
-        this.load.image('bullet-arrow-pink', 'bullet/arrow-pink.webp');
-        this.load.image('bullet-butterfly-green', 'bullet/butterfly-green.webp');
-        this.load.image('bullet-card-blue', 'bullet/card-blue.webp');
-        this.load.image('bullet-icicle-blue', 'bullet/icicle-blue.webp');
-        this.load.image('bullet-icicle-pink', 'bullet/icicle-pink.webp');
-        this.load.image('bullet-sword-yellow', 'bullet/sword-yellow.webp');
-
+        this.load.atlas('bullet-atlas', 'bullet/bullet.webp', 'bullet/bullet.json');
         this.load.setPath('assets/');
         this.load.image('bullet1', 'attacks/bullet1.png');
         this.load.image('bullet2', 'attacks/bullet2.png');

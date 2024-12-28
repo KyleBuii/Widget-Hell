@@ -1,13 +1,12 @@
 import Phaser from 'phaser';
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
-import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 
 
 const config = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     width: 600,
     height: 850,
     parent: 'bullethell-game',
@@ -15,6 +14,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
+            fps: 60,
             debug: false,
         },
     },
@@ -30,8 +30,7 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
-        Game,
-        GameOver
+        Game
     ]
 };
 
