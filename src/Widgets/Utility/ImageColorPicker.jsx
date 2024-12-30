@@ -1,4 +1,4 @@
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { EyeDropper } from 'react-eyedrop';
 import { IconContext } from 'react-icons';

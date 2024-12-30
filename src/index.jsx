@@ -9344,7 +9344,7 @@ class Widgets extends Component{
     };
 };
 //#region Widget template
-// import { React, Component, memo } from 'react';
+// import React, { Component, memo } from 'react';
 // import { FaGripHorizontal } from 'react-icons/fa';
 // import { IconContext } from 'react-icons';
 // import Draggable from 'react-draggable';

@@ -1,10 +1,11 @@
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay, FaShuffle } from 'react-icons/fa6';
 import { IoPlayBack, IoPlayForward } from 'react-icons/io5';
 import { RiPlayListFill } from "react-icons/ri";
+import { VscClearAll } from "react-icons/vsc";
 import ReactPlayer from 'react-player/lazy';
 import SimpleBar from 'simplebar-react';
 
@@ -14,6 +15,7 @@ const audio = new Audio();
 let timeoutAnimationRemove;
 let timeoutAnimationPrevious;
 let timeoutAnimationNext;
+let timeoutPlaylistClear;
 let urlsAdd = [];
 let dataSongsAdd = [];
 let activePlaylistItem = -1;
@@ -70,7 +72,8 @@ class WidgetMusicPlayer extends Component{
             discSwitch: false,
             seeking: false,
             shuffle: false,
-            ready: false
+            ready: false,
+            confirmClear: false
         };
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
@@ -175,6 +178,21 @@ class WidgetMusicPlayer extends Component{
             case "playlist":
                 const elementPlaylist = document.getElementById("musicplayer-playlist");
                 elementPlaylist.classList.toggle("musicplayer-playlist-show");
+                break;
+            case "playlist-clear":
+                const buttonPlaylistClear = document.getElementById("musicplayer-button-playlist-clear");
+                if(buttonPlaylistClear.classList.contains("confirm-delete")){
+                    this.setState({
+                        urls: []
+                    });
+                    this.clearMusic();
+                };
+                buttonPlaylistClear.classList.toggle("confirm-delete");
+                if(buttonPlaylistClear.classList.contains("confirm-delete")){
+                    timeoutPlaylistClear = setTimeout(() => {
+                        buttonPlaylistClear.classList.remove("confirm-delete");
+                    }, 2000);
+                };
                 break;
             default:
                 if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
@@ -288,8 +306,11 @@ class WidgetMusicPlayer extends Component{
     };
     async fetchYoutubePlaylist(ID, pageToken = ""){
         try{
-            const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${ID}&key=${import.meta.env.VITE_MUSIC_PLAYER_API_KEY}&pageToken=${pageToken}`;
-            const result = await fetch(url);
+            document.getElementById("musicplayer-input-add")
+                .classList.remove("musicplayer-animation-input-add");
+            document.getElementById("musicplayer-input-add")
+                .value = "";
+            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
             const data = await result.json();
             data.items.forEach((item) => {
                 urlsAdd.push({
@@ -310,6 +331,8 @@ class WidgetMusicPlayer extends Component{
             };
         }catch(err){
             console.error(err);
+        }finally{
+            this.animationInputAdd();
         };
     };
     toggleMusic(){
@@ -427,18 +450,21 @@ class WidgetMusicPlayer extends Component{
                 }, () => {
                     if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
                     this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
+                    document.getElementById("musicplayer-input-add")
+                        .classList.remove("musicplayer-animation-input-add");
+                    document.getElementById("musicplayer-input-add")
+                        .value = "";        
+                    this.animationInputAdd();
                 });
             };
-            document.getElementById("musicplayer-input-add")
-                .classList.remove("musicplayer-animation-input-add");
-            document.getElementById("musicplayer-input-add")
-                .value = "";
-            let elementDetails = document.getElementById("musicplayer-details");
-            elementDetails.classList.add("musicplayer-animation-add-details");
-            timeoutAnimationRemove = setTimeout(() => {
-                elementDetails.classList.remove("musicplayer-animation-add-details");
-            }, 400);
         };
+    };
+    animationInputAdd(){
+        let elementDetails = document.getElementById("musicplayer-details");
+        elementDetails.classList.add("musicplayer-animation-add-details");
+        timeoutAnimationRemove = setTimeout(() => {
+            elementDetails.classList.remove("musicplayer-animation-add-details");
+        }, 400);
     };
     handleSeeking({ event, what }){
         /// Default is onChange
@@ -467,6 +493,7 @@ class WidgetMusicPlayer extends Component{
         };
     };
     handlePlaylist(index, element){
+        if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
         this.loadMusic(index);
         if(activePlaylistItem !== -1){
             activePlaylistItem.classList.remove("musicplayer-playlist-active");
@@ -710,6 +737,13 @@ class WidgetMusicPlayer extends Component{
                                         onClick={() => this.handleButton("playlist")}>
                                         <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
                                             <RiPlayListFill/>
+                                        </IconContext.Provider>
+                                    </button>
+                                    <button id="musicplayer-button-playlist-clear"
+                                        className="button-match inverse"
+                                        onClick={() => this.handleButton("playlist-clear")}>
+                                        <IconContext.Provider value={{ size: "1.3em", className: "global-class-name" }}>
+                                            <VscClearAll/>
                                         </IconContext.Provider>
                                     </button>
                                 </div>

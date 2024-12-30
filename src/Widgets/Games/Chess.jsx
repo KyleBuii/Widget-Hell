@@ -1,5 +1,5 @@
 import { Chess } from 'chess.js';
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import { Chessboard } from 'react-chessboard';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';

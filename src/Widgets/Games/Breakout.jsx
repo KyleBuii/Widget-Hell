@@ -1,4 +1,4 @@
-import { Component, React } from 'react';
+import React, { Component } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
 // import { AiOutlineSetting } from 'react-icons/ai';

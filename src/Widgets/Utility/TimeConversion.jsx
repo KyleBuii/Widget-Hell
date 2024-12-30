@@ -1,4 +1,4 @@
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';

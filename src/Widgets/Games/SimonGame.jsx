@@ -1,5 +1,5 @@
 import Slider from 'rc-slider';
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';

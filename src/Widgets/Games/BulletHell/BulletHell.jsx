@@ -1,4 +1,4 @@
-import { Component, createRef, memo, React } from 'react';
+import React, { Component, createRef, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';

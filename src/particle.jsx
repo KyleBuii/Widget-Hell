@@ -1,6 +1,6 @@
 import { loadAll } from '@tsparticles/all';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { React, memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 
 function Particle(props){

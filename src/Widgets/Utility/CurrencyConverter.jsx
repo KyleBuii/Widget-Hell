@@ -1,4 +1,4 @@
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';
@@ -62,11 +62,11 @@ class WidgetCurrencyConverter extends Component{
     async fetchExchangeRate(){
         if(this.state.from.value !== this.state.to.value
             && /^\d*\.?\d*$/.test(this.state.input)){
-            const url = `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_CURRENCY_CONVERTER_API_KEY}/latest/${this.state.from.label}`;
             try{
                 this.setState({
                     running: true
                 });
+                const url = `/api/currencyConverter?translateFrom=${this.state.from.label}`;
                 const response = await fetch(url);
                 const result = await response.json();
                 const exchangeRate = result.conversion_rates[this.state.to.label];

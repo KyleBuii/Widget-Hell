@@ -1,5 +1,5 @@
 import { evaluate, round } from 'mathjs';
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BiExpand } from 'react-icons/bi';

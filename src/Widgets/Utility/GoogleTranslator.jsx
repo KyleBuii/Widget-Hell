@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { Component, memo, React } from 'react';
+import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';

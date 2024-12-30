@@ -4957,6 +4957,11 @@ body{
             transform: translateY(-10%);
             transition: transform 0.5s;
         }
+        #musicplayer-button-playlist-clear{
+            &.confirm-delete{
+                color: #be0011;
+            }
+        }
     }
     #musicplayer-playlist{
         @extend .font, .small;
