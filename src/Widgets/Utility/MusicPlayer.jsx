@@ -1,4 +1,4 @@
-import React, { Component, memo } from 'react';
+import React, { Component, createRef, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -16,11 +16,16 @@ let timeoutAnimationRemove;
 let timeoutAnimationPrevious;
 let timeoutAnimationNext;
 let timeoutPlaylistClear;
+let timeoutPlaylistPanel;
 let urlsAdd = [];
 let dataSongsAdd = [];
+let dataSongsRemoved = [];
 let activePlaylistItem = -1;
-let seekedTime = -1;
-let playedTimeSeek = 0;
+let previousPlaylistItem = 0;
+let previousShuffleNextSong = -1;
+let timePlayed = 0;
+let unplayedSongsIndex = [];
+let unplayedSongsMaxIndex = 0;
 
 
 class WidgetMusicPlayer extends Component{
@@ -31,32 +36,32 @@ class WidgetMusicPlayer extends Component{
         };
         this.state = {
             music: [],
-            urls: [
-                {
-                    name: "Origin | Original by Kilia Kurayami",
-                    artist: "Kilia Kurayami Ch. 【EIEN Project】",
-                    url: "https://www.youtube.com/watch?v=7Rb5fxeqVxs",
-                    timePlayed: 0
-                },
-                {
-                    name: "Asian Hideout - ERROR 403: paradise x paradigm",
-                    artist: "Asian Hideout",
-                    url: "https://www.youtube.com/watch?v=ymxBpO5U2KY",
-                    timePlayed: 0
-                },
-                {
-                    name: "We are cool【轟はじめ/古石ビジュー】",
-                    artist: "おだまよ",
-                    url: "https://www.youtube.com/watch?v=70PIxN3XM5k",
-                    timePlayed: 0
-                },
-                {
-                    name: "【MV】ABOVE BELOW【hololive English -Justice- Debut Song】",
-                    artist: "hololive English",
-                    url: "https://www.youtube.com/watch?v=ilLEj-SCCn8",
-                    timePlayed: 0
-                },
-            ],
+                urls: [
+                    {
+                        name: "Origin | Original by Kilia Kurayami",
+                        artist: "Kilia Kurayami Ch. 【EIEN Project】",
+                        url: "https://www.youtube.com/watch?v=7Rb5fxeqVxs",
+                        timePlayed: 0
+                    },
+                    {
+                        name: "Asian Hideout - ERROR 403: paradise x paradigm",
+                        artist: "Asian Hideout",
+                        url: "https://www.youtube.com/watch?v=ymxBpO5U2KY",
+                        timePlayed: 0
+                    },
+                    {
+                        name: "We are cool【轟はじめ/古石ビジュー】",
+                        artist: "おだまよ",
+                        url: "https://www.youtube.com/watch?v=70PIxN3XM5k",
+                        timePlayed: 0
+                    },
+                    {
+                        name: "【MV】ABOVE BELOW【hololive English -Justice- Debut Song】",
+                        artist: "hololive English",
+                        url: "https://www.youtube.com/watch?v=ilLEj-SCCn8",
+                        timePlayed: 0
+                    },
+                ],
             name: "",
             artist: "",
             currentDuration: "00:00",
@@ -69,7 +74,6 @@ class WidgetMusicPlayer extends Component{
             autoplay: false,
             url: null,
             playerDisplay: "none",
-            discSwitch: false,
             seeking: false,
             shuffle: false,
             ready: false,
@@ -82,26 +86,135 @@ class WidgetMusicPlayer extends Component{
         this.storeData = this.storeData.bind(this);
     };
     ended(){
-        this.saveDataMusic(this.state.name, this.state.rawMaxDuration);
+        this.saveDataMusic(this.state.name);
         this.setState({
             currentDuration: "00:00",
             maxDuration: "00:00"
         });
         this.handleNextMusic();
-        if(activePlaylistItem !== -1){
-            activePlaylistItem.classList.remove("musicplayer-playlist-active");
-            activePlaylistItem = -1;
+    };
+    clearMusic(){
+        this.setState({
+            name: "",
+            artist: "",
+            currentDuration: "00:00",
+            maxDuration: "00:00",
+            rawMaxDuration: 0,
+            progress: 0,
+            playing: false,
+            songIndex: 0,
+            autoplay: false,
+            url: null,
+            playerDisplay: "none"
+        });
+    };
+    discSwitch(){
+        let elementDisc = document.getElementById("musicplayer-disc");
+        let elementPlayer = document.getElementById("musicplayer-player");
+        if(elementDisc.classList.contains("musicplayer-disc-small")){
+            elementDisc.classList.remove("musicplayer-disc-small");
+            elementDisc.classList.add("musicplayer-disc-medium");
+            elementPlayer.classList.remove("musicplayer-player-small");
+            elementPlayer.classList.add("musicplayer-player-medium");
+        }else if(elementDisc.classList.contains("musicplayer-disc-medium")){
+            elementDisc.classList.remove("musicplayer-disc-small");  
+            elementDisc.classList.remove("musicplayer-disc-medium");    
+            elementPlayer.classList.remove("musicplayer-player-small");
+            elementPlayer.classList.remove("musicplayer-player-medium");
+        }else{
+            elementDisc.classList.add("musicplayer-disc-small");
+            elementDisc.classList.remove("musicplayer-disc-medium");    
+            elementPlayer.classList.add("musicplayer-player-small");
+            elementPlayer.classList.remove("musicplayer-player-medium");
+        };
+    };
+    animationInputAdd(){
+        let elementDetails = document.getElementById("musicplayer-details");
+        elementDetails.classList.add("musicplayer-animation-add-details");
+        timeoutAnimationRemove = setTimeout(() => {
+            elementDetails.classList.remove("musicplayer-animation-add-details");
+        }, 400);
+    };
+    toggleMusic(){
+        let combineArrays = [...this.state.music, ...this.state.urls];
+        if(combineArrays.length !== 0){
+            this.setState({
+                playing: !this.state.playing,
+                autoplay: !this.state.autoplay
+            }, () => {
+                if(this.state.playerDisplay === "none"){
+                    if(this.state.playing){
+                        audio.play();
+                        window.requestAnimationFrame(() => {
+                            document.getElementById("musicplayer-disc")
+                                .style.animation = "rotateDisk 5s linear 0s infinite forwards";    
+                        });
+                    }else{
+                        audio.pause();
+                        document.getElementById("musicplayer-disc")
+                            .style.animation = "none";
+                    };
+                };
+            });
+            let elementButtonPlay = document.getElementById("musicplayer-button-clone-play");
+            elementButtonPlay.style.animation = "none";
+            window.requestAnimationFrame(() => {
+                elementButtonPlay.style.animation = "pulse 0.8s";
+            });
+        };
+    };
+    handleInputSubmit(event){
+        /// Enter key
+        if((event.keyCode === 13)
+            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))){
+            if(/playlist/.test(event.target.value)){
+                let playlistID = event.target.value.match(/(?:list=)(.*)/);
+                this.fetchYoutubePlaylist(playlistID[1]);
+            }else{
+                /// Remove queries
+                let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
+                this.setState({
+                    urls: [...this.state.urls, {
+                        url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
+                    }]
+                }, () => {
+                    if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+                    this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
+                    document.getElementById("musicplayer-input-add")
+                        .classList.remove("musicplayer-animation-input-add");
+                    document.getElementById("musicplayer-input-add")
+                        .value = "";        
+                    this.animationInputAdd();
+                    unplayedSongsIndex.push(unplayedSongsMaxIndex);
+                    unplayedSongsMaxIndex++;
+                    activePlaylistItem?.classList.remove("musicplayer-playlist-active");
+                    const elementPlaylist = this.refPlaylist.getContentElement();
+                    elementPlaylist.lastElementChild.classList.add("musicplayer-playlist-active");        
+                });
+            };
         };
     };
     handleButton(type){
         let combineArrays = [...this.state.music, ...this.state.urls];
-        /// Default is next song
         switch(type){
             case "remove":
                 if(combineArrays.length !== 0){
                     let findIndexMusic = this.state.music.findIndex((object) => object.name === this.state.name);
                     let copyArrayMusic = [...this.state.music];
                     if(findIndexMusic !== -1){
+                        let totalTimePlayed = copyArrayUrls[findIndexUrls].timePlayed + this.state.rawCurrentDuration;
+                        let dataSong = dataSongsAdd.find((song) => song.name === copyArrayUrls[findIndexUrls].name);
+                        if(dataSong !== undefined){
+                            totalTimePlayed += dataSong.timePlayed;
+                        };                
+                        dataSongsRemoved.push({
+                            name: copyArrayUrls[findIndexUrls].name,
+                            timePlayed: totalTimePlayed
+                        });
+                        dataSongsRemoved.push({
+                            name: copyArrayMusic[findIndexMusic].name,
+                            timePlayed: copyArrayMusic[findIndexMusic].timePlayed
+                        });
                         if(findIndexMusic === 0){
                             copyArrayMusic = [...copyArrayMusic.slice(1)];
                         }else{
@@ -120,10 +233,22 @@ class WidgetMusicPlayer extends Component{
                                 this.clearMusic();
                             };
                         });
+                        let indexValue = unplayedSongsIndex.findIndex((value) => value === findIndexMusic);
+                        unplayedSongsIndex.splice(indexValue, 1);
+                        unplayedSongsMaxIndex--;
                     };
                     let findIndexUrls = this.state.urls.findIndex((object) => object.name === this.state.name);
                     let copyArrayUrls = [...this.state.urls];
                     if(findIndexUrls !== -1){
+                        let totalTimePlayed = copyArrayUrls[findIndexUrls].timePlayed + this.state.rawCurrentDuration;
+                        let dataSong = dataSongsAdd.find((song) => song.name === copyArrayUrls[findIndexUrls].name);
+                        if(dataSong !== undefined){
+                            totalTimePlayed += dataSong.timePlayed;
+                        };                
+                        dataSongsRemoved.push({
+                            name: copyArrayUrls[findIndexUrls].name,
+                            timePlayed: totalTimePlayed
+                        });
                         if(findIndexUrls === 0){
                             copyArrayUrls = [...copyArrayUrls.slice(1)];
                         }else{
@@ -142,6 +267,9 @@ class WidgetMusicPlayer extends Component{
                                 this.clearMusic();
                             };
                         });
+                        let indexValue = unplayedSongsIndex.findIndex((value) => value === findIndexUrls);
+                        unplayedSongsIndex.splice(indexValue, 1);
+                        unplayedSongsMaxIndex--;
                     };
                     let elementDetails = document.getElementById("musicplayer-details");
                     elementDetails.classList.add("musicplayer-animation-remove-details");
@@ -154,13 +282,21 @@ class WidgetMusicPlayer extends Component{
                 document.getElementById("musicplayer-input-add")
                     .classList.add("musicplayer-animation-input-add");
                 break;
-            case "previous":
-                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
+            case "next":
+                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
                 if(combineArrays.length > 1){
-                    let musicIndex = ((this.state.songIndex - 1) < 0)
-                        ? combineArrays.length - 1
-                        : this.state.songIndex - 1;
-                    this.loadMusic(musicIndex);
+                    this.handleNextMusic();
+                    let elementButtonPrevious = document.getElementById("musicplayer-button-next");
+                    elementButtonPrevious.classList.add("musicplayer-animation-button-next");
+                    timeoutAnimationNext = setTimeout(() => {
+                        elementButtonPrevious.classList.remove("musicplayer-animation-button-next");
+                    }, 300);
+                };
+                break;
+            case "previous":
+                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+                if(combineArrays.length > 1){
+                    this.handlePreviousMusic();
                     let elementButtonPrevious = document.getElementById("musicplayer-button-previous");
                     elementButtonPrevious.classList.add("musicplayer-animation-button-previous");
                     timeoutAnimationPrevious = setTimeout(() => {
@@ -176,8 +312,23 @@ class WidgetMusicPlayer extends Component{
                 buttonShuffle.classList.toggle("disabled");
                 break;
             case "playlist":
-                const elementPlaylist = document.getElementById("musicplayer-playlist");
-                elementPlaylist.classList.toggle("musicplayer-playlist-show");
+                if(timeoutPlaylistPanel === undefined){
+                    const elementPlaylistLength = document.getElementById("musicplayer-playlist-length");
+                    const elementPlaylist = document.getElementById("musicplayer-playlist");
+                    if(elementPlaylistLength.classList.contains("musicplayer-playlist-length-show")){
+                        elementPlaylistLength.classList.toggle("musicplayer-playlist-length-show");
+                        timeoutPlaylistPanel = setTimeout(() => {
+                            elementPlaylist.classList.toggle("musicplayer-playlist-show");
+                            timeoutPlaylistPanel = undefined;
+                        }, 500);
+                    }else{
+                        elementPlaylist.classList.toggle("musicplayer-playlist-show");
+                        timeoutPlaylistPanel = setTimeout(() => {
+                            elementPlaylistLength.classList.toggle("musicplayer-playlist-length-show");
+                            timeoutPlaylistPanel = undefined;
+                        }, 500);
+                    };
+                };
                 break;
             case "playlist-clear":
                 const buttonPlaylistClear = document.getElementById("musicplayer-button-playlist-clear");
@@ -186,6 +337,8 @@ class WidgetMusicPlayer extends Component{
                         urls: []
                     });
                     this.clearMusic();
+                    unplayedSongsIndex.length = 0;
+                    unplayedSongsMaxIndex = 0;
                 };
                 buttonPlaylistClear.classList.toggle("confirm-delete");
                 if(buttonPlaylistClear.classList.contains("confirm-delete")){
@@ -194,22 +347,23 @@ class WidgetMusicPlayer extends Component{
                     }, 2000);
                 };
                 break;
-            default:
-                if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
-                if(combineArrays.length > 1){
-                    this.handleNextMusic();
-                    let elementButtonPrevious = document.getElementById("musicplayer-button-next");
-                    elementButtonPrevious.classList.add("musicplayer-animation-button-next");
-                    timeoutAnimationNext = setTimeout(() => {
-                        elementButtonPrevious.classList.remove("musicplayer-animation-button-next");
-                    }, 300);
-                };
-                break;
+            default: break;
         };
     };
     handleNextMusic(){
         if(this.state.shuffle){
-            this.loadMusic();
+            if(previousShuffleNextSong !== -1){
+                previousShuffleNextSong.click();
+                previousShuffleNextSong = -1;
+            }else{
+                let randomMusicIndex = Math.floor(Math.random() * unplayedSongsIndex.length);
+                let randomMusic = unplayedSongsIndex[randomMusicIndex];
+                unplayedSongsIndex.splice(randomMusicIndex, 1);
+                this.loadMusic(randomMusic);
+                if(unplayedSongsIndex.length === 0){
+                    unplayedSongsIndex = [...Array(unplayedSongsMaxIndex).keys()];
+                };
+            };
         }else{
             let combineArrays = [...this.state.music, ...this.state.urls];
             if(combineArrays.length > 1){
@@ -220,26 +374,171 @@ class WidgetMusicPlayer extends Component{
             };
         };
     };
-    clearMusic(){
+    handlePreviousMusic(){
+        if(this.state.shuffle){
+            previousShuffleNextSong = activePlaylistItem;
+            previousPlaylistItem.click();
+        }else{
+            let combineArrays = [...this.state.music, ...this.state.urls];
+            if(combineArrays.length > 1){
+                let musicIndex = ((this.state.songIndex - 1) < 0)
+                    ? combineArrays.length - 1
+                    : this.state.songIndex - 1;
+                this.loadMusic(musicIndex);
+            };
+        };
+    };
+    handleSeeking({ event, what }){
+        /// Default is onChange
+        switch(what){
+            case "down":
+                this.setState({
+                    seeking: true
+                });
+                break;
+            case "up":
+                this.setState({
+                    seeking: false
+                });
+                this.player.seekTo(parseFloat(event.target.value));
+                break;
+            default:
+                this.setState({
+                    progress: parseFloat(event.target.value)
+                });
+                break;
+        };
+    };
+    handlePlaylist(index, element){
+        if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+        this.loadMusic(index);
+        if(activePlaylistItem !== -1){
+            activePlaylistItem.classList.remove("musicplayer-playlist-active");
+        };
+        activePlaylistItem = element.target;
+        element.target.classList.add("musicplayer-playlist-active");
+    };
+    updateDuration(event){
+        if(!this.state.seeking){
+            let minutes, seconds;
+            if(event.playedSeconds){
+                minutes = Math.floor(event.playedSeconds / 60);
+                seconds = Math.floor(event.playedSeconds % 60);
+            }else{
+                minutes = Math.floor(audio.currentTime / 60);
+                seconds = Math.floor(audio.currentTime % 60);
+            };
+            if(minutes < 10){
+                minutes = `0${minutes}`;
+            };
+            if(seconds < 10){
+                seconds = `0${seconds}`;
+            };
+            this.setState({
+                currentDuration: `${minutes}:${seconds}`,
+                rawCurrentDuration: event.playedSeconds,
+                progress: event.played
+            });
+            timePlayed += 1;
+        };
+    };
+    setMaxDuration(event){
+        let minutes, seconds;
+        if(event){
+            minutes = Math.floor(event / 60);
+            seconds = Math.floor(event % 60);
+            this.setState({
+                rawMaxDuration: event
+            });
+        }else{
+            minutes = Math.floor(audio.duration / 60);
+            seconds = Math.floor(audio.duration % 60);
+        };
+        if(minutes < 10){
+            minutes = `0${minutes}`;
+        };
+        if(seconds < 10){
+            seconds = `0${seconds}`;
+        };
         this.setState({
-            name: "",
-            artist: "",
-            currentDuration: "00:00",
-            maxDuration: "00:00",
-            rawMaxDuration: 0,
-            progress: 0,
-            playing: false,
-            songIndex: 0,
-            autoplay: false,
-            url: null,
-            playerDisplay: "none"
+            maxDuration: `${minutes}:${seconds}`
         });
+    };
+    async fetchURLData(URL){
+        try{
+            const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
+            const result = await fetch(url);
+            const data = await result.json();
+            this.setState({
+                urls: [...this.state.urls.slice(0, -1), {
+                    name: (!data.error) ? data.title : data.url,
+                    artist: data.author_name,
+                    url: URL,
+                    timePlayed: 0 
+                }],
+                name: data.title,
+                artist: data.author_name
+            });
+        }catch(err){
+            console.error(err);
+        };
+    };
+    async fetchYoutubePlaylist(ID, pageToken = ""){
+        try{
+            document.getElementById("musicplayer-input-add")
+                .classList.remove("musicplayer-animation-input-add");
+            document.getElementById("musicplayer-input-add")
+                .value = "";
+            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
+            const data = await result.json();
+            console.log(data)
+            let itemUrl;
+            data.items.forEach((item) => {
+                itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
+                urlsAdd.push({
+                    name: (/\bDeleted video\b|\bPrivate video\b/.test(item.snippet.title)) ? itemUrl : item.snippet.title,
+                    artist: item.snippet.videoOwnerChannelTitle,
+                    url: itemUrl,
+                    timePlayed: 0
+                });
+            });
+            if(data.nextPageToken){
+                this.fetchYoutubePlaylist(ID, data.nextPageToken);
+            }else{
+                this.setState({
+                    urls: [...this.state.urls, ...urlsAdd]
+                }, () => {
+                    this.loadMusic(Math.abs(this.state.urls.length - urlsAdd.length));
+                });
+                let newMax = unplayedSongsMaxIndex + urlsAdd.length;
+                unplayedSongsIndex = [
+                    ...unplayedSongsIndex,
+                    ...Array.from({ length: newMax + 1 }, (_, i) => i + unplayedSongsMaxIndex)
+                ];
+                unplayedSongsMaxIndex = newMax;
+            };
+        }catch(err){
+            console.error(err);
+        }finally{
+            this.animationInputAdd();
+        };
     };
     loadMusic(music){
         let combineArrays = [...this.state.music, ...this.state.urls];
-        let musicIndex = (music !== undefined)
-            ? music
-            : Math.floor(Math.random() * combineArrays.length);
+        let musicIndex;
+        if(music !== undefined){
+            musicIndex = music;
+        }else{
+            musicIndex = Math.floor(Math.random() * combineArrays.length);
+            unplayedSongsIndex.splice(musicIndex, 1);
+        };
+        const elementPlaylist = this.refPlaylist.getContentElement();
+        const elementPlaylistItem = elementPlaylist.children[musicIndex];
+        previousPlaylistItem = activePlaylistItem;
+        activePlaylistItem.classList?.remove("musicplayer-playlist-active");
+        elementPlaylistItem.classList.add("musicplayer-playlist-active");
+        elementPlaylistItem.scrollIntoView();
+        activePlaylistItem = elementPlaylistItem;
         let randomMusic = combineArrays[musicIndex];
         if(randomMusic.url){
             if(randomMusic.name){
@@ -285,248 +584,24 @@ class WidgetMusicPlayer extends Component{
             };
         };
     };
-    async fetchURLData(URL){
-        try{
-            const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
-            const result = await fetch(url);
-            const data = await result.json();
-            this.setState({
-                urls: [...this.state.urls.slice(0, -1), {
-                    name: data.title,
-                    artist: data.author_name,
-                    url: URL,
-                    timePlayed: 0 
-                }],
-                name: data.title,
-                artist: data.author_name
-            });
-        }catch(err){
-            console.error(err);
-        };
-    };
-    async fetchYoutubePlaylist(ID, pageToken = ""){
-        try{
-            document.getElementById("musicplayer-input-add")
-                .classList.remove("musicplayer-animation-input-add");
-            document.getElementById("musicplayer-input-add")
-                .value = "";
-            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
-            const data = await result.json();
-            data.items.forEach((item) => {
-                urlsAdd.push({
-                    name: item.snippet.title,
-                    artist: item.snippet.videoOwnerChannelTitle,
-                    url: `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`,
-                    timePlayed: 0
-                });
-            });
-            if(data.nextPageToken){
-                this.fetchYoutubePlaylist(ID, data.nextPageToken);
-            }else{
-                this.setState({
-                    urls: [...this.state.urls, ...urlsAdd]
-                }, () => {
-                    this.loadMusic(Math.abs(this.state.urls.length - urlsAdd.length));
-                });
-            };
-        }catch(err){
-            console.error(err);
-        }finally{
-            this.animationInputAdd();
-        };
-    };
-    toggleMusic(){
-        let combineArrays = [...this.state.music, ...this.state.urls];
-        if(combineArrays.length !== 0){
-            this.setState({
-                playing: !this.state.playing,
-                autoplay: !this.state.autoplay
-            }, () => {
-                if(this.state.playerDisplay === "none"){
-                    if(this.state.playing){
-                        audio.play();
-                        window.requestAnimationFrame(() => {
-                            document.getElementById("musicplayer-disc")
-                                .style.animation = "rotateDisk 5s linear 0s infinite forwards";    
-                        });
-                    }else{
-                        audio.pause();
-                        document.getElementById("musicplayer-disc")
-                            .style.animation = "none";
-                    };
-                };
-            });
-            let elementButtonPlay = document.getElementById("musicplayer-button-clone-play");
-            elementButtonPlay.style.animation = "none";
-            window.requestAnimationFrame(() => {
-                elementButtonPlay.style.animation = "pulse 0.8s";
-            });
-        };
-    };
-    updateDuration(event){
-        if(!this.state.seeking){
-            let minutes, seconds;
-            if(event.playedSeconds){
-                minutes = Math.floor(event.playedSeconds / 60);
-                seconds = Math.floor(event.playedSeconds % 60);
-            }else{
-                minutes = Math.floor(audio.currentTime / 60);
-                seconds = Math.floor(audio.currentTime % 60);
-            };
-            if(minutes < 10){
-                minutes = `0${minutes}`;
-            };
-            if(seconds < 10){
-                seconds = `0${seconds}`;
-            };
-            this.setState({
-                currentDuration: `${minutes}:${seconds}`,
-                rawCurrentDuration: event.playedSeconds,
-                progress: event.played
-            });
-        };
-    };
-    setMaxDuration(event){
-        let minutes, seconds;
-        if(event){
-            minutes = Math.floor(event / 60);
-            seconds = Math.floor(event % 60);
-            this.setState({
-                rawMaxDuration: event
-            });
-        }else{
-            minutes = Math.floor(audio.duration / 60);
-            seconds = Math.floor(audio.duration % 60);
-        };
-        if(minutes < 10){
-            minutes = `0${minutes}`;
-        };
-        if(seconds < 10){
-            seconds = `0${seconds}`;
-        };
-        this.setState({
-            maxDuration: `${minutes}:${seconds}`
-        });
-    };
-    discSwitch(){
-        let elementDisc = document.getElementById("musicplayer-disc");
-        let elementPlayer = document.getElementById("musicplayer-player");
-        this.setState({
-            discSwitch: !this.state.discSwitch
-        }, () => {
-            if(this.state.discSwitch){
-                elementDisc.style.height = "11.8em";
-                elementDisc.style.width = "21em";
-                elementDisc.style.borderRadius = "25px";
-                elementDisc.style.top = "-0.4em";
-                elementDisc.style.left = "-9.5em";
-                elementPlayer.style.top = "-4.6em";
-                elementPlayer.style.left = "0";
-            }else{
-                elementDisc.style.height = "11.5em";
-                elementDisc.style.width = "11.5em";
-                elementDisc.style.borderRadius = "50%";
-                elementDisc.style.top = "0";
-                elementDisc.style.left = "0";
-                elementPlayer.style.top = "-78px";
-                elementPlayer.style.left = "-78px";
-            };
-        });
-    };
-    handleInputSubmit(event){
-        /// Enter key
-        if((event.keyCode === 13)
-            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))){
-            if(/playlist/.test(event.target.value)){
-                let playlistID = event.target.value.match(/(?:list=)(.*)/);
-                this.fetchYoutubePlaylist(playlistID[1]);
-            }else{
-                /// Remove queries
-                let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
-                this.setState({
-                    urls: [...this.state.urls, {
-                        url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
-                    }]
-                }, () => {
-                    if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
-                    this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
-                    document.getElementById("musicplayer-input-add")
-                        .classList.remove("musicplayer-animation-input-add");
-                    document.getElementById("musicplayer-input-add")
-                        .value = "";        
-                    this.animationInputAdd();
-                });
-            };
-        };
-    };
-    animationInputAdd(){
-        let elementDetails = document.getElementById("musicplayer-details");
-        elementDetails.classList.add("musicplayer-animation-add-details");
-        timeoutAnimationRemove = setTimeout(() => {
-            elementDetails.classList.remove("musicplayer-animation-add-details");
-        }, 400);
-    };
-    handleSeeking({ event, what }){
-        /// Default is onChange
-        switch(what){
-            case "down":
-                this.setState({
-                    seeking: true
-                });        
-                break;
-            case "up":
-                this.setState({
-                    seeking: false
-                });
-                this.updateDuration();   
-                this.player.seekTo(parseFloat(event.target.value));
-                // if(seekedTime !== -1){
-                //     playedTimeSeek = playedTimeSeek + (this.state.rawCurrentDuration - seekedTime);
-                // };
-                seekedTime = event.target.value * (this.state.rawMaxDuration - this.state.rawCurrentDuration);
-                break;
-            default:
-                this.setState({
-                    progress: parseFloat(event.target.value)
-                });
-                break;
-        };
-    };
-    handlePlaylist(index, element){
-        if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
-        this.loadMusic(index);
-        if(activePlaylistItem !== -1){
-            activePlaylistItem.classList.remove("musicplayer-playlist-active");
-        };
-        activePlaylistItem = element.target;
-        element.target.classList.add("musicplayer-playlist-active");
-    };
-    saveDataMusic(music, duration){
-        let calculateTimePlayed;
-        if(seekedTime !== -1){
-            // calculateTimePlayed = playedTimeSeek + (this.state.rawMaxDuration - seekedTime);
-            // playedTimeSeek = 0;
-            calculateTimePlayed = this.state.rawMaxDuration - seekedTime;
-            seekedTime = -1;
-        }else{
-            calculateTimePlayed = duration;   
-        };
+    saveDataMusic(music){
         let dataSong = dataSongsAdd.find((song) => song.name === music);
         if(dataSong !== undefined){
             dataSong = {
                 ...dataSong,
-                timePlayed: dataSong.timePlayed + calculateTimePlayed
+                timePlayed: dataSong.timePlayed + timePlayed
             };
         }else{
             dataSongsAdd.push({
                 name: music,
-                timePlayed: calculateTimePlayed
+                timePlayed: timePlayed
             });
         };
+        timePlayed = 0;
     };
     storeData(){
         if(localStorage.getItem("widgets") !== null){
-            if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name, this.state.rawCurrentDuration);
+            if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
             const addTimePlayed = Object.values([...this.state.urls, ...dataSongsAdd].reduce((prev, curr) => {
                 if(prev[curr.name]){
                     prev[curr.name].timePlayed += curr.timePlayed;
@@ -536,9 +611,21 @@ class WidgetMusicPlayer extends Component{
                 return prev;
             }, {}));
             let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            let deletedData = [...dataSongsRemoved];
+            if(dataLocalStorage["deleted"] !== undefined){
+                deletedData = Object.values([...dataLocalStorage["deleted"], ...deletedData].reduce((prev, curr) => {
+                    if(prev[curr.name]){
+                        prev[curr.name].timePlayed += curr.timePlayed;
+                    }else{
+                        prev[curr.name] = { ...curr };
+                    };
+                    return prev;
+                }, {}));
+            };
             dataLocalStorage["utility"]["musicplayer"] = {
                 ...dataLocalStorage["utility"]["musicplayer"],
-                urls: [...addTimePlayed]
+                urls: [...addTimePlayed],
+                deleted: [...deletedData]
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
         };
@@ -555,11 +642,15 @@ class WidgetMusicPlayer extends Component{
                     urls: [...dataMusicPlayer["urls"]]
                 }, () => {
                     if(this.state.urls.length !== 0){
+                        unplayedSongsIndex = [...Array(this.state.urls.length).keys()];
+                        unplayedSongsMaxIndex = this.state.urls.length;
                         this.loadMusic();
                     };
                 });
             }else{
-                this.loadMusic();
+                this.setState({}, () => {
+                    this.loadMusic();
+                });
             };
         };
     };
@@ -574,6 +665,8 @@ class WidgetMusicPlayer extends Component{
         clearTimeout(timeoutAnimationRemove);
         clearTimeout(timeoutAnimationNext);
         clearTimeout(timeoutAnimationPrevious);
+        clearTimeout(timeoutPlaylistClear);
+        clearTimeout(timeoutPlaylistPanel);
     };
     render(){
         return(
@@ -622,7 +715,8 @@ class WidgetMusicPlayer extends Component{
                                             youtube: {
                                                 playerVars: {
                                                     fs: 0,
-                                                    rel: 0
+                                                    rel: 0,
+                                                    iv_load_policy: 3
                                                 },
                                             }
                                         }}/>
@@ -748,8 +842,10 @@ class WidgetMusicPlayer extends Component{
                                     </button>
                                 </div>
                             </section>
+                            <span id="musicplayer-playlist-length">{this.state.urls.length}</span>
                             <SimpleBar id="musicplayer-playlist"
-                                style={{ maxHeight: "10em" }}>
+                                style={{ maxHeight: "10em" }}
+                                ref={(ref) => this.refPlaylist = ref}>
                                 {this.state.urls.map((url, index) => {
                                     return <section className="flex-center column align-items-left box no-highlight"
                                         onClick={(event) => this.handlePlaylist(index, event)}

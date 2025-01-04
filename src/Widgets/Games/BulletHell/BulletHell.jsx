@@ -20,7 +20,10 @@ class WidgetBulletHell extends Component{
     };
     currentScene(scene){
         if(scene.scene.key === "Game"){
-            EventBus.emit('data', this.props.gameProps.stats);
+            EventBus.emit('data', {
+                stats: this.props.gameProps.stats,
+                abilities: this.props.gameProps.abilities
+            });
         };
     };
     render(){

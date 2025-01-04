@@ -4817,7 +4817,7 @@ body{
         border-radius: 25.4px;
     }
     #musicplayer-hotbar{
-        top: 0.35em;
+        top: 0.38em;
         right: 3em;
     }
     #musicplayer-disc{
@@ -4829,6 +4829,7 @@ body{
         top: 0;
         left: 0;
         border: 6px solid var(--randColorLight);
+        border-radius: 50%;
         background-size: contain;
         background-repeat: no-repeat;
         background-color: white;
@@ -4845,14 +4846,37 @@ body{
             background-color: var(--randColorLight);
             border-radius: 50%;
         }
-        #musicplayer-player{
-            position: relative;
-            top: -78px;
-            left: -78px;
-            pointer-events: none;
-            transition-property: top left;
-            transition-duration: 2s;    
-        }    
+        &.musicplayer-disc-small{
+            height: 11.8em;
+            width: 21em;
+            border-radius: 25px;
+            top: -0.4em;
+            left: -9.5em;
+        }
+        &.musicplayer-disc-medium{
+            height: 16.8em;
+            width: 31em;
+            border-radius: 25px;
+            top: -5.4em;
+            left: -19.5em;
+        }
+    }
+    #musicplayer-player{
+        position: relative;
+        top: -78px;
+        left: -78px;
+        pointer-events: none;
+        transition-property: top left;
+        transition-duration: 2s;
+        &.musicplayer-player-small{
+            top: -4.6em;
+            left: 0;
+        }
+        &.musicplayer-player-medium{
+            width: 31em !important;
+            top: -2em;
+            left: 0;
+        }
     }
     #musicplayer-details{
         height: 7em;
@@ -4874,6 +4898,7 @@ body{
             cursor: pointer;
             white-space: nowrap;
             text-overflow: ellipsis;
+            overflow: hidden;
         }
         &.musicplayer-animation-remove-details{
             text-shadow: 0px 0px 5px white;
@@ -5002,6 +5027,23 @@ body{
                 text-overflow: ellipsis;
                 overflow: hidden;
             }
+        }
+    }
+    #musicplayer-playlist-length{
+        @extend .flex-center, .no-highlight;
+        visibility: hidden;
+        position: absolute;
+        top: 9.5em;
+        right: -6em;
+        width: 6em;
+        background-color: var(--randColorLight);
+        color: white;
+        border-radius: 10px 10px 0px 0px;
+        transition-property: top visibility;
+        transition-duration: 0.5s;
+        &.musicplayer-playlist-length-show{
+            visibility: visible;
+            top: 8.2em;
         }
     }
 }

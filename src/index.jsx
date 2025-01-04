@@ -7180,6 +7180,7 @@ class Widgets extends Component{
             widgets: {
                 utility: {
                     setting: {
+                        active: true,
                         position: {
                             x: 0,
                             y: 0
@@ -7904,29 +7905,7 @@ class Widgets extends Component{
                 for(let i of elementSelects){
                     i.style.display = "block";
                 };
-                if(this.state.values.animation.value !== "default"){
-                    e.style.animation = "none";
-                    window.requestAnimationFrame(() => {
-                        switch(this.state.values.animation.value){
-                            case "rendering":
-                                e.style.clipPath = "inset(0 0 100% 0)";
-                                e.style.animation = this.state.values.animation.value + "In 2s steps(11)";
-                                break;
-                            default:
-                                e.style.animation = this.state.values.animation.value + "In 2s";
-                                break;
-                        };
-                    });
-                    e.addEventListener("animationend", (event) => {
-                        switch(this.state.values.animation.value){
-                            case "rendering":
-                                e.style.clipPath = "unset";
-                                break;
-                            default:
-                                break;
-                        };
-                    });    
-                };
+                this.handleAnimation(what);
                 if(this.state.values.customBorder.value !== "default"){
                     this.updateCustomBorder(what);
                 };
@@ -7939,70 +7918,8 @@ class Widgets extends Component{
             });
         }else{
             let e = document.getElementById(`${what}-widget-animation`);
-            let elementSelects = e.querySelectorAll(".select-match");
             e.style.visibility = "hidden";
-            if(this.state.values.animation.value !== "default"){
-                e.style.animation = "none";
-                window.requestAnimationFrame(() => {
-                    switch(this.state.values.animation.value){
-                        case "rendering":
-                            e.style.clipPath = "inset(0 0 100% 0)";
-                            e.style.animation = this.state.values.animation.value + "Out 2s steps(11)";
-                            break;
-                        default:
-                            e.style.animation = this.state.values.animation.value + "Out 2s";
-                            break;
-                    };
-                });
-                e.addEventListener("animationend", (event) => {
-                    if(event.animationName.slice(event.animationName.length - 3) === "Out"){
-                        switch(this.state.values.animation.value){
-                            case "rendering":
-                                e.style.clipPath = "unset";
-                                break;
-                            default:
-                                break;
-                        };
-                        /// Hide react-selects (prevents flashing)
-                        for(let i of elementSelects){
-                            i.style.display = "none";
-                        };
-                        this.setState(prevState => ({
-                            widgets: {
-                                ...prevState.widgets,
-                                [where]: {
-                                    ...prevState.widgets[where],
-                                    [what]: {
-                                        ...prevState.widgets[where][what],
-                                        active: false
-                                    }
-                                }
-                            }
-                        }), () => {
-                            widgetsTextActive = [...document.querySelectorAll(".text-animation")];
-                        });
-                    };
-                });
-            }else{
-                /// Hide react-selects (prevents flashing)
-                for(let i of elementSelects){
-                    i.style.display = "none";
-                };
-                this.setState(prevState => ({
-                    widgets: {
-                        ...prevState.widgets,
-                        [where]: {
-                            ...prevState.widgets[where],
-                            [what]: {
-                                ...prevState.widgets[where][what],
-                                active: false
-                            }
-                        }
-                    }
-                }), () => {
-                    widgetsTextActive = [...document.querySelectorAll(".text-animation")];
-                });
-            };
+            this.handleAnimation(what, where, true);
         };
         if(speechSynthesis.speaking){
             speechSynthesis.cancel();
@@ -8088,6 +8005,73 @@ class Widgets extends Component{
                     i.style.display = "none";
                 };    
             };   
+        };
+    };
+    handleAnimation(what, where, hide = false){
+        let e = document.getElementById(`${what}-widget-animation`);
+        let elementSelects = e.querySelectorAll(".select-match");
+        if(this.state.values.animation.value !== "default"){
+            e.style.animation = "none";
+            window.requestAnimationFrame(() => {
+                let animationType = (hide) ? "Out" : "In";
+                switch(this.state.values.animation.value){
+                    case "rendering":
+                        e.style.clipPath = "inset(0 0 100% 0)";
+                        e.style.animation = `${this.state.values.animation.value}${animationType} 2s steps(11)`;
+                        break;
+                    default:
+                        e.style.animation = `${this.state.values.animation.value}${animationType} 2s`;
+                        break;
+                };
+            });
+            e.addEventListener("animationend", (event) => {
+                if(!hide || (event.animationName.slice(event.animationName.length - 3) === "Out")){
+                    switch(this.state.values.animation.value){
+                        case "rendering":
+                            e.style.clipPath = "unset";
+                            break;
+                        default: break;
+                    };
+                    if(hide){
+                        for(let i of elementSelects){
+                            i.style.display = "none";
+                        };
+                        this.setState(prevState => ({
+                            widgets: {
+                                ...prevState.widgets,
+                                [where]: {
+                                    ...prevState.widgets[where],
+                                    [what]: {
+                                        ...prevState.widgets[where][what],
+                                        active: false
+                                    }
+                                }
+                            }
+                        }), () => {
+                            widgetsTextActive = [...document.querySelectorAll(".text-animation")];
+                        });
+                    };
+                };
+            });
+        }else if(hide){
+            /// Hide react-selects (prevents flashing)
+            for(let i of elementSelects){
+                i.style.display = "none";
+            };
+            this.setState(prevState => ({
+                widgets: {
+                    ...prevState.widgets,
+                    [where]: {
+                        ...prevState.widgets[where],
+                        [what]: {
+                            ...prevState.widgets[where][what],
+                            active: false
+                        }
+                    }
+                }
+            }), () => {
+                widgetsTextActive = [...document.querySelectorAll(".text-animation")];
+            });
         };
     };
     handleHotbar(element, what, where){
@@ -8651,9 +8635,12 @@ class Widgets extends Component{
         const elementSetting = document.getElementById("settings-widget");
         const elementButtonSetting = document.getElementById("widget-button-setting");
         if(elementSetting.checkVisibility({ visibilityProperty: true })){
+            window.dispatchEvent(new CustomEvent("setting hide"));
+            this.handleAnimation("settings", "utility", true);
             elementSetting.style.visibility = "hidden";
             elementButtonSetting.classList.remove("button-setting-active");
         }else{
+            this.handleAnimation("settings");
             elementSetting.style.visibility = "visible";
             elementButtonSetting.classList.add("button-setting-active");
         };
@@ -8998,6 +8985,7 @@ class Widgets extends Component{
         const gameProps = {
             gold: this.state.gold,
             stats: this.state.stats,
+            abilities: this.state.abilities,
             updateGameValue: this.updateGameValue,
             formatNumber: formatNumber,
             randomItem: randomItem,

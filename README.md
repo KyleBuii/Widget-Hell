@@ -29,6 +29,9 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | | F | Reset |
 | Color Memory | | |
 | Rock Paper Scissor | | |
+| Bullet Hell | WASD/Arrow Keys/Mouse | Move |
+| | Shift | Slow move |
+| | Spacebar | Ability |
 
 ## **Gold and EXP guide**
 | Game | Rate |

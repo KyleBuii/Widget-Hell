@@ -210,6 +210,7 @@ class WidgetSetting extends Component{
         this.handlePageClick = this.handlePageClick.bind(this);
         this.storeData = this.storeData.bind(this);
         this.handleScriptLoaded = this.handleScriptLoaded.bind(this);
+        this.hideSettings = this.hideSettings.bind(this);
     };
     /// Remove element at index "i" where order doesn't matter
     unorderedRemove(arr, i){
@@ -254,6 +255,24 @@ class WidgetSetting extends Component{
                 break;
             default:
                 break;
+        };
+    };
+    hideSettings(){
+        const buttonShowHideWidgets = document.getElementById("settings-button-show-hide-widgets");
+        if(!buttonShowHideWidgets.classList.contains("disabled-option")){
+            const showHideWidgetsPopoutAnimation = document.getElementById("show-hide-widgets-popout-animation");
+            this.setState({
+                showHideWidgets: false
+            });
+            this.props.showHidePopout(showHideWidgetsPopoutAnimation, false, buttonShowHideWidgets);
+        };
+        const buttonSettings = document.getElementById("settings-button-settings");
+        if(!buttonSettings.classList.contains("disabled-option")){
+            const settingsPopoutAnimation = document.getElementById("settings-popout-animation");
+            this.setState({
+                settings: false
+            });
+            this.props.showHidePopout(settingsPopoutAnimation, false, buttonSettings);
         };
     };
     handleTrick(){
@@ -733,6 +752,7 @@ class WidgetSetting extends Component{
         window.addEventListener("close", this.handleClose);
         window.addEventListener("beforeunload", this.storeData);
         window.addEventListener("script loaded", this.handleScriptLoaded);
+        window.addEventListener("setting hide", this.hideSettings);
         /// Sort selects
         this.props.sortSelect(optionsAnimation);
         this.props.sortSelect(optionsBackground);
@@ -832,6 +852,7 @@ class WidgetSetting extends Component{
     componentWillUnmount(){
         window.removeEventListener("close", this.handleClose);
         window.removeEventListener("beforeunload", this.storeData);
+        window.removeEventListener("setting hide", this.hideSettings);
         clearInterval(intervalTimeBased);
         clearTimeout(timeoutTrick);
     };

@@ -120,13 +120,14 @@ class WidgetInventory extends Component{
     };
     /// Fills inventory to be 16x16 with empty slots
     fillInventory(inventory){
-        let slots;
+        let slots = [];
         if(this.state.countItem % 16 !== 0){
             let amountSlots = this.state.countItem + (16 - (this.state.countItem % 16));
             slots = new Array(amountSlots);
             slots.fill((<button></button>));
         };
         let pageMax = Math.ceil(slots.length / 16) - 1;
+        if(pageMax === -1) pageMax = 0;
         this.setState({
             inventorySlots: [
                 ...((inventory) ? inventory : this.state.inventorySlots),

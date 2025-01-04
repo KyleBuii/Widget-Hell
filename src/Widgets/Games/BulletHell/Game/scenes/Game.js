@@ -11,6 +11,8 @@ import { Scene } from 'phaser';
 5 - Player
 6 - Health
 7 - Boss bullets
+8 - Bomb
+9 - Abilities
 */
 //#endregion
 
@@ -24,23 +26,30 @@ const enemies = {
 };
 const boss = ["-3-", "030", "pleased", "smug", "X3"];
 const patterns = [
-    // "touhouFangameRecollectionOfScriptersPast",
-    // "spiral",
+    "touhouFangameRecollectionOfScriptersPast",
     "generation1_1"
 ];
+const generation1_1Patterns = [
+    "spiralColorfulSpeen",
+    "arrowSparsedVomit",
+    "icicleBloodAndIce",
+    "spiralRadiantBloom",
+    "spiralCosmicDance"
+];
 let mouseMovement = false;
+let isMobile = false;
 
 
 export class Game extends Scene{
     constructor(){
         super('Game');
         this.player = null;
-        this.weaponIndex = 0;
-        this.weapons = [];
-        this.weaponName = null;
         this.boss = null;
     };
     create(){
+        if("maxTouchPoints" in navigator){
+            isMobile = navigator.maxTouchPoints > 0;
+        };
         this.createMenu();
         this.createPlayer();
         this.createEnemy();
@@ -81,6 +90,9 @@ export class Game extends Scene{
                 this.spawnEnemy();
                 this.toggleMenu(false);
                 this.player.revive();
+                this.playerAbilities.getChildren().forEach((ability) => {
+                    ability.destroy();
+                });
             });
         this.textReturn = this.add.text(this.buttonPlay.x, this.buttonPlay.y, 'Return')
             .setVisible(false)
@@ -91,7 +103,9 @@ export class Game extends Scene{
             .setDisplaySize(140, 40)
             .setInteractive()
             .on('pointerdown', () => {
-                mouseMovement = !mouseMovement;
+                if(!isMobile){
+                    mouseMovement = !mouseMovement;
+                };
             });
         this.textMouseMovement = this.add.text(this.buttonMouseMovement.x, this.buttonMouseMovement.y, 'Mouse')
             .setDepth(2)
@@ -125,18 +139,8 @@ export class Game extends Scene{
     createPlayer(){
         this.playerBullets = new Bullets(this, 100)
             .setDepth(3);
-        this.weapons.push(new SingleBullet(this));
-        this.weapons.push(new FrontAndBackBullet(this));
-        this.weapons.push(new ThreeWayBullet(this));
-        this.weapons.push(new EightWayBullet(this));
-        this.weapons.push(new ScatterShotBullet(this));
-        this.weapons.push(new BeamBullet(this));
-        this.weapons.push(new SplitShotBullet(this));    
-        this.weapons.push(new PatternBullet(this));
-        this.weapons.push(new RocketsBullet(this));
-        this.weapons.push(new ScaleBullet(this));  
-        this.weapons.push(new Combo1Bullet(this));
-        this.weapons.push(new Combo2Bullet(this));    
+        this.playerAbilities = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
+            .setDepth(9);
         this.player = new Player(this, 'player-default', 300, 750)
             .setOffset(37, 60);
     };
@@ -147,6 +151,8 @@ export class Game extends Scene{
     createBoss(){
         this.bossBullets = new Bullets(this, 5000)
             .setDepth(7);
+        this.bossBombs = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
+            .setDepth(8);
     };
     createColliders(){
         this.anchorBoss = this.physics.add.sprite(300, 280)
@@ -178,19 +184,13 @@ export class Game extends Scene{
     spawnBoss(){
         let randomBoss = boss[Math.floor(Math.random() * boss.length)];
         this.boss = new Boss(
-            1,
-            200,
-            1,
-            this,
-            `boss-${randomBoss}`,
-            300, 0,
-            1000,
-            0,
-            100)
+            1, 200, 1, this, `boss-${randomBoss}`,
+            300, 0, 1000, 0, 100
+        );
         this.physics.add.collider(this.boss, this.player, (boss, player) => {
             if(player.hp.decrease(1)){
                 player.dead();
-                this.toggleMenu(false, true);
+                this.clearScreen();
             };
         });
         this.physics.add.collider(this.boss, this.playerBullets, (boss, bullet) => {
@@ -200,37 +200,54 @@ export class Game extends Scene{
             this.boss.body.setVelocityY(0);
             this.boss.ready = true;
         });
+        this.physics.add.collider(this.bossBombs, this.player, (player, bomb) => {
+            bomb.destroy();
+            if(((3 * Math.floor((this.bossBombs.getLength()) / 3)) === this.bossBombs.getLength())
+                && this.boss.hp.decrease(100)){
+                this.boss.kill();
+            };
+        });
     };
     setData(data){
-        this.player.hp = new HealthBar(this, data.health, 10, 11);
-        this.player.mana = data.mana;
-        this.player.atk = data.attack;
-        this.player.def = data.defense;
-        this.player.str = data.strength;
-        this.player.agi = data.agility;
-        this.player.vit = data.vitality;
-        this.player.res = data.resilience;
-        this.player.int = data.intelligence;
-        this.player.dex = data.dexterity;
-        this.player.lck = data.luck;
+        this.player.hp = new HealthBar(this, data.stats.health, 10, 11);
+        this.player.mana = data.stats.mana;
+        this.player.atk = data.stats.attack;
+        this.player.def = data.stats.defense;
+        this.player.str = data.stats.strength;
+        this.player.agi = data.stats.agility;
+        this.player.vit = data.stats.vitality;
+        this.player.res = data.stats.resilience;
+        this.player.int = data.stats.intelligence;
+        this.player.dex = data.stats.dexterity;
+        this.player.lck = data.stats.luck;
+        this.player.abilities = [...data.abilities];
+        this.player.setAbilities();
     };
     playerHitCallback(bullet, player){
         if(bullet.active === true){
-            bullet.remove(true);
+            bullet.remove();
             if(player.active && player.hp.decrease(bullet.damage)){
                 player.dead();
-                this.toggleMenu(false, true);
+                this.clearScreen();
             };
         };
     };
     enemyHitCallback(bullet, enemy){
         if(bullet.active === true && enemy.active === true){
-            bullet.remove(true);
+            bullet.remove();
             if(enemy.hp.decrease(this.player.atk)){
                 enemy.kill();
-                this.spawnEnemy();
+                if(enemy?.key !== "boss"){
+                    this.spawnEnemy();
+                }else{
+                    this.clearScreen();   
+                };
             };
         };
+    };
+    clearScreen(){
+        this.toggleMenu(false, true);
+        this.bossBombs.clear(true, true);
     };
 };
 
@@ -290,11 +307,32 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.setSize(12, 12);
         this.displayWidth = 32;
         this.displayHeight = 50;
+        this.weapons = [];
+        this.weaponIndex = 0;
+        this.weapons.push(new DefaultBullet(scene));
+        this.ability = null;
+        this.abilityTimer = 0;
+        this.abilityCooldown = 0;
         this.keyW = this.scene.input.keyboard.addKey('W');
         this.keyA = this.scene.input.keyboard.addKey('A');
         this.keyS = this.scene.input.keyboard.addKey('S');
         this.keyD = this.scene.input.keyboard.addKey('D');
+        this.keyUp = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.keyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.keyRight = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.keyDown = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+        this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.scene.input.on('pointerdown', (pointer) => {
+            if(isMobile){
+                this.setPosition(pointer.x, pointer.y);
+            };
+        });    
+        this.scene.input.on('pointermove', (pointer) => {
+            if(isMobile){
+                this.setPosition(pointer.x, pointer.y);
+            };
+        });    
     };
     preUpdate(time, delta){
         super.preUpdate(time, delta);
@@ -304,28 +342,28 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             let pointer = this.scene.input.activePointer;
             this.setPosition(pointer.x, pointer.y);
         };
-        if(this.keyW?.isDown){
+        if(this.keyW?.isDown || this.keyUp?.isDown){
             if(this.keyShift?.isDown){
                 this.setVelocityY(-100);
             }else{
                 this.setVelocityY(-300);
             };
         };
-        if(this.keyA?.isDown){
+        if(this.keyA?.isDown || this.keyLeft?.isDown){
             if(this.keyShift?.isDown){
                 this.setVelocityX(-100);
             }else{
                 this.setVelocityX(-300);
             };
         };
-        if(this.keyS?.isDown){
+        if(this.keyS?.isDown || this.keyRight?.isDown){
             if(this.keyShift?.isDown){
                 this.setVelocityY(100);
             }else{
                 this.setVelocityY(300);
             };
         };
-        if(this.keyD?.isDown){
+        if(this.keyD?.isDown || this.keyDown?.isDown){
             if(this.keyShift?.isDown){
                 this.setVelocityX(100);
             }else{
@@ -333,7 +371,8 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             };
         };
         if(this.active){
-            this.scene.weapons[this.scene.weaponIndex].fireLaser({
+            this.weapons[this.weaponIndex].fireBullet({
+                sneak: this.keyShift?.isDown,
                 player: this,
                 ammo: this.scene.playerBullets,
                 angle: -90,
@@ -341,6 +380,27 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                 speed: this.dex * 50
             });
         };
+        if(this.ability !== null){
+            if(this.abilityTimer < this.abilityCooldown){
+                this.abilityTimer += delta / 1000;
+            };
+            if(this.keyAbility?.isDown && this.abilityTimer >= this.abilityCooldown){
+                this[this.ability]();
+                this.abilityTimer = 0;
+            };
+        };
+    };
+    setAbilities(){
+        for(let ability of this.abilities){
+            switch(ability){
+                case "Places a grass block":
+                    this.ability = "grassBlock";
+                    this.abilityCooldown = 60;
+                    break;
+                default: break;
+            };
+        };
+        this.abilityTimer = this.abilityCooldown;
     };
     dead(){
         this.active = false;
@@ -349,6 +409,11 @@ class Player extends Phaser.Physics.Arcade.Sprite{
     revive(){
         this.active = true;
         this.hp.reset();
+    };
+    grassBlock(){
+        let grassBlock = this.scene.physics.add.sprite(this.x, this.y - this.height / 2, "abilities-grass-block")
+            .setDepth(9);
+        this.scene.playerAbilities.add(grassBlock);
     };
 };
 
@@ -390,6 +455,8 @@ class Boss extends Enemy{
         this.setDepth(4);
         this.setSize(200, 200);
         this.setDisplaySize(256, 256);
+        this.setPushable(false);
+        this.key = "boss";
         this.phaseTimer = 0;
         this.phaseTimerOffset = -1,
         this.hp = new HealthBar(this.scene, this.health, 6, 80);
@@ -420,6 +487,10 @@ class Boss extends Enemy{
                 this.pattern = patterns[Math.floor(Math.random() * patterns.length)];
             };
             this[this.pattern]();
+            if(/\b0\b|\b5000\b|\b10000\b|\b15000\b|\b20000\b|\b25000\b|\b30000\b|\b35000\b|\b40000\b|\b45000\b/.test(this.phaseTimer.toString())
+                && this.scene.player.active){
+                this.spawnBomb(3);
+            };
             this.phaseTimer++;
             if(this.phaseTimerOffset !== -1){
                 this.phaseTimer = this.phaseTimerOffset;
@@ -447,94 +518,170 @@ class Boss extends Enemy{
         };
     };
     generation1_1(){
-        // if(this.phaseTimer === 0){
-        //     this.bulletPattern = [
-        //         {
-        //             atkRate: 25,
-        //             attackTimer: 0,
-        //             attack: "colorWaveLasers"
-        //         }
-        //     ];
-        // }
-        // if(this.phaseTimer === 0){
-        //     this.bulletPattern = [
-        //         {
-        //             atkRate: 30,
-        //             attackTimer: 0,
-        //             attack: "randomBurstArrows"
-        //         }
-        //     ];
-        // }
-    }
-    colorWaveLasers(){
-        if(!this.paramsColorWaveLasers){
-            this.paramsColorWaveLasers = {
-                laserAngle: 0,
-                laserSpeed: 400,
-                rotationSpeed: 8,
-                colors: ["laser-red", "laser-blue", "laser-green", "laser-yellow"],
-            };
-        }
-        const params = this.paramsColorWaveLasers;
-        const lasers = 8;
-        for(let i = 0; i < lasers; i++){
-            const angle = Phaser.Math.DegToRad(params.laserAngle + (360 / lasers) * i);
-            const texture = params.colors[i % params.colors.length];
-            this.attack({
-                x: this.x,
-                y: this.y,
-                speed: params.laserSpeed,
-                angle: Phaser.Math.RadToDeg(angle),
-                texture: texture,
-                size: 3
-            });
-        }
-        params.laserAngle += params.rotationSpeed;
-    }
-    randomBurstArrows(){
-        if(!this.paramsRandomBurstArrows){
-            this.paramsRandomBurstArrows = {
-                burstCount: 10,  // Increased number of arrows in the burst
-                burstSpeed: 450,  // Increased speed for harder dodging
-                angleVariance: 15,  // Reduced variance for more precise dodging
-                textures: ["arrow-red", "arrow-blue", "arrow-green", "arrow-yellow"]
-            };
-        }
-        const params = this.paramsRandomBurstArrows;
-        for(let b = 0; b < params.burstCount; b++){
-            const angle = Phaser.Math.DegToRad(Phaser.Math.Between(0, 360));
-            const speed = Phaser.Math.Between(params.burstSpeed - 100, params.burstSpeed + 100);
-            const texture = params.textures[Phaser.Math.Between(0, params.textures.length - 1)];
-            this.attack({
-                x: this.x,
-                y: this.y,
-                speed: speed,
-                angle: Phaser.Math.RadToDeg(angle + Phaser.Math.Between(-params.angleVariance, params.angleVariance)),
-                texture: texture,
-                size: 4
-            });
-        }
-    }
-    spiral(){
         if(this.phaseTimer === 0){
+            let randomPatternIndex = Phaser.Math.Between(0, generation1_1Patterns.length - 1);
+            let randomPattern = generation1_1Patterns[randomPatternIndex];
+            this[randomPattern]();
+        };
+        if(this.phaseTimer === 5000){
+            this.bulletPattern.length = 0;
+            this.phaseTimerOffset = 0;
+        };
+    };
+    spiralColorfulSpeen(){
+        if(this.bulletPattern.length === 0){
             this.bulletPattern = [
                 {
-                    atkRate: 20,
+                    atkRate: 25,
                     attackTimer: 0,
-                    attack: "spiralChaos"
+                    attack: "spiralColorfulSpeen"
                 }
             ];
         };
-        if(this.phaseTimer === 5000){
+        if(!this.paramsSpiralColorSpeen){
+            this.paramsSpiralColorSpeen = {
+                lasers: 8,
+                laserAngle: 0,
+                laserSpeed: 400,
+                rotationSpeed: 8,
+                textures: ["laser-red", "laser-blue", "laser-green", "laser-yellow"],
+            };
+        };
+        const params = this.paramsSpiralColorSpeen;
+        for(let i = 0; i < params.lasers; i++){
+            const angle = params.laserAngle + (360 / params.lasers) * i;
+            const texture = params.textures[i % params.textures.length];
+            this.attack({
+                x: this.x, y: this.y,
+                speed: params.laserSpeed,
+                angle: angle,
+                texture: texture,
+                size: 3
+            });
+        };
+        params.laserAngle += params.rotationSpeed;
+    };
+    arrowSparsedVomit(){
+        if(this.bulletPattern.length === 0){
+            this.bulletPattern = [
+                {
+                    atkRate: 30,
+                    attackTimer: 0,
+                    attack: "arrowSparsedVomit"
+                }
+            ];
+        };
+        if(!this.paramsArrowSparsedVomit){
+            this.paramsArrowSparsedVomit = {
+                burstCount: 10,
+                burstSpeed: 450,
+                angleVariance: 15,
+                textures: ["arrow-red", "arrow-blue", "arrow-green", "arrow-yellow"]
+            };
+        };
+        const params = this.paramsArrowSparsedVomit;
+        for(let i = 0; i < params.burstCount; i++){
+            const angle = Phaser.Math.Between(0, 360);
+            const speed = Phaser.Math.Between(params.burstSpeed - 100, params.burstSpeed + 100);
+            const texture = params.textures[Phaser.Math.Between(0, params.textures.length - 1)];
+            this.attack({
+                x: this.x, y: this.y,
+                speed: speed,
+                angle: angle + Phaser.Math.Between(-params.angleVariance, params.angleVariance),
+                texture: texture,
+                size: 4
+            });
+        };
+    };
+    icicleBloodAndIce(){
+        if(this.bulletPattern.length === 0){
+            this.bulletPattern = [
+                {
+                    atkRate: 25,
+                    attackTimer: 0,
+                    attack: "icicleBloodAndIce"
+                }
+            ];
+        };
+        if(!this.paramsIcicleBloodAndIce){
+            this.paramsIcicleBloodAndIce = {
+                speed: 350,
+                textures: ["icicle-3-blue", "icicle-red"],
+            };
+        };
+        const params = this.paramsIcicleBloodAndIce;
+        for(let i = 0; i < 4; i++){
+            const xOffset = Phaser.Math.Between(-300, 300);
+            const texture = params.textures[Phaser.Math.Between(0, params.textures.length - 1)];
+            this.attack({
+                x: this.x + xOffset,
+                y: 0,
+                speed: params.speed,
+                angle: 90,
+                texture: texture,
+                size: 4
+            });
+        };
+    };
+    spiralRadiantBloom(){
+        if(this.bulletPattern.length === 0){
             this.bulletPattern = [
                 {
                     atkRate: 40,
                     attackTimer: 0,
-                    attack: "spiralRadiantBloomSymphony"
+                    attack: "spiralRadiantBloom"
                 }
             ];
         };
-        if(this.phaseTimer === 10000){
+        if(!this.paramsSpiralRBS){
+            this.paramsSpiralRBS = {
+                layerCount: 5,
+                bulletsPerLayer: 18,
+                layerSpacing: 50,
+                baseSpeed: 100,
+                rotationSpeed: 3,
+                textures: ["orb-red", "orb-orange", "orb-yellow", "orb-green", "orb-blue"],
+                petalCount: 12,
+                petalSpeed: 200,
+                petalRotationSpeed: 1,
+                petalTexture: "orb-pink",
+                rotationAngle: 0,
+                petalAngle: 0
+            };
+        };
+        const params = this.paramsSpiralRBS;    
+        for(let layer = 0; layer < params.layerCount; layer++){
+            const radius = layer * params.layerSpacing;
+            const speed = params.baseSpeed + layer * 20;
+            const texture = params.textures[layer % params.textures.length];
+            for(let i = 0; i < params.bulletsPerLayer; i++){
+                const angle = params.rotationAngle + (360 / params.bulletsPerLayer) * i;
+                const angleRad = Phaser.Math.DegToRad(angle);
+                this.attack({
+                    x: this.x + Math.cos(angleRad) * radius,
+                    y: this.y + Math.sin(angleRad) * radius,
+                    speed: speed,
+                    angle: angle,
+                    texture: texture,
+                    size: 1
+                });
+            };
+        };
+        params.rotationAngle += params.rotationSpeed;
+        for(let i = 0; i < params.petalCount; i++){
+            const angle = params.petalAngle + (360 / params.petalCount) * i;
+            this.attack({
+                x: this.x, y: this.y,
+                speed: params.petalSpeed,
+                angle: angle,
+                texture: params.petalTexture,
+                size: 1.5
+            });
+        };
+        params.petalAngle += params.petalRotationSpeed;
+    };
+    spiralCosmicDance(){
+        if(this.bulletPattern.length === 0){
             this.bulletPattern = [
                 {
                     atkRate: 20,
@@ -543,122 +690,6 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(this.phaseTimer === 15000){
-            this.bulletPattern = [
-                {
-                    atkRate: 90,
-                    attackTimer: 0,
-                    attack: "spiralEtherealHarmony"
-                }
-            ];
-        };
-        if(this.phaseTimer === 20000){
-            this.phaseTimerOffset = 0;
-        };
-    };
-    spiralChaos(){
-        if(!this.paramsSpiralChaos){
-            this.paramsSpiralChaos = {
-                angle: 0,
-                radius: 100,
-                speed: 200,
-                rotationSpeed: 4,
-                spiralSpeed: 10,
-                burstDelay: 0,
-            };
-        };
-        const params = this.paramsSpiralChaos;
-        const numLayers = 4;
-        const bulletsPerLayer = 36;
-        const baseRadius = 100;
-        const radiusIncrement = 10;
-        const maxSpeed = 300;
-        for(let layer = 0; layer < numLayers; layer++){
-            const layerRadius = baseRadius + layer * radiusIncrement;
-            const sizeMultiplier = 1.0 + layer * 0.2;
-            for(let i = 0; i < bulletsPerLayer; i++){
-                const angle = Phaser.Math.DegToRad(params.angle + (360 / bulletsPerLayer) * i);
-                const x = this.x + layerRadius * Math.cos(angle);
-                const y = this.y + layerRadius * Math.sin(angle);
-                this.attack({
-                    x: x,
-                    y: y,
-                    speed: params.speed + Phaser.Math.Between(-150, 150),
-                    angle: Phaser.Math.RadToDeg(angle),
-                    texture: "orb-red",
-                    size: sizeMultiplier
-                });
-            };
-        };
-        params.angle += params.rotationSpeed;
-        params.radius -= params.spiralSpeed / 300;
-        params.burstDelay++;
-        params.speed = Math.min(params.speed + 2, maxSpeed);
-        params.rotationSpeed += 0.1;
-    };
-    spiralRadiantBloomSymphony(){
-        if(!this.paramsSpiralRBS){
-            this.paramsSpiralRBS = {
-                layerCount: 5,
-                bulletsPerLayer: 18,
-                layerSpacing: 50,
-                baseSpeed: 100,
-                rotationSpeed: 2,
-                layerColors: ["orb-red", "orb-orange", "orb-yellow", "orb-green", "orb-blue"],
-                petalCount: 12,
-                petalSpeed: 200,
-                petalRotationSpeed: 1,
-                petalTexture: "orb-pink",
-            };
-            this.paramsSpiralRBS.rotationAngle = 0;
-            this.paramsSpiralRBS.petalAngle = 0;
-        };
-        const { 
-            layerCount, 
-            bulletsPerLayer, 
-            layerSpacing, 
-            baseSpeed, 
-            rotationSpeed, 
-            layerColors, 
-            petalCount, 
-            petalSpeed, 
-            petalRotationSpeed, 
-            petalTexture 
-        } = this.paramsSpiralRBS;    
-        for(let layer = 0; layer < layerCount; layer++){
-            const radius = layer * layerSpacing;
-            const speed = baseSpeed + layer * 20;
-            const texture = layerColors[layer % layerColors.length];
-            for(let i = 0; i < bulletsPerLayer; i++){
-                const angle = Phaser.Math.DegToRad(
-                    this.paramsSpiralRBS.rotationAngle + (360 / bulletsPerLayer) * i
-                );
-                this.attack({
-                    x: this.x + Math.cos(angle) * radius,
-                    y: this.y + Math.sin(angle) * radius,
-                    speed: speed,
-                    angle: Phaser.Math.RadToDeg(angle),
-                    texture: texture,
-                    size: 1
-                });
-            };
-        };
-        this.paramsSpiralRBS.rotationAngle += rotationSpeed;
-        for(let i = 0; i < petalCount; i++){
-            const angle = Phaser.Math.DegToRad(
-                this.paramsSpiralRBS.petalAngle + (360 / petalCount) * i
-            );
-            this.attack({
-                x: this.x, y: this.y,
-                speed: petalSpeed,
-                angle: Phaser.Math.RadToDeg(angle),
-                texture: petalTexture,
-                size: 1.5
-            });
-        };
-        this.paramsSpiralRBS.petalAngle += petalRotationSpeed;
-    };
-    spiralCosmicDance(){
         if(!this.paramsSpiralCD){
             this.paramsSpiralCD = {
                 bulletSpeed: 160,
@@ -668,161 +699,69 @@ class Boss extends Enemy{
                 waveCount: 5,
                 timer: 0,
                 phaseDuration: 80,
-                bulletTexture: "star-blue",
                 maxDistance: 250,
                 angleOffset: 0,
                 spiralGrowth: 10,
                 oscillationSpeed: 0.2
             };
         };
-        const {
-            bulletSpeed,
-            bulletCount,
-            spiralRotationSpeed,
-            spreadAngle,
-            waveCount,
-            phaseDuration,
-            bulletTexture,
-            maxDistance,
-            angleOffset,
-            spiralGrowth,
-            oscillationSpeed
-        } = this.paramsSpiralCD;
-        if(this.paramsSpiralCD.timer <= 0){
-            for(let wave = 0; wave < waveCount; wave++){
-                const baseAngle = (360 / waveCount) * wave + angleOffset;
-                for(let i = 0; i < bulletCount; i++){
-                    const angle = baseAngle - (spreadAngle / 2) + (i * (spreadAngle / bulletCount));
+        const params = this.paramsSpiralCD;
+        if(params.timer <= 0){
+            for(let wave = 0; wave < params.waveCount; wave++){
+                const baseAngle = (360 / params.waveCount) * wave + params.angleOffset;
+                for(let i = 0; i < params.bulletCount; i++){
+                    const angle = baseAngle - (params.spreadAngle / 2) + (i * (params.spreadAngle / params.bulletCount));
                     const angleRad = Phaser.Math.DegToRad(angle);
-                    const distance = Phaser.Math.FloatBetween(100, maxDistance);
+                    const distance = Phaser.Math.FloatBetween(100, params.maxDistance);
                     this.attack({
                         x: this.x + Math.cos(angleRad) * distance,
                         y: this.y + Math.sin(angleRad) * distance,
-                        speed: bulletSpeed,
+                        speed: params.bulletSpeed,
                         angle: angle,
-                        texture: bulletTexture,
+                        texture: "star-blue",
                         size: 1
                     });
                 };
             };
-            this.paramsSpiralCD.timer = phaseDuration;
-            this.paramsSpiralCD.angleOffset += spiralRotationSpeed;
-            if(this.paramsSpiralCD.angleOffset > 360){
-                this.paramsSpiralCD.angleOffset = 0;
+            params.timer = params.phaseDuration;
+            params.angleOffset += params.spiralRotationSpeed;
+            if(params.angleOffset > 360){
+                params.angleOffset = 0;
             };
         }else{
-            this.paramsSpiralCD.timer -= 16;
+            params.timer -= 16;
         };
         for(let i = 0; i < 20; i++){
-            const angle = (i * 18) + this.paramsSpiralCD.angleOffset;
+            const angle = (i * 18) + params.angleOffset;
             const angleRad = Phaser.Math.DegToRad(angle);
-            const distance = 50 + (Math.sin(i / 10) * spiralGrowth);
-            const oscillation = Math.sin(i * oscillationSpeed);
+            const distance = 50 + (Math.sin(i / 10) * params.spiralGrowth);
+            const oscillation = Math.sin(i * params.oscillationSpeed);
             this.attack({
                 x: this.x + Math.cos(angleRad) * distance + oscillation * 20,
                 y: this.y + Math.sin(angleRad) * distance + oscillation * 20,
-                speed: bulletSpeed,
+                speed: params.bulletSpeed,
                 angle: angle,
                 texture: "icicle-2-blue",
                 size: 1.5
             });
         };
         for(let i = 0; i < 12; i++){
-            const angle = (i * 30) + this.paramsSpiralCD.angleOffset;
+            const angle = (i * 30) + params.angleOffset;
             const angleRad = Phaser.Math.DegToRad(angle);
             this.attack({
                 x: this.x + Math.cos(angleRad) * 100,
                 y: this.y + Math.sin(angleRad) * 100,
-                speed: bulletSpeed,
+                speed: params.bulletSpeed,
                 angle: angle,
                 texture: "orb-small-pink",
                 size: 1.2
             });
         };
     };
-    spiralEtherealHarmony(){
-        if(!this.paramsSpiralEH){
-            this.paramsSpiralEH = {
-                spiralCount: 4,
-                spiralBullets: 50,
-                spiralSpeed: 100,
-                spiralRotation: 8,
-                waveCount: 3,
-                waveBullets: 40,
-                waveAmplitude: 100,
-                waveSpeed: 90,
-                textures: ["star-blue", "circle-red", "orb-small-white", "heart-red", "music-purple"],
-                timer: 0
-            };
-        };
-        const { spiralCount, spiralBullets, spiralSpeed, spiralRotation, waveCount, waveBullets, waveAmplitude, waveSpeed, textures, timer } = this.paramsSpiralEH;
-        for(let s = 0; s < spiralCount; s++){
-            const spiralBaseAngle = timer * spiralRotation + (360 / spiralCount) * s;
-            for(let i = 0; i < spiralBullets; i++){
-                const angle = spiralBaseAngle + (360 / spiralBullets) * i;
-                this.attack({
-                    x: this.x,
-                    y: this.y,
-                    speed: spiralSpeed,
-                    angle: angle,
-                    texture: textures[s % textures.length],
-                    size: 1
-                });
-            };
-        };
-        for(let w = 0; w < waveCount; w++){
-            const waveBaseAngle = (timer * 5 + w * (360 / waveCount)) % 360;
-            for(let i = 0; i < waveBullets; i++){
-                const angle = waveBaseAngle + (360 / waveBullets) * i;
-                const offsetX = Math.sin((angle + timer) * Math.PI / 180) * waveAmplitude;
-                const offsetY = Math.cos((angle + timer) * Math.PI / 180) * waveAmplitude;
-                this.attack({
-                    x: this.x + offsetX,
-                    y: this.y + offsetY,
-                    speed: waveSpeed,
-                    angle: angle,
-                    texture: textures[(i + w) % textures.length],
-                    size: 0.8
-                });
-            };
-        };
-        this.paramsSpiralEH.timer += 1;
-    };
     /// Inspired by https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past
     touhouFangameRecollectionOfScriptersPast(){
-        if(this.phaseTimer === 0){
-            this.createEllipse([
-                { centerX: 300, centerY: 200, xRadius: 100, yRadius: 100, bulletCount: 25,  texture: "orb-pink", lifetime: 5000, size: 2 },
-                { centerX: 300, centerY: 200, xRadius: 220, yRadius: 100, bulletCount: 50, texture: "orb-pink", lifetime: 5000, size: 2 }
-            ]);
-            this.bulletPattern = [
-                {
-                    atkRate: 50,
-                    atkDuration: 3,
-                    delay: 200,
-                    attackTimer: 0,
-                    attackDurationTimer: 0,
-                    delayTimer: 0,
-                    attack: "touhouFangameRecollectionOfScriptersPastEyeShotgun"
-                },
-                {
-                    atkRate: 10,
-                    attackTimer: 0,
-                    attack: "touhouFangameRecollectionOfScriptersPastEyeRotate"
-                },
-                {
-                    atkRate: 50,
-                    atkDuration: 3,
-                    delay: 500,
-                    attackTimer: 0,
-                    attackDurationTimer: 0,
-                    delayTimer: 0,
-                    attack: "touhouFangameRecollectionOfScriptersPastEyeBurst"
-                }
-            ];
-        };
         /// North
-        if(this.phaseTimer === 5000){
+        if(this.phaseTimer === 0){
             this.bulletPattern = [{
                 atkRate: 10,
                 attackTimer: 0,
@@ -831,7 +770,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.north);
         };
         /// East
-        if(this.phaseTimer === 6000){
+        if(this.phaseTimer === 1000){
             this.bulletPattern = [{
                 atkRate: 40,
                 attackTimer: 0,
@@ -840,7 +779,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.east);
         };
         /// South
-        if(this.phaseTimer === 7000){
+        if(this.phaseTimer === 2000){
             this.bulletPattern = [{
                 atkRate: 10,
                 attackTimer: 0,
@@ -849,7 +788,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.south);
         };
         /// West
-        if(this.phaseTimer === 8000){
+        if(this.phaseTimer === 3000){
             this.bulletPattern = [{
                 atkRate: 4,
                 attackTimer: 0,
@@ -858,7 +797,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.west);
         };
         /// Random direction
-        if(this.phaseTimer === 9000){
+        if(this.phaseTimer === 4000){
             this.paramsTouhouFangameRecollectionOfScriptersPast.randomY = -1;
             this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation = -1;
             let decideSide = Math.floor(Math.random() * 4 + 1);
@@ -869,61 +808,23 @@ class Boss extends Enemy{
             switch(decideSide){
                 case 1:
                     this.paramsTouhouFangameRecollectionOfScriptersPast.combine.north = optionsNorth[Math.floor(Math.random() * optionsNorth.length)];
-                    this.phaseTimerOffset = 5000;
+                    this.phaseTimerOffset = 0;
                     break;
                 case 2:
                     this.paramsTouhouFangameRecollectionOfScriptersPast.combine.east = optionsEast[Math.floor(Math.random() * optionsEast.length)];
-                    this.phaseTimerOffset = 6000;
+                    this.phaseTimerOffset = 1000;
                     break;
                 case 3:
                     this.paramsTouhouFangameRecollectionOfScriptersPast.combine.south = optionsSouth[Math.floor(Math.random() * optionsSouth.length)];
-                    this.phaseTimerOffset = 7000;
+                    this.phaseTimerOffset = 2000;
                     break;
                 case 4:
                     this.paramsTouhouFangameRecollectionOfScriptersPast.combine.west = optionsWest[Math.floor(Math.random() * optionsWest.length)];
-                    this.phaseTimerOffset = 8000;
+                    this.phaseTimerOffset = 3000;
                     break;
                 default: break;
             };
         };
-    };
-    touhouFangameRecollectionOfScriptersPastEyeShotgun(){
-        let calculateAngle = Phaser.Math.RadToDeg(Phaser.Math.Angle.Between(this.scene.player.x, this.scene.player.y, this.x, this.y)) - 180;
-        this.attack({
-            amount: 3,
-            angleChange: 10,
-            x: this.x, y: this.y,
-            speed: 400,
-            angle: calculateAngle,
-            texture: "orb-red"
-        });
-        this.attack({
-            delay: 600,
-            amount: 4,
-            angleChange: 6.5,
-            x: this.x, y: this.y,
-            speed: 500,
-            angle: calculateAngle,
-            texture: "orb-blue"
-        });
-    };
-    touhouFangameRecollectionOfScriptersPastEyeRotate(){
-        this.attack({
-            x: this.x, y: this.y,
-            speed: 400,
-            angle: 90 + (Math.floor(this.paramsTouhouFangameRecollectionOfScriptersPast.tempTimer / 6) * 15),
-            texture: "orb-pink",
-            gx: 150
-        });
-        this.paramsTouhouFangameRecollectionOfScriptersPast.tempTimer += 1;
-        if(this.paramsTouhouFangameRecollectionOfScriptersPast.tempTimer === 144){
-            this.paramsTouhouFangameRecollectionOfScriptersPast.tempTimer = 0;
-        };
-    };
-    touhouFangameRecollectionOfScriptersPastEyeBurst(){
-        this.createEllipse([
-            { centerX: 300, centerY: 200, xRadius: 220, yRadius: 100, bulletCount: 100, texture: "arrow-pink", lifetime: 100000, speed: 200 }
-        ]);
     };
     touhouFangameRecollectionOfScriptersPastNorth(){
         let randomX = Math.random() * 590 + 10;
@@ -937,12 +838,12 @@ class Boss extends Enemy{
         });
     };
     touhouFangameRecollectionOfScriptersPastEast(){
-        if(this.randomY === -1){
-            this.randomY = Math.random() * 420;
+        if(this.paramsTouhouFangameRecollectionOfScriptersPast.randomY === -1){
+            this.paramsTouhouFangameRecollectionOfScriptersPast.randomY = Math.random() * 420;
         };
         for(let i = 0; i < 8; i++){
             this.attack({
-                x: 610, y: this.randomY + (60 * i),
+                x: 610, y: this.paramsTouhouFangameRecollectionOfScriptersPast.randomY + (60 * i),
                 speed: 200,
                 texture: "butterfly-green",
                 angle: 180,
@@ -1058,6 +959,34 @@ class Boss extends Enemy{
             };
         });
     };
+    spawnBomb(amount){
+        let randomX, randomY;
+        let bounds = this.getBounds();
+        let xMin = bounds.x;
+        let xMax = bounds.x + bounds.width;
+        let yMin = bounds.y;
+        let yMax = bounds.y + bounds.height;
+        for(let i = 0; i < amount; i++){
+            do{
+                randomX = Math.random() * 530 + 30;
+            }while((randomX < xMin) && (randomX > xMax));
+            do{
+                randomY = Math.random() * 825 + 25;
+            }while((randomY < yMin) && (randomY > yMax));
+            this.createHollowCircle(randomX, randomY);
+        };
+    };
+    createHollowCircle(x, y){
+        const bomb = this.scene.physics.add.sprite(x, y, "bomb")
+            .setSize(18, 18)
+            .setDisplaySize(64, 64)
+            .setPushable(false)
+            .setDepth(8);
+        this.scene.bossBombs.add(bomb);
+    };
+    kill(){
+        super.kill();
+    };
 };
 
 class Bullets extends Phaser.Physics.Arcade.Group{
@@ -1086,11 +1015,17 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         super(scene, 0, 0, "bullet-atlas");
         this.scene = scene;
     };
-    fire({ x, y, angle = 0, damage = 1, speed, gx = 0, gy = 0, tracking = false, texture = 'circle-black', scaleSpeed = 0, target = null, maxLife = 4500, size = 1 }){
+    fire({ x, y, angle = 0, damage = 1, speed, gx = 0, gy = 0, tracking = false, texture = 'circle-black', scaleSpeed = 0, target = null, maxLife = 4500, size = 1, alpha = 1 }){
         this.enableBody(true, x, y, true, true);   
         this.setFrame(texture);
         this.setScale(size);
-        this.setSize(this.width / 1.6, this.height / 1.6);
+        this.setAlpha(alpha);
+        if(this.width !== this.height){
+            let minValue = Math.min(this.width, this.height);
+            this.setSize(minValue / 1.6, minValue / 1.6);
+        }else{
+            this.setSize(this.width / 1.6, this.height / 1.6);
+        };
         this.angle = angle;
         this.damage = damage;
         this.maxLife = maxLife;
@@ -1116,7 +1051,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
     };
     preUpdate(time, delta){
         super.preUpdate(time, delta);
-        this.born += 1;
+        this.born++;
         if(this.active && ((this.born > this.maxLife) || this.isOutOfBounds())){
             this.remove();
         };
@@ -1133,6 +1068,45 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
     };
     isOutOfBounds(){
         return this.x < -15 || this.x > 615 || this.y < -15 || this.y > 865;
+    };
+};
+
+class DefaultBullet{
+    constructor(scene){
+        this.scene = scene;
+        this.name = 'Default';
+        this.nextFire = 0;   
+        this.fireRate = 200;
+        this.bulletSpeed = 200;
+        this.bulletTexture = 'circle-black'
+    };
+    fireBullet({ sneak = false, texture, player, ammo, angle, target, damage, speed }){  
+        if(this.scene.time.now < this.nextFire) { return; };
+        ammo.getBullet().fire({
+            x: player.x,
+            y: player.y,
+            angle: angle,
+            damage: damage + 1,
+            speed: this.bulletSpeed + speed,
+            target: target,
+            texture: (texture) ? texture : this.bulletTexture,
+            alpha: 0.5
+        });
+        if(sneak){
+            const offsets = [-5, 5];
+            for(let i of offsets){
+                ammo.getBullet().fire({
+                    x: player.x, y: player.y,
+                    angle: angle + i,
+                    damage: (damage + 1) / 2,
+                    speed: this.bulletSpeed + speed,
+                    target: target,
+                    texture: (texture) ? texture : this.bulletTexture,
+                    alpha: 0.5
+                });
+            };
+        };
+        this.nextFire = this.scene.time.now + this.fireRate;
     };
 };
 

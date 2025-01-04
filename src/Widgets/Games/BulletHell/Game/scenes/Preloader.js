@@ -29,6 +29,10 @@ export class Preloader extends Scene{
         this.load.image('boss-pleased', 'boss/boss-pleased.webp');
         this.load.image('boss-smug', 'boss/boss-smug.webp');
         this.load.image('boss-X3', 'boss/boss-X3.webp');
+        /// Addition
+        this.load.image('bomb', 'addition/bomb.webp');
+        /// Abillities
+        this.load.image('abilities-grass-block', 'abilities/ability-grass-block.webp');
         /// Bullet
         this.load.atlas('bullet-atlas', 'bullet/bullet.webp', 'bullet/bullet.json');
         this.load.setPath('assets/');
