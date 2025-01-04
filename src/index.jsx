@@ -7180,7 +7180,6 @@ class Widgets extends Component{
             widgets: {
                 utility: {
                     setting: {
-                        active: true,
                         position: {
                             x: 0,
                             y: 0
@@ -8719,7 +8718,7 @@ class Widgets extends Component{
                 if(i === "setting"){
                     data["utility"]["setting"] = {
                         ...data["utility"]["setting"],
-                        values: {        
+                        values: {
                             ...data["utility"]["setting"]["values"],
                             ...this.state.values
                         }
@@ -8843,8 +8842,7 @@ class Widgets extends Component{
                         healthDisplay = localStorageValues["health"];
                         lootDisplay = localStorageValues["loot"];
                         break;
-                    default:
-                        break;
+                    default: break;
                 };
             };
             let widgetsGames = {};
@@ -9002,7 +9000,7 @@ class Widgets extends Component{
                     case "equipment":
                     case "character":
                         break;
-                    default: 
+                    default:
                         widgets[widgetType] = {
                             ...widgets[widgetType],
                             [widget]: this.state.widgets[widgetType][widget].name
