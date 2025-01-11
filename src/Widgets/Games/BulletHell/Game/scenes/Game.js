@@ -355,8 +355,10 @@ export class Game extends Scene{
         this.player.weapons.push(new DefaultBullet(this, this.player.dex, this.player.atk, this.player.str));
         this.player.setAbilities();
         this.textCurrentAbility.setText(
-            this.player.ability.replace(/^./, (char) => char.toUpperCase())
-                .replace(/([A-Z])/g, " $1").trim()
+            (this.player.ability !== null)
+                ? this.player.ability.replace(/^./, (char) => char.toUpperCase())
+                    .replace(/([A-Z])/g, " $1").trim()
+                : ""
         );
     };
     playerHitCallback(bullet, player){

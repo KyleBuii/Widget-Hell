@@ -30,7 +30,7 @@ class WidgetBulletHell extends Component{
         if(/87|65|83|68|37|38|39|40|16|17|32/.test(event.keyCode)) event.preventDefault();
     };
     componentDidMount(){
-        // window.addEventListener("keydown", this.handleKeydown);
+        window.addEventListener("keydown", this.handleKeydown);
     };
     componentWillUnmount(){
         window.removeEventListener("keydown", this.handleKeydown);
