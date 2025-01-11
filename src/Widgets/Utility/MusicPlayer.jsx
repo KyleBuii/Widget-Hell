@@ -98,6 +98,7 @@ class WidgetMusicPlayer extends Component{
             name: "",
             artist: "",
             currentDuration: "00:00",
+            rawCurrentDuration: 0,
             maxDuration: "00:00",
             rawMaxDuration: 0,
             progress: 0,
@@ -238,22 +239,20 @@ class WidgetMusicPlayer extends Component{
                         unplayedSongsMaxIndex--;
                     };
                     let findIndexUrls = this.state.urls.findIndex((object) => object.name === this.state.name);
+                    let findIndexUrlsAdd = urlsAdd.findIndex((object) => object.name === this.state.name);
                     let copyArrayUrls = [...this.state.urls];
                     if(findIndexUrls !== -1){
                         let totalTimePlayed = copyArrayUrls[findIndexUrls].timePlayed + this.state.rawCurrentDuration;
-                        let dataSong = dataSongsAdd.find((song) => song.name === copyArrayUrls[findIndexUrls].name);
-                        if(dataSong !== undefined){
-                            totalTimePlayed += dataSong.timePlayed;
+                        let dataSongIndex = dataSongsAdd.findIndex((song) => song.name === copyArrayUrls[findIndexUrls].name);
+                        if(dataSongIndex !== -1){
+                            totalTimePlayed += dataSongsAdd[dataSongIndex].timePlayed;
+                            dataSongsAdd.splice(dataSongIndex, 1);
                         };                
                         dataSongsRemoved.push({
                             name: copyArrayUrls[findIndexUrls].name,
                             timePlayed: totalTimePlayed
                         });
-                        if(findIndexUrls === 0){
-                            copyArrayUrls = [...copyArrayUrls.slice(1)];
-                        }else{
-                            copyArrayUrls = [...copyArrayUrls.slice(0, findIndexUrls), ...copyArrayUrls.slice(findIndexUrls + 1)];
-                        };
+                        copyArrayUrls.splice(findIndexUrls, 1);
                         this.setState({
                             urls: [...copyArrayUrls]
                         }, () => {
@@ -268,6 +267,15 @@ class WidgetMusicPlayer extends Component{
                             };
                         });
                         let indexValue = unplayedSongsIndex.findIndex((value) => value === findIndexUrls);
+                        unplayedSongsIndex.splice(indexValue, 1);
+                        unplayedSongsMaxIndex--;
+                    }else if(findIndexUrlsAdd !== -1){
+                        dataSongsRemoved.push({
+                            name: dataSongsAdd[findIndexUrlsAdd].name,
+                            timePlayed: dataSongsAdd[findIndexUrlsAdd].timePlayed
+                        });
+                        dataSongsAdd.splice(findIndexUrlsAdd, 1);
+                        let indexValue = unplayedSongsIndex.findIndex((value) => value === findIndexUrlsAdd);
                         unplayedSongsIndex.splice(indexValue, 1);
                         unplayedSongsMaxIndex--;
                     };
@@ -333,12 +341,20 @@ class WidgetMusicPlayer extends Component{
             case "playlist-clear":
                 const buttonPlaylistClear = document.getElementById("musicplayer-button-playlist-clear");
                 if(buttonPlaylistClear.classList.contains("confirm-delete")){
+                    if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
                     this.setState({
                         urls: []
                     });
                     this.clearMusic();
                     unplayedSongsIndex.length = 0;
                     unplayedSongsMaxIndex = 0;
+                    let cleanUrls = this.state.urls.map((url) => {
+                        return {
+                            name: url.name,
+                            timePlayed: url.timePlayed
+                        }
+                    });
+                    dataSongsRemoved = [...dataSongsRemoved, ...cleanUrls];
                 };
                 buttonPlaylistClear.classList.toggle("confirm-delete");
                 if(buttonPlaylistClear.classList.contains("confirm-delete")){
@@ -491,7 +507,6 @@ class WidgetMusicPlayer extends Component{
                 .value = "";
             const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
             const data = await result.json();
-            console.log(data)
             let itemUrl;
             data.items.forEach((item) => {
                 itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
@@ -602,7 +617,13 @@ class WidgetMusicPlayer extends Component{
     storeData(){
         if(localStorage.getItem("widgets") !== null){
             if(this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
-            const addTimePlayed = Object.values([...this.state.urls, ...dataSongsAdd].reduce((prev, curr) => {
+            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
+            let addData = [...this.state.urls, ...dataSongsAdd];
+            let matchingDataInRemove = [];
+            let dataLocalStorageDeleted = (dataLocalStorage["utility"]["musicplayer"]?.deleted === undefined)
+                ? []
+                : dataLocalStorage["utility"]["musicplayer"]["deleted"];
+            let deletedData = Object.values([...dataLocalStorageDeleted, ...dataSongsRemoved].reduce((prev, curr) => {
                 if(prev[curr.name]){
                     prev[curr.name].timePlayed += curr.timePlayed;
                 }else{
@@ -610,24 +631,29 @@ class WidgetMusicPlayer extends Component{
                 };
                 return prev;
             }, {}));
-            let dataLocalStorage = JSON.parse(localStorage.getItem("widgets"));
-            let deletedData = [...dataSongsRemoved];
-            if(dataLocalStorage["deleted"] !== undefined){
-                deletedData = Object.values([...dataLocalStorage["deleted"], ...deletedData].reduce((prev, curr) => {
-                    if(prev[curr.name]){
-                        prev[curr.name].timePlayed += curr.timePlayed;
-                    }else{
-                        prev[curr.name] = { ...curr };
-                    };
-                    return prev;
-                }, {}));
-            };
+            deletedData = [...deletedData].filter((song) => {
+                if(addData.some((songAdd) => songAdd.name === song.name)){
+                    matchingDataInRemove.push(song);
+                }else{
+                    return song;   
+                };
+            });
+            let addTimePlayed = Object.values([...addData, ...matchingDataInRemove].reduce((prev, curr) => {
+                if(prev[curr.name]){
+                    prev[curr.name].timePlayed += curr.timePlayed;
+                }else{
+                    prev[curr.name] = { ...curr };
+                };
+                return prev;
+            }, {}));
             dataLocalStorage["utility"]["musicplayer"] = {
                 ...dataLocalStorage["utility"]["musicplayer"],
                 urls: [...addTimePlayed],
                 deleted: [...deletedData]
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
+            dataSongsRemoved.length = 0;
+            dataSongsAdd.length = 0;
         };
     };
     componentDidMount(){
@@ -716,7 +742,8 @@ class WidgetMusicPlayer extends Component{
                                                 playerVars: {
                                                     fs: 0,
                                                     rel: 0,
-                                                    iv_load_policy: 3
+                                                    iv_load_policy: 3,
+                                                    controls: 0
                                                 },
                                             }
                                         }}/>

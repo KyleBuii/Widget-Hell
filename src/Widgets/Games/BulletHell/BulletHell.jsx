@@ -26,6 +26,15 @@ class WidgetBulletHell extends Component{
             });
         };
     };
+    handleKeydown(event){
+        if(/87|65|83|68|37|38|39|40|16|17|32/.test(event.keyCode)) event.preventDefault();
+    };
+    componentDidMount(){
+        // window.addEventListener("keydown", this.handleKeydown);
+    };
+    componentWillUnmount(){
+        window.removeEventListener("keydown", this.handleKeydown);
+    };
     render(){
         return(
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

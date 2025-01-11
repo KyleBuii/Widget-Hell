@@ -6,6 +6,7 @@ import { TbMoneybag } from 'react-icons/tb';
 
 
 /// Variables
+const pieces = ["O", "I", "S", "Z", "L", "J", "T"];
 let intervalLoop;
 let intervalTimer;
 
@@ -25,7 +26,7 @@ class WidgetTetris extends Component{
 		this.storeData = this.storeData.bind(this);
     };
     handleKeyDown(event){
-        if(/38|87|37|65|39|68|40|83|32|70/.test(event.keyCode)){
+        if(/38|87|37|65|39|68|40|83|32|70|16/.test(event.keyCode)){
 			let key = event.keyCode || event.which;
 			if(GM.IsAlive){
 				switch(key){
@@ -52,6 +53,9 @@ class WidgetTetris extends Component{
 					/// Spacebar to drop the current piece
 					case 32:
 						Page.Game.IsDirty = GM.Pc.TryDrop();
+						break;
+					case 16:
+						GM.Pc.Hold();
 						break;
 					default: break;
 				};
@@ -449,6 +453,41 @@ Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function(){
 	};
 });
 
+Page.Hold = new DrawAreaObj(10.5, 17.5, 2.5, 2.5, function(){
+	let uDrawSize = Math.floor(Page.unitSize / 2),
+		pcC = GM.Pc.Held;
+	Page.ctx.fillStyle = 'rgb(28,30,34)';
+	Page.ctx.fillRect(this.left, this.top, this.W, this.H);
+	if(pcC !== 0){
+		Page.ctx.fillStyle = pcC.color;
+		let totalL = 0, 
+			totalT = 0, 
+			countedL = [], 
+			countedT = [];
+		for(let i = 0; i < pcC.UO.arr.length; i++){
+			let curX = pcC.UO.arr[i].x,
+				curY = pcC.UO.arr[i].y;
+			if(countedL.indexOf(curX) < 0){
+				countedL.push(curX);
+				totalL += curX;
+			};
+			if(countedT.indexOf(curY) < 0){
+				countedT.push(curY);
+				totalT += curY;
+			};
+		};
+		let avgL = uDrawSize * (totalL / countedL.length + 0.5),
+			avgT = uDrawSize * (totalT / countedT.length + 0.5),
+			offsetL = this.left + this.W/2,
+			offsetT = this.top + this.H/2;
+		for(let j = 0; j < pcC.UO.arr.length; j++){
+			let drawL = Math.floor(offsetL - avgL + pcC.UO.arr[j].x * uDrawSize),
+				drawT = Math.floor(offsetT - avgT + pcC.UO.arr[j].y * uDrawSize); 
+			Page.ctx.fillRect(drawL,drawT,uDrawSize - 1,uDrawSize - 1);
+		};
+	};
+});
+
 Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function(){
 	/// Draw the score area back bar
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
@@ -767,13 +806,30 @@ GM.T = function(){
 // Controls the generation, movement, and placement of piece 
 // objects. Monitors the current piece and upcoming piece
 GM.Pc = {
-	/// Current piece, projected Y pos of cur piece  
-	Cur: 0, ProjY: 0,
-	/// Upcoming pieces
+	Cur: 0, ProjY: 0, CanHold: true, LastLineSpawn: 0,
 	Upcoming: [0,0,0],
+	Held: 0,
+	Hold: function(){
+		if(this.CanHold){
+			this.CanHold = false;
+			if(this.Held === 0){
+				this.Cur.x = 5;
+				this.Cur.y = 0;
+				this.Held = this.Cur;
+				this.Cur = this.Upcoming[0];
+				this.Generate();
+			}else{
+				this.Cur.x = 5;
+				this.Cur.y = 0;
+				let tempCur = this.Cur;
+				this.Cur = this.Held;
+				this.Held = tempCur;
+			};
+			Page.Hold.Draw();
+		};
+	},
 	/// Push upcoming piece to current & randomize new upcoming piece
 	Generate: function(){
-		/// Push upcoming piece to current and push down other upcomings
 		this.Cur = this.Upcoming[0];
 		this.Upcoming[0] = this.Upcoming[1];
 		this.Upcoming[1] = this.Upcoming[2];    
@@ -783,25 +839,25 @@ GM.Pc = {
 			if(spawnCollisions > 0){
 				GM.GameOver();
 				this.Freeze();
+				this.Held = 0;;
+				this.Upcoming = [0,0,0];
+				this.LastLineSpawn = 0;
 			};
 		};
-		/// If player is alive, generate random upcoming piece
 		if(GM.IsAlive !== 0){
-			let randInt = Math.floor(Math.random() * 7);
-			switch(randInt){
-				case 0: this.Upcoming[2] = GM.O(); break;
-				case 1: this.Upcoming[2] = GM.I(); break;
-				case 2: this.Upcoming[2] = GM.S(); break;
-				case 3: this.Upcoming[2] = GM.Z(); break; 
-				case 4: this.Upcoming[2] = GM.L(); break;
-				case 5: this.Upcoming[2] = GM.J(); break;
-				case 6: this.Upcoming[2] = GM.T(); break;
-				default: break;      
+			let randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
+			this.LastLineSpawn = (randomPiece === "L") ? 0 : this.LastLineSpawn++;
+			if(this.LastLineSpawn >= 20){
+				this.Upcoming[2] = GM.L();
+			}else{
+				this.Upcoming[2] = GM[randomPiece]();
 			};
 			/// If a current piece was set, inform the GM
 			if(this.Cur !== 0){
 				GM.PieceSpawned();
 				Page.Game.IsDirty = true;
+				Page.Hold.Draw();
+				this.CanHold = true;
 			};
 			Page.UpcomingA.IsDirty = Page.UpcomingB.IsDirty =
 			Page.UpcomingC.IsDirty = true;

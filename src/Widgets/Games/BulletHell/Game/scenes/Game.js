@@ -6,13 +6,13 @@ import { Scene } from 'phaser';
 /*
 1 - Enemy
 2 - Menu
-3 - Player bullets
+3 - Player bullets / Ability bullets
 4 - Boss
-5 - Player
+5 - Player / Hit effects
 6 - Health
 7 - Boss bullets
 8 - Bomb
-9 - Abilities
+9 - Abilities / Abilities additions
 */
 //#endregion
 
@@ -22,9 +22,42 @@ const enemies = {
         health: 10,
         defense: 0,
         speed: 1.5,
+    },
+    bread: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+        healthXOffset: 6
+    },
+    cabbage: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+    },
+    cornbread: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+    },
+    onion: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+        healthXOffset: 5
+    },
+    potatoe: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+    },
+    raspberry: {
+        health: 10,
+        defense: 0,
+        speed: 1.5,
+        healthXOffset: 5
     }
 };
-const boss = ["-3-", "030", "pleased", "smug", "X3"];
+const boss = ["X3", "O3O", "-3-", "smug", "pleased"];
 const patterns = [
     "touhouFangameRecollectionOfScriptersPast",
     "generation1_1"
@@ -38,6 +71,8 @@ const generation1_1Patterns = [
 ];
 let mouseMovement = false;
 let isMobile = false;
+let velocityX = 0;
+let velocityY = 0;
 
 
 export class Game extends Scene{
@@ -45,6 +80,7 @@ export class Game extends Scene{
         super('Game');
         this.player = null;
         this.boss = null;
+        this.debuffs = [];
     };
     create(){
         if("maxTouchPoints" in navigator){
@@ -88,10 +124,12 @@ export class Game extends Scene{
                 });
                 this.boss.kill();
                 this.spawnEnemy();
+                this.time.delayedCall(1000, this.spawnEnemy, [], this);
+                this.time.delayedCall(2000, this.spawnEnemy, [], this);        
                 this.toggleMenu(false);
                 this.player.revive();
                 this.playerAbilities.getChildren().forEach((ability) => {
-                    ability.destroy();
+                    ability.kill();
                 });
             });
         this.textReturn = this.add.text(this.buttonPlay.x, this.buttonPlay.y, 'Return')
@@ -110,17 +148,53 @@ export class Game extends Scene{
         this.textMouseMovement = this.add.text(this.buttonMouseMovement.x, this.buttonMouseMovement.y, 'Mouse')
             .setDepth(2)
             .setOrigin(0.5);
+        this.textCurrentAbility = this.add.text(580, 830, "")
+            .setDepth(2)
+            .setOrigin(1);
+        if(isMobile){
+            this.buttonAbility = this.add.image(60, 810, "button")
+                .setDepth(2)
+                .setDisplaySize(85, 40)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.player.mobileAbility = true;
+                })
+                .on('pointerup', () => {
+                    this.player.mobileAbility = false;
+                });
+            this.textAbility = this.add.text(this.buttonAbility.x, this.buttonAbility.y, 'Ability')
+                .setDepth(2)
+                .setOrigin(0.5);
+            this.buttonAbilitySwitch = this.add.image(60, 760, "button")
+                .setDepth(2)
+                .setDisplaySize(85, 40)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.player.mobileAbility = true;
+                })
+                .on('pointerup', () => {
+                    this.player.mobileAbility = false;
+                });
+            this.textAbilitySwitch = this.add.text(this.buttonAbilitySwitch.x, this.buttonAbilitySwitch.y, 'Switch')
+                .setDepth(2)
+                .setOrigin(0.5);
+        };
     };
     toggleMenu(isHide, isGameover = false){
         if(isHide){
+            this.enemies.getChildren().forEach((enemy) => {
+                enemy.kill();
+                this.time.removeAllEvents();
+            });
+            this.enemies.getChildren().forEach((enemy) => {
+                enemy.kill();
+                this.time.removeAllEvents();
+            });
             this.buttonContainer.setVisible(false);
             this.buttonPlay.setVisible(false);
             this.textPlay.setVisible(false);
             this.buttonMouseMovement.setVisible(false);
             this.textMouseMovement.setVisible(false);
-            this.enemies.children.entries.forEach((enemy) => {
-                enemy.kill(); 
-            });
         }else{
             if(isGameover){
                 this.buttonReturn.setVisible(true);
@@ -139,14 +213,27 @@ export class Game extends Scene{
     createPlayer(){
         this.playerBullets = new Bullets(this, 100)
             .setDepth(3);
-        this.playerAbilities = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
+        this.playerAbilities = this.physics.add.group({
+            classType: Phaser.GameObjects.Sprite,
+        }).setDepth(9);
+        this.playerAbilitiesBullets = new Bullets(this, 100)
+            .setDepth(3);
+        this.playerAbilitiesHits = this.add.group({
+            classType: Phaser.GameObjects.Sprite,
+            maxSize: 10,
+            setDepth: 5
+        });
+        this.playerAbilitiesAdditions = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
             .setDepth(9);
+        this.playerAbilitiesTimeEvents = [];
         this.player = new Player(this, 'player-default', 300, 750)
             .setOffset(37, 60);
     };
     createEnemy(){
         this.enemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
         this.spawnEnemy();
+        this.time.delayedCall(1000, this.spawnEnemy, [], this);
+        this.time.delayedCall(2000, this.spawnEnemy, [], this);
     };
     createBoss(){
         this.bossBullets = new Bullets(this, 5000)
@@ -155,52 +242,90 @@ export class Game extends Scene{
             .setDepth(8);
     };
     createColliders(){
+        this.anchorOutside = this.physics.add.sprite(300, -100)
+            .setSize(600, 1)
+            .setPushable(false);
         this.anchorBoss = this.physics.add.sprite(300, 280)
             .setPushable(false);
-        this.physics.add.collider(this.player, this.enemyBullets, (player, bullet) => {
+        this.physics.add.collider(this.playerAbilities, this.anchorOutside, (anchor, ability) => {
+            switch(ability.name){
+                case "oceanicTerror":
+                    ability.kill();
+                    break;
+                default: break;
+            };
+        });
+        this.physics.add.overlap(this.player, this.enemyBullets, (player, bullet) => {
             this.playerHitCallback(bullet, player);
         });
-        this.physics.add.collider(this.player, this.bossBullets, (player, bullet) => {
+        this.physics.add.overlap(this.player, this.bossBullets, (player, bullet) => {
             this.playerHitCallback(bullet, player);
         });
-        this.physics.add.collider(this.enemies, this.playerBullets, (enemy, bullet) => {
+        this.physics.add.overlap(this.enemies, this.playerBullets, (enemy, bullet) => {
             this.enemyHitCallback(bullet, enemy);
+        });
+        this.physics.add.overlap(this.enemies, this.playerAbilitiesBullets, (enemy, bullet) => {
+            this.enemyHitCallback(bullet, enemy);
+        });
+        this.physics.add.overlap(this.enemies, this.playerAbilities, (enemy, ability) => {
+            this.enemyHitCallback(ability, enemy);
+        });
+        this.physics.add.overlap(this.enemies, this.playerAbilitiesAdditions, (enemy, addition) => {
+            this.enemyHitCallback(addition, enemy);
+        });
+        this.physics.add.overlap(this.playerAbilities, this.bossBullets, (ability, bullet) => {
+            this.abilityHitCallback(bullet, ability);
         });
     };
     spawnEnemy(){
         let enemiesKeys = Object.keys(enemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
         let randomX = Math.random() * 500 + 100;
-        this.enemies.add(
-            new Enemy(
-                this,
-                randomEnemy,
-                randomX, 0,
-                enemies[randomEnemy].health,
-                enemies[randomEnemy].defense,
-                enemies[randomEnemy].speed)
+        let enemy = new Enemy(
+            this,
+            randomEnemy,
+            randomX, 0,
+            enemies[randomEnemy].health,
+            enemies[randomEnemy].defense,
+            enemies[randomEnemy].speed,
+            enemies[randomEnemy]?.healthXOffset
         );
+        this.enemies.add(enemy);
     };
     spawnBoss(){
         let randomBoss = boss[Math.floor(Math.random() * boss.length)];
         this.boss = new Boss(
-            1, 200, 1, this, `boss-${randomBoss}`,
+            1, 200, 1, this, randomBoss,
             300, 0, 1000, 0, 100
         );
-        this.physics.add.collider(this.boss, this.player, (boss, player) => {
+        if(this.debuffs.length !== 0){
+            this.debuffs.forEach((debuff) => {
+                this.boss.debuff(debuff);
+            });
+        };
+        this.physics.add.overlap(this.boss, this.player, (boss, player) => {
             if(player.hp.decrease(1)){
                 player.dead();
                 this.clearScreen();
             };
         });
-        this.physics.add.collider(this.boss, this.playerBullets, (boss, bullet) => {
+        this.physics.add.overlap(this.boss, this.playerBullets, (boss, bullet) => {
             this.enemyHitCallback(bullet, boss);
         });
-        this.physics.add.collider(this.boss, this.anchorBoss, (boss, anchor) => {
-            this.boss.body.setVelocityY(0);
-            this.boss.ready = true;
+        this.physics.add.overlap(this.boss, this.playerAbilitiesBullets, (boss, bullet) => {
+            this.enemyHitCallback(bullet, boss);
         });
-        this.physics.add.collider(this.bossBombs, this.player, (player, bomb) => {
+        this.physics.add.overlap(this.boss, this.playerAbilities, (boss, ability) => {
+            this.enemyHitCallback(ability, boss);
+        });
+        this.physics.add.overlap(this.boss, this.playerAbilitiesAdditions, (boss, addition) => {
+            this.enemyHitCallback(addition, boss);
+        });
+        this.physics.add.collider(this.boss, this.anchorBoss, (boss, anchor) => {
+            boss.body.setVelocityY(0);
+            boss.ready = true;
+        });
+        this.physics.add.overlap(this.bossBombs, this.player, (player, bomb) => {
             bomb.destroy();
             if(((3 * Math.floor((this.bossBombs.getLength()) / 3)) === this.bossBombs.getLength())
                 && this.boss.hp.decrease(100)){
@@ -209,8 +334,14 @@ export class Game extends Scene{
         });
     };
     setData(data){
-        this.player.hp = new HealthBar(this, data.stats.health, 10, 11);
-        this.player.mana = data.stats.mana;
+        this.player.hp = new HealthBar(
+            this,
+            (data.stats.health < 10)
+                ? 1
+                : Math.floor(data.stats.health / 10),
+            10, 11
+        );
+        this.player.mana = (data.stats.mana < 10) ? 1 : Math.floor(data.stats.mana / 10);
         this.player.atk = data.stats.attack;
         this.player.def = data.stats.defense;
         this.player.str = data.stats.strength;
@@ -220,28 +351,107 @@ export class Game extends Scene{
         this.player.int = data.stats.intelligence;
         this.player.dex = data.stats.dexterity;
         this.player.lck = data.stats.luck;
-        this.player.abilities = [...data.abilities];
+        this.player.abilitiesRaw = [...data.abilities];
+        this.player.weapons.push(new DefaultBullet(this, this.player.dex, this.player.atk, this.player.str));
         this.player.setAbilities();
+        this.textCurrentAbility.setText(
+            this.player.ability.replace(/^./, (char) => char.toUpperCase())
+                .replace(/([A-Z])/g, " $1").trim()
+        );
     };
     playerHitCallback(bullet, player){
         if(bullet.active === true){
-            bullet.remove();
             if(player.active && player.hp.decrease(bullet.damage)){
                 player.dead();
                 this.clearScreen();
             };
+            bullet.remove();
         };
+    };
+    abilityHitCallback(bullet, ability){
+        if(bullet.active === true){
+            if(ability.sponge){
+                if(ability.active && ability.hp.decrease(bullet.damage)){
+                    ability.kill();
+                };
+            };
+            if(ability.reflect){
+                this.playerAbilitiesBullets.getBullet().fire({
+                    x: ability.x, y: ability.y,
+                    angle: -90,
+                    damage: bullet.damage,
+                    speed: 200 + this.player.str,
+                    tracking: bullet.tracking,
+                    texture: bullet.frame.name,
+                    scaleSpeed: bullet.scaleSpeed,
+                    target: (bullet.target === null) ? null : this.boss,
+                    maxLife: bullet.maxLife,
+                    alpha: 0.5
+                });
+            };
+            if(!ability.attack){
+                bullet.remove();
+            };
+        };    
     };
     enemyHitCallback(bullet, enemy){
         if(bullet.active === true && enemy.active === true){
-            bullet.remove();
-            if(enemy.hp.decrease(this.player.atk)){
+            if(enemy.hp.decrease((bullet.attack)
+                ? this.player.atk
+                : (bullet.addition)
+                    ? this.player.atk / 4
+                    : bullet.damage
+            )){
                 enemy.kill();
                 if(enemy?.key !== "boss"){
                     this.spawnEnemy();
                 }else{
                     this.clearScreen();   
                 };
+            };
+            if(!bullet.attack && !bullet.sponge && !bullet.addition){
+                bullet.remove();
+            };
+            let hit;
+            switch(bullet.name){
+                case "restInPeace":
+                case "restInPeaceHand":
+                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "rest-in-peace-hit")
+                        ?.setDepth(5);
+                    if(hit){
+                        hit.setActive(true);
+                        hit.setVisible(true);
+                        this.tweens.add({
+                            targets: hit,
+                            alpha: 0,
+                            duration: 100,
+                            onComplete: () => {
+                                hit.setAlpha(1);
+                                hit.setActive(false);
+                                hit.setVisible(false);
+                            },
+                        });
+                    };   
+                    break;
+                case "oceanicTerror":
+                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "oceanic-terror-hit")
+                        ?.setDepth(5);
+                    if(hit){
+                        hit.setActive(true);
+                        hit.setVisible(true);
+                        this.tweens.add({
+                            targets: hit,
+                            alpha: 0,
+                            duration: 100,
+                            onComplete: () => {
+                                hit.setAlpha(1);
+                                hit.setActive(false);
+                                hit.setVisible(false);
+                            },
+                        });
+                    };   
+                    break;
+                default: break;
             };
         };
     };
@@ -252,9 +462,9 @@ export class Game extends Scene{
 };
 
 class HealthBar{
-    constructor(scene, health, offsetX, offsetY){
+    constructor(scene, health, offsetX, offsetY, depth = 6){
         this.bar = new Phaser.GameObjects.Graphics(scene);
-        this.bar.setDepth(6);
+        this.bar.setDepth(depth);
         scene.add.existing(this.bar);
         this.value = health;
         this.maxValue = health;
@@ -300,107 +510,152 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
-        this.setPushable(false);
         this.setTexture(texture);
         this.setDrag(500, 500);
         this.setDepth(5);
         this.setSize(12, 12);
         this.displayWidth = 32;
         this.displayHeight = 50;
+        this.speed = 300;
         this.weapons = [];
         this.weaponIndex = 0;
-        this.weapons.push(new DefaultBullet(scene));
+        this.abilities = {};
+        this.abilitiesRaw = [];
         this.ability = null;
+        this.abilityIndex = 0;
         this.abilityTimer = 0;
         this.abilityCooldown = 0;
-        this.keyW = this.scene.input.keyboard.addKey('W');
-        this.keyA = this.scene.input.keyboard.addKey('A');
-        this.keyS = this.scene.input.keyboard.addKey('S');
-        this.keyD = this.scene.input.keyboard.addKey('D');
-        this.keyUp = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-        this.keyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        this.keyRight = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-        this.keyDown = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-        this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-        this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        this.scene.input.on('pointerdown', (pointer) => {
-            if(isMobile){
-                this.setPosition(pointer.x, pointer.y);
-            };
-        });    
-        this.scene.input.on('pointermove', (pointer) => {
-            if(isMobile){
-                this.setPosition(pointer.x, pointer.y);
-            };
-        });    
+        this.keyInitialized = false;
+        this.mobileAbility = false;
     };
     preUpdate(time, delta){
         super.preUpdate(time, delta);
-        this.hp.move(this.x, this.y);
-        this.setVelocity(0);
+        if(this.x !== this.hp.x || this.y !== this.hp.y){
+            this.hp.move(this.x, this.y);
+        };
+        velocityX = 0; velocityY = 0;
+        if(!this.keyInitialized){
+            this.keyW = this.scene.input.keyboard.addKey('W');
+            this.keyA = this.scene.input.keyboard.addKey('A');
+            this.keyS = this.scene.input.keyboard.addKey('S');
+            this.keyD = this.scene.input.keyboard.addKey('D');
+            this.keyUp = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+            this.keyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+            this.keyRight = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+            this.keyDown = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+            this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+            this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            this.keyAbilitySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);    
+            if(isMobile){
+                this.scene.input.on('pointerdown', (pointer) => {
+                    if(this.x !== pointer.x || this.y !== pointer.y){
+                        this.setPosition(pointer.x, pointer.y);
+                    };
+                });
+                this.scene.input.on('pointermove', (pointer) => {
+                    if(this.x !== pointer.x || this.y !== pointer.y){
+                        this.setPosition(pointer.x, pointer.y);
+                    };
+                });
+            };
+            this.keyInitialized = true;
+        };
         if(mouseMovement){
             let pointer = this.scene.input.activePointer;
-            this.setPosition(pointer.x, pointer.y);
+            if(this.x !== pointer.x || this.y !== pointer.y){
+                this.setPosition(pointer.x, pointer.y);
+            };
         };
         if(this.keyW?.isDown || this.keyUp?.isDown){
-            if(this.keyShift?.isDown){
-                this.setVelocityY(-100);
-            }else{
-                this.setVelocityY(-300);
-            };
+            velocityY = (this.keyShift?.isDown)
+                ? -this.speed / 3
+                : -this.speed;
         };
         if(this.keyA?.isDown || this.keyLeft?.isDown){
-            if(this.keyShift?.isDown){
-                this.setVelocityX(-100);
-            }else{
-                this.setVelocityX(-300);
-            };
+            velocityX = (this.keyShift?.isDown)
+                ? -this.speed / 3
+                : -this.speed;
         };
         if(this.keyS?.isDown || this.keyRight?.isDown){
-            if(this.keyShift?.isDown){
-                this.setVelocityY(100);
-            }else{
-                this.setVelocityY(300);
-            };
+            velocityY = (this.keyShift?.isDown)
+                ? this.speed / 3
+                : this.speed;
         };
         if(this.keyD?.isDown || this.keyDown?.isDown){
-            if(this.keyShift?.isDown){
-                this.setVelocityX(100);
-            }else{
-                this.setVelocityX(300);
-            };
+            velocityX = (this.keyShift?.isDown)
+                ? this.speed / 3
+                : this.speed;
         };
-        if(this.active){
+        if(velocityX !== this.body.velocity.x){
+            this.setVelocityX(velocityX);
+        };
+        if(velocityY !== this.body.velocity.y){
+            this.setVelocityY(velocityY);
+        };
+        if(this.active && (this.weapons.length !== 0)){
             this.weapons[this.weaponIndex].fireBullet({
-                sneak: this.keyShift?.isDown,
+                sneak: (mouseMovement) ? false : this.keyShift?.isDown,
                 player: this,
                 ammo: this.scene.playerBullets,
-                angle: -90,
-                damage: this.atk + this.str,
-                speed: this.dex * 50
+                angle: -90
             });
         };
-        if(this.ability !== null){
+        if(Object.keys(this.abilities).length !== 0){
             if(this.abilityTimer < this.abilityCooldown){
                 this.abilityTimer += delta / 1000;
             };
-            if(this.keyAbility?.isDown && this.abilityTimer >= this.abilityCooldown){
+            if((this.keyAbility?.isDown || this.mobileAbility) && this.abilityTimer >= this.abilityCooldown){
                 this[this.ability]();
                 this.abilityTimer = 0;
+            };
+            if(Phaser.Input.Keyboard.JustDown(this.keyAbilitySwitch)
+                && Object.keys(this.abilities).length > 0){
+                let keysAbilities = Object.keys(this.abilities);
+                this.abilityIndex++;
+                if(this.abilityIndex >= keysAbilities.length){
+                    this.abilityIndex = 0;
+                };
+                this.ability = keysAbilities[this.abilityIndex];
+                this.abilityCooldown = this.abilities[keysAbilities[this.abilityIndex]];
+                this.scene.textCurrentAbility.setText(
+                    this.ability.replace(/^./, (char) => char.toUpperCase())
+                        .replace(/([A-Z])/g, " $1").trim()
+                );
             };
         };
     };
     setAbilities(){
-        for(let ability of this.abilities){
+        for(let ability of this.abilitiesRaw){
             switch(ability){
                 case "Places a grass block":
                     this.ability = "grassBlock";
                     this.abilityCooldown = 60;
                     break;
+                case "Redirects every attack against the user back to the attacker":
+                    this.ability = "codeOfHammurabi";
+                    this.abilityCooldown = 60;
+                    break;
+                case "Decreases the enemy morale":
+                    this.scene.debuffs.push("morale");
+                    break;
+                case "Slashes in a large radius":
+                    this.ability = "restInPeace";
+                    this.abilityCooldown = 1;
+                    break;
+                case "Fires a wave":
+                    this.ability = "oceanicTerror";
+                    this.abilityCooldown = 1;
+                    break;
                 default: break;
             };
+            if(Object.keys(this.abilities).find((ability) => ability === this.ability) === undefined){
+                this.abilities[this.ability] = this.abilityCooldown;
+                this.abilityCooldown = this.abilityCooldown - (0.1 * Math.pow(1.5, this.int));
+                this.abilityTimer = this.abilityCooldown;
+            };
         };
-        this.abilityTimer = this.abilityCooldown;
+        this.abilityIndex = Object.keys(this.abilities).length;
+        this.abilitiesRaw.length = 0;
     };
     dead(){
         this.active = false;
@@ -409,35 +664,286 @@ class Player extends Phaser.Physics.Arcade.Sprite{
     revive(){
         this.active = true;
         this.hp.reset();
+        this.abilityTimer = this.abilityCooldown;
     };
     grassBlock(){
-        let grassBlock = this.scene.physics.add.sprite(this.x, this.y - this.height / 2, "abilities-grass-block")
-            .setDepth(9);
-        this.scene.playerAbilities.add(grassBlock);
+        if(this.scene.playerAbilities.getChildren().find((ability) => {
+            if(ability.name === "grassBlock"){
+                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
+                return true;
+            };
+        }) === undefined){
+            this.scene.playerAbilities.add(
+                new Ability(this.scene, "grassBlock", "grass-block", this.x, this.y - this.height / 2, {
+                    healthXOffset: 4.5,
+                    sponge: true
+                })
+            );
+        };
+    };
+    codeOfHammurabi(){
+        if(this.scene.playerAbilities.getChildren().find((ability) => {
+            if(ability.name === "codeOfHammurabi"){
+                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
+                return true;
+            };
+        }) === undefined){
+            this.scene.playerAbilities.add(
+                new Ability(this.scene, "codeOfHammurabi", "code-of-hammurabi", this.x, this.y - this.height / 2, {
+                    healthXOffset: 3,
+                    sponge: true,
+                    reflect: true
+                })
+            );
+        };
+    };
+    restInPeace(){
+        if(this.scene.playerAbilities.getChildren().find((ability) => {
+            if((ability.name === "restInPeace") && (this.scene.tweens.isTweening(ability))){
+                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
+                ability.anims.play("rest-in-peace", true);
+                let abilityAdditions = this.scene.playerAbilitiesAdditions.getChildren();
+                let count = 1;
+                loop: for(let i = 0; i < abilityAdditions.length; i++){
+                    if(abilityAdditions[i].name = "restInPeaceHand"){
+                        if(count > 7) break loop;
+                        let abilityPositionLeft = ability.getTopLeft();
+                        let abilityPositionRight = ability.getTopRight();
+                        let randomX = Phaser.Math.Between(abilityPositionLeft.x, abilityPositionRight.x);
+                        abilityAdditions[i]
+                            .setVisible(true)
+                            .setActive(true);
+                        abilityAdditions[i].x = randomX;
+                        abilityAdditions[i].y = abilityPositionLeft.y - (100 * count);
+                        if(abilityAdditions[i].y < -100) break loop;
+                        count++;
+                        this.scene.tweens.add({
+                            targets: abilityAdditions[i],
+                            alpha: 0,
+                            duration: 1000,
+                            onComplete: () => {
+                                abilityAdditions[i].setAlpha(1);
+                                abilityAdditions[i].setActive(false);
+                                abilityAdditions[i].setVisible(false);
+                            }
+                        });        
+                    };
+                };
+                return true;
+            };
+        }) === undefined){
+            let slash = new Ability(this.scene, "restInPeace", "rest-in-peace-0", this.x, this.y - this.height / 2, {
+                attack: true
+            });
+            slash.anims.create({
+                key: 'rest-in-peace',
+                frames: this.anims.generateFrameNames('abilities-atlas', {
+                    prefix: 'rest-in-peace-',
+                    end: 4
+                }),
+                frameRate: 12
+            });
+            slash.on("animationcomplete", () => {
+                this.scene.tweens.add({
+                    targets: slash,
+                    alpha: 0,
+                    duration: 200,
+                    onComplete: () => {
+                        slash.setAlpha(1);
+                        slash.kill();
+                    },
+                });
+            });
+            slash.anims.play("rest-in-peace", true);
+            this.scene.playerAbilities.add(slash);
+            for(let i = 1; i <= 14; i++){
+                let hand = this.scene.add.sprite(0, 0, "abilities-atlas", "rest-in-peace-hand")
+                    .setActive(true)
+                    .setVisible(true)
+                    .setName("restInPeaceHand")
+                    .setDepth(9);
+                hand.addition = true;
+                this.scene.playerAbilitiesAdditions.add(hand);
+                if(i <= 7){
+                    let slashPositionLeft = slash.getTopLeft();
+                    let slashPositionRight = slash.getTopRight();
+                    let randomX = Phaser.Math.Between(slashPositionLeft.x, slashPositionRight.x);
+                    hand.x = randomX;
+                    hand.y = slashPositionLeft.y - (100 * i);
+                    if(hand.y < -100){
+                        hand.setActive(false)
+                            .setVisible(false);
+                    }else{
+                        this.scene.tweens.add({
+                            targets: hand,
+                            alpha: 0,
+                            duration: 1000,
+                            onComplete: () => {
+                                hand.setAlpha(1);
+                                hand.setActive(false);
+                                hand.setVisible(false);
+                            }
+                        });
+                    };
+                }else{
+                    hand.setActive(false)
+                        .setVisible(false);
+                };
+            };
+        };
+    };
+    oceanicTerror(){
+        if(this.scene.playerAbilities.getChildren().find((ability) => {
+            if((ability.name === "oceanicTerror" && !ability.active)){
+                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
+                ability.setVelocityY(-300);
+                if(this.scene.playerAbilitiesTimeEvents.find((timeEvent, index) => {
+                    if((timeEvent.callback.name === "oceanicTerrorSpawnSeaCritter")
+                        && timeEvent.paused){
+                        timeEvent.args = [
+                            ability,
+                            index
+                        ];
+                        timeEvent.paused = false;
+                        return true;
+                    };
+                }));
+                return true;
+            };
+        }) === undefined){
+            for(let i = 0; i < 4; i++){
+                let wave = new Ability(this.scene, "oceanicTerror", "oceanic-terror-wave", this.x, this.y - this.height / 2, {
+                    attack: true
+                });
+                this.scene.playerAbilities.add(wave);
+                let timeEvent = this.scene.time.addEvent({
+                    delay: 500,
+                    loop: true,
+                    callback: this.oceanicTerrorSpawnSeaCritter,
+                    callbackScope: this,
+                    args: [wave, this.scene.playerAbilitiesTimeEvents.length]
+                });
+                this.scene.playerAbilitiesTimeEvents.push(timeEvent);    
+                if(i === 0){
+                    timeEvent.paused = false;
+                    wave.setVelocityY(-300);
+                }else{
+                    wave.kill();
+                    timeEvent.paused = true;  
+                };;
+            };
+        };
+    };
+    oceanicTerrorSpawnSeaCritter(wave, timeEventIndex){
+        if(wave.y < 0){
+            this.scene.playerAbilitiesTimeEvents[timeEventIndex].paused = true;
+        };
+        let chiocesSeaCritters = ["fish", "shark", "tentacle"];
+        let randomSeaCritter = chiocesSeaCritters[Math.floor(Math.random() * chiocesSeaCritters.length)];
+        if(this.scene.playerAbilitiesAdditions.getChildren().find((ability) => {
+            if((ability.name === `oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`) && !ability.active){
+                let wavePositionLeft = wave.getTopLeft();
+                let wavePositionRight = wave.getTopRight();
+                let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
+                ability.setActive(true)
+                    .setVisible(true)
+                    .setPosition(randomX, wave.y);
+                this.scene.tweens.add({
+                    targets: ability,
+                    scale: 0,
+                    duration: 5000,
+                    onComplete: () => {
+                        ability.setScale(1);
+                        ability.setActive(false);
+                        ability.setVisible(false);
+                    }
+                });        
+                return true;
+            };
+        }) === undefined){
+            let wavePositionLeft = wave.getTopLeft();
+            let wavePositionRight = wave.getTopRight();
+            let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
+            let seaCritter = this.scene.add.sprite(randomX, wave.y, "abilities-atlas", `oceanic-terror-${randomSeaCritter}`)
+                .setName(`oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`);
+            seaCritter.addition = true;
+            this.scene.tweens.add({
+                targets: seaCritter,
+                scale: 0,
+                duration: 5000,
+                onComplete: () => {
+                    seaCritter.setScale(1);
+                    seaCritter.setActive(false);
+                    seaCritter.setVisible(false);
+                }
+            });
+            this.scene.playerAbilitiesAdditions.add(seaCritter);
+
+        };
+    };
+};
+
+class Ability extends Phaser.Physics.Arcade.Sprite{
+    constructor(scene, name, texture, x, y, {
+        pushable = false,
+        healthXOffset = 1,
+        sponge = false,
+        reflect = false,
+        attack = false
+    }){
+        super(scene, 0, 0, "abilities-atlas");
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
+        this.setPushable(pushable);
+        this.setFrame(texture);
+        this.setPosition(x, y);
+        this.setDepth(9);
+        this.setSize(this.width, this.height);
+        if(sponge){
+            this.health = this.scene.player.mana;
+            this.hp = new HealthBar(scene, this.health, this.width / healthXOffset, 11, 10);
+        };
+        this.name = name;
+        this.sponge = sponge;
+        this.reflect = reflect;
+        this.attack = attack;
+    };
+    preUpdate(time, delta){
+        super.preUpdate(time, delta);
+        if(this.sponge && (this.x !== this.hp.x || this.y !== this.hp.y)){
+            this.hp.move(this.x, this.y);
+        };
+    };
+    kill(){
+        this.hp?.bar.destroy();
+        this.disableBody(true, true);
     };
 };
 
 class Enemy extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, texture, x, y, health, defense, speed){
-        super(scene, x);
+    constructor(scene, texture, x, y, health, defense, speed, healthXOffset = 7){
+        super(scene, x, y, "enemy-atlas");
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setPushable(false);
-        this.setTexture(texture);
+        this.setFrame(texture);
         this.setPosition(x, y);
         this.setDepth(1);
-        this.setSize(128, 128);
-        this.setDisplaySize(96, 96);
+        this.setSize(this.width, this.height);
         this.health = health;
-        this.hp = new HealthBar(scene, health, this.displayWidth / 8, 11);
+        this.hp = new HealthBar(scene, health, this.displayWidth / healthXOffset, 11);
         this.def = defense;
         this.spd = speed;
         this.alive = true;
     };
     preUpdate(time, delta){
         super.preUpdate(time, delta);
-        this.hp.move(this.x, this.y);
-        this.body.setVelocityY(this.spd * 100);
+        if(!this.alive) this.kill();
+        if(this.x !== this.hp.x || this.y !== this.hp.y){
+            this.hp.move(this.x, this.y);
+        };
+        if((this.spd * 100) !== this.body.velocity.y){
+            this.body.setVelocityY(this.spd * 100);
+        };
         if(!Phaser.Geom.Rectangle.Overlaps(this.scene.physics.world.bounds, this.getBounds())){
             this.setPosition(Math.random() * 500 + 100, 0);
         };
@@ -455,7 +961,6 @@ class Boss extends Enemy{
         this.setDepth(4);
         this.setSize(200, 200);
         this.setDisplaySize(256, 256);
-        this.setPushable(false);
         this.key = "boss";
         this.phaseTimer = 0;
         this.phaseTimerOffset = -1,
@@ -463,6 +968,9 @@ class Boss extends Enemy{
         this.atk = atk;
         this.atkSpd = atkSpd;
         this.atkRate = atkRate;
+        this.atkDebuff = 0;
+        this.atkSpdDebuff = 0;
+        this.atkRateDebuff = 0;
         this.attackTimer = 0;
         this.ready = false;
         this.pattern = null;
@@ -480,8 +988,12 @@ class Boss extends Enemy{
         };
     };
     preUpdate(){
-        this.hp.move(this.x, this.y);
-        this.body.setVelocityY(150);
+        if(this.x !== this.hp.x || this.y !== this.hp.y){
+            this.hp.move(this.x, this.y);
+        };
+        if(150 !== this.body.velocity.y){
+            this.body.setVelocityY(150);
+        };
         if(this.alive && this.ready){
             if(!this.pattern){
                 this.pattern = patterns[Math.floor(Math.random() * patterns.length)];
@@ -505,7 +1017,7 @@ class Boss extends Enemy{
                     };
                 }else{
                     pattern.attackTimer++;
-                    if(pattern.attackTimer > pattern.atkRate){
+                    if(pattern.attackTimer > pattern.atkRate + this.atkRateDebuff){
                         pattern.attackTimer = 0;
                         pattern.attackDurationTimer++;
                         if(pattern.attackDurationTimer === pattern.atkDuration){
@@ -905,7 +1417,22 @@ class Boss extends Enemy{
             default: break;
         };
     };
-    attack({ delay = 0, amount = 1, angleChange = 0, x = this.x, y = this.y, angle = 0, damage = this.atk, speed = this.atkSpd, gx = 0, gy = 0, tracking = false, texture = 'circle-black', scaleSpeed = 0, target = null, maxLife = 4500, size = 1 }){
+    attack({
+        delay = 0,
+        amount = 1,
+        angleChange = 0,
+        x = this.x, y = this.y,
+        angle = 0,
+        damage = this.atk + this.atkDebuff,
+        speed = this.atkSpd + this.atkSpdDebuff,
+        gx = 0, gy = 0,
+        tracking = false,
+        texture = 'circle-black',
+        scaleSpeed = 0,
+        target = null,
+        maxLife = 4500,
+        size = 1
+    }){
         this.scene.time.delayedCall(delay, () => {
             for(let i = 0; i < amount / 2; i++){
                 if(!this.alive) return;
@@ -925,20 +1452,22 @@ class Boss extends Enemy{
                         maxLife: maxLife,
                         size: size
                     });
-                    bullet = this.scene.bossBullets.getBullet();
-                    bullet.fire({
-                        x: x, y: y,
-                        angle: angle + (-angleChange * count),
-                        damage: damage,
-                        speed: speed,
-                        gx: gx, gy: gy,
-                        tracking: tracking,
-                        texture: texture,
-                        scaleSpeed: scaleSpeed,
-                        target: target,
-                        maxLife: maxLife,
-                        size: size
-                    });
+                    if(angleChange !== 0){
+                        bullet = this.scene.bossBullets.getBullet();
+                        bullet.fire({
+                            x: x, y: y,
+                            angle: angle + (-angleChange * count),
+                            damage: damage,
+                            speed: speed,
+                            gx: gx, gy: gy,
+                            tracking: tracking,
+                            texture: texture,
+                            scaleSpeed: scaleSpeed,
+                            target: target,
+                            maxLife: maxLife,
+                            size: size
+                        });
+                    };
                 };
             };
         });
@@ -983,6 +1512,14 @@ class Boss extends Enemy{
             .setPushable(false)
             .setDepth(8);
         this.scene.bossBombs.add(bomb);
+    };
+    debuff(what){
+        switch(what){
+            case "morale":
+                this.atkRateDebuff = 10;
+                break;
+            default: break;
+        };
     };
     kill(){
         super.kill();
@@ -1072,22 +1609,23 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
 };
 
 class DefaultBullet{
-    constructor(scene){
+    constructor(scene, fireRate = 0, bulletDamage = 1, bulletSpeed = 0){
         this.scene = scene;
-        this.name = 'Default';
-        this.nextFire = 0;   
-        this.fireRate = 200;
-        this.bulletSpeed = 200;
-        this.bulletTexture = 'circle-black'
+        this.name = 'default';
+        this.nextFire = 0;
+        this.fireRate = -fireRate + 200;
+        this.bulletDamage = bulletDamage;
+        this.bulletSpeed = bulletSpeed + 200;
+        this.bulletTexture = 'circle-black';
     };
-    fireBullet({ sneak = false, texture, player, ammo, angle, target, damage, speed }){  
+    fireBullet({ sneak = false, texture, player, ammo, angle, target }){  
         if(this.scene.time.now < this.nextFire) { return; };
         ammo.getBullet().fire({
             x: player.x,
             y: player.y,
             angle: angle,
-            damage: damage + 1,
-            speed: this.bulletSpeed + speed,
+            damage: this.bulletDamage,
+            speed: this.bulletSpeed,
             target: target,
             texture: (texture) ? texture : this.bulletTexture,
             alpha: 0.5
@@ -1098,8 +1636,8 @@ class DefaultBullet{
                 ammo.getBullet().fire({
                     x: player.x, y: player.y,
                     angle: angle + i,
-                    damage: (damage + 1) / 2,
-                    speed: this.bulletSpeed + speed,
+                    damage: this.bulletDamage / 2,
+                    speed: this.bulletSpeed,
                     target: target,
                     texture: (texture) ? texture : this.bulletTexture,
                     alpha: 0.5

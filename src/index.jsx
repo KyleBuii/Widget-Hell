@@ -7845,6 +7845,7 @@ class Widgets extends Component{
         this.updateGlobalValue = this.updateGlobalValue.bind(this);
         this.talk = this.talk.bind(this);
         this.renderHotbar = this.renderHotbar.bind(this);
+        this.showSetting = this.showSetting.bind(this);
     };
     randomColor(forcedColorR, forcedColorG, forcedColorB){
         const r = document.documentElement;
@@ -8031,7 +8032,7 @@ class Widgets extends Component{
                             break;
                         default: break;
                     };
-                    if(hide){
+                    if(hide && (what !== "settings")){
                         for(let i of elementSelects){
                             i.style.display = "none";
                         };
@@ -8052,7 +8053,7 @@ class Widgets extends Component{
                     };
                 };
             });
-        }else if(hide){
+        }else if(hide && (what !== "settings")){
             /// Hide react-selects (prevents flashing)
             for(let i of elementSelects){
                 i.style.display = "none";

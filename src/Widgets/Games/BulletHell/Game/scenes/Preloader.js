@@ -22,17 +22,11 @@ export class Preloader extends Scene{
         /// Player
         this.load.image('player-default', 'player/player-default.webp');
         /// Enemy
-        this.load.image('yupina', 'enemy/yupina.webp');
-        /// Boss
-        this.load.image('boss--3-', 'boss/boss--3-.webp');
-        this.load.image('boss-030', 'boss/boss-030.webp');
-        this.load.image('boss-pleased', 'boss/boss-pleased.webp');
-        this.load.image('boss-smug', 'boss/boss-smug.webp');
-        this.load.image('boss-X3', 'boss/boss-X3.webp');
+        this.load.atlas('enemy-atlas', 'enemy/enemy.webp', 'enemy/enemy.json');
         /// Addition
         this.load.image('bomb', 'addition/bomb.webp');
-        /// Abillities
-        this.load.image('abilities-grass-block', 'abilities/ability-grass-block.webp');
+        /// Abilities
+        this.load.atlas('abilities-atlas', 'abilities/abilities.webp', 'abilities/abilities.json');
         /// Bullet
         this.load.atlas('bullet-atlas', 'bullet/bullet.webp', 'bullet/bullet.json');
         this.load.setPath('assets/');

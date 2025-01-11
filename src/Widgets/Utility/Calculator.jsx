@@ -5,9 +5,8 @@ import { IconContext } from 'react-icons';
 import { BiExpand } from 'react-icons/bi';
 import { BsPlusSlashMinus } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
-import { Fa0, FaExpand, FaRegPaste, FaRegTrashCan } from 'react-icons/fa6';
+import { FaRegPaste, FaRegTrashCan } from 'react-icons/fa6';
 import { FiDelete } from 'react-icons/fi';
-import { IoClose } from 'react-icons/io5';
 
 
 /// Variables
@@ -45,19 +44,19 @@ class WidgetCalculator extends Component{
             case "=":
                 if(this.state.input !== ""
                     && !/\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b/.test(this.state.input)){
-                    let ans;
+                    let calculate;
                     const reCheckOperationExist = new RegExp(`(\\d+)([${this.props.operation}])`);
                     if(this.state.lastComputation !== ""
-                        && !reCheckOperationExist.test(this.state.input)){
+                        && !reCheckOperationExist.test(this.state.input.toString().replace(/\s/g, ""))){
                         try{
-                            ans = round(evaluate(this.state.input + this.state.lastComputation), 3);
+                            calculate = round(evaluate(this.state.input + this.state.lastComputation), 3);
                         }catch(err){
                             this.setState({
                                 question: this.state.input + this.state.lastComputation,
                                 input: "UNDEF"
                             });
                         };
-                        if(ans === undefined){
+                        if(calculate === undefined){
                             this.setState({
                                 question: this.state.input + this.state.lastComputation,
                                 input: "UNDEF"
@@ -65,19 +64,19 @@ class WidgetCalculator extends Component{
                         }else{
                             this.setState({
                                 question: this.state.input + this.state.lastComputation,
-                                input: ans
+                                input: calculate
                             });
                         };    
                     }else{
                         try{
-                            ans = round(evaluate(this.state.input), 3);
+                            calculate = round(evaluate(this.state.input), 3);
                         }catch(err){
                             this.setState({
                                 question: this.state.input,
                                 input: "UNDEF"
                             });
                         };
-                        if(ans === undefined){
+                        if(calculate === undefined){
                             this.setState({
                                 question: this.state.input,
                                 input: "UNDEF"
@@ -86,9 +85,10 @@ class WidgetCalculator extends Component{
                             const reLastComputation = new RegExp(`(?!^-)(?:[${this.props.operation}]-?)(?=\\d*\\.?\\d+$)(?:\\d*\\.?\\d+)`);
                             this.setState({
                                 question: this.state.input,
-                                input: ans,
+                                input: calculate,
                                 lastComputation: this.state.input
-                                    .match(reLastComputation)
+                                    .replace(/\s/g, "")
+                                    .match(reLastComputation)[0]
                             });
                         };
                     };

@@ -1,0 +1,199 @@
+{
+    "frames": [
+        {
+            "filename": "rest-in-peace-0",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-1",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 140,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-2",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 280,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-3",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 420,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-4",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 560,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-5",
+            "frame": {
+                "w": 140,
+                "h": 95,
+                "x": 639,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-hit",
+            "frame": {
+                "w": 121,
+                "h": 68,
+                "x": 700,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "rest-in-peace-hand",
+            "frame": {
+                "w": 15,
+                "h": 37,
+                "x": 700,
+                "y": 68
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "oceanic-terror-wave",
+            "frame": {
+                "w": 129,
+                "h": 90,
+                "x": 0,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "oceanic-terror-fish",
+            "frame": {
+                "w": 28,
+                "h": 16,
+                "x": 0,
+                "y": 218
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "oceanic-terror-shark",
+            "frame": {
+                "w": 62,
+                "h": 36,
+                "x": 28,
+                "y": 218
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "oceanic-terror-tentacle",
+            "frame": {
+                "w": 12,
+                "h": 40,
+                "x": 129,
+                "y": 176
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "oceanic-terror-hit",
+            "frame": {
+                "w": 42,
+                "h": 48,
+                "x": 129,
+                "y": 128
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "grass-block",
+            "frame": {
+                "w": 48,
+                "h": 43,
+                "x": 0,
+                "y": 256
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "code-of-hammurabi",
+            "frame": {
+                "w": 34,
+                "h": 64,
+                "x": 0,
+                "y": 299
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    ]
+}

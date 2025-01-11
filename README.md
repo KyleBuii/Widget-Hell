@@ -26,12 +26,14 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | | W/Up Arrow Key | Rotate clockwise |
 | | S/Down Arrow Key | Soft drop |
 | | Spacebar | Hard drop |
-| | F | Reset |
+| | F | Reset/Start game |
+| | Shift | Hold piece |
 | Color Memory | | |
 | Rock Paper Scissor | | |
 | Bullet Hell | WASD/Arrow Keys/Mouse | Move |
 | | Shift | Slow move |
 | | Spacebar | Ability |
+| | Ctrl | Switch ability |
 
 ## **Gold and EXP guide**
 | Game | Rate |
@@ -72,209 +74,231 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | Color Memory | Every 10 correct guesses |
 | Rock Paper Scissor | Every 2 correct guesses |
 
-## **Stats guide [WIP]**
+## **Stats guide**
+| Heart | Hits |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart1.webp) | 1 | ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart6.webp) | 25 | ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart11.webp) | 50 |
+| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart2.webp) | 5 | ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart7.webp) | 30 | ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart12.webp) | 55 |
+| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart3.webp) | 10 | ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart8.webp) | 35 | ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart13.webp) | 60 |
+| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart4.webp) | 15 | ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart9.webp) | 40 |
+| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart5.webp) | 20| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart10.webp) | 45 |
+
 <details>
-    <summary>Health</summary>
+    <summary>Breakout</summary>
 
-Health rounds down.
-| Heart | Hits |
+| Stat |  |
 | --- | --- |
-| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart1.webp) | 1 |
-| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart2.webp) | 5 |
-| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart3.webp) | 10 |
-| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart4.webp) | 15 |
-| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart5.webp) | 20|
-| ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart6.webp) | 25 |
-| ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart7.webp) | 30 |
-| ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart8.webp) | 35 |
-| ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart9.webp) | 40 |
-| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart10.webp) | 45 |
-| ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart11.webp) | 50 |
-| ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart12.webp) | 55 |
-| ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart13.webp) | 60 |
-
-| Game |  |
-| --- | --- |
-| Minesweeper | Allows tanking a mine for every 10 |
-| Snake | Allows tanking the wall for every 10 |
-| Simon Game | Allows surviving an incorrect guess for every 10 |
-| Typing Test | N/A |
-| Breakout | Allows the ball to bounce off the bottom for every 10 |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | Allows a wrong guess for every 10 |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Allows the ball to bounce off the bottom for every 10 |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Mana</summary>
+    <summary>Bullet Hell</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Gives extra life for every 10 |
+| Mana | Increases ability hit points for every 10 |
+| Attack | Increases bullet damage relative to value |
+| Defense |  |
+| Strength | Increases bullet speed |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence | Reduces ability cooldown by <code>0.1 * (1.5)<sup>x</sup></code> for every 10 |
+| Dexterity | Increases attack rate |
+| Luck |  |
 </details>
 <details>
-    <summary>Attack</summary>
+    <summary>Chess</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Defense</summary>
+    <summary>Color Memory</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Strength</summary>
+    <summary>Minesweeper</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Allows tanking a mine for every 10 |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Agility</summary>
+    <summary>Rock Paper Scissor</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Vitality</summary>
+    <summary>Simon Game</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Allows surviving an incorrect guess for every 10 |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Resilience</summary>
+    <summary>Snake</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Allows tanking the wall for every 10 |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Intelligence</summary>
+    <summary>Tetris</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Dexterity</summary>
+    <summary>Trivia</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Trivia | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health | Allows a wrong guess for every 10 |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
 </details>
 <details>
-    <summary>Luck</summary>
+    <summary>2048</summary>
 
-| Game | Requirement |
+| Stat |  |
 | --- | --- |
-| Minesweeper | N/A |
-| Snake | N/A |
-| Simon Game | N/A |
-| Typing Test | N/A |
-| Breakout | N/A |
-| Chess | N/A |
-| 2048 | N/A |
-| Tetris | N/A |
-| Color Memory | N/A |
-| Rock Paper Scissor | N/A |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
+</details>
+<details>
+    <summary>Typing Test</summary>
+
+| Stat |  |
+| --- | --- |
+| Health |  |
+| Mana |  |
+| Attack |  |
+| Defense |  |
+| Strength |  |
+| Agility |  |
+| Vitality |  |
+| Resilience |  |
+| Intelligence |  |
+| Dexterity |  |
+| Luck |  |
+</details>
+
+## **Items guide**
+<details>
+    <summary>Bullet Hell</summary>
+
+| Item | Type | Information |
+| --- | --- | --- |
+| Code of Hammurabi | Active | Creates a stone that reflects bullets |
+| Grass Block | Active | Creates a grass block that blocks bullets |
+| Rest in Peace | Active | Slashes multiple times, sending tremors through the ground and awakening skeleton hands that rise from the earth |
+| Door Knocker | Passive | Debuffs the enemy with decreased morale |
+
 </details>
 
 ## **Plans**
