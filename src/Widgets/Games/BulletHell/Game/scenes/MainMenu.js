@@ -12,6 +12,16 @@ export class MainMenu extends Scene{
         this.logo = this.add.image(300, 200, 'title')
             .setDepth(100)
             .setScale(0.6);
+        this.add.text(300, 350, 'Inspired by Touhou', {
+            fontFamily: 'Arial Black', fontSize: 12, color: '#01B5F8',
+            stroke: '#000000', strokeThickness: 4,
+            align: 'center'
+        }).setDepth(100).setOrigin(0.5);
+        this.add.text(300, 370, 'Credit: ZUN', {
+            fontFamily: 'Arial Black', fontSize: 12, color: '#01B5F8',
+            stroke: '#000000', strokeThickness: 4,
+            align: 'center'
+        }).setDepth(100).setOrigin(0.5);
         this.add.text(300, 550, 'Click to start', {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,

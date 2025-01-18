@@ -22,42 +22,8 @@ const enemies = {
         health: 10,
         defense: 0,
         speed: 1.5,
-    },
-    bread: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-        healthXOffset: 6
-    },
-    cabbage: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-    },
-    cornbread: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-    },
-    onion: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-        healthXOffset: 5
-    },
-    potatoe: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-    },
-    raspberry: {
-        health: 10,
-        defense: 0,
-        speed: 1.5,
-        healthXOffset: 5
     }
 };
-const boss = ["X3", "O3O", "-3-", "smug", "pleased"];
 const patterns = [
     "touhouFangameRecollectionOfScriptersPast",
     "generation1_1"
@@ -293,9 +259,9 @@ export class Game extends Scene{
         this.enemies.add(enemy);
     };
     spawnBoss(){
-        let randomBoss = boss[Math.floor(Math.random() * boss.length)];
+        let randomBoss = Math.floor(Math.random() * 15 + 1);
         this.boss = new Boss(
-            1, 200, 1, this, randomBoss,
+            1, 200, 1, this, `boss-${randomBoss}`,
             300, 0, 1000, 0, 100
         );
         if(this.debuffs.length !== 0){

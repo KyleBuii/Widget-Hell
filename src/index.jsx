@@ -44,7 +44,7 @@ import WidgetTimeConversion from './Widgets/Utility/TimeConversion.jsx';
 import WidgetTranslator from './Widgets/Utility/Translator.jsx';
 import WidgetWeather from './Widgets/Utility/Weather.jsx';
 import { Fa0 } from 'react-icons/fa6';
-import { FaExpand } from 'react-icons/fa';
+import { FaExclamationTriangle, FaExpand } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import { IoIosArrowUp } from 'react-icons/io';
 import WidgetBulletHell from './Widgets/Games/BulletHell/BulletHell.jsx';
@@ -9016,6 +9016,15 @@ class Widgets extends Component{
         return(
             <div id="widget-container"
                 onMouseMove={(event) => this.handleMouseMove(event)}>
+                <section id="disclaimer"
+                    onClick={() => { document.getElementById("disclaimer").style.display = "none"; }}>
+                    <span>
+                        <FaExclamationTriangle/>
+                        Disclaimer
+                        <FaExclamationTriangle/>
+                    </span>
+                    <span>All item names, logos, characters, brands, trademarks and registered trademarks are property of their respective owners and unrelated to Widget Hell.</span>
+                </section>
                 {(this.state.values.cursorTrail)
                     && <Cursor color={this.state.values.cursorTrailColor}
                         flat={this.state.values.cursorTrailFlat}

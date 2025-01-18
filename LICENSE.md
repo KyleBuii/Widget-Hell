@@ -16,7 +16,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - **Bullet Hell**
     - **Enemies**
         - [Sheep](https://x.com/Yupina_Ch) - Yupina
-        - [Chompettes](https://cooking-companions.fandom.com/wiki/Category:Chompettes) - Cooking Companions
     - **Patterns**
         - [Recollection Of Scripter's Past Bullets](https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past) by AJS
 - **Currency Converter**
