@@ -80,6 +80,8 @@ class WidgetAiImageGenerator extends Component{
                 elementImagesContainer.innerHTML = "";
                 elementImage.src = imageURL;
                 elementImage.alt = `generated art`;
+                elementImage.loading = "lazy";
+                elementImage.decoding = "async";
                 elementImage.draggable = false;
                 elementImage.style.height = `${this.state.size}px`;
                 elementImage.style.width = `${this.state.size}px"`;

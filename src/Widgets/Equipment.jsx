@@ -550,6 +550,7 @@ class WidgetEquipment extends Component{
                             <div className="flex-center row gap medium-gap space-nicely space-all">
                                 <img src={this.props.items[this.state.item.rarity][this.state.item.name].image}
                                     alt="viewed inventory item"
+                                    loading="lazy"
                                     decoding="async"/>
                                 <SimpleBar style={{
                                     maxHeight: 160,

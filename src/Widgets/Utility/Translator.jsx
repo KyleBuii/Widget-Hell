@@ -1064,6 +1064,7 @@ class WidgetTranslator extends Component{
                                     className="no-highlight"
                                     alt="translator image"
                                     draggable="false"
+                                    loading="lazy"
                                     decoding="async"/>
                                 {/* Image Additions: Cunny Code */}
                                 {((this.state.to.value === "cunnyCode") || this.state.from.value === "cunnyCode")

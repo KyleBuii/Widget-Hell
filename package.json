@@ -4,6 +4,7 @@
   "homepage": ".",
   "private": true,
   "dependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@huggingface/inference": "^2.8.0",
     "@reduxjs/toolkit": "^2.0.1",
     "@supabase/supabase-js": "^2.47.10",
@@ -29,6 +30,7 @@
     "mathjs": "^11.9.1",
     "phaser": "^3.85.2",
     "pokeapi-js-wrapper": "^1.2.4",
+    "postcss": "^8.5.1",
     "rc-slider": "^10.2.1",
     "react": "^18.2.0",
     "react-calendar": "^5.0.0",
@@ -59,6 +61,7 @@
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",
+    "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css",
     "dev-nolog": "vite --config vite/config.dev.mjs",
     "build-nolog": "vite build --config vite/config.prod.mjs"
   },

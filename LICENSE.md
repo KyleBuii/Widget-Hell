@@ -14,6 +14,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Default Background](https://pixabay.com/photos/poppies-flowers-field-red-poppies-6982527/) by Camera-man
     - [Page](https://pixabay.com/vectors/file-generic-icon-icons-matt-1294459/) by OpenClipart-Vectors
 - **Bullet Hell**
+    - [Bullet System](https://codepen.io/cedarcantab/pen/ZEXpMLo) - cedarcantab
     - **Enemies**
         - [Sheep](https://x.com/Yupina_Ch) - Yupina
     - **Patterns**

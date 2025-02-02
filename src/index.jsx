@@ -174,11 +174,17 @@ function createPopup(text, type = "normal", randomPosition = false){
                     popup = document.createElement("img");
                     popup.className = `popup-image flex-center ${text.rarity}`;
                     popup.src = `/resources/loot/${lootDisplay.value}/${lootDisplay.value}-${text.rarity}.webp`;
+                    popup.alt = `${lootDisplay.value} ${text.rarity}`;
+                    popup.loading = "lazy";
+                    popup.encoding = "aync";
                     break;
                 default:
                     let itemImage = document.createElement("img");
                     popup.className += ` ${text.rarity}`;
                     itemImage.src = items[text.rarity][text.name].image;
+                    itemImage.alt = text.name;
+                    itemImage.loading = "lazy";
+                    itemImage.encoding = "async";
                     elementText.innerText = "Item acquired!";
                     elementText.appendChild(itemImage);        
                     break;
@@ -348,7 +354,9 @@ function renderHearts(health){
             elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.webp`}
                 alt={`heart${calculateHearts[i]} ${i + 1}`}
                 key={`heart${calculateHearts[i]} ${i + 1}`}
-                draggable={false}/>);
+                draggable={false}
+                loading="lazy"
+                decoding="async"/>);
         };
     };
     return elementHearts;
@@ -1013,7 +1021,7 @@ const aronaMessages = {
         /// First person to crack the cunny code before the encoder/decoder was released
         /// https://x.com/Roxas13thXIII/status/1839909996383088696
         first_decoder: [
-            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/resources/translator/cunny-code/kisaki-ball.webp" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki">!', 31],
+            ['The first person to decode Cunny Code before this tool was released was Haise-sensei on September 28th, 2024.<br>I heard he\'s a big fan of <img src="/resources/translator/cunny-code/kisaki-ball.webp" style="height:40px; vertical-align:middle;" title="Kisaki" alt="Kisaki" loading="lazy" decoding="async">!', 31],
         ],
         /// Emoji
         sob: [
@@ -1529,7 +1537,7 @@ const items = {
             slot: "main",
             type: "ability",
             information: "Slashes in a medium radius multiple times",
-            description: `<img src="/resources/items/additions/mumei-nightmare.webp" alt="mumei nightmare"/>,`,
+            description: `<img src="/resources/items/additions/mumei-nightmare.webp" alt="mumei nightmare" loading="lazy" decoding="async"/>,`,
             image: "/resources/items/windsofcivilization.webp",
             source: "ENigmatic Recollection"
         },
@@ -8298,6 +8306,8 @@ class Widgets extends Component{
                         elementImage.src = `/resources/decoration/${value.value}.webp`;
                         elementImage.alt = value.value;
                         elementImage.className = `decoration ${value.value}`;
+                        elementImage.loading = "lazy";
+                        elementImage.encoding = "async";
                         element.appendChild(elementImage);        
                     };
                 };
@@ -8325,6 +8335,8 @@ class Widgets extends Component{
                         elementImage.src = `/resources/decoration/${valueDecoration}.webp`;
                         elementImage.alt = valueDecoration;
                         elementImage.className = `decoration ${valueDecoration}`;
+                        elementImage.loading = "lazy";
+                        elementImage.encoding = "async";
                         element.appendChild(elementImage);        
                     };
                 };
@@ -8356,6 +8368,9 @@ class Widgets extends Component{
         let randomNumber = Math.random() * 1200000 + 300000;
         let elementShadow = document.createElement("img");
         elementShadow.src = "/resources/singles/guy.webp";
+        elementShadow.alt = "shadow guy";
+        elementShadow.loading = "lazy";
+        elementShadow.encoding = "async";
         let elementContainer = document.getElementById("widget-container");
         let elementContainerSize = elementContainer.getBoundingClientRect();
         elementShadow.onload = () => {

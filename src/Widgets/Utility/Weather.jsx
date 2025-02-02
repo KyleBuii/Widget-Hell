@@ -232,6 +232,7 @@ class WidgetWeather extends Component{
                                 src={this.state.weatherIcon}
                                 alt="weather icon"
                                 style={{ height: this.props.defaultProps.largeIcon, width: this.props.defaultProps.largeIcon }}
+                                loading="lazy"
                                 decoding="async"/>
                             {/* Temperature */}
                             <div id="weather-temperature"

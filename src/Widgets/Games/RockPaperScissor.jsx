@@ -161,6 +161,7 @@ class WidgetRockPaperScissor extends Component{
                                     src={"/resources/rockpaperscissor/rock.webp"}
                                     alt="player rock"
                                     draggable="false"
+                                    loading="lazy"
                                     decoding="async"/>
                                 <span>{this.state.choicePlayer.replace(/^./, (char) => char.toUpperCase())}</span>
                             </div>
@@ -183,6 +184,7 @@ class WidgetRockPaperScissor extends Component{
                                     src={"/resources/rockpaperscissor/rock.webp"}
                                     alt="computer rock"
                                     draggable="false"
+                                    loading="lazy"
                                     decoding="async"/>
                                 <span>{this.state.choiceComputer.replace(/^./, (char) => char.toUpperCase())}</span>
                             </div>
@@ -205,6 +207,7 @@ class WidgetRockPaperScissor extends Component{
                                             key={choice}
                                             alt={choice}
                                             draggable="false"
+                                            loading="lazy"
                                             decoding="async"/>
                                     </button>
                                 })}

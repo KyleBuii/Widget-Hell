@@ -8,6 +8,7 @@
 6: Drag icon
 7: Popup
 8: Cursor
+9: Disclaimer
 */
 
 :root{
@@ -4384,6 +4385,7 @@ body{
 }
 
 #disclaimer{
+    z-index: 9;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -4405,6 +4407,7 @@ body{
     color: var(--randColor);
     transform-origin: top left;
     transition: scale 0.5s;
+    will-change: scale;
     span:first-of-type{
         display: flex;
         align-items: center;

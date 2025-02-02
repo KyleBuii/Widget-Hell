@@ -162,6 +162,8 @@ class WidgetPokemonSearch extends Component{
             /// Pokemon image
             let imagePokemon = document.createElement("img");
             imagePokemon.alt = "Searched pokemon";
+            imagePokemon.loading = "lazy";
+            imagePokemon.decoding = "async";
             if(this.state.flipped){
                 imagePokemon.src = (this.state.shiny) ? data.sprites.back_shiny : data.sprites.back_default;
             }else{
@@ -196,6 +198,9 @@ class WidgetPokemonSearch extends Component{
                 let tempSpan = document.createElement("span");
                 let tempImg = document.createElement("img");
                 tempSpan.className = `circle pokemon ${data.types[i].type.name}`;
+                tempImg.alt = "type";
+                tempImg.loading = "lazy";
+                tempImg.decoding = "async";
                 tempImg.src = `/resources/pokemon/type/${data.types[i].type.name}.svg`;
                 tempSpan.appendChild(tempImg);
                 divPokemonTypes.prepend(tempSpan);

@@ -20,6 +20,8 @@ class WidgetSticker extends Component{
                 elementImage.src = reader.result;
                 elementImage.alt = `uploaded image ${reader.fileName}`;
                 elementImage.draggable = false;
+                elementImage.loading = "lazy";
+                elementImage.decoding = "async";
                 elementImage.style.position = "absolute";
                 elementImage.style.top = "0";
                 elementImage.style.left = "0";

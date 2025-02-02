@@ -267,6 +267,8 @@ class WidgetChess extends Component{
             elementImage.src = `/resources/chess/b${move.captured.toUpperCase()}.webp`;
             elementImage.alt = `captured ${move.captured} black piece`;
             elementImage.draggable = false;
+            elementImage.loading = "lazy";
+            elementImage.decoding = "async";
             elementCapturedPiecesBlack.appendChild(elementImage);
         };
     };

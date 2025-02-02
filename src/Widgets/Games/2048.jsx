@@ -205,12 +205,14 @@ class Widget2048 extends Component{
                                     <img src="/resources/2048/2048.gif"
                                         draggable="false"
                                         alt="2048 gif"
+                                        loading="lazy"
                                         decoding="async"/>
                                 </div>
                                 : <div className="flex-center">
                                     <img src="/resources/2048/game-over.gif"
                                         draggable="false"
                                         alt="game over gif"
+                                        loading="lazy"
                                         decoding="async"/>
                                 </div>}
                         </div>

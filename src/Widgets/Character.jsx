@@ -16,6 +16,9 @@ class WidgetCharacter extends Component{
             .replaceAll(lowerCaseRegex, "");
         let equipmentElement;
         let equipmentImage = document.createElement("img");
+        equipmentImage.alt = modifiedName;
+        equipmentImage.loading = "lazy";
+        equipmentImage.decoding = "async";
         if(event.detail.side){
             equipmentElement = document.getElementById(`character-${event.detail.slot}-${event.detail.side}`);
             equipmentImage.src = `/resources/character/character-${modifiedName}-${event.detail.side}.webp`;
@@ -110,6 +113,7 @@ class WidgetCharacter extends Component{
                                 src={"/resources/character/character.webp"}
                                 alt="character"
                                 draggable="false"
+                                loading="lazy"
                                 decoding="async"/>
                             <div id="character-headband"></div>
                             <div id="character-eyewear"></div>

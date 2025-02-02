@@ -1,5 +1,5 @@
-import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
+import { EventBus } from '../EventBus';
 
 
 //#region z-index guide
@@ -17,6 +17,8 @@ import { Scene } from 'phaser';
 //#endregion
 
 
+const HEIGHT = 850;
+const WIDTH = 600;
 const enemies = {
     yupina: {
         health: 10,
@@ -84,7 +86,7 @@ export class Game extends Scene{
             .setDisplaySize(140, 40)
             .setInteractive()
             .on('pointerdown', () => {
-                this.boss.bulletPattern.length = 0;
+                this.boss.danmaku.resetDanmaku(this);
                 this.bossBullets.getMatching("active", true).forEach((bullet) => {
                     bullet.remove();
                 });
@@ -192,7 +194,7 @@ export class Game extends Scene{
         this.playerAbilitiesAdditions = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
             .setDepth(9);
         this.playerAbilitiesTimeEvents = [];
-        this.player = new Player(this, 'player-default', 300, 750)
+        this.player = new Player(this, 'player-default', 300, 750, this.playerBullets, this.playerAbilitiesBullets)
             .setOffset(37, 60);
     };
     createEnemy(){
@@ -261,7 +263,7 @@ export class Game extends Scene{
     spawnBoss(){
         let randomBoss = Math.floor(Math.random() * 15 + 1);
         this.boss = new Boss(
-            1, 200, 1, this, `boss-${randomBoss}`,
+            1, 200, 1, this.bossBullets, this, `boss-${randomBoss}`,
             300, 0, 1000, 0, 100
         );
         if(this.debuffs.length !== 0){
@@ -289,6 +291,9 @@ export class Game extends Scene{
         });
         this.physics.add.collider(this.boss, this.anchorBoss, (boss, anchor) => {
             boss.body.setVelocityY(0);
+            boss.danmaku.setProperties(this, boss.danmakuPatterns[0]);
+            boss.danmaku.startUpDanmaku(this);
+            boss.danmaku.follow(boss);
             boss.ready = true;
         });
         this.physics.add.overlap(this.bossBombs, this.player, (player, bomb) => {
@@ -317,8 +322,42 @@ export class Game extends Scene{
         this.player.int = data.stats.intelligence;
         this.player.dex = data.stats.dexterity;
         this.player.lck = data.stats.luck;
+        this.player.weapons.push(
+            { name: "DEFAULT",
+                danmakuConfig: {
+                    type: "PARALLEL", countB: 1, 
+                    angle: -90, 
+                },
+                cannonConfig: {
+                    numberOfShots: 1,
+                },
+                bulletConfig: {
+                    class: "NORMAL",
+                    damage: this.player.atk,
+                    speed: 300 + (this.player.str * 10),
+                    frame: "circle-black",
+                    alpha: 0.5
+                }
+            },
+            { name: "SNEAK",
+                danmakuConfig: {
+                    type: "PARALLEL", countB: 1, 
+                    angle: -90, 
+                },
+                cannonConfig: {   
+                    numberOfShots: 1,
+                },
+                bulletConfig: {
+                    class: "NORMAL",
+                    damage: this.player.atk / 3,
+                    speed: 300 + (this.player.str * 10),
+                    frame: "circle-black",
+                    alpha: 0.5
+                }
+            }
+        );
+        this.player.danmaku.setProperties(this.scene, this.player.weapons[0]);
         this.player.abilitiesRaw = [...data.abilities];
-        this.player.weapons.push(new DefaultBullet(this, this.player.dex, this.player.atk, this.player.str));
         this.player.setAbilities();
         this.textCurrentAbility.setText(
             (this.player.ability !== null)
@@ -344,18 +383,28 @@ export class Game extends Scene{
                 };
             };
             if(ability.reflect){
-                this.playerAbilitiesBullets.getBullet().fire({
-                    x: ability.x, y: ability.y,
-                    angle: -90,
-                    damage: bullet.damage,
-                    speed: 200 + this.player.str,
-                    tracking: bullet.tracking,
-                    texture: bullet.frame.name,
-                    scaleSpeed: bullet.scaleSpeed,
-                    target: (bullet.target === null) ? null : this.boss,
-                    maxLife: bullet.maxLife,
-                    alpha: 0.5
-                });
+                this.player.danmakuAbilities.resetDanmaku(this);
+                this.player.danmakuAbilities.setProperties(this,
+                    {
+                        name: "REFLECT",
+                        danmakuConfig: {
+                            type: "PARALLEL", countB: 1, 
+                            angle: -90, 
+                        },
+                        cannonConfig: {   
+                            numberOfShots: 1,
+                        },
+                        bulletConfig: {
+                            class: "NORMAL",
+                            damage: bullet.damage,
+                            speed: 200 + (this.player.str * 10),
+                            frame: bullet.frame.name,
+                            alpha: 0.5
+                        }
+                    }
+                );
+                this.player.danmakuAbilities.follow(ability);
+                this.player.danmakuAbilities.fireDanmaku(this);
             };
             if(!ability.attack){
                 bullet.remove();
@@ -368,7 +417,7 @@ export class Game extends Scene{
                 ? this.player.atk
                 : (bullet.addition)
                     ? this.player.atk / 4
-                    : bullet.damage
+                    : (bullet.damage || 0)
             )){
                 enemy.kill();
                 if(enemy?.key !== "boss"){
@@ -473,7 +522,7 @@ class HealthBar{
 };
 
 class Player extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, texture, x, y){
+    constructor(scene, texture, x, y, bullets, bulletsAbilities){
         super(scene, x, y);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -486,7 +535,6 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.displayHeight = 50;
         this.speed = 300;
         this.weapons = [];
-        this.weaponIndex = 0;
         this.abilities = {};
         this.abilitiesRaw = [];
         this.ability = null;
@@ -494,10 +542,17 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.abilityTimer = 0;
         this.abilityCooldown = 0;
         this.keyInitialized = false;
+        this.sneakInitialized = false;
         this.mobileAbility = false;
+        this.danmaku = new Danmaku(scene, bullets, {});
+        this.danmakuAbilities = new Danmaku(scene, bulletsAbilities, {});
+        this.bulletLastFired = 0;
     };
     preUpdate(time, delta){
         super.preUpdate(time, delta);
+        if(this.x !== this.danmaku.x || this.y !== this.danmaku.y){
+            this.danmaku.follow(this);
+        };
         if(this.x !== this.hp.x || this.y !== this.hp.y){
             this.hp.move(this.x, this.y);
         };
@@ -560,13 +615,22 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         if(velocityY !== this.body.velocity.y){
             this.setVelocityY(velocityY);
         };
-        if(this.active && (this.weapons.length !== 0)){
-            this.weapons[this.weaponIndex].fireBullet({
-                sneak: (mouseMovement) ? false : this.keyShift?.isDown,
-                player: this,
-                ammo: this.scene.playerBullets,
-                angle: -90
-            });
+        if(this.active){
+            if(this.keyShift?.isDown && !this.sneakInitialized){
+                this.sneakInitialized = true;
+                this.danmaku.resetDanmaku(this.scene);
+                this.danmaku.setProperties(this.scene, this.weapons[1]);
+                this.danmaku.startUpDanmaku(this.scene);
+            }else if(!this.keyShift?.isDown && this.sneakInitialized){
+                this.sneakInitialized = false;
+                this.danmaku.resetDanmaku(this.scene);
+                this.danmaku.setProperties(this.scene, this.weapons[0]);
+                this.danmaku.startUpDanmaku(this.scene);
+            };
+            if(time > this.bulletLastFired + (300 - (this.dex * 10))){
+                this.bulletLastFired = time;
+                this.danmaku.fireDanmaku(this.scene);
+            };
         };
         if(Object.keys(this.abilities).length !== 0){
             if(this.abilityTimer < this.abilityCooldown){
@@ -924,11 +988,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
 };
 
 class Boss extends Enemy{
-    constructor(atk, atkSpd, atkRate, ...arg){
+    constructor(atk, atkSpd, atkRate, bullets, ...arg){
         super(...arg);
         this.setDepth(4);
         this.setSize(200, 200);
         this.setDisplaySize(256, 256);
+        this.body.setVelocityY(150);
         this.key = "boss";
         this.phaseTimer = 0;
         this.phaseTimerOffset = -1,
@@ -954,48 +1019,77 @@ class Boss extends Enemy{
             },
             tempTimer: 0
         };
+        this.danmaku = new Danmaku(this.scene, bullets, {});
+        this.danmakuPatterns = [];
+        this.createDanmakuPatterns();
     };
     preUpdate(){
         if(this.x !== this.hp.x || this.y !== this.hp.y){
             this.hp.move(this.x, this.y);
         };
-        if(150 !== this.body.velocity.y){
-            this.body.setVelocityY(150);
-        };
         if(this.alive && this.ready){
-            if(!this.pattern){
-                this.pattern = patterns[Math.floor(Math.random() * patterns.length)];
-            };
-            this[this.pattern]();
+            // if(!this.pattern){
+            //     this.pattern = patterns[Math.floor(Math.random() * patterns.length)];
+            // };
+            // this[this.pattern]();
             if(/\b0\b|\b5000\b|\b10000\b|\b15000\b|\b20000\b|\b25000\b|\b30000\b|\b35000\b|\b40000\b|\b45000\b/.test(this.phaseTimer.toString())
                 && this.scene.player.active){
                 this.spawnBomb(3);
             };
             this.phaseTimer++;
-            if(this.phaseTimerOffset !== -1){
-                this.phaseTimer = this.phaseTimerOffset;
-                this.phaseTimerOffset = -1;
+            if(this.phaseTimer === 12000){
+                this.phaseTimer = 0;
+                this.nextDanmakuPattern();
             };
-            for(let pattern of this.bulletPattern){
-                if(pattern.delay && (pattern.delayTimer !== 0) && (pattern.attackDurationTimer === pattern.atkDuration)){
-                    pattern.delayTimer++;
-                    if(pattern.delayTimer > pattern.delay){
-                        pattern.delayTimer = 0;
-                        pattern.attackDurationTimer = 0;
-                    };
-                }else{
-                    pattern.attackTimer++;
-                    if(pattern.attackTimer > pattern.atkRate + this.atkRateDebuff){
-                        pattern.attackTimer = 0;
-                        pattern.attackDurationTimer++;
-                        if(pattern.attackDurationTimer === pattern.atkDuration){
-                            pattern.delayTimer++;
-                        };
-                        this[pattern.attack]();
-                    };
-                };
-            };
+            // if(this.phaseTimerOffset !== -1){
+            //     this.phaseTimer = this.phaseTimerOffset;
+            //     this.phaseTimerOffset = -1;
+            // };
+            // for(let pattern of this.bulletPattern){
+            //     if(pattern.delay && (pattern.delayTimer !== 0) && (pattern.attackDurationTimer === pattern.atkDuration)){
+            //         pattern.delayTimer++;
+            //         if(pattern.delayTimer > pattern.delay){
+            //             pattern.delayTimer = 0;
+            //             pattern.attackDurationTimer = 0;
+            //         };
+            //     }else{
+            //         pattern.attackTimer++;
+            //         if(pattern.attackTimer > pattern.atkRate + this.atkRateDebuff){
+            //             pattern.attackTimer = 0;
+            //             pattern.attackDurationTimer++;
+            //             if(pattern.attackDurationTimer === pattern.atkDuration){
+            //                 pattern.delayTimer++;
+            //             };
+            //             this[pattern.attack]();
+            //         };
+            //     };
+            // };
         };
+    };
+    createDanmakuPatterns(){
+        this.danmakuPatterns.push({
+            name: "RANDOM ANGLE RANDOM SPEED",
+            danmakuConfig: {
+                countA: 1,
+            },
+            cannonConfig: {
+                speed: 100,
+                fireRate: 10, 
+            },
+            bulletConfig: {
+                class: "NORMAL", 
+                bearing: "r",
+                damage: 1,
+                speed: "r100",
+                texture: "bullet-atlas",
+                frame: "circle-blue",
+            }
+        });
+    };
+    nextDanmakuPattern(){
+        this.danmaku.resetDanmaku(this.scene);
+        this.danmaku.setProperties(this.scene, this.danmakuPatterns[Math.floor(Math.random() * this.danmakuPatterns.length)]);
+        this.danmaku.startUpDanmaku(this.scene);
     };
     generation1_1(){
         if(this.phaseTimer === 0){
@@ -1405,7 +1499,7 @@ class Boss extends Enemy{
             for(let i = 0; i < amount / 2; i++){
                 if(!this.alive) return;
                 let count = (amount % 2 === 0) ? i + 1 : i;
-                let bullet = this.scene.bossBullets.getBullet();
+                let bullet = this.scene.bossBullets.getFirstDead(false);
                 if(bullet){
                     bullet.fire({
                         x: x, y: y,
@@ -1421,7 +1515,7 @@ class Boss extends Enemy{
                         size: size
                     });
                     if(angleChange !== 0){
-                        bullet = this.scene.bossBullets.getBullet();
+                        bullet = this.scene.bossBullets.getFirstDead(false);
                         bullet.fire({
                             x: x, y: y,
                             angle: angle + (-angleChange * count),
@@ -1497,341 +1591,1292 @@ class Boss extends Enemy{
 class Bullets extends Phaser.Physics.Arcade.Group{
     constructor(scene, maxBullets){
         super(scene.physics.world, scene, { enable: false });
-        this.maxBullets = maxBullets;
-        this.index = 0;
         this.bullets = this.createMultiple({
             classType: Bullet,
             key: ('bullet'),
             frameQuantity: maxBullets,
             active: false,
-            visible: false,
-            runChildUpdate: true
+            visible: false
         });
-    };
-    getBullet(){
-        const bullet = this.bullets[this.index];
-        this.index = (this.index + 1) % this.maxBullets; // Move index in a circular manner
-        return bullet;
     };
 };
 
 class Bullet extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene){
-        super(scene, 0, 0, "bullet-atlas");
-        this.scene = scene;
-    };
-    fire({ x, y, angle = 0, damage = 1, speed, gx = 0, gy = 0, tracking = false, texture = 'circle-black', scaleSpeed = 0, target = null, maxLife = 4500, size = 1, alpha = 1 }){
-        this.enableBody(true, x, y, true, true);   
-        this.setFrame(texture);
-        this.setScale(size);
-        this.setAlpha(alpha);
-        if(this.width !== this.height){
-            let minValue = Math.min(this.width, this.height);
-            this.setSize(minValue / 1.6, minValue / 1.6);
+    fire(
+        scene,
+        {
+            parent,
+            x = 0, y = 0,
+            bulletClass = "NORMAL",
+            cannonAngle = 0, /// The angle of the primary cannon is passed onto bullet, for use by certain bullet types, eg STOP&GO
+            bulletFrame = null,
+            bulletBearing = 0, /// Direction in which the bullet is fired, in radians
+            bulletBearingDelta = 0,
+            bulletBearingVelocity = null, /// "angular velocity" of bullet Bearing, received in radians
+            bulletSwingDelta = Math.PI/2,
+            bulletDamage = 0,
+            bulletSpeed = 0,
+            bulletMaxSpeed = -1,
+            bulletAcceleration = 0,
+            bulletAngle = 0, // This is the angle of the bullet image, in radians
+            bulletAngularVelocity = 0, // This is the angular velocity of the bullet image, in degrees
+            bulletCycleLength = 0,
+            bulletBounceX = 0,
+            bulletBounceY = 0,
+            bulletGravityX = 0,
+            bulletGravityY = 0,
+            bulletVRandom = 0,
+            bulletLife = -1, // Lifepan of bullet in ms. if set to -1, infinite
+            bulletLifeAlpha = false,
+            bulletTransform = { class: "NONE" }, 
+            perTurnConstraint = 0,
+            bulletTarget = null,
+            bulletOffScreen = false,
+            bulletOrbitSpeed = 0,
+            bulletSatellite,
+            bulletAlpha
+        }){
+        this.damage = bulletDamage;
+        this.parent = parent;
+        this.enableBody(true, x, y, true, true);
+        this.blendMode = "ADD";
+        /// This is the beginning of the fire function
+        this.bulletClass = bulletClass;
+        this.cannonAngle = cannonAngle; //the angle of the primary cannon is passed onto bullet, for use by certain bullet types, eg STOP&GO
+        this.orbitAngle = Phaser.Math.Angle.Between(this.parent.x, this.parent.y,this.x,this.y);
+        this.orbitSpeed = bulletOrbitSpeed;
+        this.orbitRadius = Phaser.Math.Distance.Between(this.parent.x, this.parent.y,this.x,this.y);
+        /// Set some basic properties of body and game object when first fired
+        this.bulletTexture = "bullet-atlas"; /// Assign to a variable, since used for Transform
+        this.bulletFrame = bulletFrame; /// Assign to a variable, since used for Transform
+        this.bulletMaxSpeed = bulletMaxSpeed;
+        this.bulletBearing = bulletBearing; 
+        this.bulletBearingDelta = bulletBearingDelta;
+        this.referenceBearing = this.bulletBearing; /// Keep record of the original shoot angle - this.bulletBearing is adjusted based on this for curving bullets
+        this.bulletBearingVelocity = bulletBearingVelocity;
+        this.bulletSwingDelta = bulletSwingDelta,
+        this.bulletAngle = bulletAngle;
+        this.bulletAngularVelocity = bulletAngularVelocity;
+        this.bulletCycleLength = bulletCycleLength;
+        this.bulletBounceX = bulletBounceX;
+        this.bulletBounceY = bulletBounceY;
+        this.bulletVRandom = bulletVRandom;
+        this.bulletGravityX = bulletGravityX;
+        this.bulletGravityX = bulletGravityY;
+        this.bulletLife = bulletLife;
+        this.bulletLifeAlpha = bulletLifeAlpha;
+        this.bulletSpeed = bulletSpeed;
+        this.bulletAcceleration = bulletAcceleration;
+        this.perTurnConstraint = perTurnConstraint; 
+        this.bulletTarget = bulletTarget;
+        this.bulletOffScreen = bulletOffScreen; 
+        this.bulletAlpha = bulletAlpha;
+        /// Set up variables relating to bulletTransform option
+        this.bulletTransformCopy = Phaser.Utils.Objects.DeepCopy(bulletTransform);
+        this.bulletTransformClass = bulletTransform.class;
+        this.bulletTransformType = bulletTransform.type; 
+        this.bulletTransformSize = bulletTransform.size;
+        this.bulletStage1Time = bulletTransform.stage1Time;
+        this.bulletStage2Time = bulletTransform.stage2Time;
+        this.newBulletClass = bulletTransform.bulletClass || this.bulletClass;
+        this.newBulletSpeed = bulletTransform.speed || this.bulletSpeed;
+        this.newBulletFlag = bulletTransform.flag || false;
+        this.newBulletAcceleration = bulletTransform.acceleration;
+        if(bulletTransform.bearingLock){
+            this.newBulletBearing = this.cannonAngle;
         }else{
-            this.setSize(this.width / 1.6, this.height / 1.6);
+            this.newBulletBearing = bulletTransform.bearing;
         };
-        this.angle = angle;
-        this.damage = damage;
-        this.maxLife = maxLife;
-        this.tracking = tracking;
-        this.scaleSpeed = scaleSpeed;
-        this.target = target;
-        this.born = 0;
-        if(target){
-            this.scene.physics.moveToObject(this, target, speed);
-        }else{
-            this.scene.physics.velocityFromAngle(angle, speed, this.body.velocity);    
+        this.newBulletBearingVelocity = (bulletTransform.bearingVelocity === undefined)
+            ? this.bulletBearingVelocity
+            : Phaser.Math.DegToRad(bulletTransform.bearingVelocity);
+        this.newBulletAngularVelocity = bulletTransform.angularVelocity || 0;
+        this.newBulletCycleLength = bulletTransform.cycleLength;
+        this.newBulletAngleRange = Phaser.Math.DegToRad(bulletTransform.angleRange) || Math.PI*2;
+        this.newBulletBearingDelta = Phaser.Math.DegToRad(bulletTransform.bearingDelta) || 0;
+        this.newBulletTexture = bulletTransform.texture
+        this.newBulletFrame = bulletTransform.frame
+        this.newBulletCount = bulletTransform.count || 1;
+        this.newBulletSeek = bulletTransform.seek || false;
+        this.newBulletBounceX = bulletTransform.bounceX;
+        this.newBulletBounceY = bulletTransform.bounceY;
+        this.newBulletGravityX = bulletTransform.gravityX;
+        this.newBulletGravityY = bulletTransform.gravityY;
+        this.newBulletVRandom = bulletTransform.vRandom || 0;
+        this.newBulletLife = bulletTransform.lifeSpan;
+        this.newBulletLifeAlpha = bulletTransform.lifeAlpha; 
+        this.spawnSpeed = bulletTransform.spawnSpeed || this.bulletSpeed;
+        this.spawnBearing = bulletTransform.spawnBearing;
+        this.spawnTexture = bulletTransform.spawnTexture || this.bulletTexture;
+        this.spawnCount = bulletTransform.spawnCount || 1;
+        this.spawnFrame = (bulletTransform.spawnFrame === undefined)
+            ? this.bulletFrame
+            : bulletTransform.spawnFrame;
+        this.spawnRepeat = (bulletTransform.repeat === undefined)
+            ? 0
+            : bulletTransform.repeat;
+        this.spawnRepeatCount = 0;
+        this.transformed = false;
+        this.bulletToggle = -1; /// Used for ZIGZAG bullet
+        this.bulletConfig = null;
+        this.bulletTimer = 0;
+        this.lifeTimer = 0;
+        this.stage1Count = 0;
+        this.fragmentAngles = [];
+        this.fragmentSpeeds = [];
+        this.fragmentPositions = [];
+        if(this.bulletTransformClass === "DELAY"){
+            this.newBulletSpeed = this.bulletSpeed;
+            this.bulletSpeed = 0;
+            this.bulletTransformClass = "CHANGE";
         };
-        this.body.gravity.set(gx, gy);
-    };
-    resetBullet(){
-        this.angle = 0;
-        this.damage = 1;
-        this.maxLife = 4500;
-        this.tracking = false;
-        this.scaleSpeed = 0;
-        this.target = null;
-        this.born = 0;
+        this.bulletSatellite = bulletSatellite;        
+        this.setBulletConfig();
+        this.setMotion();
+        if(this.bulletSatellite !== undefined) this.createSatellites(this);
     };
     preUpdate(time, delta){
-        super.preUpdate(time, delta);
-        this.born++;
-        if(this.active && ((this.born > this.maxLife) || this.isOutOfBounds())){
+        if((this.bulletClass === "ORBIT") && !this.parent.body.enable) this.remove();
+        this.bulletTimer += delta;
+        this.lifeTimer += delta;
+        switch(this.bulletLife){
+            case -1: break;
+            default:
+                if(this.bulletLifeAlpha){
+                    const alphaValue = (this.bulletLife - this.lifeTimer) / this.bulletLife;
+                    this.setAlpha((alphaValue >=0) ? alphaValue : 0);
+                };
+                if(this.lifeTimer > this.bulletLife){
+                    this.remove();
+                };
+                break;
+        };
+        /// "BOUNCE!": reverse direction if hit left or right of screen
+        if((this.bulletBounceX > 0) && this.hitEdgeX(this)){
+            if(this.x <= (this.displayWidth / 2)){
+                this.setX(this.displayWidth / 2 + 1);
+            }else if(this.x >= WIDTH - this.displayWidth / 2){
+                this.setX(WIDTH - this.displayWidth / 2 - 1);
+            };
+            this.setVelocityX(-this.body.velocity.x * this.bulletBounceX);
+            this.bounceOffWall();
+        };
+        /// "BOUNCE!": reverse direction if hit bottom or top of screen
+        if((this.bulletBounceY > 0) && this.hitEdgeY(this)){
+            if(this.y <= (this.displayHeight / 2)){
+                this.setY(this.displayHeight / 2 + 1);
+            }else if(this.y >= HEIGHT - this.displayHeight / 2){
+                this.setY(HEIGHT - this.displayHeight / 2 - 1);
+            };
+            this.setVelocityY(-this.body.velocity.y * this.bulletBounceY);
+            this.bounceOffWall();
+        };
+        if((!this.bulletOffScreen) && (this.outOfScreenX() || this.outOfScreenY())){
             this.remove();
         };
-        if(this.tracking){
-            this.rotation = this.body.velocity.angle();
-        };   
-        if(this.scaleSpeed > 0){
-            this.setScale(this.scaleX + this.scaleSpeed, this.scaleY + this.scaleSpeed);
+        /// If there is bearing velocity set, then adjust the bearing angle of the velocity
+        if(this.body.speed !==0 && this.bulletBearingVelocity !== 0){
+            this.bulletBearing = this.referenceBearing + this.bearingChange.getValue();
+            /// If the bullet is not rotating type, set the angle of bullet image in line with the bullet bearing
+            if(this.bulletAngularVelocity === 0){
+                this.setRotation(this.bulletBearing);
+            };
+            this.adjustVelocity(this.bulletBearing, this.body.speed, this.bulletAcceleration);
+        };
+        switch(this.bulletClass){
+            case "ORBIT":
+                this.setPosition(this.parent.x, this.parent.y);
+                Phaser.Math.RotateAroundDistance(this, this.parent.x, this.parent.y, this.orbitAngle, this.orbitRadius);
+                this.orbitAngle = Phaser.Math.Angle.Wrap(this.orbitAngle + this.orbitSpeed);
+                break;
+            case "ZIGZAG":
+                if(this.bulletTimer > this.bulletCycleLength){
+                    this.bulletTimer = 0;
+                    this.bulletToggle *= -1;
+                    const newDirection = this.bulletBearing + this.bulletBearingDelta * this.bulletToggle;
+                    this.setRotation(newDirection);
+                    this.adjustVelocity(newDirection, this.bulletSpeed, this.bulletAcceleration);  
+                };
+                break;
+            case "HOMING":
+                this.seek();
+                this.adjustVelocity(this.bulletBearing, this.bulletSpeed, this.bulletAcceleration);
+                break;
+            case "SWING":
+                const targetAngle = this.bulletBearing + this.swing.getValue();
+                this.setRotation(targetAngle);
+                this.adjustVelocity(targetAngle, this.body.speed, this.bulletAcceleration);
+                break;
+            default: break;
+        };
+        if((this.bulletTransformClass !== "NORMAL") && (this.bulletTimer > this.readStage())){
+            this.stage1Count++;
+            if(this.bulletClass === "ORBIT"){
+                this.bulletBearing = Phaser.Math.Angle.Between(this.parent.x, this.parent.y,this.x,this.y);
+            };
+            switch(this.bulletTransformClass){
+                case "CHANGE":
+                    this.oldToNew(); /// Copy the newbullet parameters to existing bullet config
+                    this.setBulletConfig(); /// Activate the new properties
+                    this.setMotion();
+                    if(this.maturity()){
+                        this.spawnRepeatCount++;
+                        if(this.spawnRepeatCount >= this.spawnRepeat){
+                            this.bulletTransformClass = "NORMAL";
+                        }else{
+                            this.bulletTimer = 0;
+                            this.stage1Count = 0;
+                        };
+                    };
+                    break;
+                case "EXPLODE":
+                    this.bulletConfig = this.setBaseConfig();
+                    this.explode(this);
+                    this.handleMaturity();
+                    break;
+                case "SPAWN":
+                    this.bulletConfig = this.setBaseConfig();
+                    this.spawn(this);
+                    this.handleMaturity();
+                    break;
+                case "STOP&GO":
+                    this.bulletConfig = this.setBaseConfig(true);
+                    this.stopAndGo(this);
+                    this.remove();
+                    break;    
+                default: break;
+            };
         };
     };
-    remove(){
-        this.resetBullet();
-        this.disableBody(true, true);
-    };
-    isOutOfBounds(){
-        return this.x < -15 || this.x > 615 || this.y < -15 || this.y > 865;
-    };
-};
-
-class DefaultBullet{
-    constructor(scene, fireRate = 0, bulletDamage = 1, bulletSpeed = 0){
-        this.scene = scene;
-        this.name = 'default';
-        this.nextFire = 0;
-        this.fireRate = -fireRate + 200;
-        this.bulletDamage = bulletDamage;
-        this.bulletSpeed = bulletSpeed + 200;
-        this.bulletTexture = 'circle-black';
-    };
-    fireBullet({ sneak = false, texture, player, ammo, angle, target }){  
-        if(this.scene.time.now < this.nextFire) { return; };
-        ammo.getBullet().fire({
-            x: player.x,
-            y: player.y,
-            angle: angle,
-            damage: this.bulletDamage,
-            speed: this.bulletSpeed,
-            target: target,
-            texture: (texture) ? texture : this.bulletTexture,
-            alpha: 0.5
-        });
-        if(sneak){
-            const offsets = [-5, 5];
-            for(let i of offsets){
-                ammo.getBullet().fire({
-                    x: player.x, y: player.y,
-                    angle: angle + i,
-                    damage: this.bulletDamage / 2,
-                    speed: this.bulletSpeed,
-                    target: target,
-                    texture: (texture) ? texture : this.bulletTexture,
-                    alpha: 0.5
+    createSatellites(scene){
+        for(let i= 0; i < this.bulletSatellite.count; i++){
+            const angle = i * ((Math.PI * 2) / this.bulletSatellite.count);
+            const orbit = new Phaser.Math.Vector2().setToPolar(angle, this.bulletSatellite.radius);
+            const bullet = this.parent.munitions.getFirstDead(false);
+            if(bullet){
+                bullet.fire(scene, {
+                    parent: this,
+                    x: this.x + orbit.x,
+                    y: this.y + orbit.y,
+                    bulletClass: "ORBIT",
+                    bulletSpeed: 0,
+                    bulletTexture: "bullet-atlas",
+                    bulletFrame: this.bulletSatellite.frame,
+                    bulletOrbitSpeed: this.bulletSatellite.orbitSpeed
                 });
             };
         };
-        this.nextFire = this.scene.time.now + this.fireRate;
     };
-};
-
-class SingleBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Single';
-        this.nextFire = 0;   
-        this.fireRate = 200;
-        this.bulletSpeed = 200;
-        this.bulletTexture = 'circle-black'
-    };
-    fireLaser({ texture, player, ammo, angle, target, damage, speed }){  
-        if(this.scene.time.now < this.nextFire) { return; };
-        ammo.getBullet().fire({
-            x: player.x,
-            y: player.y,
-            angle: angle,
-            damage: damage + 1,
-            speed: this.bulletSpeed + speed,
-            target: target,
-            texture: (texture) ? texture : this.bulletTexture
-        });
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class FrontAndBackBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Front And Back';
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.bulletTexture = 'bullet5';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, target: target, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 180, speed: this.bulletSpeed, texture: this.bulletTexture});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class ThreeWayBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Three Way'
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.bulletTexture = 'bullet7';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 270, speed: this.bulletSpeed, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, texture: this.bulletTexture, target: target});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 90, speed: this.bulletSpeed, texture: this.bulletTexture});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class EightWayBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Eight Way'
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.maxLife = 500;
-        this.bulletTexture = 'bullet5';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, target: target, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 45, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 90, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 135, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 180, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 225, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 270, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle + 315, speed: this.bulletSpeed, maxLife: this.maxLife, texture: this.bulletTexture});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class ScatterShotBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Scatter Shot'
-        this.nextFire = 0;    
-        this.fireRate = 560;
-        this.bulletSpeed = 140;
-        this.bulletTexture = 'bullet5';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        const y = (player.y + player.height / 2) + Phaser.Math.Between(-10, 10);
-        ammo.getFirstDead(false)?.fire({x: player.x, y: y, angle: angle, speed: this.bulletSpeed, texture: this.bulletTexture});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class BeamBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Beam';
-        this.nextFire = 0;
-        this.fireRate = 300;
-        this.bulletSpeed = 200;
-        this.maxLife = 500;
-        this.bulletTexture = 'bullet11';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, texture: this.bulletTexture, target: target, maxLife: this.maxLife});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class SplitShotBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Split Shot'    
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.maxLife = 500;
-        this.bulletTexture = 'bullet8';
-    };    
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: -500, texture: this.bulletTexture, target: target, maxLife: this.maxLife});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: 0, texture: this.bulletTexture, target: target, maxLife: this.maxLife});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: 500, texture: this.bulletTexture, target: target, maxLife: this.maxLife});
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class PatternBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Pattern';
-        this.nextFire = 0;
-        this.fireRate = 300;
-        this.bulletSpeed = 100;
-        this.pattern = Phaser.Utils.Array.NumberArrayStep(-800, 800, 200);
-        this.pattern = this.pattern.concat(Phaser.Utils.Array.NumberArrayStep(800, -800, -200));
-        this.patternIndex = 0;
-        this.bulletTexture = 'bullet4';
-    }; 
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: this.pattern[this.patternIndex], texture: this.bulletTexture, target: target});
-        this.patternIndex++;
-        if(this.patternIndex === this.pattern.length){
-            this.patternIndex = 0;
+    handleMaturity(){
+        /// At the end of executing one "cycle" of bulletTransform, take appropriate action
+        if(this.maturity()){
+            switch(this.spawnRepeat){
+                case 0:
+                    this.remove();
+                    break;
+                default:
+                    this.spawnRepeatCount++;
+                    if(this.spawnRepeatCount >= this.spawnRepeat){
+                        this.bulletTransformClass = "NORMAL";
+                    }else{
+                        this.bulletTimer = 0;
+                        this.stage1Count = 0;                  
+                    };
+                    break;
+            };
         };
-        this.nextFire = this.scene.time.now + this.fireRate;
+    };
+    maturity(){
+        if(typeof(this.bulletStage1Time) === "number")
+            return true;
+        else if(this.stage1Count >= this.bulletStage1Time?.length)
+            return true;
+    };
+    explode(scene){
+        this.fragmentAngles = [];
+        this.fragmentSpeeds = [];
+        this.fragmentPositions = [];
+        this.bulletConfig.bulletTexture = this.spawnTexture;
+        this.bulletConfig.bulletFrame = this.spawnFrame;
+        if(this.bulletTransformType === undefined) this.bulletTransformType = "arc";
+        let cannonIndex = [];
+        let cannonOrigin = [];
+        danmakuSpokes({
+            heading: readAngle(this.bulletBearing, this.spawnBearing),
+            cannonsInNway: 1,
+            spokesArray: cannonIndex,
+            originsArray: cannonOrigin
+        });
+        drawCannons({
+            ///  curve: (type === "arc") ? createArc(1, Phaser.Math.RadToDeg(angleRange)) : album.pages[type].drawing,
+            shapes: this.bulletTransformType,
+            pRatio: 1,
+            angleRange: this.newBulletAngleRange,
+            angleIndex: cannonIndex,
+            originIndex: cannonOrigin,
+            centre: new Phaser.Math.Vector2(this.x, this.y),
+            numberOfPoints: this.newBulletCount,
+            speed: this.spawnSpeed,
+            open: this.newBulletFlag,
+            anglesArray: this.fragmentAngles,
+            speedArray: this.fragmentSpeeds,
+            cannonPositions: this.fragmentPositions
+        });
+        for(let i = 0; i < this.fragmentAngles.length; i++){
+            const direction = this.fragmentAngles[i];
+            const bullet = this.scene.bossBullets.getFirstDead(false);
+            if(bullet){
+                this.bulletConfig.bulletBearing = direction;
+                this.bulletConfig.bulletAngle = direction;
+                this.bulletConfig.bulletSpeed = this.fragmentSpeeds[0][i];
+                bullet.fire(scene, this.bulletConfig);
+            };
+        };
+    };
+    spawn(scene){
+        for(let angle = 0; angle <= Math.PI * 2 * (this.spawnCount - 1) / this.spawnCount; angle += Math.PI * 2 / this.spawnCount){
+            this.bulletConfig.bulletBearing = readAngle(this.bulletBearing+angle, this.spawnBearing);
+            this.bulletConfig.bulletTexture = this.spawnTexture;
+            this.bulletConfig.bulletFrame = this.spawnFrame;
+            if(Array.isArray(this.spawnSpeed)){
+                for(let i = 0; i < this.spawnSpeed.length; i++){
+                    const bullet = enemyBullets.getFirstDead(false);
+                    if(bullet){
+                        this.bulletConfig.bulletSpeed = this.spawnSpeed[i];
+                        bullet.fire(scene, this.bulletConfig);
+                    };
+                };
+            }else{
+                const bullet = enemyBullets.getFirstDead(false);
+                if(bullet){ 
+                    this.bulletConfig.bulletSpeed = this.spawnSpeed;
+                    bullet.fire(scene, this.bulletConfig);
+                };
+            };
+        };
+    };
+    oldToNew(){
+        this.bulletSpeed = this.newBulletSpeed || this.bulletSpeed;   
+        this.bulletBearing = (this.newBulletSeek === true)
+            ? Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y)
+            : this.bulletBearing = readAngle(this.bulletBearing, readParam(this.newBulletBearing, this.stage1Count - 1));        
+        this.bulletTexture = this.newBulletTexture || this.bulletTexture;
+        this.bulletFrame = (this.newBulletFrame === undefined) ? this.bulletFrame : this.newBulletFrame;
+        this.bulletAcceleration = (this.newBulletAcceleration === undefined) ? this.bulletAcceleration : this.newBulletAcceleration;
+        this.bulletMaxSpeed = (this.newBulletMaxSpeed === undefined) ? this.bulletMaxSpeed : this.newBulletMaxSpeed;
+        this.bulletGravityX = (this.newBulletGravityX === undefined) ? this.bulletGravityX : this.newBulletGravityX;   
+        this.bulletGravityY = (this.newBulletGravityY === undefined) ? this.bulletGravityY : this.newBulletGravityY;  
+        this.bulletBounceX = (this.newBulletBounceX === undefined) ? this.bulletBounceX : this.newBulletBounceX;   
+        this.bulletBounceY = (this.newBulletBounceY === undefined) ? this.bulletBounceY : this.newBulletBounceY; 
+        this.bulletLife = (this.newBulletLife === undefined) ? this.bulletLife : this.newBulletLife;
+        this.bulletLifeAlpha = (this.newBulletLifeAlpha === undefined) ? this.bulletLifeAlpha : this.newBulletLifeAlpha;
+    };
+    stopAndGo(scene){
+        const bullet = enemyBullets.getFirstDead(false);
+        if(bullet){ 
+            this.bulletConfig.bulletSpeed = 0;
+            this.bulletConfig.bulletAcceleration = 0;
+            this.bulletConfig.bulletTransform.class = "CHANGE";
+            this.bulletConfig.bulletTransform.stage1Time = this.bulletStage2Time;
+            bullet.fire(scene, this.bulletConfig);
+        };
+    };
+    setBulletConfig(){
+        this.setTexture(this.bulletTexture, this.bulletFrame);
+        this.setAlpha(this.bulletAlpha || 1);
+        this.setSize(this.height, this.width);
+        this.body.speed = this.bulletSpeed; /// It's necessary to manually set speed of body otherwise sometimes pre-update sets the velocity to zero, before the bullet gets going
+        this.body.setMaxSpeed(this.bulletMaxSpeed);
+    };
+    setMotion(){
+        const bearing = this.bulletBearing + this.bulletBearingDelta * this.bulletToggle;
+        const adjustedSpeed = this.bulletSpeed + this.randomSpeed(this.bulletVRandom);
+        this.adjustVelocity(bearing, adjustedSpeed, this.bulletAcceleration);
+        /// If bulletBearingVelocity is set, it means the bullet should fly along curve - so set up tween to adjust direction
+        if(this.bulletBearingVelocity !== 0){
+            this.bearingChange = this.scene.tweens.addCounter({
+                from: 0,
+                to: Math.sign(this.bulletBearingVelocity) * 2 * Math.PI,
+                duration: ((2 * Math.PI) / Math.abs(this.bulletBearingVelocity)) * 1000,
+                repeat: -1
+            });
+        };
+        /// If SWING type, then set up tween to adjust the bulletBearing
+        if(this.bulletClass === "SWING"){
+            this.swing = this.scene.tweens.addCounter({
+                from: -this.bulletSwingDelta,
+                to: this.bulletSwingDelta,
+                duration: this.bulletCycleLength,
+                repeat: -1,
+                yoyo: true
+            });
+        };
+        this.body.setAngularVelocity(this.bulletAngularVelocity);
+    };
+    adjustVelocity(targetAngle, speed, acceleration){
+        this.scene.physics.velocityFromRotation(
+            targetAngle,
+            speed,
+            this.body.velocity
+        );
+        this.scene.physics.velocityFromRotation(
+            targetAngle,
+            acceleration,
+            this.body.acceleration
+        );
+        if(this.bulletAngularVelocity === 0){
+            this.setRotation(targetAngle);
+        };
+    };
+    readStage(){
+        if(typeof(this.bulletStage1Time) === "number")
+            return this.bulletStage1Time;
+        else if(Array.isArray(this.bulletStage1Time))
+            return this.bulletStage1Time[this.stage1Count];
+    };
+    bounceOffWall(){
+        this.setRotation(Phaser.Math.Angle.Wrap(this.body.velocity.angle()));
+        this.referenceBearing = this.rotation;
+        this.bulletBearing = this.rotation;
+        if(this.swing) this.swing.restart();
+        if(this.bearingChange) this.bearingChange.restart();
+    };
+    randomSpeed(randomness){
+        const randomFactor = Phaser.Math.Between(-randomness / 2, randomness / 2);
+        return randomFactor;
+    };
+    setBaseConfig(current = false){
+        switch(current){
+            case false:
+                return{
+                    parent: this,
+                    x: this.x, y: this.y,
+                    bulletType: "NORMAL",
+                    bulletBearing: readAngle(this.bulletBearing, this.newBulletBearing),
+                    bulletBearingVelocity: this.newBulletBearingVelocity,
+                    bulletAngle: readAngle(this.bulletBearing, this.newBulletBearing),
+                    bulletAngularVelocity: this.newBulletAngularVelocity,
+                    bulletCycleLength: this.newBulletCycleLength,
+                    bulletSpeed: this.newBulletSpeed,
+                    bulletAcceleration: this.newBulletAcceleration,
+                    bulletTexture: (this.newBulletTexture === undefined) ? this.bulletTexture : this.newBulletTexture,
+                    bulletFrame: (this.newBulletFrame === undefined) ? this.bulletFrame : this.newBulletFrame,
+                    bulletTarget: this.newBulletTarget,
+                    bulletBounceX: this.newBulletBounceX,
+                    bulletBounceY: this.newBulletBounceY,
+                    bulletGravityX: this.newBulletGravityX,
+                    bulletGravityY: this.newBulletGravityY,
+                    bulletSeek: this.newBulletSeek,
+                    bulletTarget: this.bulletTarget,
+                    bulletVRandom: this.newBulletVRandom,
+                    bulletLife: this.newBulletLife,
+                    bulletLifeAlpha: this.newBulletLifeAlpha
+                };
+                break;
+            default:
+                return{
+                    parent: this,
+                    x: this.x, y: this.y,
+                    bulletType: "NORMAL",
+                    bulletBearing: this.bulletBearing,
+                    bulletBearingVelocity: this.bulletBearingVelocity,
+                    bulletAngle: this.bulletBearing,
+                    bulletAngularVelocity: this.bulletAngularVelocity,
+                    bulletCycleLength: this.bulletCycleLength,
+                    bulletSpeed: this.bulletSpeed,
+                    bulletAcceleration: this.bulletAcceleration,
+                    bulletTexture: this.bulletTexture,
+                    bulletFrame: this.bulletFrame,
+                    bulletTarget: this.bulletTarget,
+                    bulletBounceX: this.bulletBounceX,
+                    bulletBounceY: this.bulletBounceY,
+                    bulletGravityX: this.bulletGravityX,
+                    bulletGravityY: this.bulletGravityY,
+                    bulletSeek: this.bulletSeek,
+                    bulletTarget: this.bulletTarget,
+                    bulletVRandom: this.bulletVRandom,
+                    bulletLife: this.nbulletLife,
+                    bulletLifeAlpha: this.bulletLifeAlpha,
+                    bulletTransform: this.bulletTransformCopy
+                };
+                break;
+        };
+    };
+    delayedMove(scene){
+        const bullet = enemyBullets.getFirstDead(false);
+        if(bullet){
+            if(this.newBulletSeek){
+                /// This returns the angle between 2 points in radians
+                this.bulletConfig.bulletBearing = Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y);
+                this.bulletConfig.bulletAngle = this.newBulletBearing;
+            };
+            bullet.fire(scene, this.bulletConfig);
+        };
+    };
+    remove(){
+        if(this.swing) this.swing.remove();
+        if(this.bearingChange) this.bearingChange.remove();
+        this.disableBody(true, true);
+    };
+    seek(){
+        /// This returns the angle between 2 points in radians
+        const targetAngle = Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y);
+        let diff = Phaser.Math.Angle.Wrap(targetAngle - this.bulletBearing);
+        /// To to targetAngle if less than degrees per turn
+        if(Math.abs(diff) < this.perTurnConstraint){
+            this.bulletBearing = targetAngle;
+        }else{
+            let angle = this.bulletBearing;
+            if(diff > 0)
+                angle += this.perTurnConstraint;
+            else
+                angle -= this.perTurnConstraint;
+            this.bulletBearing = angle;
+        }; 
+    };
+    outOfScreenY(){
+        return(
+            this.y + (this.displayHeight / 2) <= 0 || this.y >= HEIGHT + (this.displayHeight / 2)
+        );
+    };
+    outOfScreenX(){
+        return(
+            this.x + (this.displayWidth / 2) <= 0 || this.x >= WIDTH + (this.displayWidth / 2)
+        );
+    };
+    hitEdgeY(bullet){
+        return(
+            bullet.y <= (bullet.displayHeight / 2) || bullet.y >= HEIGHT - (bullet.displayHeight / 2)
+        );
+    };
+    hitEdgeX(bullet){
+        return(
+            bullet.x <= (bullet.displayWidth / 2) || bullet.x >= WIDTH - (bullet.displayWidth / 2)
+        );
     };
 };
 
-class RocketsBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Rockets';
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.bulletTexture = 'bullet10';
+class Danmaku extends Phaser.Physics.Arcade.Image{
+    constructor(
+        scene,
+        munitions,
+        {
+            x = 0, y = 0,
+            danmakuTexture = null,
+            danmakuFrame = null
+        } = {}){
+            super(scene, x, y, danmakuTexture, danmakuFrame);
+            scene.add.existing(this);
+            scene.physics.add.existing(this);
+            this.active = false;
+            this.visible = false;
+            this.munitions = munitions;
+            this.danmakuPosition = new Phaser.Math.Vector2(this.x, this.y);
     };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: -700, tracking: true, texture: this.bulletTexture, target: target});
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, gx: 0, gy: 700, tracking: true, texture: this.bulletTexture, target: target});
-        this.nextFire = this.scene.time.now + this.fireRate;
+    resetDanmaku(scene){
+        if(this.washerTween) this.washerTween.remove();
+        if(this.repeatShotsTimer !== undefined) scene.time.removeEvent(this.repeatShotsTimer);
+        if(this.intervalTimer !== undefined) scene.time.removeEvent(this.intervalTimer);
+        this.disableBody(true, true);
+    };
+    setProperties(
+        scene,
+        {
+            name = "",
+            x = this.x, y = this.y,
+            danmakuConfig = { class: "NWAY" },
+            cannonConfig = { numberOfShots: -1 },
+            bulletConfig = { class: "NORMAL" }, /// "NORMAL", "BEND" and "HOMING"
+            /// randomBulletDelay = false,
+            washer = null,
+            bulletTransform,
+            /// perTurnConstraint = 0
+        }){
+            this.enableBody(true, x, y, true, false);
+            this.name = name;
+            this.danmakuClass = danmakuConfig.class;
+            this.danmakuType = danmakuConfig.type;
+            this.danmakuCountA = danmakuConfig.countA || 1;
+            this.danmakuCountB = danmakuConfig.countB || 1;
+            this.danmakuParamA = danmakuConfig.paramA;
+            this.danmakuParamB = danmakuConfig.paramB;
+            this.danmakuWidth = danmakuConfig.width;
+            this.danmakuHeight = danmakuConfig.height; 
+            this.danmakuMultiple = danmakuConfig.multiple || 1;
+            this.danmakuSize = danmakuConfig.size;
+            this.danmakuSwitch = danmakuConfig.switch;
+            this.danmakuFlag = danmakuConfig.flag;
+            this.danmakuOption = danmakuConfig.option;
+            if(Array.isArray(danmakuConfig.aOffset))
+                this.danmakuAOffset = danmakuConfig.aOffset.map(x=>Phaser.Math.DegToRad(x));
+            else
+                this.danmakuAOffset = Phaser.Math.DegToRad(danmakuConfig.aOffset) || 0;
+            this.danmakuVOffset = danmakuConfig.vOffset || 0;
+            this.danmakuHOffset = danmakuConfig.hOffset || 0;
+            this.danmakuKeepShape = danmakuConfig.keepShape;
+            this.danmakuPicture = danmakuConfig.picture;    
+            this.danmakuAngle = (danmakuConfig.angle === undefined)
+                ? Math.PI / 2
+                : Phaser.Math.DegToRad(danmakuConfig.angle);
+            this.setRotation(this.danmakuAngle);
+            this.referenceAngle = this.danmakuAngle;
+            this.danmakuAngularVelocity = danmakuConfig.angularVelocity || 0; 
+            this.body.setAngularVelocity(this.danmakuAngularVelocity);
+            this.danmakuAngularAcceleration = danmakuConfig.angularAcceleration || 0;
+            this.body.setAngularAcceleration(this.danmakuAngularAcceleration);
+            this.danmakuAngleLock = danmakuConfig.angleLock || false;    
+            this.danmakuAngleRange = (danmakuConfig.angleRange === undefined)
+                ? Math.PI * 2
+                : Phaser.Math.DegToRad(danmakuConfig.angleRange);
+            this.danmakuWasher = danmakuConfig.washer;
+            if(this.danmakuWasher !== undefined) this.setWasher(scene);
+            this.danmakuTarget = danmakuConfig.target;
+            this.cannonClass = cannonConfig.class || "NORMAL"; 
+            this.cannonType = cannonConfig.type;
+            this.shotType = cannonConfig.shotType || "NORMAL"; /// "NORMAL", "SPREAD", "OVERTAKE"
+            this.shotSpeed = cannonConfig.speed;
+            this.cannonRatio = cannonConfig.ratio || 1;
+            this.cannonSize = cannonConfig.size;
+            this.cannonWidth = cannonConfig.width;
+            this.cannonHeight = cannonConfig.height; 
+            this.numberOfShots = cannonConfig.numberOfShots || -1;
+            this.timeBetweenShots = cannonConfig.fireRate;
+            this.shotsCount = (this.numberOfShots === -1)
+                ? -1
+                : this.numberOfShots - 1;
+            this.stopShotsTime = cannonConfig.stopShotsTime;
+            if(Array.isArray(cannonConfig.angleRange)){
+                this.cannonAngleRangeStart = cannonConfig.angleRange.map(x => Phaser.Math.DegToRad(x));
+                this.cannonAngleRangeRef = this.cannonAngleRangeStart[0];
+            }else{
+                switch(typeof(cannonConfig.angleRange)){
+                    case "number":
+                        this.cannonAngleRangeStart = Phaser.Math.DegToRad(cannonConfig.angleRange);
+                        this.cannonAngleRangeStep = 0;
+                        break;
+                    case "object":
+                        this.cannonAngleRangeStart = Phaser.Math.DegToRad(cannonConfig.angleRange.start);
+                        this.cannonAngleRangeStep = Phaser.Math.DegToRad(cannonConfig.angleRange.step);
+                        this.cannonAngleRangeEnd = Phaser.Math.DegToRad(cannonConfig.angleRange.end);
+                        this.cannonAngleRangeLock = cannonConfig.angleRange.lock;
+                        this.cannonAngleRangeYoYo = cannonConfig.angleRange.yoyo;
+                        break;
+                    case "undefined":
+                        this.cannonAngleRangeStart = Math.PI * 2;
+                        this.cannonAngleRangeStep = 0;
+                        break;
+                };
+                this.cannonAngleRangeRef = this.cannonAngleRangeStart;
+                if(!this.cannonAngleRangeEnd) this.cannonAngleRangeEnd = (this.cannonAngleRangeStep > 0) ? (2 * Math.PI) : 0;
+            };
+            this.cannonShotSFX = cannonConfig.sound;
+            this.cannonPRotation = (cannonConfig.pRotation === undefined)
+                ? cannonConfig.pRotation
+                : Phaser.Math.DegToRad(cannonConfig.pRotation);
+            this.cannonPAngleRange = (cannonConfig.pAngleRange === undefined)
+                ? cannonConfig.pAngleRange
+                : Phaser.Math.DegToRad(cannonConfig.pAngleRange);
+            this.spreadCount = cannonConfig.spreadCount || 1;
+            this.cannonCount = cannonConfig.count || 1;
+            this.shotAcceleration = cannonConfig.acceleration || 0;
+            this.flyAwayOption = cannonConfig.flyAwayOption || 0;
+            this.bulletClass = bulletConfig.class || "NORMAL";
+            this.bulletBearing = bulletConfig.bearing;
+            this.bulletBearingDelta = Phaser.Math.DegToRad(bulletConfig.bearingDelta) || 0; /// For "ZIGZAG"
+            this.bulletBearingVelocity = (bulletConfig.bearingVelocity === undefined)
+                ? 0
+                : DegToRad(bulletConfig.bearingVelocity);
+            this.bulletSwingDelta = (bulletConfig.swingDelta === undefined)
+                ? Math.PI / 2
+                : DegToRad(bulletConfig.swingDelta);
+            this.bulletAngle = this.danmakuAngle;
+            this.bulletAngularVelocity = bulletConfig.angularVelocity || 0;
+            this.bulletDamage = bulletConfig.damage;
+            this.bulletSpeed = bulletConfig.speed;
+            this.bulletMaxSpeed = bulletConfig.maxSpeed || -1;
+            this.bulletAcceleration = bulletConfig.acceleration || 0;
+            this.bulletCycleLength = bulletConfig.cycleLength;
+            this.bulletOffScreen = bulletConfig.offScreen || false;
+            this.bulletBounceX = bulletConfig.bounceX || 0;
+            this.bulletBounceY = bulletConfig.bounceY || 0;
+            this.bulletGravityX = bulletConfig.gravityX || 0;
+            this.bulletGravityY = bulletConfig.gravityY || 0;
+            this.bulletVRandom = bulletConfig.vRandom || 0;
+            this.bulletTexture = "bullet-atlas";
+            this.bulletFrame = bulletConfig.frame;
+            this.bulletLife = bulletConfig.lifeSpan || -1;
+            this.bulletLifeAlpha = bulletConfig.lifeAlpha || false;
+            this.bulletTarget = bulletConfig.target || null;
+            this.bulletOrbitSpeed = bulletConfig.orbitSpeed;
+            this.bulletSatellite = bulletConfig.satellite;
+            this.bulletAlpha = bulletConfig.alpha;
+            this.bulletTransform = Phaser.Utils.Objects.DeepCopy(bulletTransform);
+            if(this.bulletTransform !== undefined)
+                this.transformTimer = this.bulletTransform.stage1Time;
+            else
+                this.transformTimer = undefined;
+            this.perTurnConstraint = Phaser.Math.DegToRad(bulletConfig.perTurnConstraint);
+            if(this.cannonClass === "PAINT"){
+                this.numberOfShots = this.danmakuPicture.length;
+                this.shotsCount = this.numberOfShots - 1;
+            };
+            this.repeatShotsCount;
+            this.danmakuCounter = -1;
+            this.repeatShotsConfig = {
+                delay: this.timeBetweenShots,
+                callback: this.fireShot,
+                callbackScope: this,
+                repeat: this.shotsCount
+            };
+            if(this.numberOfShots !== 1) this.repeatShotsTimer = new Phaser.Time.TimerEvent(this.repeatShotsConfig);
+            this.intervalConfig = {
+                delay: this.timeBetweenShots * (this.numberOfShots) + this.stopShotsTime,
+                callback: this.fireDanmaku,
+                args: [scene],
+                callbackScope: this,
+                repeat: -1
+            };
+            if(this.stopShotsTime > 0) this.intervalTimer = new Phaser.Time.TimerEvent(this.intervalConfig);
+            this.cannonPositions;
+            this.cannonAngles;
+            this.cannonShotSpeeds;
+    };
+    startUpDanmaku(scene){
+        switch(this.numberOfShots){
+            case 1:
+                this.fireShot(scene);
+                break;
+            default:
+                scene.time.addEvent(this.repeatShotsTimer);
+                if(this.stopShotsTime) scene.time.addEvent(this.intervalTimer);
+                break;
+        };
+    };
+    fireDanmaku(scene){
+        switch(this.numberOfShots){
+            case 1:
+                this.fireShot(scene);
+                break;
+            default:
+                this.repeatShotsTimer.reset(this.repeatShotsConfig);
+                scene.time.addEvent(this.repeatShotsTimer);
+                break;
+        };
+    };
+    fireShot(scene){
+        this.danmakuCounter++;
+        if(this.repeatShotsTimer) this.repeatShotsCount = this.repeatShotsTimer.getRepeatCount()
+        if(this.danmakuTarget) this.aimAt(this.danmakuTarget);
+        switch(this.danmakuAngleLock){
+            case true:
+                if(this.repeatShotsCount === this.shotsCount) this.referenceAngle = this.rotation;
+                break;
+            default:
+                this.referenceAngle = this.rotation;
+                break;
+        };
+        if(Array.isArray(this.cannonAngleRangeStart)){
+            this.cannonAngleRangeRef = readParam(this.cannonAngleRangeStart, this.danmakuCounter);
+        }else{
+            /// This switch determines how frequently the cannons angle range is "adjusted"
+            switch(this.cannonAngleRangeLock){
+                case false:
+                    this.cannonStepThruAngleRange();
+                    break;
+                default:
+                    if((this.cannonAngleRangeStep !== 0) && (this.repeatShotsCount === this.shotsCount))
+                        this.cannonStepThruAngleRange();
+                    break;
+            };
+        };
+        this.cannonPositions = [];
+        this.cannonAngles = [];
+        this.cannonShotSpeeds = [];
+        let cannonIndex = [];
+        let cannonOrigin = [];
+        let flyAwayAngles = [];
+        danmakuSpokes({
+            danmakuType: this.danmakuType,
+            heading: this.referenceAngle,
+            vOffset: readParam(this.danmakuVOffset, this.danmakuCounter),
+            hOffset: readParam(this.danmakuHOffset, this.danmakuCounter),
+            cannonsInNway: readParam(this.danmakuCountA,this.danmakuCounter),
+            nwayRange: this.cannonAngleRangeRef,
+            numberOfPoints: this.danmakuCountB, /// Number of cannons in PARALLEL      
+            nways: this.danmakuMultiple, totalRange: this.danmakuAngleRange,
+            offset: readParam(this.danmakuAOffset,this.danmakuCounter),
+            width: readParam(this.danmakuWidth, this.danmakuCounter),
+            spokesArray: cannonIndex,
+            originsArray: cannonOrigin
+        });
+        switch(this.cannonClass){
+            case "PAINT":
+                paintCannons({
+                    spokesArray: cannonIndex, 
+                    originsArray: cannonOrigin,
+                    centre: this.danmakuPosition,
+                    bulletSpeed: readSpeed(this.shotSpeed, this.bulletSpeed),
+                    counter: this.repeatShotsCount,
+                    picture: this.danmakuPicture,
+                    pAngleRange: this.cannonPAngleRange,
+                    pWidth: this.cannonWidth,
+                    keepShape: this.danmakuKeepShape,
+                    anglesArray: this.cannonAngles, 
+                    pointsArray: this.cannonPositions,
+                    speedArray: this.cannonShotSpeeds
+                });
+                break;
+            case "DRAW":
+                drawCannons({
+                    shapes: this.cannonType,
+                    pRatio: this.cannonRatio,
+                    angleRange: this.cannonPAngleRange,
+                    angleIndex: cannonIndex, 
+                    originIndex: cannonOrigin,
+                    size: this.cannonSize,
+                    centre: this.danmakuPosition, /// This is the "centre" of polygon from which the cannonshot speeds will be calibrated
+                    numberOfPoints: this.cannonCount, /// Number of bullets to create polygon
+                    speed: readSpeed(this.shotSpeed, this.bulletSpeed),
+                    bearingOption: this.danmakuOption,
+                    keepShape: this.danmakuKeepShape,
+                    pRotation: this.cannonPRotation,
+                    emerge: this.danmakuSwitch,
+                    open: this.danmakuFlag,
+                    anglesArray: this.cannonAngles, /// This is the array to hold the cannon angles - pass by reference
+                    speedArray: this.cannonShotSpeeds, /// This is the array to hold the cannon shoot speeds - pass by reference
+                    cannonPositions: this.cannonPositions,
+                    flyAwayOption: this.flyAwayOption,
+                    flyAwayAngles: flyAwayAngles,
+                });   
+                break;    
+            default:     
+                /// Based on the "spokes", set up the relevant arrays for "NORMAL", "OVERTAKE", "SPREAD" shots
+                setUpCannons({
+                    shotType: this.shotType,
+                    spokesArray: cannonIndex, 
+                    originsArray: cannonOrigin,
+                    centre: this.danmakuPosition,
+                    shotsCount: this.shotsCount,
+                    spreadCount: this.spreadCount, /// This is to define the number of shots in each "SPREAD" shot
+                    /// bulletSpeed: readParam(readSpeed(this.shotSpeed, this.bulletSpeed),this.danmakuCounter),
+                    shotSpeed: readParam(this.shotSpeed, this.danmakuCounter),
+                    bulletSpeed: readParam(this.bulletSpeed, this.danmakuCounter),
+                    counter: this.repeatShotsCount,
+                    shotAcceleration: this.shotAcceleration, /// Used for spreadshot and overtaking shots
+                    anglesArray: this.cannonAngles, 
+                    pointsArray: this.cannonPositions,
+                    speedArray: this.cannonShotSpeeds
+                });
+                break;
+        };
+        const bulletImage = { texture: "bullet-atlas", frame: readParam(this.bulletFrame,this.danmakuCounter) };
+        for(let i = 0; i < this.spreadCount; i++){
+            if(this.cannonShotSFX) this.cannonShotSFX.play();
+            for(let j = 0; j < this.cannonShotSpeeds[i].length; j++){
+                const shotAngle = this.cannonAngles[j];
+                const origin = (this.cannonPositions.length === 0)
+                    ? this.danmakuPosition
+                    : this.cannonPositions[j];
+                const bullet = this.munitions.getFirstDead(false);
+                if(bullet){
+                    if(this.transformTimer !== undefined)
+                        this.bulletTransform.stage1Time = readParam(this.transformTimer, this.danmakuCounter);
+                    if(this.flyAwayOption >0) this.bulletTransform.bearing = flyAwayAngles[j];
+                    bullet.fire(scene, {
+                        parent: this,
+                        x: origin.x, y: origin.y,
+                        bulletClass: this.bulletClass,
+                        cannonAngle: this.referenceAngle,
+                        bulletBearing: readAngle(shotAngle, readParam(readParam(this.bulletBearing, this.danmakuCounter), j)), 
+                        bulletBearingDelta: this.bulletBearingDelta,
+                        bulletBearingVelocity: readParam(readParam(this.bulletBearingVelocity, this.danmakuCounter), j),
+                        bulletSwingDelta: readParam(readParam(this.bulletSwingDelta,this.danmakuCounter), j),
+                        bulletDamage: this.bulletDamage,
+                        bulletSpeed: this.cannonShotSpeeds[i][j],
+                        bulletAcceleration: readParam(readParam(this.bulletAcceleration, this.danmakuCounter), j),
+                        bulletAngle: readAngle(shotAngle, this.bulletBearing), /// Angle of the bullet image - make it equal to cannon direction
+                        bulletAngularVelocity: readParam(readParam(this.bulletAngularVelocity, this.danmakuCounter), j), /// Rotating bullet image
+                        bulletTexture: "bullet-atlas",
+                        bulletFrame: readParam(bulletImage.frame, j),
+                        bulletCycleLength: this.bulletCycleLength,
+                        bulletBounceX: this.bulletBounceX,
+                        bulletBounceY: this.bulletBounceY,
+                        bulletGravityX: readParam(readParam(this.bulletGravityX, this.danmakuCounter), j),
+                        bulletGravityY: readParam(readParam(this.bulletGravityY, this.danmakuCounter), j),
+                        bulletVRandom: this.bulletVRandom,
+                        bulletLife: this.bulletLife,
+                        bulletLifeAlpha: this.bulletLifeAlpha,
+                        bulletTransform: this.bulletTransform,
+                        perTurnConstraint: this.perTurnConstraint,
+                        bulletTarget: this.bulletTarget,
+                        bulletOffScreen: this.bulletOffScreen,
+                        bulletOrbitSpeed: this.bulletOrbitSpeed,
+                        bulletSatellite: this.bulletSatellite,
+                        bulletAlpha: this.bulletAlpha
+                    });
+                };
+            };
+        };
+    };
+    cannonStepThruAngleRange(){
+        this.cannonAngleRangeRef += this.cannonAngleRangeStep;
+        switch(Math.sign(this.cannonAngleRangeStep)){
+            case 1:
+                if(this.cannonAngleRangeRef >= Math.min(Math.PI * 2, this.cannonAngleRangeEnd)){
+                    if(!this.cannonAngleRangeYoYo){
+                        this.cannonAngleRangeRef = this.cannonAngleRangeStart;
+                    }else{
+                        this.cannonAngleRangeRef = Math.min(Math.PI * 2, this.cannonAngleRangeEnd);
+                        this.cannonAngleRangeStep *= -1;
+                        [this.cannonAngleRangeStart, this.cannonAngleRangeEnd] = [this.cannonAngleRangeEnd, this.cannonAngleRangeStart];
+                    };
+                };
+                break;
+            default:
+                if(this.cannonAngleRangeRef <= Math.max(0, this.cannonAngleRangeEnd)){
+                    if(!this.cannonAngleRangeYoYo){
+                        this.cannonAngleRangeRef = this.cannonAngleRangeStart;
+                    }else{
+                        this.cannonAngleRangeRef = Math.max(0, this.cannonAngleRangeEnd);
+                        this.cannonAngleRangeStep *= -1;
+                        [this.cannonAngleRangeStart,this.cannonAngleRangeEnd] = [this.cannonAngleRangeEnd,this.cannonAngleRangeStart];
+                    };
+                };
+                break;
+        };
+    };
+    setWasher(scene){
+        this.setAngle(this.danmakuAngle)
+        this.body.setAngularVelocity(0); /// If swing type, cannon angle velocity must be zero
+        this.washerTween = this.scene.tweens.add({
+            targets: this,
+            rotation: {
+                from: this.danmakuAngle - Phaser.Math.DegToRad(this.danmakuWasher.swingRange / 2),
+                to: this.danmakuAngle + Phaser.Math.DegToRad(this.danmakuWasher.swingRange / 2)
+            },
+            duration: this.danmakuWasher.cycleLength,
+            ease: this.danmakuWasher.swingType,
+            repeat: -1,
+            yoyo: true
+        });
+    };
+    follow(object){
+        this.x = object.x;
+        this.y = object.y;
+        this.danmakuPosition.x = this.x;
+        this.danmakuPosition.y = this.y;
+    };
+    aimAt(target){
+        const targetAngle = Phaser.Math.Angle.Between(
+            this.x,
+            this.y,
+            target.x,
+            target.y
+        );
+        this.setRotation(targetAngle);
     };
 };
 
-class ScaleBullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = 'Scale Bullet';
-        this.nextFire = 0;
-        this.fireRate = 600;
-        this.bulletSpeed = 100;
-        this.bulletTexture = 'bullet9';
-    };
-    fireLaser(player, ammo, angle, target){
-        if(this.scene.time.now < this.nextFire){ return; };    
-        ammo.getFirstDead(false)?.fire({x: player.x, y: player.y, angle: angle, speed: this.bulletSpeed, texture: this.bulletTexture, scaleSpeed: 0.006, target: target});  
-        this.nextFire = this.scene.time.now + this.fireRate;
-    };
-};
-
-class Combo1Bullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = "Combo One";
-        this.weapon1 = new SingleBullet(scene);
-        this.weapon2 = new RocketsBullet(scene);
-    };
-    fireLaser(player, ammo, angle, target){
-        this.weapon1.fireLaser(player, ammo, angle, target);
-        this.weapon2.fireLaser(player, ammo, angle, target);  
+function readSpeed(cannon, inst){
+    switch(typeof(inst)){
+        case "undefined": return cannon;
+        case "number": return inst;
+        case "string":
+            switch(inst[0]){
+                case "n": /// Any string starting with "n" like "null", "none"
+                    return cannon
+                case "f": /// "flip" the speed (ie: negate it)
+                   return cannon * -1;
+                case "r": /// Random angle within range given, centered around cannon shotSpeed 
+                    const range = parseFloat(inst.substring(1));
+                    return cannon + range * (Math.random() - 0.5);
+                case "+":
+                case "-":
+                    return cannon + parseFloat(inst);
+                default: break;
+            }
+            break;
+        default: break;
     };
 };
 
-class Combo2Bullet{
-    constructor(scene){
-        this.scene = scene;
-        this.name = "Combo Two";
-        this.weapon1 = new PatternBullet(scene);
-        this.weapon2 = new ThreeWayBullet(scene);
-        this.weapon3 = new RocketsBullet(scene);
+function readAngle(cannon, inst){
+    switch(typeof(inst)){
+        case "undefined": return cannon;
+        case "number": return Phaser.Math.DegToRad(inst);
+        case "string":
+            switch (inst[0]) {
+                case "n": /// Any string starting with "n" like "null", "none"
+                    return cannon
+                case "f": /// "flip" the angle (ie subtrace from 360 degrees)
+                    return cannon * -1;
+                case "r": /// Random angle within range given, centered around cannon
+                    const range = (inst.length === 1)
+                        ? Math.PI * 2
+                        : Phaser.Math.DegToRad(parseFloat(inst.substring(1)));
+                    return cannon + range * (Math.random() - 0.5);
+                case "+":
+                case "-":
+                    return cannon + Phaser.Math.DegToRad(parseFloat(inst));
+                case "s": /// Symmetry
+                    if(Math.abs(cannon) > Math.PI / 2){
+                        return cannon - Phaser.Math.DegToRad(parseFloat(inst.substring(1)));
+                    }else if(Math.abs(cannon) < Math.PI / 2){
+                        return cannon + Phaser.Math.DegToRad(parseFloat(inst.substring(1)));
+                    }else{
+                        return cannon; 
+                    };
+                case "*": return cannon * parseFloat(inst.substring(1));          
+                default: break;
+            };
+        default: break;
     };
-    fireLaser(player, ammo, angle, target){ 
-        this.weapon1.fireLaser(player, ammo, angle, target);
-        this.weapon2.fireLaser(player, ammo, angle, target);
-        this.weapon3.fireLaser(player, ammo, angle, target);  
+};
+
+function readParam(param, count){
+    if(Array.isArray(param))
+        return param[count % param.length];
+    else
+        return param;
+};
+
+function DegToRad(param){
+    if(typeof(param) === "number"){
+        return Phaser.Math.DegToRad(param);
+    }else{
+        const workArray = [];
+        param.forEach((item) => {
+            workArray.push(DegToRad(item));
+        });
+        return workArray;
     };
+};
+
+function danmakuSpokes({
+    danmakuType = "NWAY",
+    heading, 
+    vOffset = 0,
+    hOffset = 0,
+    numberOfPoints = 1,
+    cannonsInNway=1, nwayRange = Math.PI*2, 
+    nways = 1, totalRange = Math.PI*2,
+    offset = 0,
+    width,
+    spokesArray, /// Output array to hold cannon angles
+    originsArray /// Output array to hold cannon positions
+}){  
+    let directions = []; /// This is the working array to hold the cannon angles --> pushed to spokesArray at end of this function
+    function getAngles(centreAngle, range, points){
+        let tempArray = [];
+        switch(points){
+            case 1:
+                tempArray.push(centreAngle)
+                break;
+            default:
+                switch(range){
+                    case Math.PI * 2:
+                        tempArray = new Array(points).fill(centreAngle).map((item,index) => Phaser.Math.Angle.Wrap(item + (index * Math.PI * 2) / points))
+                        break;
+                    default:
+                        tempArray = new Array(points).fill(centreAngle).map((item,index) => Phaser.Math.Angle.Wrap(item + (index / (points - 1) - 0.5) * range));
+                        break;
+                };
+                break;     
+        };
+        return tempArray;
+    };
+    directions = getAngles(heading + offset, totalRange, nways)
+        .reduce((acc,j) => [...acc, ...getAngles(j, nwayRange,cannonsInNway)], []);
+    /// Do a bit more processing for PARALLEL and BI-DIRECTIONAL danmaku
+    switch(danmakuType){
+        case "PARALLEL":
+            const line = createLine(0, width); 
+            directions.forEach((angle, i) => {
+                const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
+                for (let j = 0; j < readParam(numberOfPoints, i); j++){
+                    const point = line.getPoint(j / (readParam(numberOfPoints, i) - 1))
+                        .rotate(angle)
+                        .add(shift);
+                    originsArray.push(point);
+                    spokesArray.push(angle);
+                };
+            });
+            break;        
+        case "BI_DIRECTIONAL":
+            spokesArray.push(...directions, ...directions.map(x => -x));
+            spokesArray.forEach((angle) => {
+                const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
+                if(vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
+            });
+            break;
+        default:
+            directions.forEach((angle) => {
+                const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
+                if(vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
+                spokesArray.push(angle);
+            });
+            break;
+    };
+};
+
+function setUpCannons({
+    shotType, 
+    spokesArray,
+    originsArray,
+    centre,
+    shotsCount, 
+    spreadCount,
+    shotSpeed,
+    bulletSpeed, 
+    counter, 
+    shotAcceleration,
+    anglesArray,
+    pointsArray,
+    speedArray
+}){ 
+    anglesArray.push(...spokesArray);
+    pointsArray.push(...originsArray.reduce((acc,p) => [...acc, p.add(centre)], []));
+    switch(shotType){
+        case "OVERTAKE":
+            speedArray.push(new Array(anglesArray.length).fill(bulletSpeed + (shotsCount - counter) * shotAcceleration));
+            break;
+        case "SPREAD":
+            speedArray.push(...new Array(spreadCount)
+                .fill(bulletSpeed)
+                .map((item, i) => new Array(anglesArray.length).fill(item + shotAcceleration * i)));
+            break;    
+        default: /// "NORMAL"
+            speedArray.push(new Array(anglesArray.length)
+                .fill(1)
+                .map((x, i) => readSpeed(readParam(shotSpeed, i), readParam(bulletSpeed, i))));
+            break;  
+    };
+};
+
+function paintCannons({
+    spokesArray,
+    originsArray,
+    centre,
+    bulletSpeed, 
+    counter, 
+    picture,
+    pAngle,
+    pAngleRange,
+    pWidth = 100,
+    keepShape = false,
+    anglesArray,
+    pointsArray,
+    speedArray
+}){
+    const speeds = [];
+    const textLine = picture[counter];
+    const count = textLine.length;
+    const line = createLine(0, pWidth);
+    spokesArray.forEach((angle,j) => {
+        const realOrigin = (originsArray.length === 0)
+            ? centre
+            : originsArray[j].add(centre); 
+        Array.from(textLine).forEach((char, i) => {
+            if(char !== " "){
+                switch(keepShape){
+                    case true:
+                        const point = line.getPoint(i / (count - 1))
+                            .rotate(angle)
+                            .add(realOrigin);
+                        pointsArray.push(point);
+                        anglesArray.push(angle);
+                        break;
+                    default:
+                        anglesArray.push(angle + pAngleRange * (0.5 - i / (count - 1)));
+                        break;
+                };
+                speeds.push(bulletSpeed);
+            };
+        });
+    });
+    speedArray.push(speeds);
+};
+
+function createLine(offset = 0, width){
+    const aa = new Phaser.Math.Vector2(offset, width / 2);
+    const bb = new Phaser.Math.Vector2(offset, -width / 2);
+    return new Phaser.Curves.Line(aa, bb);
+};
+
+function drawCannons({
+    shapes,
+    pRatio = 1,
+    angleRange,
+    angleIndex,
+    originIndex,
+    size = 0,
+    centre,
+    numberOfPoints,
+    speed,
+    bearingOption = 1,
+    pRotation,
+    keepShape = true,  
+    emerge = 1, /// 1: explode, -1: implode
+    open = false, 
+    anglesArray,
+    speedArray,
+    cannonPositions,
+    flyAwayOption = 0,
+    flyAwayAngles = []
+}){
+    const curve = (shapes === "arc")
+        ? createArc(pRatio, Phaser.Math.RadToDeg(angleRange))
+        : album.pages[shapes].drawing;
+    const aspectRatio = new Phaser.Math.Vector2(size / 2, size / 2);
+    const speeds = []; 
+    angleIndex.forEach((angle, j) => {
+        const realOrigin = (originIndex.length === 0)
+            ? centre
+            : originIndex[j].add(centre); 
+        let angleT = 0;
+        for(let i = 0; i < numberOfPoints; i++){
+            const point = curve.getPoint(i / (numberOfPoints - 1 * open))
+                .rotate(Math.PI / 2 + (pRotation === undefined ? angle : pRotation)); 
+            if(keepShape){
+                switch(emerge){
+                    case 0:
+                        anglesArray.push(angle);
+                        speeds.push(speed)
+                        break;
+                    default:
+                        anglesArray.push((emerge === 1)
+                            ? Phaser.Math.Angle.BetweenPoints(Phaser.Math.Vector2.ZERO, point)
+                            : Phaser.Math.Angle.BetweenPoints(point, Phaser.Math.Vector2.ZERO));
+                        speeds.push(Phaser.Math.Distance.BetweenPoints(Phaser.Math.Vector2.ZERO, point) * speed);
+                        break;
+                };
+            }else{
+                switch(emerge){
+                    case 0:
+                        anglesArray.push(angle);
+                        speeds.push(Phaser.Math.Distance.BetweenPoints(Phaser.Math.Vector2.ZERO, point) * speed);
+                        break;
+                    default:
+                        anglesArray.push((emerge === 1)
+                            ? Phaser.Math.Angle.BetweenPoints(Phaser.Math.Vector2.ZERO, point) + angleT * bearingOption
+                            : Phaser.Math.Angle.BetweenPoints(point, Phaser.Math.Vector2.ZERO) -+ angleT * bearingOption);
+                        speeds.push(speed);
+                        break;
+                };
+            };
+            cannonPositions.push(point.multiply(aspectRatio).add(realOrigin));
+            flyAwayAngles.push(Phaser.Math.RadToDeg(angleT * flyAwayOption));
+            /// flyAwayAngles.push(Phaser.Math.RadToDeg((angle + angleT) * flyAwayOption));
+            angleT += Math.PI * 2 / numberOfPoints;
+        };
+    });
+    speedArray.push(speeds);
+};
+
+function createArc(aspectRatio = 1, angleRange){
+    angleRange = isNaN(angleRange) ? 360 : angleRange;
+    const startAngle = (angleRange === undefined) ? 0 : -90 - angleRange / 2;
+    const endAngle = (angleRange === undefined) ? 360 : -90 + angleRange / 2;
+    const ellipse = new Phaser.Curves.Ellipse(0, 0, 1, aspectRatio, startAngle, endAngle);
+    return ellipse;
 };

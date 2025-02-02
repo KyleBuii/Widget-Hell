@@ -32,6 +32,8 @@ class WidgetImageColorPicker extends Component{
                         elementImage.src = reader.result;
                         elementImage.alt = "uploaded image";
                         elementImage.draggable = false;
+                        elementImage.loading = "lazy";
+                        elementImage.decoding = "async";
                         elementImage.onmousemove = this.handleMouseMove;
                         elementImage.onmouseleave = this.handleMouseLeave;
                         elementImageContainer.appendChild(elementImage);
@@ -47,6 +49,8 @@ class WidgetImageColorPicker extends Component{
                     elementImage.src = event.target.value;
                     elementImage.alt = "linked image";
                     elementImage.draggable = false;
+                    elementImage.loading = "lazy";
+                    elementImage.decoding = "async";
                     elementImage.onmousemove = this.handleMouseMove;
                     elementImage.onmouseleave = this.handleMouseLeave;
                     elementImageContainer.appendChild(elementImage);
