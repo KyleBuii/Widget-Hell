@@ -66,7 +66,7 @@ let currentHour = new Date().getHours();
 
 //////////////////// Functions ////////////////////
 //#region
-function dragStart(what){
+function dragStart(what) {
     switch(what){
         case "settings":
             document.getElementById(what + "-widget-draggable").style.visibility = "visible";
@@ -79,7 +79,7 @@ function dragStart(what){
             break;
     };
 };
-function dragStop(what){
+function dragStop(what) {
     switch(what){
         case "settings":
             document.getElementById(what + "-widget-draggable").style.visibility = "hidden";
@@ -93,7 +93,7 @@ function dragStop(what){
     };
 };
 
-function sortSelect(what){
+function sortSelect(what) {
     what.forEach((value) => {
         value.options.sort((a, b) => {
             return ["Default", "Auto", "Any"].indexOf(b.label) - ["Default", "Auto", "Any"].indexOf(a.label)
@@ -102,7 +102,7 @@ function sortSelect(what){
     });
 };
 
-function mergePunctuation(arr){
+function mergePunctuation(arr) {
     if(arr.length <= 1){
         return arr;
     };
@@ -118,7 +118,7 @@ function mergePunctuation(arr){
     return arr;
 };
 
-function grep(arr, filter){
+function grep(arr, filter) {
     let result = [];
     if(arr.length <= 1){
         return arr;
@@ -132,11 +132,11 @@ function grep(arr, filter){
     return result;
 };
 
-function randSentence(){
+function randSentence() {
     return sentences[Math.floor(Math.random() * sentences.length)];
 };
 
-async function copyToClipboard(what){
+async function copyToClipboard(what) {
     if(what !== ""){
         try{
             let dump = document.getElementById("clipboard-dump");
@@ -152,7 +152,7 @@ async function copyToClipboard(what){
     return "empty";
 };
 
-function createPopup(text, type = "normal", randomPosition = false){
+function createPopup(text, type = "normal", randomPosition = false) {
     let widgetContainer = document.getElementById("widget-container");
     /// Creating the popup
     let popup = document.createElement("div");
@@ -225,7 +225,7 @@ function createPopup(text, type = "normal", randomPosition = false){
     };
 };
 
-function formatNumber(number, digits, shouldRound = false){
+function formatNumber(number, digits, shouldRound = false) {
     const lookup = [
         { value: 1,    symbol: ""  },
         { value: 1e3,  symbol: "K" },
@@ -256,7 +256,7 @@ function formatNumber(number, digits, shouldRound = false){
     };
 };
 
-function randomItem(amount = 1, rarity){
+function randomItem(amount = 1, rarity) {
     let item, itemKeys, itemRarity, randomItem, randomRarity;
     let totalGold = 0;
     let allItems = [];
@@ -308,7 +308,7 @@ function randomItem(amount = 1, rarity){
     };
 };
 
-function renderHearts(health){
+function renderHearts(health) {
     let elementHearts = [];
     if(healthDisplay.value !== "none"){
         let currentHealth = health;
@@ -362,7 +362,7 @@ function renderHearts(health){
     return elementHearts;
 };
 
-function playAudio(audio){
+function playAudio(audio) {
     let duplicateAudio = audio.cloneNode();
     duplicateAudio.play();
     duplicateAudio.onended = () => {
@@ -370,7 +370,7 @@ function playAudio(audio){
     };    
 };
 
-function hexToRgb(hex){
+function hexToRgb(hex) {
     /// Input Format: #000000
     /// Return Format: [0, 0, 0]
     return hex.replace(
@@ -381,7 +381,7 @@ function hexToRgb(hex){
         .map(x => parseInt(x, 16));
 };
 
-function rgbToHex(rgb){
+function rgbToHex(rgb) {
     /// Input Format: [0, 0, 0]
     /// Return Format: #00000
     return "#" + rgb.map((x) => {
@@ -390,7 +390,7 @@ function rgbToHex(rgb){
     }).join('');
 };
 
-function calculateBounds(parent, popout){
+function calculateBounds(parent, popout) {
     let bounds = {};
     if(document.getElementById(parent) !== null){
         let sizeParent = document.getElementById(parent).getBoundingClientRect();
@@ -9004,7 +9004,8 @@ class Widgets extends Component{
             formatNumber: formatNumber,
             randomItem: randomItem,
             renderHearts: renderHearts,
-            healthDisplay: this.state.values.health.value
+            healthDisplay: this.state.values.health.value,
+            gameIconSize: '1em'
         };
         let widgets = {};
         let widgetActiveVariables = {};
@@ -9287,8 +9288,7 @@ class Widgets extends Component{
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.minesweeper.active
                     && <WidgetMinesweeper defaultProps={this.generateDefaultProps("minesweeper", "games")}
-                        gameProps={gameProps}
-                        smallIcon={smallIcon}/>}
+                        gameProps={gameProps}/>}
                 {this.state.widgets.games.rockpaperscissor.active
                     && <WidgetRockPaperScissor defaultProps={this.generateDefaultProps("rockpaperscissor", "games")}
                         gameProps={gameProps}
@@ -9341,8 +9341,7 @@ class Widgets extends Component{
                         color={color}/>}
                 {this.state.widgets.fun.pokemonsearch.active
                     && <WidgetPokemonSearch defaultProps={this.generateDefaultProps("pokemonsearch", "fun")}
-                        microIcon={microIcon}
-                        smallMedIcon={smallMedIcon}/>}
+                        microIcon={microIcon}/>}
                 {this.state.widgets.fun.sticker.active
                     && <WidgetSticker defaultProps={this.generateDefaultProps("sticker", "fun")}
                         stickers={this.state.stickers}

@@ -649,7 +649,8 @@ class WidgetMusicPlayer extends Component{
             dataLocalStorage["utility"]["musicplayer"] = {
                 ...dataLocalStorage["utility"]["musicplayer"],
                 urls: [...addTimePlayed],
-                deleted: [...deletedData]
+                deleted: [...deletedData],
+                shuffle: this.state.shuffle
             };
             localStorage.setItem("widgets", JSON.stringify(dataLocalStorage));
             dataSongsRemoved.length = 0;
@@ -665,12 +666,17 @@ class WidgetMusicPlayer extends Component{
             let dataMusicPlayer = dataLocalStorage["utility"]["musicplayer"];
             if(dataMusicPlayer["urls"] !== undefined){
                 this.setState({
-                    urls: [...dataMusicPlayer["urls"]]
+                    urls: [...dataMusicPlayer["urls"]],
+                    shuffle: dataMusicPlayer.shuffle
                 }, () => {
                     if(this.state.urls.length !== 0){
                         unplayedSongsIndex = [...Array(this.state.urls.length).keys()];
                         unplayedSongsMaxIndex = this.state.urls.length;
                         this.loadMusic();
+                    };
+                    if(this.state.shuffle){
+                        document.getElementById("musicplayer-button-shuffle")
+                            .classList.remove("disabled");
                     };
                 });
             }else{

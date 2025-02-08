@@ -39,6 +39,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Kenny Interface Sounds Pack](https://www.kenney.nl/assets/interface-sounds) by Kenny
     - [RPG Sound Pack](https://opengameart.org/content/rpg-sound-pack) by artisticdude
 - **Picker Wheel**
+    - [Template](https://github.com/Mridul2820/wheel-number-picker/tree/master) - by Mridul2820
     - **Audio**
         - [Spin](https://pixabay.com/sound-effects/spin-232536/) - by victorabdo
 - **Quote**

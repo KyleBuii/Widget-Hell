@@ -27,15 +27,16 @@ const enemies = {
     }
 };
 const patterns = [
-    "touhouFangameRecollectionOfScriptersPast",
+    // "touhouFangameRecollectionOfScriptersPast",
     "generation1_1"
 ];
 const generation1_1Patterns = [
-    "spiralColorfulSpeen",
-    "arrowSparsedVomit",
-    "icicleBloodAndIce",
-    "spiralRadiantBloom",
-    "spiralCosmicDance"
+    // "spiralColorfulSpeen",
+    // "arrowSparsedVomit",
+    // "icicleBloodAndIce",
+    // "spiralRadiantBloom",
+    // "spiralCosmicDance"
+    "sparse"
 ];
 let mouseMovement = false;
 let isMobile = false;
@@ -90,7 +91,11 @@ export class Game extends Scene{
                 this.bossBullets.getMatching("active", true).forEach((bullet) => {
                     bullet.remove();
                 });
-                this.boss.kill();
+                this.bossBulletsEmitter.stop();
+                this.bossBulletsEmitter.forEachAlive((particle) => {
+                    particle.kill();
+                });
+                this.boss.kill(true);
                 this.spawnEnemy();
                 this.time.delayedCall(1000, this.spawnEnemy, [], this);
                 this.time.delayedCall(2000, this.spawnEnemy, [], this);        
@@ -204,6 +209,36 @@ export class Game extends Scene{
         this.time.delayedCall(2000, this.spawnEnemy, [], this);
     };
     createBoss(){
+        const playerCollider = {
+            contains: (x, y) => {
+                let hit = false;
+                if(this.player.body.hitTest(x, y)){
+                    hit = true;
+                    this.damagePlayer(this.player, 1);
+                };
+                return hit;
+            }
+        };
+        this.bossBulletsEmitter = this.add.particles(0, 0, "bullet-atlas", {
+            x: WIDTH / 2,
+            y: 200,
+            frame: "circle-blue",
+            lifespan: Infinity,
+            speed: { min: 100, max: 300 },
+            quantity: 20,
+            frequency: 100,
+            deathZone: [
+                {
+                    type: 'onEnter',
+                    source: playerCollider
+                },
+                {
+                    type: 'onLeave',
+                    source: new Phaser.Geom.Rectangle(0, 0, WIDTH, HEIGHT)
+                }
+            ]
+        }).setDepth(7);
+        this.bossBulletsEmitter.stop();
         this.bossBullets = new Bullets(this, 5000)
             .setDepth(7);
         this.bossBombs = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
@@ -292,8 +327,9 @@ export class Game extends Scene{
         this.physics.add.collider(this.boss, this.anchorBoss, (boss, anchor) => {
             boss.body.setVelocityY(0);
             boss.danmaku.setProperties(this, boss.danmakuPatterns[0]);
-            boss.danmaku.startUpDanmaku(this);
+            // boss.danmaku.startUpDanmaku(this);
             boss.danmaku.follow(boss);
+            this.bossBulletsEmitter.start();
             boss.ready = true;
         });
         this.physics.add.overlap(this.bossBombs, this.player, (player, bomb) => {
@@ -368,10 +404,7 @@ export class Game extends Scene{
     };
     playerHitCallback(bullet, player){
         if(bullet.active === true){
-            if(player.active && player.hp.decrease(bullet.damage)){
-                player.dead();
-                this.clearScreen();
-            };
+            this.damagePlayer(player, bullet.damage);
             bullet.remove();
         };
     };
@@ -413,19 +446,12 @@ export class Game extends Scene{
     };
     enemyHitCallback(bullet, enemy){
         if(bullet.active === true && enemy.active === true){
-            if(enemy.hp.decrease((bullet.attack)
+            this.damageEnemy(enemy, (bullet.attack)
                 ? this.player.atk
                 : (bullet.addition)
                     ? this.player.atk / 4
                     : (bullet.damage || 0)
-            )){
-                enemy.kill();
-                if(enemy?.key !== "boss"){
-                    this.spawnEnemy();
-                }else{
-                    this.clearScreen();   
-                };
-            };
+            );
             if(!bullet.attack && !bullet.sponge && !bullet.addition){
                 bullet.remove();
             };
@@ -469,6 +495,22 @@ export class Game extends Scene{
                     };   
                     break;
                 default: break;
+            };
+        };
+    };
+    damagePlayer(player, damage){
+        if(player.active && player.hp.decrease(damage)){
+            player.dead();
+            this.clearScreen();
+        };
+    };
+    damageEnemy(enemy, damage){
+        if(enemy.hp.decrease(damage)){
+            enemy.kill();
+            if(enemy?.key !== "boss"){
+                this.spawnEnemy();
+            }else{
+                this.clearScreen();   
             };
         };
     };
@@ -530,7 +572,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.setTexture(texture);
         this.setDrag(500, 500);
         this.setDepth(5);
-        this.setSize(12, 12);
+        this.setSize(13, 13);
         this.displayWidth = 32;
         this.displayHeight = 50;
         this.speed = 300;
@@ -1037,10 +1079,10 @@ class Boss extends Enemy{
                 this.spawnBomb(3);
             };
             this.phaseTimer++;
-            if(this.phaseTimer === 12000){
-                this.phaseTimer = 0;
-                this.nextDanmakuPattern();
-            };
+            // if(this.phaseTimer === 12000){
+            //     this.phaseTimer = 0;
+            //     this.nextDanmakuPattern();
+            // };
             // if(this.phaseTimerOffset !== -1){
             //     this.phaseTimer = this.phaseTimerOffset;
             //     this.phaseTimerOffset = -1;
@@ -1984,7 +2026,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
     setBulletConfig(){
         this.setTexture(this.bulletTexture, this.bulletFrame);
         this.setAlpha(this.bulletAlpha || 1);
-        this.setSize(this.height, this.width);
+        this.setSize(this.height / 1.5, this.width / 1.5);
         this.body.speed = this.bulletSpeed; /// It's necessary to manually set speed of body otherwise sometimes pre-update sets the velocity to zero, before the bullet gets going
         this.body.setMaxSpeed(this.bulletMaxSpeed);
     };

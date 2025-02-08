@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
@@ -124,9 +123,7 @@ class WidgetGoogleTranslator extends Component{
     handleRandSentence(){
         this.setState({
             input: this.props.randSentence(),
-            from: {value: "auto", label: "Detect language"}
-        }, () => {
-            $("#translator-translate-from").val("en");
+            from: { value: "auto", label: "Detect language" }
         });
         if(speechSynthesis.speaking){
             speechSynthesis.cancel();
@@ -162,9 +159,6 @@ class WidgetGoogleTranslator extends Component{
             this.setState({
                 from: dataSessionStorage.from,
                 to: dataSessionStorage.to
-            }, () => {
-                $("#googletranslator-translate-from").val(this.state.from);
-                $("#googletranslator-translate-to").val(this.state.to);
             });
         };
     };
