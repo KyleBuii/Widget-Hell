@@ -1,5 +1,5 @@
 import Slider from 'rc-slider';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -23,6 +23,11 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         disabled: false,
         maxHealth: 1,
         health: 1
+    });
+    const refState = useRef({
+        mines: state.mines,
+        width: state.width,
+        height: state.health
     });
     useEffect(() => {
         let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -49,14 +54,17 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
-    }, []);
-    useEffect(() => {
         return () => {
             storeData();
             clearInterval(intervalTimer);
         };
-    }, [state.mines, state.width, state.height]);
+    }, []);
     useEffect(() => {
+        refState.current = {
+            mines: state.mines,
+            width: state.width,
+            height: state.health    
+        };
         restartBoard();
     }, [state.mines, state.width, state.height]);
     useEffect(() => {
@@ -277,9 +285,9 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['games']['minesweeper'] = {
                 ...dataLocalStorage['games']['minesweeper'],
-                mines: state.mines,
-                width: state.width,
-                height: state.height
+                mines: refState.current.mines,
+                width: refState.current.width,
+                height: refState.current.height
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
@@ -302,12 +310,12 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                     onContextMenu={(e) => handleRightClick(e, cell.y, cell.x)}>
                     {(!cell.isRevealed)
                         ? (cell.isFlagged)
-                            ? <IconContext.Provider value={{ size: '1em', color: 'red', className: 'global-class-name' }}>
+                            ? <IconContext.Provider value={{ color: 'red', className: 'global-class-name' }}>
                                 <PiFlagPennantFill/>
                             </IconContext.Provider>
                             : null
                         : (cell.isMine)
-                            ? <IconContext.Provider value={{ size: '1em', color: 'black', className: 'global-class-name' }}>
+                            ? <IconContext.Provider value={{ color: 'black', className: 'global-class-name' }}>
                                 <FaBomb/>
                             </IconContext.Provider>
                             : (cell.isEmpty)

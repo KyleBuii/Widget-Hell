@@ -129,13 +129,13 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 <div>
                                     <button className='button-match inverse when-elements-are-not-straight'
                                         onClick={() => handleSlider('height', 25)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <BsArrowCounterclockwise/>
                                         </IconContext.Provider>
                                     </button>
                                     <button className='button-match inverse'
                                         onClick={() => randomValue('height', 1, 40)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <FaRandom/>
                                         </IconContext.Provider>
                                     </button>
@@ -159,13 +159,13 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 <div>
                                     <button className='button-match inverse when-elements-are-not-straight'
                                         onClick={() => handleSlider('width', 50)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <BsArrowCounterclockwise/>
                                         </IconContext.Provider>
                                     </button>
                                     <button className='button-match inverse'
                                         onClick={() => randomValue('width', 1, 260)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <FaRandom/>
                                         </IconContext.Provider>
                                     </button>
@@ -189,13 +189,13 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 <div>
                                     <button className='button-match inverse when-elements-are-not-straight'
                                         onClick={() => handleSlider('incrementA', 0.07)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <BsArrowCounterclockwise/>
                                         </IconContext.Provider>
                                     </button>
                                     <button className='button-match inverse'
                                         onClick={() => randomValue('incrementA', 0, 1)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <FaRandom/>
                                         </IconContext.Provider>
                                     </button>
@@ -220,13 +220,13 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 <div>
                                     <button className='button-match inverse when-elements-are-not-straight'
                                         onClick={() => handleSlider('incrementB', 0.03)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <BsArrowCounterclockwise/>
                                         </IconContext.Provider>
                                     </button>
                                     <button className='button-match inverse'
                                         onClick={() => randomValue('incrementB', 0, 1)}>
-                                        <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ className: 'global-class-name' }}>
                                             <FaRandom/>
                                         </IconContext.Provider>
                                     </button>

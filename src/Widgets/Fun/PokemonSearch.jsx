@@ -4,7 +4,6 @@ import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 
-
 const P = new Pokedex.Pokedex();
 const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
 const clamp = (value, min = 0, max = 100 ) => {
@@ -142,7 +141,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
     };
     const handleButton = (what) => {
         switch (what) {
-            case 'search':
+            case 'search': {
                 if (state.input !== '') {
                     setState((prevState) => ({
                         ...prevState,
@@ -150,7 +149,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                     }));
                 };
                 break;
-            case 'random':
+            };
+            case 'random': {
                 P.getPokemonSpeciesList({
                     limit: 0
                 }).then((data) => {
@@ -160,7 +160,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                     }));
                 });
                 break;
-            case 'setting':
+            };
+            case 'setting': {
                 let buttonSetting = document.getElementById('pokemonsearch-button-setting');
                 let popoutAnimationSetting = document.getElementById('pokemonsearch-popout-animation-setting');
                 setState((prevState) => ({
@@ -169,7 +170,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                 }));
                 defaultProps.showHidePopout(popoutAnimationSetting, !state.setting, buttonSetting);
                 break;
-            default: break;
+            };
+            default: { break; };
         };
     };
     const handleButtonPressable = (what) => {
@@ -375,8 +377,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                 <div className='card-rotator flex-center'
                                     onPointerMove={handleInteract}
                                     onMouseOut={handleInteractEnd}>
-                                    <div id='pokemonsearch-card-pokemon'
-                                        rarity={''}>
+                                    <div id='pokemonsearch-card-pokemon'>
                                         {/* Subtype */}
                                         <span id='pokemonsearch-span-subtype'
                                             className='font no-color'>BASIC</span>

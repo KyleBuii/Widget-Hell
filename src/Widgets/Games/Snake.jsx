@@ -1,5 +1,5 @@
 import Slider from 'rc-slider';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
@@ -20,7 +20,7 @@ Debris bottom  20 seconds  7 seconds
 */
 
 //////////////////// Functions ////////////////////
-function shallowEquals (arr1, arr2) {
+function shallowEquals(arr1, arr2) {
     if (!arr1 || !arr2 || arr1.length !== arr2.length) return false;
     let equals = true;
     for (let i = 0; i < arr1.length; i++) {
@@ -29,14 +29,14 @@ function shallowEquals (arr1, arr2) {
     return equals;
 };
 
-function arrayDiff (arr1, arr2) {
+function arrayDiff(arr1, arr2) {
     return arr1.map((a, i) => {
         return a - arr2[i];
     });
 };
 
 /// Checks if arr1 values falls between [arr2 - arr3]
-function fallsBetween (arr1, arr2, arr3) {
+function fallsBetween(arr1, arr2, arr3) {
     if (((arr1[0] >= arr2[0]) && (arr1[0] <= arr3[0]))
         && ((arr1[1] >= arr2[1]) && (arr1[1] <= arr3[1]))) {
         return true;
@@ -45,7 +45,7 @@ function fallsBetween (arr1, arr2, arr3) {
 };
 
 /// Displays a single cell
-function GridCell (props) {
+function GridCell(props) {
     const classes = `grid-cell 
         ${props.foodCell ? `grid-cell--food${props.foodType}` : ''} 
         ${props.snakeCell ? 'grid-cell--snake' : ''}
@@ -99,6 +99,21 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
         maxHealth: 1,
         health: 1
     });
+    const refState = useRef({
+        direction: state.direction,
+        snake: state.snake,
+        step: state.step,
+        food: state.food,
+        foodType: state.foodType,
+        foodDelay: state.foodDelay,
+        debrisLeft: state.debrisLeft,
+        debrisTop: state.debrisTop,
+        debrisRight: state.debrisRight,
+        debrisBottom: state.debrisBottom,
+        size: state.size,
+        highscore: state.highscore,
+        speed: state.speed
+    });
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         window.addEventListener('resize', calculateSize);
@@ -121,14 +136,29 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
-    }, []);
-    useEffect(() => {
         return () => {
             window.removeEventListener('beforeunload', storeData);
             removeTimers();
             storeData();    
         };
-    }, [state.highscore, state.speed]);
+    }, []);
+    useEffect(() => {
+        refState.current = {
+            direction: state.direction,
+            snake: state.snake,
+            step: state.step,
+            food: state.food,
+            foodType: state.foodType,
+            foodDelay: state.foodDelay,
+            debrisLeft: state.debrisLeft,
+            debrisTop: state.debrisTop,
+            debrisRight: state.debrisRight,
+            debrisBottom: state.debrisBottom,
+            size: state.size,
+            highscore: state.highscore,
+            speed: state.speed    
+        };
+    }, [state.direction, state.snake, state.step, state.food, state.foodType, state.foodDelay, state.debrisLeft, state.debrisBottom, state.debrisRight, state.debrisTop, state.size, state.highscore, state.speed]);
     useEffect(() => {
         if (state.timer === 1) spawnDebris('left');
         if (state.timer === 4) spawnDebris('top');  
@@ -177,7 +207,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                     setState((prevState) => ({
                         ...prevState,
                         timer: prevState.timer + 1
-                    }));            
+                    }));
                 }, 1000);
                 setState((prevState) => ({
                     ...prevState,
@@ -257,30 +287,30 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
     const loop = () => {
         const newSnake = [];
         /// Set in the new 'head' of the snake
-        switch (state.direction) {
+        switch (refState.current.direction) {
             /// Down
             case 83:
             case 40:
-                newSnake[0] = [state.snake[0][0] + state.step, state.snake[0][1]];
+                newSnake[0] = [refState.current.snake[0][0] + refState.current.step, refState.current.snake[0][1]];
                 break;
             /// Up
             case 87:
             case 38:
-                newSnake[0] = [state.snake[0][0] - state.step, state.snake[0][1]];
+                newSnake[0] = [refState.current.snake[0][0] - refState.current.step, refState.current.snake[0][1]];
                 break;
             /// Right
             case 68:
             case 39:
-                newSnake[0] = [state.snake[0][0], state.snake[0][1] + state.step];
+                newSnake[0] = [refState.current.snake[0][0], refState.current.snake[0][1] + refState.current.step];
                 break;
             /// Left
             case 65:
             case 37:
-                newSnake[0] = [state.snake[0][0], state.snake[0][1] - state.step];
+                newSnake[0] = [refState.current.snake[0][0], refState.current.snake[0][1] - refState.current.step];
                 break;
             default: break;
         };
-        if (state.step !== 1) {
+        if (refState.current.step !== 1) {
             setState((prevState) => ({
                 ...prevState,
                 step: 1
@@ -289,38 +319,38 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
         /// Shift each 'body' segment to the previous segment's position
         [].push.apply(
             newSnake,
-            state.snake.slice(1).map((s, i) => {
+            refState.current.snake.slice(1).map((s, i) => {
                 // since we're starting from the second item in the list,
                 // just use the index, which will refer to the previous item
                 // in the original list
-                return state.snake[i];
+                return refState.current.snake[i];
             })
         );
-        if ((!(newSnake[0]) 
-            || !doesntOverlap(newSnake))
-            && timeoutInvulnerabilityFrames === undefined) {
+        if ((!(newSnake[0]) || !doesntOverlap(newSnake))
+            && timeoutInvulnerabilityFrames === undefined
+            || !isValid(newSnake[0])) {
             takeDamage();
         } else {
             /// If moving food
-            let copyFood = state.food;
-            if (foodTypes[state.foodType].moving
-                && state.foodDelay === 0) {
+            let copyFood = refState.current.food;
+            if (foodTypes[refState.current.foodType].moving
+                && refState.current.foodDelay === 0) {
                 let foodPositions = [-1, 0, 1];
                 let randomPosition = Math.floor(Math.random() * 2);
                 copyFood[randomPosition] = copyFood[randomPosition] + foodPositions[Math.floor(Math.random() * foodPositions.length)];
-                if (!isValid(copyFood)) copyFood = [state.size/2, state.size/2];
+                if (!isValid(copyFood)) copyFood = [refState.current.size/2, refState.current.size/2];
             };
             /// Debris Left
-            let newDebrisLeft = state.debrisLeft;
-            if (state.debrisLeft.length !== 0) {
+            let newDebrisLeft = refState.current.debrisLeft;
+            if (refState.current.debrisLeft.length !== 0) {
                 for (let i = 0; i < newDebrisLeft.length; i++) {
                     newDebrisLeft[i][1] = newDebrisLeft[i][1] + 1;
                 };
-                if (fallsBetween(newSnake[0], newDebrisLeft[0], newDebrisLeft[state.debrisLeft.length - 1])
+                if (fallsBetween(newSnake[0], newDebrisLeft[0], newDebrisLeft[refState.current.debrisLeft.length - 1])
                     && timeoutInvulnerabilityFrames === undefined) {
                     takeDamage();
                 };
-                if (newDebrisLeft[0][1] === state.size + 1) {
+                if (newDebrisLeft[0][1] === refState.current.size + 1) {
                     newDebrisLeft = [];
                     timeoutDebrisLeft = setTimeout(() => {
                         spawnDebris('left');
@@ -328,16 +358,16 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                 };
             };
             /// Debris Top
-            let newDebrisTop = state.debrisTop;
-            if (state.debrisTop.length !== 0) {
+            let newDebrisTop = refState.current.debrisTop;
+            if (refState.current.debrisTop.length !== 0) {
                 for (let i = 0; i < newDebrisTop.length; i++) {
                     newDebrisTop[i][0] = newDebrisTop[i][0] + 1;
                 };
-                if (fallsBetween(newSnake[0], newDebrisTop[0], newDebrisTop[state.debrisTop.length - 1])
+                if (fallsBetween(newSnake[0], newDebrisTop[0], newDebrisTop[refState.current.debrisTop.length - 1])
                     && timeoutInvulnerabilityFrames === undefined) {
                     takeDamage();
                 };
-                if (newDebrisTop[0][0] === state.size + 1) {
+                if (newDebrisTop[0][0] === refState.current.size + 1) {
                     newDebrisTop = [];
                     timeoutDebrisTop = setTimeout(() => {
                         spawnDebris('top');
@@ -345,12 +375,12 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                 };
             };
             /// Debris Right
-            let newDebrisRight = state.debrisRight;
-            if (state.debrisRight.length !== 0) {
+            let newDebrisRight = refState.current.debrisRight;
+            if (refState.current.debrisRight.length !== 0) {
                 for (let i = 0; i < newDebrisRight.length; i++) {
                     newDebrisRight[i][1] = newDebrisRight[i][1] - 1;
                 };
-                if (fallsBetween(newSnake[0], newDebrisRight[0], newDebrisRight[state.debrisRight.length - 1])
+                if (fallsBetween(newSnake[0], newDebrisRight[0], newDebrisRight[refState.current.debrisRight.length - 1])
                     && timeoutInvulnerabilityFrames === undefined) {
                     takeDamage();
                 };
@@ -362,12 +392,12 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                 };
             };
             /// Debris Bottom
-            let newDebrisBottom = state.debrisBottom;
-            if (state.debrisBottom.length !== 0) {
+            let newDebrisBottom = refState.current.debrisBottom;
+            if (refState.current.debrisBottom.length !== 0) {
                 for (let i = 0; i < newDebrisBottom.length; i++) {
                     newDebrisBottom[i][0] = newDebrisBottom[i][0] - 1;
                 };
-                if (fallsBetween(newSnake[0], newDebrisBottom[0], newDebrisBottom[state.debrisBottom.length - 1])
+                if (fallsBetween(newSnake[0], newDebrisBottom[0], newDebrisBottom[refState.current.debrisBottom.length - 1])
                     && timeoutInvulnerabilityFrames === undefined) {
                     takeDamage();
                 };
@@ -386,7 +416,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                 debrisRight: newDebrisRight,
                 debrisBottom: newDebrisBottom,
                 food: copyFood,
-                foodDelay: (state.foodDelay !== 0) ? (state.foodDelay - 1) : foodTypes[state.foodType].delay
+                foodDelay: (prevState.foodDelay !== 0) ? (prevState.foodDelay - 1) : foodTypes[prevState.foodType].delay
             }));
             checkIfAteFood(newSnake);
         };
@@ -398,11 +428,11 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
         }));
     };
     const checkIfAteFood = (newSnake) => {
-        if (!shallowEquals(newSnake[0], state.food)) return;
+        if (!shallowEquals(newSnake[0], refState.current.food)) return;
         /// Snake gets longer
         let newSnakeSegment = [];
         const lastSegment = newSnake[newSnake.length - 1];
-        let snakeLengthIncrease = foodTypes[state.foodType].score;
+        let snakeLengthIncrease = foodTypes[refState.current.foodType].score;
         let currentLengthIncrease = 0;
         /// Where should we position the new snake segment?
         //// Here are some potential positions, we can choose the best looking one
@@ -426,11 +456,11 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
         };
         setState((prevState) => ({
             ...prevState,
-            goldEarned: state.goldEarned + snakeLengthIncrease,
+            goldEarned: prevState.goldEarned + snakeLengthIncrease,
             snake: newSnake.concat(newSnakeSegment),
             food: []
         }));
-        if (state.foodType === 'bomb') {
+        if (refState.current.foodType === 'bomb') {
             setState((prevState) => ({
                 ...prevState,
                 debrisLeft: [],
@@ -543,7 +573,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
     /// Handles all pressable buttons (opacity: 0.5 on click)
     const handlePressableButton = (what) => {
         switch (what) {
-            case 'settings':
+            case 'settings': {
                 const buttonSettings = document.getElementById('snake-button-settings');
                 const popoutAnimationSettings = document.getElementById('snake-popout-animation-settings');
                 setState((prevState) => ({
@@ -552,7 +582,8 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                 }));    
                 defaultProps.showHidePopout(popoutAnimationSettings, !state.settings, buttonSettings);
                 break;
-            default: break;
+            };
+            default: { break; };
         };
     };
     const calculateHealth = () => {
@@ -579,8 +610,8 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['games']['snake'] = {
                 ...dataLocalStorage['games']['snake'],
-                highscore: state.highscore,
-                speed: state.speed
+                highscore: refState.current.highscore,
+                speed: refState.current.speed
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
@@ -685,8 +716,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                                 : ''}
                             <button id='snake-button-start-game'
                                 className='button-match'
-                                onClick={startGame}
-                                disabled>Start Game</button>
+                                onClick={startGame}>Start Game</button>
                             <button id='snake-button-settings'
                                 className='button-match inverse disabled-option space-nicely space-top length-medium'
                                 onClick={() => handlePressableButton('settings')}>
@@ -731,7 +761,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                                             </span>
                                             <button className='button-match inverse when-elements-are-not-straight'
                                                 onClick={resetSpeed}>
-                                                <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                                <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                     <BsArrowCounterclockwise/>
                                                 </IconContext.Provider>
                                             </button>
@@ -754,7 +784,8 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                             Created by
                             <a className='font transparent-normal link-match'
                                 href='https://codepen.io/anh194/pen/LwVbew'
-                                target='_blank'> anh</a>
+                                target='_blank'
+                                rel='noreferrer'> anh</a>
                             &emsp;
                             Modified by Me
                         </span>

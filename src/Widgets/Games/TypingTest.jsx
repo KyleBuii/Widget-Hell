@@ -28,6 +28,8 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
         }
     });
     const refTime = useRef(state.time);
+    const refCharacterCount = useRef(state.characterCount);
+    const refMistakesCount = useRef(state.mistakesCount);
     useEffect(() => {
         const handleClick = () => {
             document.getElementById('typingtest-input-field').focus();
@@ -42,18 +44,20 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
     }, []);
     useEffect(() => {
         refTime.current = state.time;
-    }, [state.time]);
+        refCharacterCount.current = state.characterCount;
+        refMistakesCount.current = state.mistakesCount;
+    }, [state.time, state.characterCount, state.mistakesCount]);
     useEffect(() => {
         let textField = document.querySelector('#typingtest-text p');
         let characters = textField.querySelectorAll('span');
-        if (characters[state.characterIndex].classList.contains('incorrect')
+        if (characters[state.characterIndex]?.classList.contains('incorrect')
             && state.isTyping) {
             setState((prevState) => ({
                 ...prevState,
                 mistakesCount: prevState.mistakesCount - 1
             }));
         };
-        characters[state.characterIndex].classList.remove('correct', 'incorrect');
+        characters[state.characterIndex]?.classList.remove('correct', 'incorrect');
     }, [state.characterIndex]);
     useEffect(() => {
         if (state.preset !== '') {
@@ -104,15 +108,13 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             if (!state.isTyping) {
                 timer = setInterval(() => {
                     if (refTime.current > 0) {
-                        let wpm = Math.round(((state.characterCount - state.mistakesCount) / 5) / (timeMax - state.time) * 60);
-                        wpm = wpm < 0
-                            || !wpm
-                            || wpm === Infinity ? 0
+                        let wpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
+                        wpm = (wpm < 0 || !wpm || wpm === Infinity)
+                            ? 0
                             : wpm;
-                        let cpm = (state.characterCount - state.mistakesCount - 1) * (60 / (timeMax - state.time));
-                        cpm = cpm < 0
-                            || !cpm
-                            || cpm === Infinity ? 0
+                        let cpm = (refCharacterCount.current - refMistakesCount.current - 1) * (60 / (timeMax - refTime.current));
+                        cpm = (cpm < 0 || !cpm || cpm === Infinity)
+                            ? 0
                             : cpm;
                         setState((prevState) => ({
                             ...prevState,
@@ -171,12 +173,12 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                     characters[state.characterIndex + 1].classList.add('active');
                 };    
             };
-            let wpm = Math.round(((state.characterCount - state.mistakesCount) / 5) / (timeMax - state.time) * 60);
+            let wpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
             wpm = wpm < 0
                 || !wpm
                 || wpm === Infinity ? 0
                 : wpm;
-            let cpm = (state.characterCount - state.mistakesCount - 1) * (60 / (timeMax - state.time));
+            let cpm = (refCharacterCount.current - refMistakesCount.current - 1) * (60 / (timeMax - refTime.current));
             cpm = cpm < 0
                 || !cpm
                 || cpm === Infinity ? 0
@@ -224,19 +226,23 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
     const handlePresets = (what, amount) => {
         let chosenPreset = '';
         switch (what) {
-            case 'AZ':
+            case 'AZ': {
                 chosenPreset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 break;
-            case 'az':
+            };
+            case 'az': {
                 chosenPreset = 'abcdefghijklmnopqrstuvwxyz';
                 break;
-            case 'ZA':
+            };
+            case 'ZA': {
                 chosenPreset = 'ZYXWVUTSRQPONMLKJIHGFEDCBA';
                 break;
-            case 'za':
+            };
+            case 'za': {
                 chosenPreset = 'zyxwvutsrqponmlkjihgfedcba';
                 break;
-            case 'brainrot':
+            };
+            case 'brainrot': {
                 let words = "skibidi gyatt rizz only in ohio duke dennis did you pray today livvy dunne rizzing up baby gronk sussy imposter pibby glitch in real life sigma alpha omega male grindset andrew tate goon cave freddy fazbear colleen ballinger smurf cat vs strawberry elephant blud dawg shmlawg ishowspeed a whole bunch of turbulence ambatukam bro really thinks he's carti literally hitting the griddy the ocky way kai cenat fanum tax garten of banban no edging in class not the mosquito again bussing axel in harlem whopper whopper whopper whopper 1 2 buckle my shoe goofy ahh aiden ross sin city monday left me broken quirked up white boy busting it down sexual style goated with the sauce john pork grimace shake kiki do you love me huggy wuggy nathaniel b lightskin stare biggest bird omar the referee amogus uncanny wholesome reddit chungus keanu reeves pizza tower zesty poggers kumalala savesta quandale dingle glizzy rose toy ankha zone thug shaker morbin time dj khaled sisyphus oceangate shadow wizard money gang ayo the pizza here PLUH nair butthole waxing t-pose ugandan knuckles family guy funny moments compilation with subway surfers gameplay at the bottom nickeh30 ratio uwu delulu opium bird cg5 mewing fortnite battle pass all my fellas gta 6 backrooms gigachad based cringe kino redpilled no nut november pokénut november wojak literally 1984 foot fetish F in the chat i love lean looksmaxxing gassy incredible theodore john kaczynski social credit bing chilling xbox live mrbeast kid named finger better caul saul i am a surgeon one in a krillion hit or miss i guess they never miss huh i like ya cut g ice spice we go gym kevin james josh hutcherson edit coffin of andy and leyley metal pipe falling"
                     .split(' ');
                 let indexRandom = Math.floor(Math.random() * words.length);
@@ -260,14 +266,16 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                 };
                 chosenPreset = sentence.join(' ');
                 break;
-            case 'numbers':
+            };
+            case 'numbers': {
                 let stringNumber = '';
                 for (let i = 0; i < amount; i++) {
                     stringNumber += (Math.random() * 10).toString().replace('.', '');
                 };
                 chosenPreset = stringNumber;
                 break;
-            default: break;
+            };
+            default: { break; };
         };
         handleResetGame(chosenPreset);
     };
@@ -278,11 +286,11 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             const newState = {
                 ...prevState,
                 modifications: {
-                    ...state.modifications,
+                    ...prevState.modifications,
                     [what]: !state.modifications[what]
                 }
             };
-            if(newState[what]){
+            if(newState.modifications[what]){
                 elementButton.style.opacity = '1';
                 elementText.className = what.replace(/([A-Z])/g, ' $1').toLowerCase();
             }else{
@@ -335,8 +343,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                     {/* Input */}
                     <input id='typingtest-input-field'
                         onChange={handleTyping}
-                        autoComplete='off'
-                        disabled></input>
+                        autoComplete='off'></input>
                     {/* Text */}
                     <div id='typingtest-text'
                         className='font large-medium line bellow'>

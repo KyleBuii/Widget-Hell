@@ -4,10 +4,8 @@
  * 
  * @license MIT, see http://github.com/asvd/dragscroll
  * @copyright 2015 asvd <heliosframework@gmail.com> 
- */
-
-
-(function (root, factory) {
+*/
+(function(root, factory) {
     if (typeof define === 'function' && define.amd) {
         define(['exports'], factory);
     } else if (typeof exports !== 'undefined') {
@@ -15,7 +13,7 @@
     } else {
         factory((root.dragscroll = {}));
     }
-}(this, function (exports) {
+} (this, function(exports) {
     var _window = window;
     var _document = document;
     var mousemove = 'mousemove';
@@ -25,7 +23,6 @@
     var addEventListener = 'add'+EventListener;
     var removeEventListener = 'remove'+EventListener;
     var newScrollX, newScrollY;
-
     var dragged = [];
     var reset = function(i, el) {
         for (i = 0; i < dragged.length;) {
@@ -34,12 +31,12 @@
             el[removeEventListener](mousedown, el.md, 0);
             _window[removeEventListener](mouseup, el.mu, 0);
             _window[removeEventListener](mousemove, el.mm, 0);
-        }
+        };
 
-        // cloning into array since HTMLCollection is updated dynamically
+        /// Cloning into array since HTMLCollection is updated dynamically
         dragged = [].slice.call(_document.getElementsByClassName('dragscroll'));
         for (i = 0; i < dragged.length;) {
-            (function(el, lastClientX, lastClientY, pushed, scroller, cont){
+            (function(el, lastClientX, lastClientY, pushed, scroller, cont) {
                 (cont = el.container || el)[addEventListener](
                     mousedown,
                     cont.md = function(e) {
@@ -77,16 +74,15 @@
                     }, 0
                 );
              })(dragged[i++]);
-        }
-    }
+        };
+    };
 
       
     if (_document.readyState == 'complete') {
         reset();
     } else {
         _window[addEventListener]('load', reset, 0);
-    }
+    };
 
     exports.reset = reset;
 }));
-

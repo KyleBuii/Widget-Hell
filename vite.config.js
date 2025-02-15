@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import purgecss from '@fullhuman/postcss-purgecss';
 
 
 export default defineConfig({
@@ -13,7 +14,7 @@ export default defineConfig({
     },
     plugins: [
         'autoprefixer',
-        require('@fullhuman/postcss-purgecss')({
+        purgecss({
             content: [
                 './index.html',
                 './src/**/*.{js,ts,jsx,tsx,html}',

@@ -1,5 +1,5 @@
 import { HfInference } from '@huggingface/inference';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaDownload, FaGripHorizontal } from 'react-icons/fa';
@@ -7,7 +7,6 @@ import { FaRegCircleQuestion } from 'react-icons/fa6';
 import Select from 'react-select';
 
 
-/// Variables
 const hf = new HfInference(import.meta.env.VITE_AI_IMAGE_GENERATOR_ACCESS_TOKEN);
 const optionsModel = [
     {
@@ -39,6 +38,11 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
         image: '',
         running: false
     });
+    const refState = useRef({
+        prompt: state.prompt,
+        negative: state.negative,
+        model: state.model
+    });
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         if (localStorage.getItem('widgets') !== null) {
@@ -54,11 +58,16 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
             };
         };
         document.getElementById('aiimagegenerator-button-download').style.visibility = 'hidden';
-    }, []);
-    useEffect(() => {
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();    
+        };
+    }, []);
+    useEffect(() => {
+        refState.current = {
+            prompt: state.prompt,
+            negative: state.negative,
+            model: state.model    
         };
     }, [state.prompt, state.negative, state.model]);
     const generateImage = async () => {
@@ -130,13 +139,13 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
         elementA.click();
     };
     const storeData = () => {
-        if ((state.prompt !== '' || state.negative !== '')
+        if ((refState.current.prompt !== '' || refState.current.negative !== '')
             && localStorage.getItem('widgets') !== null) {
             const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['fun']['aiimagegenerator'] = {
-                prompt: state.prompt,
-                negative: state.negative,
-                model: state.model
+                prompt: refState.current.prompt,
+                negative: refState.current.negative,
+                model: refState.current.model
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };

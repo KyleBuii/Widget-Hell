@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
 // import { AiOutlineSetting } from 'react-icons/ai';
@@ -44,6 +44,10 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         maxHealth: 1,
         health: 1
     });
+    const refPaddle = useRef(state.paddle);
+    const refBricks = useRef(state.bricks);
+    const refBall = useRef(state.ball);
+    const refHighscore = useRef(state.highscore); 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         /// Load widget's data from local storage
@@ -79,19 +83,19 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             health: calculateMaxHealth
         }));
         document.getElementById('breakout-overlay-gameover').style.visibility = 'visible';
-    }, []);
-    useEffect(() => {
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();
             clearInterval(intervalGame);
             clearInterval(intervalTimer);
         };
-    }, [state.highscore]);
+    }, []);
     useEffect(() => {
-        drawPaddle();
-        drawBricks();
-    }, [state.paddle, state.bricks]);
+        refPaddle.current = state.paddle;
+        refBricks.current = state.bricks;
+        refBall.current = state.ball;
+        refHighscore.current = state.highscore;
+    }, [state.paddle, state.bricks, state.ball, state.highscore]);
     const handleMouse = (event) => {
         let elementCanvas = document.getElementById('breakout-canvas');
         let relativeX = event.clientX - elementCanvas.offsetLeft;
@@ -110,7 +114,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         let ctx = elementCanvas.getContext('2d');
         ctx.clearRect(0, 0, elementCanvas.width, elementCanvas.height);
         ctx.beginPath();
-        ctx.roundRect(state.paddle.x, state.paddle.y, state.paddle.width, state.paddle.height, 30);
+        ctx.roundRect(refPaddle.current.x, refPaddle.current.y, refPaddle.current.width, refPaddle.current.height, 30);
         ctx.fillStyle = '#333';
         ctx.fill();
         ctx.closePath();
@@ -119,44 +123,40 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         let elementCanvas = document.getElementById('breakout-canvas');
         let ctx = elementCanvas.getContext('2d');
         ctx.beginPath();
-        ctx.arc(state.ball.x, state.ball.y, state.ball.radius, 0, Math.PI * 2);
+        ctx.arc(refBall.current.x, refBall.current.y, refBall.current.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#333';
         ctx.fill();
         ctx.closePath();
     };
     const drawBricks = () => {
-        if (state.bricks.length !== 0){
+        if (refBricks.current.length !== 0){
             let elementCanvas = document.getElementById('breakout-canvas');
             let ctx = elementCanvas.getContext('2d');
             let newBricks = [];
             for (let c = 0; c < state.brick.column; c++) {
                 for (let r = 0; r < state.brick.row; r++) {
-                    if (state.bricks[c][r].status === 1) {
-                        newBricks = [...state.bricks];
+                    if (refBricks.current[c][r].status === 1) {
+                        newBricks = [...refBricks.current];
                         let brickX = (r * (state.brick.width + state.brick.padding)) + state.leftOffset;
                         let brickY = (c * (state.brick.height + state.brick.padding)) + state.topOffset;
                         newBricks[c][r].x = brickX;
                         newBricks[c][r].y = brickY;
                         ctx.beginPath();
                         ctx.roundRect(brickX, brickY, state.brick.width, state.brick.height, 30);
-                        ctx.fillStyle = state.bricks[c][r].color;
+                        ctx.fillStyle = refBricks.current[c][r].color;
                         ctx.fill();
                         ctx.closePath();
                     };
                 };
             };
-            // setState((prevState) => ({
-            //     ...prevState,
-            //     bricks: [...newBricks]
-            // }));
         };
     };
     const hitDetection = () => {
         for (let c = 0; c < state.brick.column; c++) {
             for (let r = 0; r < state.brick.row; r++) {
-                let b = state.bricks[c][r];
+                let b = refBricks.current[c][r];
                 if (b.status === 1) {
-                    if (state.ball.x > b.x && state.ball.x< b.x + state.brick.width && state.ball.y > b.y && state.ball.y < b.y + state.brick.height) {
+                    if (refBall.current.x > b.x && refBall.current.x< b.x + state.brick.width && refBall.current.y > b.y && refBall.current.y < b.y + state.brick.height) {
                         dy = -dy;
                         b.status = 0;
                         setState((prevState) => {
@@ -177,20 +177,20 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
     const moveBall = () => {
         let elementCanvas = document.getElementById('breakout-canvas');
         /// Detect left and right walls
-        if (state.ball.x + dx > elementCanvas.width - state.ball.radius || state.ball.x + dx < state.ball.radius) {
+        if (refBall.current.x + dx > elementCanvas.width - refBall.current.radius || refBall.current.x + dx < refBall.current.radius) {
             dx = -dx;
         };
         /// Detect top wall
-        if (state.ball.y + dy < state.ball.radius) {
+        if (refBall.current.y + dy < refBall.current.radius) {
             dy = -dy;
-        } else if (state.ball.y + dy > (elementCanvas.height - 50) - state.ball.radius) {
+        } else if (refBall.current.y + dy > (elementCanvas.height - 50) - refBall.current.radius) {
             /// Detect paddle hits
-            if (state.ball.x > state.paddle.x && state.ball.x < state.paddle.x + state.paddle.width) {
+            if (refBall.current.x > refPaddle.current.x && refBall.current.x < refPaddle.current.x + refPaddle.current.width) {
                 dy = -dy;
             };
         };
         /// Bottom wall (lose)
-        if (state.ball.y + dy > elementCanvas.height - state.ball.radius || state.ball.y + dy < state.ball.radius) {
+        if (refBall.current.y + dy > elementCanvas.height - refBall.current.radius || refBall.current.y + dy < refBall.current.radius) {
             setState((prevState) => {
                 const newState = {
                     ...prevState,
@@ -208,9 +208,9 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         setState((prevState) => ({
             ...prevState,
             ball: {
-                ...state.ball,
-                x: state.ball.x + dx,
-                y: state.ball.y + dy
+                ...prevState.ball,
+                x: prevState.ball.x + dx,
+                y: prevState.ball.y + dy
             }
         }));
     };
@@ -322,7 +322,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['games']['breakout'] = {
                 ...dataLocalStorage['games']['breakout'],
-                highscore: state.highscore
+                highscore: refHighscore.current
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
@@ -400,8 +400,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                             : <></>}
                         <button className='button-match' 
                             type='button'
-                            onClick={() => start()}
-                            disabled>Start Game</button>
+                            onClick={() => start()}>Start Game</button>
                         {/* <button id='breakout-button-settings'
                             className='button-match inverse disabled-option space-nicely space-top length-medium'
                             onClick={() => handlePressableButton()}>

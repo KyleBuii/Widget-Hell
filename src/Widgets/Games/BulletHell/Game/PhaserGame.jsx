@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import { EventBus } from './EventBus';
 import StartGame from './main';
 
 
-export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref){
+export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene }, ref){
     const game = useRef();
     useLayoutEffect(() => {
         if(game.current === undefined){

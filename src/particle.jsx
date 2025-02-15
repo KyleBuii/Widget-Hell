@@ -2,10 +2,17 @@ import { loadAll } from '@tsparticles/all';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import React, { memo, useEffect, useState } from 'react';
 
-
-function Particle(props){
+function Particle(props) {
     const [particleEngine, setParticleEngine] = useState(false);
     const [particleOptions, setParticleOptions] = useState({});
+    useEffect(() => {
+        if (particleEngine) return;
+        initParticlesEngine(async (engine) => {
+            await loadAll(engine);
+        }).then(() => {
+            setParticleEngine(true);
+        });
+    }, []);
     useEffect(() => {
         /// Handles mute
         setParticleOptions({
@@ -18,22 +25,22 @@ function Particle(props){
     }, [props.mute, particleEngine]);
     useEffect(() => {
         /// Handles choices
-        switch(props.choice?.value){
-            case "circleConnect":
+        switch (props.choice?.value) {
+            case 'circleConnect':
                 setParticleOptions({
                     particles: {
                         number: {
                             value: 50
                         },
                         color: {
-                            value: "#ffffff"
+                            value: '#ffffff'
                         },
                         links: {
                             enable: true,
                             distance: 200
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         opacity: {
                             value: 1
@@ -54,11 +61,11 @@ function Particle(props){
                     }
                 });
                 break;
-            case "circlePop":
+            case 'circlePop':
                 setParticleOptions({
                     particles: {
                         destroy: {
-                            mode: "split",
+                            mode: 'split',
                             split: {
                                 count: 1,
                                 factor: {
@@ -94,19 +101,19 @@ function Particle(props){
                         },
                         color: {
                             value: [
-                                "#3998D0",
-                                "#2EB6AF",
-                                "#A9BD33",
-                                "#FEC73B",
-                                "#F89930",
-                                "#F45623",
-                                "#D62E32",
-                                "#EB586E",
-                                "#9952CF"
+                                '#3998D0',
+                                '#2EB6AF',
+                                '#A9BD33',
+                                '#FEC73B',
+                                '#F89930',
+                                '#F45623',
+                                '#D62E32',
+                                '#EB586E',
+                                '#9952CF'
                             ]
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         opacity: {
                             value: 1
@@ -119,25 +126,25 @@ function Particle(props){
                         },
                         collisions: {
                             enable: true,
-                            mode: "bounce"
+                            mode: 'bounce'
                         },
                         move: {
                             enable: true,
                             speed: 3,
-                            outModes: "bounce"
+                            outModes: 'bounce'
                         }
                     },
                     interactivity: {
                         events: {
                             onClick: {
                                 enable: true,
-                                mode: "pop"
+                                mode: 'pop'
                             }
                         }
                     }
                 });
                 break;
-            case "circleFreeMovement":
+            case 'circleFreeMovement':
                 setParticleOptions({
                     particles: {
                         number: {
@@ -147,7 +154,7 @@ function Particle(props){
                             }
                         },
                         color: {
-                            value: "#ff0000",
+                            value: '#ff0000',
                             animation: {
                                 enable: true,
                                 speed: 360,
@@ -155,7 +162,7 @@ function Particle(props){
                             }
                         },
                         effect: {
-                            type: "trail",
+                            type: 'trail',
                             options: {
                                 trail: {
                                     fade: true,
@@ -167,7 +174,7 @@ function Particle(props){
                             }
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             value: 10
@@ -180,7 +187,7 @@ function Particle(props){
                                     draw: false,
                                     increment: 0.004
                                 },
-                                generator: "simplexNoise"
+                                generator: 'simplexNoise'
                             },
                             enable: true,
                             speed: { min: 6, max: 15 }
@@ -188,15 +195,15 @@ function Particle(props){
                     }
                 });
                 break;
-            case "circleZigZag":
+            case 'circleZigZag':
                 setParticleOptions({
                     particles: {
                         color: {
-                            value: ["#ffffff", "#ff0000", "#00ff00", "#0000ff"]
+                            value: ['#ffffff', '#ff0000', '#00ff00', '#0000ff']
                         },
                         move: {
                             enable: true,
-                            outModes: "out",
+                            outModes: 'out',
                             speed: { min: 1, max: 3 },
                             path: {
                                 enable: true,
@@ -204,7 +211,7 @@ function Particle(props){
                                     waveLength: { min: 3, max: 7 },
                                     waveHeight: { min: 1, max: 5 }
                                 },
-                                generator: "zigZagPathGenerator"
+                                generator: 'zigZagPathGenerator'
                             }
                         },
                         number: {
@@ -214,7 +221,7 @@ function Particle(props){
                             value: 1
                         },
                         effect: {
-                            type: "trail",
+                            type: 'trail',
                             options: {
                                 trail: {
                                     fade: true,
@@ -226,7 +233,7 @@ function Particle(props){
                             }
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             value: 3
@@ -234,18 +241,18 @@ function Particle(props){
                     }
                 });
                 break;
-            case "circleWander":
+            case 'circleWander':
                 setParticleOptions({
                     particles: {
                         color: {
-                            value: "#FF0000",
+                            value: '#FF0000',
                             animation: {
                                 enable: true,
                                 speed: 10
                             }
                         },
                         effect: {
-                            type: "trail",
+                            type: 'trail',
                             options: {
                                 trail: {
                                     length: 50,
@@ -254,10 +261,10 @@ function Particle(props){
                             }
                         },
                         move: {
-                            direction: "none",
+                            direction: 'none',
                             enable: true,
                             outModes: {
-                                default: "destroy"
+                                default: 'destroy'
                             },
                             path: {
                                 clamp: false,
@@ -265,7 +272,7 @@ function Particle(props){
                                 delay: {
                                     value: 0
                                 },
-                                generator: "polygonPathGenerator",
+                                generator: 'polygonPathGenerator',
                                 options: {
                                     sides: 6,
                                     turnSteps: 30,
@@ -283,14 +290,14 @@ function Particle(props){
                             value: 1
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             value: 2
                         }
                     },
                     emitters: {
-                        direction: "none",
+                        direction: 'none',
                         rate: {
                             quantity: 1,
                             delay: 0.25
@@ -306,7 +313,7 @@ function Particle(props){
                     }
                 });
                 break;
-            case "circleInfection":
+            case 'circleInfection':
                 setParticleOptions({
                     fpsLimit: 60,
                     infection: {
@@ -315,36 +322,36 @@ function Particle(props){
                         cure: true,
                         stages: [
                             {
-                                color: "#ff0000",
+                                color: '#ff0000',
                                 duration: 1
                             },
                             {
-                                color: "#ffa500",
+                                color: '#ffa500',
                                 duration: 1,
                                 rate: 2
                             },
                             {
-                                color: "#ffff00",
+                                color: '#ffff00',
                                 duration: 1,
                                 rate: 2
                             },
                             {
-                                color: "#008000",
+                                color: '#008000',
                                 duration: 1,
                                 rate: 3
                             },
                             {
-                                color: "#0000ff",
+                                color: '#0000ff',
                                 duration: 1,
                                 rate: 4
                             },
                             {
-                                color: "#4b0082",
+                                color: '#4b0082',
                                 duration: 1,
                                 rate: 5
                             },
                             {
-                                color: "#ee82ee",
+                                color: '#ee82ee',
                                 duration: 1,
                                 rate: 6,
                                 infectedStage: 0
@@ -360,13 +367,13 @@ function Particle(props){
                             }
                         },
                         color: {
-                            value: "#ffffff"
+                            value: '#ffffff'
                         },
                         shape: {
-                            type: "circle",
+                            type: 'circle',
                             stroke: {
                                 width: 0,
-                                color: "#000000"
+                                color: '#000000'
                             },
                             polygon: {
                                 nb_sides: 5
@@ -396,10 +403,10 @@ function Particle(props){
                             collisions: true,
                             enable: true,
                             speed: 10,
-                            direction: "none",
+                            direction: 'none',
                             random: false,
                             straight: false,
-                            out_mode: "bounce",
+                            out_mode: 'bounce',
                             attract: {
                                 enable: false,
                                 rotateX: 600,
@@ -409,13 +416,13 @@ function Particle(props){
                     }
                 });
                 break;
-            case "circlePush":
+            case 'circlePush':
                 setParticleOptions({
                     interactivity: {
                         events: {
                             onHover: {
                                 enable: true,
-                                mode: "repulse",
+                                mode: 'repulse',
                                 parallax: { enable: false, force: 60, smooth: 10 }
                             },
                             resize: true
@@ -425,11 +432,11 @@ function Particle(props){
                         }
                     },
                     particles: {
-                        color: { value: "#ffffff" },
+                        color: { value: '#ffffff' },
                         move: {
-                            direction: "none",
+                            direction: 'none',
                             enable: true,
-                            outModes: "out",
+                            outModes: 'out',
                             random: false,
                             speed: 2,
                             straight: false
@@ -446,9 +453,9 @@ function Particle(props){
                                 enable: true,
                                 speed: 0.05,
                                 sync: true,
-                                startValue: "max",
+                                startValue: 'max',
                                 count: 1,
-                                destroy: "min"
+                                destroy: 'min'
                             },
                             value: {
                                 min: 0,
@@ -456,7 +463,7 @@ function Particle(props){
                             }
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             value: { min: 5, max: 15 }
@@ -464,10 +471,10 @@ function Particle(props){
                     }
                 });
                 break;        
-            case "firework":
+            case 'firework':
                 setParticleOptions({
                     emitters: {
-                        direction: "top",
+                        direction: 'top',
                         life: {
                             count: 0,
                             duration: 0.1,
@@ -488,7 +495,7 @@ function Particle(props){
                     },
                     particles: {
                         color: {
-                            value: "#fff"
+                            value: '#fff'
                         },
                         number: {
                             value: 0
@@ -497,7 +504,7 @@ function Particle(props){
                             bounds: {
                                 top: 30
                             },
-                            mode: "split",
+                            mode: 'split',
                             split: {
                                 count: 1,
                                 factor: {
@@ -511,7 +518,7 @@ function Particle(props){
                                         width: 0
                                     },
                                     color: {
-                                        value: ["#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93"]
+                                        value: ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93']
                                     },
                                     number: {
                                         value: 0
@@ -533,12 +540,12 @@ function Particle(props){
                                             enable: true,
                                             speed: 0.7,
                                             sync: false,
-                                            startValue: "max",
-                                            destroy: "min"
+                                            startValue: 'max',
+                                            destroy: 'min'
                                         }
                                     },
                                     effect: {
-                                        type: "trail",
+                                        type: 'trail',
                                         options: {
                                             trail: {
                                                 length: {
@@ -549,7 +556,7 @@ function Particle(props){
                                         }
                                     },
                                     shape: {
-                                        type: "circle"
+                                        type: 'circle'
                                     },
                                     size: {
                                         value: 2,
@@ -578,8 +585,8 @@ function Particle(props){
                                             min: 10,
                                             max: 25
                                         },
-                                        direction: "outside",
-                                        outModes: "destroy"
+                                        direction: 'outside',
+                                        outModes: 'destroy'
                                     }
                                 }
                             }
@@ -588,7 +595,7 @@ function Particle(props){
                             count: 1
                         },
                         effect: {
-                            type: "trail",
+                            type: 'trail',
                             options: {
                                 trail: {
                                     length: {
@@ -604,7 +611,7 @@ function Particle(props){
                             path: true
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             value: 1
@@ -622,20 +629,20 @@ function Particle(props){
                                 max: 20
                             },
                             outModes: {
-                                default: "destroy",
-                                top: "none"
+                                default: 'destroy',
+                                top: 'none'
                             }
                         }
                     },
                     sounds: {
                         events: [
                             {
-                                event: "particleRemoved",
+                                event: 'particleRemoved',
                                 filter: (args) => args.data.particle.options.move.gravity.inverse,
                                 audio: [
-                                    "https://particles.js.org/audio/explosion0.mp3",
-                                    "https://particles.js.org/audio/explosion1.mp3",
-                                    "https://particles.js.org/audio/explosion2.mp3"
+                                    'https://particles.js.org/audio/explosion0.mp3',
+                                    'https://particles.js.org/audio/explosion1.mp3',
+                                    'https://particles.js.org/audio/explosion2.mp3'
                                 ]
                             }
                         ],
@@ -643,21 +650,21 @@ function Particle(props){
                     }
                 });
                 break;
-            case "confetti":
+            case 'confetti':
                 setParticleOptions({
                     particles: {
                         color: {
-                            value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"],
+                            value: ['#1E00FF', '#FF0061', '#E1FF00', '#00FF9E'],
                             animation: {
                                 enable: true,
                                 speed: 30
                             }
                         },
                         move: {
-                            direction: "bottom",
+                            direction: 'bottom',
                             enable: true,
                             outModes: {
-                                default: "out"
+                                default: 'out'
                             },
                             size: true,
                             speed: {
@@ -680,7 +687,7 @@ function Particle(props){
                                 min: 0,
                                 max: 360
                             },
-                            direction: "random",
+                            direction: 'random',
                             move: true,
                             animation: {
                                 enable: true,
@@ -688,7 +695,7 @@ function Particle(props){
                             }
                         },
                         tilt: {
-                            direction: "random",
+                            direction: 'random',
                             enable: true,
                             move: true,
                             value: {
@@ -701,7 +708,7 @@ function Particle(props){
                             }
                         },
                         shape: {
-                            type: ["circle", "square", "polygon"],
+                            type: ['circle', 'square', 'polygon'],
                             options: {
                                 polygon: [
                                     {
@@ -746,14 +753,14 @@ function Particle(props){
                     }                  
                 });
                 break;
-            case "mouseCircle":
+            case 'mouseCircle':
                 setParticleOptions({
                     particles: {
                         number: {
                             value: 0
                         },
                         color: {
-                            value: "#ff0000",
+                            value: '#ff0000',
                             animation: {
                                 enable: true,
                                 speed: 20,
@@ -761,7 +768,7 @@ function Particle(props){
                             }
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         opacity: {
                             value: 0.5
@@ -772,14 +779,14 @@ function Particle(props){
                         move: {
                             enable: true,
                             speed: 6,
-                            direction: "none"
+                            direction: 'none'
                         }
                     },
                     interactivity: {
                         events: {
                             onHover: {
                                 enable: true,
-                                mode: "trail"
+                                mode: 'trail'
                             }
                         },
                         modes: {
@@ -788,7 +795,7 @@ function Particle(props){
                                 pauseOnStop: true,
                                 particles: {
                                     color: {
-                                        value: "#00ff00",
+                                        value: '#00ff00',
                                         animation: {
                                             enable: true,
                                             speed: 200,
@@ -796,7 +803,7 @@ function Particle(props){
                                         }
                                     },
                                     move: {
-                                        outModes: "destroy"
+                                        outModes: 'destroy'
                                     },
                                     size: {
                                         random: true,
@@ -808,15 +815,15 @@ function Particle(props){
                     }                  
                 });
                 break;    
-            case "mouseMagnifyingGlass":
+            case 'mouseMagnifyingGlass':
                 setParticleOptions({
                     fpsLimit: 60,
                     interactivity: {
-                        detect_on: "window",
+                        detect_on: 'window',
                         events: {
                             onHover: {
                                 enable: true,
-                                mode: ["bubble", "connect"]
+                                mode: ['bubble', 'connect']
                             },
                             resize: true
                         },
@@ -828,7 +835,7 @@ function Particle(props){
                                 size: 30,
                                 speed: 3,
                                 color: {
-                                    value: ["#5bc0eb", "#fde74c", "#9bc53d", "#e55934", "#fa7921"]
+                                    value: ['#5bc0eb', '#fde74c', '#9bc53d', '#e55934', '#fa7921']
                                 }
                             },
                             connect: {
@@ -842,12 +849,12 @@ function Particle(props){
                     },
                     particles: {
                         color: {
-                            value: "#000000"
+                            value: '#000000'
                         },
                         move: {
-                            direction: "none",
+                            direction: 'none',
                             enable: true,
-                            outMode: "out",
+                            outMode: 'out',
                             random: false,
                             speed: 2,
                             straight: false
@@ -863,7 +870,7 @@ function Particle(props){
                             value: 0
                         },
                         shape: {
-                            type: "circle"
+                            type: 'circle'
                         },
                         size: {
                             random: {
@@ -876,23 +883,23 @@ function Particle(props){
                     retina_detect: true
                 });
                 break;
-            case "heart":
+            case 'heart':
                 setParticleOptions({
                     particles: {
                         color: {
                             value: [
-                                "#FFAEBC",
-                                "#A0E7E5",
-                                "#B4F8C8",
-                                "#FBE7C6",
-                                "#FFC9AE",
-                                "#FFAEE5",
-                                "#A0C6E7",
-                                "#A0E7C2",
-                                "#B4F8EA",
-                                "#C2F8B4",
-                                "#F4FBC6",
-                                "#FBCDC6"
+                                '#FFAEBC',
+                                '#A0E7E5',
+                                '#B4F8C8',
+                                '#FBE7C6',
+                                '#FFC9AE',
+                                '#FFAEE5',
+                                '#A0C6E7',
+                                '#A0E7C2',
+                                '#B4F8EA',
+                                '#C2F8B4',
+                                '#F4FBC6',
+                                '#FBCDC6'
                             ]
                         },
                         move: {
@@ -900,10 +907,10 @@ function Particle(props){
                                 offset: 0,
                                 value: 15
                             },
-                            direction: "bottom",
+                            direction: 'bottom',
                             enable: true,
                             outModes: {
-                                default: "out"
+                                default: 'out'
                             },
                             speed: {
                                 min: 3,
@@ -917,7 +924,7 @@ function Particle(props){
                             value: 1
                         },
                         shape: {
-                            type: "heart"
+                            type: 'heart'
                         },
                         size: {
                             value: 64
@@ -932,7 +939,7 @@ function Particle(props){
                                 value: 30
                             },
                             enable: true,
-                            mode: "horizontal",
+                            mode: 'horizontal',
                             speed: {
                                 min: 5,
                                 max: 15
@@ -954,15 +961,7 @@ function Particle(props){
                 break;
         };
     }, [props.choice]);
-    useEffect(() => {
-        if(particleEngine){ return; };
-        initParticlesEngine(async (engine) => {
-            await loadAll(engine);
-        }).then(() => {
-            setParticleEngine(true);
-        });
-    }, []);
-    return(
+    return (
         <div>
             {particleEngine && <Particles options={particleOptions}/>}
         </div>

@@ -18,6 +18,7 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 		timer: 0
 	});
 	const refGameover = useRef(state.gameOver);
+	const refHighscore = useRef(state.highscore);
 	useEffect(() => {
 		window.addEventListener('beforeunload', storeData);
         initialize();
@@ -32,8 +33,6 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 				GM.ScoreHigh = dataLocalStorage['games']['tetris']['highscore'];
 			};
 		};
-	}, []);
-	useEffect(() => {
 		return () => {
 			window.removeEventListener('beforeunload', storeData);
 			clearInterval(intervalLoop);
@@ -42,10 +41,11 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 			GM.IsAlive = false;
 			storeData();	
 		};
-	}, [state.highscore]);
+	}, []);
 	useEffect(() => {
 		refGameover.current = state.gameOver;
-	}, [state.gameOver]);
+		refHighscore.current = state.highscore;
+	}, [state.gameOver, state.highscore]);
     const handleKeyDown = (event) => {
         if (/38|87|37|65|39|68|40|83|32|70|16/.test(event.keyCode)) {
 			let key = event.keyCode || event.which;
@@ -148,7 +148,7 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 		if (localStorage.getItem('widgets') !== null) {
 			let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
 			let tetrisData = dataLocalStorage['games']['tetris'];
-			tetrisData['highscore'] = state.highscore;
+			tetrisData['highscore'] = refHighscore.current;
 			localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 		};
 	};
@@ -232,7 +232,7 @@ let Page = {
 	unitSize: 40,
 	AreaArr: [],
 	/// Performs the page setup
-	Initialize: function () {
+	Initialize: function() {
 		/// If page has not been setup, do initial setup
 		if (this.IsSetup === false) {
 			this.cvs = document.getElementById('tetris-canvas');
@@ -248,7 +248,7 @@ let Page = {
 		};
 	},
 	/// Redraws canvas visuals whenever the page is marked as dirty
-	Update: function () {
+	Update: function() {
 		for (let i = 0; i < Page.AreaArr.length; i++) {
 			if (Page.AreaArr[i].IsDirty) {
 				Page.AreaArr[i].Draw();
@@ -259,7 +259,7 @@ let Page = {
 };
 
 /// Definition for Area objects. Bounds are in UNITS
-function DrawAreaObj (Left, Top, Width, Height, DrawFunction) {
+function DrawAreaObj(Left, Top, Width, Height, DrawFunction) {
 	/// Bounds in UNITS
 	this.leftBase = Left;
 	this.topBase = Top;
@@ -273,7 +273,7 @@ function DrawAreaObj (Left, Top, Width, Height, DrawFunction) {
 	/// Dirty flag (clean yourself up flag, you're better than that)
 	this.IsDirty = false;
 	/// Bounds recalculated and area dirtied when unitSize changes
-	this.CalculateBounds = function () {
+	this.CalculateBounds = function() {
 		this.left = this.leftBase * Page.unitSize;
 		this.top = this.topBase * Page.unitSize;
 		this.W = this.widthBase * Page.unitSize;
@@ -286,7 +286,7 @@ function DrawAreaObj (Left, Top, Width, Height, DrawFunction) {
 	Page.AreaArr.push(this);
 };
 
-Page.Game = new DrawAreaObj(0, 0, 10, 20, function () {
+Page.Game = new DrawAreaObj(0, 0, 10, 20, function() {
 	/// UnitSize minus a couple pixels of separation
 	let uDrawSize = Page.unitSize - 2,
 		drawL,
@@ -334,7 +334,7 @@ Page.Game = new DrawAreaObj(0, 0, 10, 20, function () {
 	};
 });
 
-Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function () {
+Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function() {
 	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcA = GM.Pc.Upcoming[0];
 	/// Next box background
@@ -373,7 +373,7 @@ Page.UpcomingA = new DrawAreaObj(10.5, 2.6, 2.5, 2.5, function () {
 	};
 });
 
-Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function () {
+Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function() {
 	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcB = GM.Pc.Upcoming[1];
 	/// Next box background
@@ -412,7 +412,7 @@ Page.UpcomingB = new DrawAreaObj(10.5, 5.2, 2.5, 2.5, function () {
 	};
 });
 
-Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function () {
+Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function() {
 	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcC = GM.Pc.Upcoming[2];
 	/// Next box background
@@ -451,7 +451,7 @@ Page.UpcomingC = new DrawAreaObj(10.5, 7.8, 2.5, 2.5, function () {
 	};
 });
 
-Page.Hold = new DrawAreaObj(10.5, 17.5, 2.5, 2.5, function () {
+Page.Hold = new DrawAreaObj(10.5, 17.5, 2.5, 2.5, function() {
 	let uDrawSize = Math.floor(Page.unitSize / 2),
 		pcC = GM.Pc.Held;
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
@@ -486,7 +486,7 @@ Page.Hold = new DrawAreaObj(10.5, 17.5, 2.5, 2.5, function () {
 	};
 });
 
-Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function () {
+Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function() {
 	/// Draw the score area back bar
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
 	Page.ctx.fillRect(this.left,this.top,this.W,this.H);
@@ -520,7 +520,7 @@ Page.ScoreBarHigh = new DrawAreaObj(10.5, 0, 4.5, 1, function () {
 	DrawText(text, 'rgb(255,232,96)', '500', 'right', size, left, top);
 });
 
-Page.ScoreBarCur = new DrawAreaObj(10.5, 1.1, 4.5, 1, function () {
+Page.ScoreBarCur = new DrawAreaObj(10.5, 1.1, 4.5, 1, function() {
 	/// Draw the score area back bar
 	Page.ctx.fillStyle = 'rgb(28,30,34)';
 	Page.ctx.fillRect(this.left,this.top,this.W,this.H);
@@ -554,7 +554,7 @@ let GM = {
 	/// Array of grid squares
 	StaticUnits: [],
 	/// Set up intial game var values
-	Initialize: function () {
+	Initialize: function() {
 		/// Reset current piece vars
 		this.Pc.Next = this.Pc.Cur = this.Pc.ProjY = 0;
 		/// Populate the GM's static unit array with 0's (empty)
@@ -574,7 +574,7 @@ let GM = {
 		this.ScoreCur = 0;
 	},
 	/// Updates time each frame and executing logic if a tick has passed
-	Update: function () {
+	Update: function() {
 		this.TimeCur = new Date().getTime();
 		if (this.TimeCur >= this.TimeEvent) {
 			if (GM.Pc.Cur === 0 && this.IsAlive) {
@@ -588,25 +588,25 @@ let GM = {
 		};
 	},
 	/// Reset the tick timer (generates a new TimeEvent target)
-	RefreshTimer: function () {
+	RefreshTimer: function() {
 		this.TimeEvent = new Date().getTime() + this.TickRate;
 	},
 	/// Called when a piece is spawned, advances level if needed
-	PieceSpawned: function () {
+	PieceSpawned: function() {
 		this.PiecesRemaining--;
 		if (this.PiecesRemaining <= 0) {
 			this.AdvanceLevel();
 		};
 	},
 	/// Advance level, recalculate TickRate, reset pieces remaining
-	AdvanceLevel: function () {
+	AdvanceLevel: function() {
 		this.Level++;
 		this.TickRate = Math.floor(555 * Math.exp(this.Level / -10));
 		this.PiecesRemaining = Math.floor((5000 / this.TickRate));
 		Page.ScoreBarCur.IsDirty = true;
 	},
 	/// Check specified rows to see if any can be cleared
-	CheckUnits: function (checkRowsRaw) {
+	CheckUnits: function(checkRowsRaw) {
 		let scoreMult = 0,
 		pieceScore = 0,
 		checkRows = [];
@@ -654,7 +654,7 @@ let GM = {
 			};   
 		};
 	},
-	GameOver: function () {
+	GameOver: function() {
 		Page.Game.IsDirty = Page.ScoreBarCur.IsDirty = true;
 		if (this.ScoreCur > this.ScoreHigh) {
 			this.ScoreHigh = this.ScoreCur;
@@ -669,17 +669,17 @@ let GM = {
 //--------------------------------------------------//
 // PcObj is used to create new piece object instances based on the
 // passed in parameters. PcObj is called by predefined templates
-GM.PcObj = function (color, rotCount, units) {
+GM.PcObj = function(color, rotCount, units) {
 	this.x = 5;
 	this.y = 0;
 	this.color = color;
 	this.UO = {};
 	/// Rotate this piece by advancing to next unit obj of linked list
-	this.Rotate = function () {
+	this.Rotate = function() {
 		this.UO = this.UO.nextUO;
 	};
 	/// Set up the piece unit object linked list to define rotations
-	this.SetUO = function (rotCount, units) {
+	this.SetUO = function(rotCount, units) {
 		let linkedListUO = [];
 		linkedListUO[0] = { nextUO: 0, arr:[] };
 		linkedListUO[0].arr = units;
@@ -714,7 +714,7 @@ GM.PcObj = function (color, rotCount, units) {
 // their color, rotation count, and unit block definitions.
 //#region
 /// O - Square piece definition
-GM.O = function () {
+GM.O = function() {
 	return new GM.PcObj(
 		'rgb(255,232,51)',
 		1,                
@@ -726,7 +726,7 @@ GM.O = function () {
 };
 
 /// I - Line piece definition
-GM.I = function () {
+GM.I = function() {
 	return new GM.PcObj(
 		'rgb(51,255,209)',
 		2,  
@@ -738,7 +738,7 @@ GM.I = function () {
 };
 
 /// S - Right facing zigzag piece definition
-GM.S = function () { 
+GM.S = function() { 
 	return new GM.PcObj(
 		'rgb(106,255,51)',
 		2, 
@@ -750,7 +750,7 @@ GM.S = function () {
 };
 
 /// Z - Left facing zigzag piece definition
-GM.Z = function () { 
+GM.Z = function() { 
 	return new GM.PcObj(
 		'rgb(255,51,83)',
 		2,
@@ -762,7 +762,7 @@ GM.Z = function () {
 };
 
 /// L - Right facing angle piece definition
-GM.L = function () {
+GM.L = function() {
 	return new GM.PcObj(
 		'rgb(255,129,51)',
 		4,
@@ -774,7 +774,7 @@ GM.L = function () {
 };
 
 /// J - Left facing angle piece definition
-GM.J = function () {
+GM.J = function() {
 	return new GM.PcObj(
 		'rgb(64,100,255)',
 		4,
@@ -786,7 +786,7 @@ GM.J = function () {
 };
 
 /// T - Hat shaped piece definition
-GM.T = function () {
+GM.T = function() {
 	return new GM.PcObj(
 		'rgb(160,62,255)',
 		4,
@@ -807,7 +807,7 @@ GM.Pc = {
 	Cur: 0, ProjY: 0, CanHold: true, LastLineSpawn: 0,
 	Upcoming: [0,0,0],
 	Held: 0,
-	Hold: function () {
+	Hold: function() {
 		if (this.CanHold) {
 			this.CanHold = false;
 			if (this.Held === 0) {
@@ -827,7 +827,7 @@ GM.Pc = {
 		};
 	},
 	/// Push upcoming piece to current & randomize new upcoming piece
-	Generate: function () {
+	Generate: function() {
 		this.Cur = this.Upcoming[0];
 		this.Upcoming[0] = this.Upcoming[1];
 		this.Upcoming[1] = this.Upcoming[2];    
@@ -862,7 +862,7 @@ GM.Pc = {
 		};
 	},
 	/// Freeze the current piece's position and rotation
-	Freeze: function () {
+	Freeze: function() {
 		if (GM.IsAlive) {
 			let affectedRows = [];    
 			for (let i = 0; i < this.Cur.UO.arr.length; i++) {
@@ -880,7 +880,7 @@ GM.Pc = {
 		};
 	},
 	/// Apply gravity to the current piece, checking for collisions
-	DoGravity: function () {
+	DoGravity: function() {
 		if (this.Cur !== 0) {
 			let collisions = this.CheckCollisions(0,0,1);
 			if (collisions === 0) {
@@ -892,7 +892,7 @@ GM.Pc = {
 		GM.RefreshTimer();
 	},
 	/// Attempt to rotate the current piece, returns bool
-	TryRotate: function () {
+	TryRotate: function() {
 		if (this.Cur !== 0) {
 			let collisions = this.CheckCollisions(1,0,0);
 			if (collisions === 0) {
@@ -903,7 +903,7 @@ GM.Pc = {
 		return false;
 	},
 	/// Attempt to move current piece base on given XY, returns bool
-	TryMove: function (moveX, moveY) {
+	TryMove: function(moveX, moveY) {
 		if (this.Cur !== 0) {
 			let collisions = this.CheckCollisions(0,moveX,moveY);
 			if (collisions === 0) {
@@ -919,7 +919,7 @@ GM.Pc = {
 		return false;
 	},
 	/// Attempt to drop the current piece until it collides, returns bool
-	TryDrop: function () {
+	TryDrop: function() {
 		let squaresDropped = 0;
 		if (this.Cur !== 0) {
 			while (this.TryMove(0,1) === true && squaresDropped < 22) {
@@ -935,7 +935,7 @@ GM.Pc = {
 		};
 	},
 	/// Attempt to find (and return) projected drop point of current piece
-	TryProject: function () {
+	TryProject: function() {
 		let squaresDropped = 0;
 		if (this.Cur !== 0) {
 			while (this.CheckCollisions(0,0,squaresDropped) === 0 &&
@@ -946,7 +946,7 @@ GM.Pc = {
 		return squaresDropped - 1;    
 	},
 	/// Return collision count OR -1 if test piece out of bounds
-	CheckCollisions: function (doRot, offsetX, offsetY) {
+	CheckCollisions: function(doRot, offsetX, offsetY) {
 		let unitArr,
 			collisionCount = 0;    
 		if (doRot === 1) {
@@ -974,14 +974,14 @@ GM.Pc = {
 //--------------------------------------------------//
 //    HELPER FUNCTIONS                              //
 //--------------------------------------------------//
-function DrawText (text, color, weight, alignment, size, left, top) {
+function DrawText(text, color, weight, alignment, size, left, top) {
 	Page.ctx.font = weight + ' ' + size + 'px "Jura", sans-serif';
 	Page.ctx.textAlign = alignment;
 	Page.ctx.fillStyle = color;
 	Page.ctx.fillText(text, left ,top);  
 };
 
-function ColorWithAlpha (color, alpha) {
+function ColorWithAlpha(color, alpha) {
 	let retColor = 'rgba' + color.substring(3,color.length - 1);
 	retColor += ',' + alpha + ')';
 	return retColor;

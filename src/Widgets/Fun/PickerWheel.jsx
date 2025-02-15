@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -23,6 +23,10 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
         finished: true,
         maxSpeed: 0
     });
+    const refState = useRef({
+        segments: state.segments,
+        segmentsColor: state.segmentsColor
+    });
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         if (localStorage.getItem('widgets') !== null) {
@@ -37,12 +41,16 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                 draw();
             };
         };
-    }, []);
-    useEffect(() => {
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();
             clearInterval(intervalSpin);
+        };
+    }, []);
+    useEffect(() => {
+        refState.current = {
+            segments: state.segments,
+            segmentsColor: state.segmentsColor    
         };
     }, [state.segments, state.segmentsColor]);
     useEffect(() => {
@@ -224,8 +232,8 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['fun']['pickerwheel'] = {
                 ...dataLocalStorage['fun']['pickerwheel'],
-                segments: [...state.segments],
-                segmentsColor: [...state.segmentsColor]
+                segments: [...refState.current.segments],
+                segmentsColor: [...refState.current.segmentsColor]
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };

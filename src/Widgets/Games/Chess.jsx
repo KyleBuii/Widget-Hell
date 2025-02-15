@@ -170,7 +170,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
     };
     const handleButton = (what) => {
         switch (what) {
-            case 'reset':
+            case 'reset': {
                 document.getElementById('chess-captured-pieces-black').innerHTML = '';
                 state.game.reset();
                 clearInterval(intervalTimer);
@@ -185,7 +185,8 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                     gameover: false     
                 }));
                 break;
-            case 'undo':
+            };
+            case 'undo': {
                 let undoBlack = state.game.undo();
                 let undoWhite = state.game.undo();
                 if (!state.gameover && undoBlack !== null) {
@@ -210,7 +211,8 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                     }));            
                 };
                 break;
-            default: break;
+            };
+            default: { break; };
         };
         clearTimeout(timeoutRandomMove);
         setState((prevState) => ({ ...prevState }));

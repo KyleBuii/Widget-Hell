@@ -1,5 +1,5 @@
 import Slider from 'rc-slider';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
@@ -34,6 +34,10 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
         maxHealth: 1,
         health: 1
     });
+    const refState = useRef({
+        highscore: state.highscore,
+        speed: state.speed
+    });
     useEffect(() => {
         document.getElementById('simongame-overlay-gameover').style.visibility = 'visible';
         window.addEventListener('beforeunload', storeData);
@@ -54,13 +58,17 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
-    }, []);
-    useEffect(() => {
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();
             clearInterval(intervalTimer);
             clearTimeout(timeoutDelay);    
+        };
+    }, []);
+    useEffect(() => {
+        refState.current = {
+            highscore: state.highscore,
+            speed: state.speed    
         };
     }, [state.highscore, state.speed]);
     useEffect(() => {
@@ -223,8 +231,8 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             dataLocalStorage['games']['simongame'] = {
                 ...dataLocalStorage['games']['simongame'],
-                highscore: state.highscore,
-                speed: state.speed
+                highscore: refState.current.highscore,
+                speed: refState.current.speed
             };
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
@@ -357,7 +365,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                                             </span>
                                             <button className='button-match inverse when-elements-are-not-straight'
                                                 onClick={() => handleSetting('speed', 'reset')}>
-                                                <IconContext.Provider value={{ size: '1em', className: 'global-class-name' }}>
+                                                <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                     <BsArrowCounterclockwise/>
                                                 </IconContext.Provider>
                                             </button>
