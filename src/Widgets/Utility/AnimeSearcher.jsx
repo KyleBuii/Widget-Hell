@@ -68,7 +68,7 @@ class WidgetAnimeSearcher extends Component {
             chapters: 0,
         };
     };
-    async fetchImage (link) {
+    async fetchImage(link) {
         const urlTrace = `https://api.trace.moe/search?cutBorders&url=${encodeURIComponent(link)}`;
         try {
             const responseTrace = await fetch(urlTrace);
@@ -92,7 +92,7 @@ class WidgetAnimeSearcher extends Component {
             console.error(err);
         };
     };
-    async fetchMedia (name = null, id = null, image = false) {
+    async fetchMedia(name = null, id = null, image = false) {
         /// Clear existing animations
         if (this.state.characters.length !== 0) {
             const elementCharacter = document.getElementById(`animesearcher-character-${this.state.characterIndex}`);
@@ -446,7 +446,7 @@ class WidgetAnimeSearcher extends Component {
             });
         };
     };
-    async fetchMaxMedia () {
+    async fetchMaxMedia() {
         const query = `
             query{
                 SiteStatistics{
@@ -482,12 +482,12 @@ class WidgetAnimeSearcher extends Component {
             console.error(err);
         };
     };
-    handleKeyDown (event) {
+    handleKeyDown(event) {
         if (event.key === 'Enter') {
             this.handleSearch();
         };
     };
-    handleSearch () {
+    handleSearch() {
         const inputSearch = document.getElementById('animesearcher-input-search');
         const elementImageUploaded = document.getElementById('animesearcher-image-uploaded');
         if ((inputSearch.value !== '')
@@ -522,13 +522,13 @@ class WidgetAnimeSearcher extends Component {
         };
         inputSearch.value = '';
     };
-    handleButtonSpoiler () {
+    handleButtonSpoiler() {
         this.setState({
             spoiler: !this.state.spoiler
         });
         document.getElementById('animesearcher-button-spoiler').classList.toggle('disabled');
     };
-    characterClick (index) {
+    characterClick(index) {
         const elementCharacter = document.getElementById(`animesearcher-character-${(index !== undefined) ? index : this.state.characterIndex}`);
         const elementCharacterInformation = document.getElementById('animesearcher-character-information');
         if (index !== undefined) {
@@ -546,10 +546,10 @@ class WidgetAnimeSearcher extends Component {
         elementCharacterInformation.classList.toggle('animation-animesearcher-character-information');
         elementCharacter.classList.toggle('animation-image-character');
     };
-    storeData () {
+    storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
-    componentDidMount () {
+    componentDidMount() {
         const dateLocalStorage = JSON.parse(localStorage.getItem('date'));
         const currentDate = new Date().getDate();
         if ((sessionStorage.getItem('animesearcher') !== null)
@@ -567,7 +567,7 @@ class WidgetAnimeSearcher extends Component {
             }));
         };
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}

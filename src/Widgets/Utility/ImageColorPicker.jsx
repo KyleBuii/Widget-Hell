@@ -6,7 +6,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 
 
 class WidgetImageColorPicker extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             hex: '',
@@ -19,7 +19,7 @@ class WidgetImageColorPicker extends Component {
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
     };
-    handleColorChange (event) {
+    handleColorChange(event) {
         if (this.state.colorPicking) {
             const elementColor = document.getElementById('imagecolorpicker-color');
             elementColor.style.backgroundColor = event.hex;    
@@ -30,14 +30,14 @@ class WidgetImageColorPicker extends Component {
             });
         };
     };
-    handleColorClick () {
+    handleColorClick() {
         let numbers = this.state.rgb.replace(/rgb\(-?([0-9]+),[\s-]*?([0-9]+),[\s-]*?([0-9]+)\)/, '$1 $2 $3');
         if (numbers !== '') {
             let splitNumbers = numbers.split(' ');
             this.props.randomColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
         };
     };
-    handleMouseMove () {
+    handleMouseMove() {
         if (!this.state.colorPicking) {
             this.setState({
                 colorPicking: true
@@ -51,12 +51,12 @@ class WidgetImageColorPicker extends Component {
             });
         };
     };
-    handleMouseLeave () {
+    handleMouseLeave() {
         this.setState({
             colorPicking: false
         });
     };
-    getImage (where, event) {
+    getImage(where, event) {
         const elementImageContainer = document.getElementById('imagecolorpicker-image');
         switch (where) {
             case 'uploaded': {
@@ -98,11 +98,11 @@ class WidgetImageColorPicker extends Component {
             default: { break; };
         };
     };
-    renderColorPicker ({ onClick }) {
+    renderColorPicker({ onClick }) {
         return <button id='imagecolorpicker-eye-dropper-button'
             onClick={onClick}></button>
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}

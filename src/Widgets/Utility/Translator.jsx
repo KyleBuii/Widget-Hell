@@ -91,7 +91,7 @@ const optionsTranslateTo = [
 ];
 
 class WidgetTranslator extends Component{
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             disableInput: false,
@@ -124,7 +124,7 @@ class WidgetTranslator extends Component{
         this.handleCunnyCodeAronaDrag = this.handleCunnyCodeAronaDrag.bind(this);
         this.handleCunnyCodeAronaDragging = this.handleCunnyCodeAronaDragging.bind(this);
     };
-    async handleCopy () {
+    async handleCopy() {
         try {
             let clipboardStatus = await this.props.copyToClipboard(this.state.converted);
             let elementTranslatedText = document.getElementById('translator-translated-text');
@@ -142,7 +142,7 @@ class WidgetTranslator extends Component{
             console.error(err);
         };
     };
-    handleChange (event) {
+    handleChange(event) {
         if (event.target.value !== ' ') {
             this.setState({
                 input: event.target.value
@@ -173,7 +173,7 @@ class WidgetTranslator extends Component{
             default: break;
         };
     };
-    handleCunnyCode (type, subtype, subsubtype) {
+    handleCunnyCode(type, subtype, subsubtype) {
         let elementDialogue = document.getElementById('translator-cunny-code-arona-dialogue');
         let elementImage = document.getElementById('translator-image');
         elementDialogue.style.visibility = 'visible';
@@ -191,7 +191,7 @@ class WidgetTranslator extends Component{
         elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
         elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.webp`;
     };
-    handleCunnyCodeAronaTouch (where) {
+    handleCunnyCodeAronaTouch(where) {
         let elementImage = document.getElementById('translator-image');
         elementImage.style.animation = 'unset';
         this.handleCunnyCode('touch', where);
@@ -220,7 +220,7 @@ class WidgetTranslator extends Component{
             default: break;
         };
     };
-    handleCunnyCodeAronaDrag (action, event) {
+    handleCunnyCodeAronaDrag(action, event) {
         let elementImage = document.getElementById('translator-image');
         let elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
         switch (action) {
@@ -258,7 +258,7 @@ class WidgetTranslator extends Component{
                 break;
         };
     };
-    handleCunnyCodeAronaDragging (event) {
+    handleCunnyCodeAronaDragging(event) {
         const elementImageContainer = document.getElementById('translator-container-image').getBoundingClientRect();
         const elementImage = document.getElementById('translator-image');
         const elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
@@ -276,7 +276,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Handles 'word-break' for unbreakable strings
-    handleWordBreak () {
+    handleWordBreak() {
         const translatedText = document.getElementById('translator-translated-text');
         switch (this.state.to.value) {
             case 'braille':
@@ -290,7 +290,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Handles special stuff for options (author, images, dialogue)
-    handleBackground (swap) {
+    handleBackground(swap) {
         let toAuthor, toAuthorLink;
         let elementContainer = document.getElementById('translator-widget-animation');
         let elementImage = document.getElementById('translator-image');
@@ -323,7 +323,7 @@ class WidgetTranslator extends Component{
         });
     };
     /// Handles the 'from' language select
-    handleFrom (event) {
+    handleFrom(event) {
         this.setState({
             from: event
         }, () => {
@@ -337,7 +337,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Handles the 'to' language select
-    handleTo (event) {
+    handleTo(event) {
         let popoutAnimation;
         /// If previous value is a popout, hide it
         if (regexPopouts.test(this.state.to.value)) {
@@ -363,7 +363,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Swaps 'from' language and 'to' language
-    handleSwap () {
+    handleSwap() {
         if (this.state.from.value !== this.state.to.value) {
             this.props.randomColor();
             const prev = this.state.from;
@@ -381,7 +381,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Saves 'converted' text into 'input' field
-    handleSave () {
+    handleSave() {
         this.setState(prevState => ({
             input: prevState.converted,
             convert: prevState.converted
@@ -389,11 +389,11 @@ class WidgetTranslator extends Component{
             this.convertToText();
         });
     };
-    handleTalk () {
+    handleTalk() {
         this.props.talk(this.state.converted);
     };
     /// Handles 'replace' from 'translator-translate-to'
-    handleReplaceFrom (event) {
+    handleReplaceFrom(event) {
         this.setState({
             replaceFrom: event.target.value
         }, () => {
@@ -402,7 +402,7 @@ class WidgetTranslator extends Component{
             };
         });
     };
-    handleReplaceTo (event) {
+    handleReplaceTo(event) {
         this.setState({
             replaceTo: event.target.value
         }, () => {
@@ -412,7 +412,7 @@ class WidgetTranslator extends Component{
         });
     };
     /// Handles all buttons that are pressable (opacity: 0.5 on click)
-    handlePressableButton (what, popout) {
+    handlePressableButton(what, popout) {
         const popoutButton = document.getElementById(`${popout}-popout-button-${what}`);
         popoutButton.style.opacity = (this.state[what] === false) ? '1' : '0.5';
         this.setState({
@@ -422,7 +422,7 @@ class WidgetTranslator extends Component{
         });
     };
     /// Handles random sentence button
-    handleRandSentence () {
+    handleRandSentence() {
         this.setState({
             input: this.props.randSentence(),
         }, () => {
@@ -433,7 +433,7 @@ class WidgetTranslator extends Component{
         };
     };
     /// Convert the 'from' language to english
-    convertFromText (swap) {
+    convertFromText(swap) {
         let stringConvertFrom = '';
         switch (this.state.from.value) {
             /// Other languages
@@ -554,7 +554,7 @@ class WidgetTranslator extends Component{
         });
     };
     /// Convert english to the 'to' language
-    convertToText (swap) {
+    convertToText(swap) {
         let stringConvertTo = '';
         switch (this.state.to.value) {
             /// Other languages
@@ -1003,7 +1003,7 @@ class WidgetTranslator extends Component{
             converted: stringConvertTo
         });
     };
-    componentDidMount () {
+    componentDidMount() {
         /// Sort the 'translate-to' optgroups options alphabetically
         this.props.sortSelect(optionsTranslateFrom);
         this.props.sortSelect(optionsTranslateTo);
@@ -1033,7 +1033,7 @@ class WidgetTranslator extends Component{
             isMobile = navigator.maxTouchPoints > 0;
         };
     };
-    componentWillUnmount () {
+    componentWillUnmount() {
         let data = {
             'from': this.state.from,
             'to': this.state.to
@@ -1047,7 +1047,7 @@ class WidgetTranslator extends Component{
         document.removeEventListener('mousemove', this.handleCunnyCodeAronaDragging);
         document.removeEventListener('mouseup', this.handleCunnyCodeAronaDrag);
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}

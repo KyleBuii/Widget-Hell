@@ -6,7 +6,7 @@ import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay, FaShuffle } from 'r
 import { IoPlayBack, IoPlayForward } from 'react-icons/io5';
 import { RiPlayListFill } from 'react-icons/ri';
 import { VscClearAll } from 'react-icons/vsc';
-import ReactPlayer from 'react-player/lazy';
+import ReactPlayer from 'react-player';
 import SimpleBar from 'simplebar-react';
 
 
@@ -27,39 +27,39 @@ let unplayedSongsIndex = [];
 let unplayedSongsMaxIndex = 0;
 
 class WidgetMusicPlayer extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.ref = player => {
             this.player = player;
         };
         this.state = {
             music: [],
-                urls: [
-                    {
-                        name: 'Origin | Original by Kilia Kurayami',
-                        artist: 'Kilia Kurayami Ch. 【EIEN Project】',
-                        url: 'https://www.youtube.com/watch?v=7Rb5fxeqVxs',
-                        timePlayed: 0
-                    },
-                    {
-                        name: 'Asian Hideout - ERROR 403: paradise x paradigm',
-                        artist: 'Asian Hideout',
-                        url: 'https://www.youtube.com/watch?v=ymxBpO5U2KY',
-                        timePlayed: 0
-                    },
-                    {
-                        name: 'We are cool【轟はじめ/古石ビジュー】',
-                        artist: 'おだまよ',
-                        url: 'https://www.youtube.com/watch?v=70PIxN3XM5k',
-                        timePlayed: 0
-                    },
-                    {
-                        name: '【MV】ABOVE BELOW【hololive English -Justice- Debut Song】',
-                        artist: 'hololive English',
-                        url: 'https://www.youtube.com/watch?v=ilLEj-SCCn8',
-                        timePlayed: 0
-                    },
-                ],
+            urls: [
+                {
+                    name: 'Origin | Original by Kilia Kurayami',
+                    artist: 'Kilia Kurayami Ch. 【EIEN Project】',
+                    url: 'https://www.youtube.com/watch?v=7Rb5fxeqVxs',
+                    timePlayed: 0
+                },
+                {
+                    name: 'Asian Hideout - ERROR 403: paradise x paradigm',
+                    artist: 'Asian Hideout',
+                    url: 'https://www.youtube.com/watch?v=ymxBpO5U2KY',
+                    timePlayed: 0
+                },
+                {
+                    name: 'We are cool【轟はじめ/古石ビジュー】',
+                    artist: 'おだまよ',
+                    url: 'https://www.youtube.com/watch?v=70PIxN3XM5k',
+                    timePlayed: 0
+                },
+                {
+                    name: '【MV】ABOVE BELOW【hololive English -Justice- Debut Song】',
+                    artist: 'hololive English',
+                    url: 'https://www.youtube.com/watch?v=ilLEj-SCCn8',
+                    timePlayed: 0
+                },
+            ],
             name: '',
             artist: '',
             currentDuration: '00:00',
@@ -83,86 +83,63 @@ class WidgetMusicPlayer extends Component {
         this.updateDuration = this.updateDuration.bind(this);
         this.storeData = this.storeData.bind(this);
     };
-    ended () {
-        this.saveDataMusic(this.state.name);
-        this.setState({
-            currentDuration: '00:00',
-            maxDuration: '00:00'
-        });
-        this.handleNextMusic();
-    };
-    clearMusic () {
-        this.setState({
-            name: '',
-            artist: '',
-            currentDuration: '00:00',
-            rawCurrentDuration: 0,
-            maxDuration: '00:00',
-            rawMaxDuration: 0,
-            progress: 0,
-            playing: false,
-            songIndex: 0,
-            autoplay: false,
-            url: null,
-            playerDisplay: 'none'
-        });
-    };
-    discSwitch () {
-        let elementDisc = document.getElementById('musicplayer-disc');
-        let elementPlayer = document.getElementById('musicplayer-player');
-        if (elementDisc.classList.contains('musicplayer-disc-small')) {
-            elementDisc.classList.remove('musicplayer-disc-small');
-            elementDisc.classList.add('musicplayer-disc-medium');
-            elementPlayer.classList.remove('musicplayer-player-small');
-            elementPlayer.classList.add('musicplayer-player-medium');
-        } else if (elementDisc.classList.contains('musicplayer-disc-medium')) {
-            elementDisc.classList.remove('musicplayer-disc-small');  
-            elementDisc.classList.remove('musicplayer-disc-medium');    
-            elementPlayer.classList.remove('musicplayer-player-small');
-            elementPlayer.classList.remove('musicplayer-player-medium');
-        } else {
-            elementDisc.classList.add('musicplayer-disc-small');
-            elementDisc.classList.remove('musicplayer-disc-medium');    
-            elementPlayer.classList.add('musicplayer-player-small');
-            elementPlayer.classList.remove('musicplayer-player-medium');
-        };
-    };
-    animationInputAdd () {
-        let elementDetails = document.getElementById('musicplayer-details');
-        elementDetails.classList.add('musicplayer-animation-add-details');
-        timeoutAnimationRemove = setTimeout(() => {
-            elementDetails.classList.remove('musicplayer-animation-add-details');
-        }, 400);
-    };
-    toggleMusic () {
-        let combineArrays = [...this.state.music, ...this.state.urls];
-        if (combineArrays.length !== 0) {
+    async fetchURLData(URL) {
+        try {
+            const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
+            const result = await fetch(url);
+            const data = await result.json();
             this.setState({
-                playing: !this.state.playing,
-                autoplay: !this.state.autoplay
-            }, () => {
-                if (this.state.playerDisplay === 'none') {
-                    if (this.state.playing) {
-                        audio.play();
-                        window.requestAnimationFrame(() => {
-                            document.getElementById('musicplayer-disc')
-                                .style.animation = 'rotateDisk 5s linear 0s infinite forwards';    
-                        });
-                    } else {
-                        audio.pause();
-                        document.getElementById('musicplayer-disc')
-                            .style.animation = 'none';
-                    };
-                };
+                urls: [...this.state.urls.slice(0, -1), {
+                    name: (!data.error) ? data.title : data.url,
+                    artist: data.author_name,
+                    url: URL,
+                    timePlayed: 0 
+                }],
+                name: data.title,
+                artist: data.author_name
             });
-            let elementButtonPlay = document.getElementById('musicplayer-button-clone-play');
-            elementButtonPlay.style.animation = 'none';
-            window.requestAnimationFrame(() => {
-                elementButtonPlay.style.animation = 'pulse 0.8s';
-            });
+        } catch (err) {
+            console.error(err);
         };
     };
-    handleInputSubmit (event) {
+    async fetchYoutubePlaylist(ID, pageToken = '') {
+        try {
+            document.getElementById('musicplayer-input-add').classList.remove('musicplayer-animation-input-add');
+            document.getElementById('musicplayer-input-add').value = '';
+            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
+            const data = await result.json();
+            let itemUrl;
+            data.items.forEach((item) => {
+                itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
+                urlsAdd.push({
+                    name: (/\bDeleted video\b|\bPrivate video\b/.test(item.snippet.title)) ? itemUrl : item.snippet.title,
+                    artist: item.snippet.videoOwnerChannelTitle,
+                    url: itemUrl,
+                    timePlayed: 0
+                });
+            });
+            if (data.nextPageToken) {
+                this.fetchYoutubePlaylist(ID, data.nextPageToken);
+            } else {
+                this.setState({
+                    urls: [...this.state.urls, ...urlsAdd]
+                }, () => {
+                    this.loadMusic(Math.abs(this.state.urls.length - urlsAdd.length));
+                });
+                let newMax = unplayedSongsMaxIndex + urlsAdd.length;
+                unplayedSongsIndex = [
+                    ...unplayedSongsIndex,
+                    ...Array.from({ length: newMax + 1 }, (_, i) => i + unplayedSongsMaxIndex)
+                ];
+                unplayedSongsMaxIndex = newMax;
+            };
+        } catch (err) {
+            console.error(err);
+        } finally {
+            this.animationInputAdd();
+        };
+    };
+    handleInputSubmit(event) {
         /// Enter key
         if ((event.keyCode === 13)
             && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))) {
@@ -191,7 +168,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
-    handleButton (type) {
+    handleButton(type) {
         let combineArrays = [...this.state.music, ...this.state.urls];
         switch (type) {
             case 'remove': {
@@ -368,7 +345,7 @@ class WidgetMusicPlayer extends Component {
             default: { break; };
         };
     };
-    handleNextMusic () {
+    handleNextMusic() {
         if (this.state.shuffle) {
             if (previousShuffleNextSong !== -1) {
                 previousShuffleNextSong.click();
@@ -392,7 +369,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
-    handlePreviousMusic () {
+    handlePreviousMusic() {
         if (this.state.shuffle) {
             previousShuffleNextSong = activePlaylistItem;
             previousPlaylistItem.click();
@@ -406,7 +383,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
-    handleSeeking ({ event, what }) {
+    handleSeeking({ event, what }) {
         /// Default is onChange
         switch (what) {
             case 'down':
@@ -427,7 +404,7 @@ class WidgetMusicPlayer extends Component {
                 break;
         };
     };
-    handlePlaylist (index, element) {
+    handlePlaylist(index, element) {
         if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
         this.loadMusic(index);
         if (activePlaylistItem !== -1) {
@@ -436,7 +413,86 @@ class WidgetMusicPlayer extends Component {
         activePlaylistItem = element.target;
         element.target.classList.add('musicplayer-playlist-active');
     };
-    updateDuration (event) {
+    ended() {
+        this.saveDataMusic(this.state.name);
+        this.setState({
+            currentDuration: '00:00',
+            maxDuration: '00:00'
+        });
+        this.handleNextMusic();
+    };
+    clearMusic() {
+        this.setState({
+            name: '',
+            artist: '',
+            currentDuration: '00:00',
+            rawCurrentDuration: 0,
+            maxDuration: '00:00',
+            rawMaxDuration: 0,
+            progress: 0,
+            playing: false,
+            songIndex: 0,
+            autoplay: false,
+            url: null,
+            playerDisplay: 'none'
+        });
+    };
+    discSwitch() {
+        let elementDisc = document.getElementById('musicplayer-disc');
+        let elementPlayer = document.getElementById('musicplayer-player');
+        if (elementDisc.classList.contains('musicplayer-disc-small')) {
+            elementDisc.classList.remove('musicplayer-disc-small');
+            elementDisc.classList.add('musicplayer-disc-medium');
+            elementPlayer.classList.remove('musicplayer-player-small');
+            elementPlayer.classList.add('musicplayer-player-medium');
+        } else if (elementDisc.classList.contains('musicplayer-disc-medium')) {
+            elementDisc.classList.remove('musicplayer-disc-small');  
+            elementDisc.classList.remove('musicplayer-disc-medium');    
+            elementPlayer.classList.remove('musicplayer-player-small');
+            elementPlayer.classList.remove('musicplayer-player-medium');
+        } else {
+            elementDisc.classList.add('musicplayer-disc-small');
+            elementDisc.classList.remove('musicplayer-disc-medium');    
+            elementPlayer.classList.add('musicplayer-player-small');
+            elementPlayer.classList.remove('musicplayer-player-medium');
+        };
+    };
+    animationInputAdd() {
+        let elementDetails = document.getElementById('musicplayer-details');
+        elementDetails.classList.add('musicplayer-animation-add-details');
+        timeoutAnimationRemove = setTimeout(() => {
+            elementDetails.classList.remove('musicplayer-animation-add-details');
+        }, 400);
+    };
+    toggleMusic() {
+        let combineArrays = [...this.state.music, ...this.state.urls];
+        if (combineArrays.length !== 0) {
+            this.setState({
+                playing: !this.state.playing,
+                autoplay: !this.state.autoplay
+            }, () => {
+                if (this.state.playerDisplay === 'none') {
+                    if (this.state.playing) {
+                        audio.play();
+                        window.requestAnimationFrame(() => {
+                            document.getElementById('musicplayer-disc')
+                                .style.animation = 'rotateDisk 5s linear 0s infinite forwards';    
+                        });
+                    } else {
+                        audio.pause();
+                        document.getElementById('musicplayer-disc')
+                            .style.animation = 'none';
+                    };
+                };
+            });
+            let elementButtonPlay = document.getElementById('musicplayer-button-clone-play');
+            elementButtonPlay.style.animation = 'none';
+            window.requestAnimationFrame(() => {
+                elementButtonPlay.style.animation = 'pulse 0.8s';
+            });
+        };
+    };
+    updateDuration(event) {
         if (!this.state.seeking) {
             let minutes, seconds;
             if (event.playedSeconds) {
@@ -460,7 +516,7 @@ class WidgetMusicPlayer extends Component {
             timePlayed += 1;
         };
     };
-    setMaxDuration (event) {
+    setMaxDuration(event) {
         let minutes, seconds;
         if (event) {
             minutes = Math.floor(event / 60);
@@ -482,63 +538,7 @@ class WidgetMusicPlayer extends Component {
             maxDuration: `${minutes}:${seconds}`
         });
     };
-    async fetchURLData (URL) {
-        try {
-            const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
-            const result = await fetch(url);
-            const data = await result.json();
-            this.setState({
-                urls: [...this.state.urls.slice(0, -1), {
-                    name: (!data.error) ? data.title : data.url,
-                    artist: data.author_name,
-                    url: URL,
-                    timePlayed: 0 
-                }],
-                name: data.title,
-                artist: data.author_name
-            });
-        } catch (err) {
-            console.error(err);
-        };
-    };
-    async fetchYoutubePlaylist (ID, pageToken = '') {
-        try {
-            document.getElementById('musicplayer-input-add').classList.remove('musicplayer-animation-input-add');
-            document.getElementById('musicplayer-input-add').value = '';
-            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
-            const data = await result.json();
-            let itemUrl;
-            data.items.forEach((item) => {
-                itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
-                urlsAdd.push({
-                    name: (/\bDeleted video\b|\bPrivate video\b/.test(item.snippet.title)) ? itemUrl : item.snippet.title,
-                    artist: item.snippet.videoOwnerChannelTitle,
-                    url: itemUrl,
-                    timePlayed: 0
-                });
-            });
-            if (data.nextPageToken) {
-                this.fetchYoutubePlaylist(ID, data.nextPageToken);
-            } else {
-                this.setState({
-                    urls: [...this.state.urls, ...urlsAdd]
-                }, () => {
-                    this.loadMusic(Math.abs(this.state.urls.length - urlsAdd.length));
-                });
-                let newMax = unplayedSongsMaxIndex + urlsAdd.length;
-                unplayedSongsIndex = [
-                    ...unplayedSongsIndex,
-                    ...Array.from({ length: newMax + 1 }, (_, i) => i + unplayedSongsMaxIndex)
-                ];
-                unplayedSongsMaxIndex = newMax;
-            };
-        } catch (err) {
-            console.error(err);
-        } finally {
-            this.animationInputAdd();
-        };
-    };
-    loadMusic (music) {
+    loadMusic(music) {
         let combineArrays = [...this.state.music, ...this.state.urls];
         let musicIndex;
         if (music !== undefined) {
@@ -597,7 +597,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
-    saveDataMusic (music) {
+    saveDataMusic(music) {
         let dataSong = dataSongsAdd.find((song) => song.name === music);
         if (dataSong !== undefined) {
             dataSong = {
@@ -612,7 +612,7 @@ class WidgetMusicPlayer extends Component {
         };
         timePlayed = 0;
     };
-    storeData () {
+    storeData() {
         if (localStorage.getItem('widgets') !== null) {
             if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -655,7 +655,7 @@ class WidgetMusicPlayer extends Component {
             dataSongsAdd.length = 0;
         };
     };
-    componentDidMount () {
+    componentDidMount() {
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
         audio.addEventListener('timeupdate', this.updateDuration);
@@ -683,7 +683,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
-    componentWillUnmount () {
+    componentWillUnmount() {
         if (!audio.paused) {
             audio.pause();
         };
@@ -697,7 +697,7 @@ class WidgetMusicPlayer extends Component {
         clearTimeout(timeoutPlaylistClear);
         clearTimeout(timeoutPlaylistPanel);
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}

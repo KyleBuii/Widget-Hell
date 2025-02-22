@@ -31,7 +31,7 @@ const optionsTimzones = [
 ];
 
 class WidgetTimeConversion extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             date: new Date(),
@@ -45,7 +45,7 @@ class WidgetTimeConversion extends Component {
             timezone: {}
         };
     };
-    handleChange (where, what) {
+    handleChange(where, what) {
         switch (where) {
             case 'date':
                 this.setState({
@@ -70,7 +70,7 @@ class WidgetTimeConversion extends Component {
             default: break;
         };
     };
-    handleButton (what) {
+    handleButton(what) {
         switch (what) {
             case '12hr':
                 this.setState({
@@ -87,7 +87,7 @@ class WidgetTimeConversion extends Component {
             default: break;
         };
     };
-    updateDate (event, what) {
+    updateDate(event, what) {
         switch (what) {
             case 'month': {
                 const inputMonth = document.getElementById('timeconversion-input-month');
@@ -197,7 +197,7 @@ class WidgetTimeConversion extends Component {
             };
         }
     };
-    componentDidMount () {
+    componentDidMount() {
         /// Default values
         /// Set current date and time as default
         const temp = this.state.date
@@ -223,13 +223,13 @@ class WidgetTimeConversion extends Component {
         };
         this.props.sortSelect(optionsTimzones);
     };
-    componentWillUnmount () {
+    componentWillUnmount() {
         let data = {
             'timezone': this.state.timezone
         };
         sessionStorage.setItem('timeconversion', JSON.stringify(data));
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}

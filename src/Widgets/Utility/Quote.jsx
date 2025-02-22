@@ -11,7 +11,7 @@ let timeoutCopy;
 let intervalLoop;
 
 class WidgetQuote extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             currentQuote: '',
@@ -21,7 +21,7 @@ class WidgetQuote extends Component {
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
     };
-    handleNewQuote () {
+    handleNewQuote() {
         const randQuote = Math.floor(Math.random() * this.props.quotes.length);
         const randQuoteAuthor = (this.props.quotes[randQuote]['author'] === '') ? 'Anon' : this.props.quotes[randQuote]['author'];
         this.setState({
@@ -41,7 +41,7 @@ class WidgetQuote extends Component {
             speechSynthesis.cancel();
         };
     };
-    handleButton (what) {
+    handleButton(what) {
         switch (what) {
             case 'copy': {
                 this.props.copyToClipboard(this.state.currentQuote);
@@ -69,19 +69,19 @@ class WidgetQuote extends Component {
             default: { break; };
         };
     };
-    handleSlider (value) {
+    handleSlider(value) {
         this.setState({
             total: value
         });
     };
-    handleSliderBlur () {
+    handleSliderBlur() {
         let elementSliderTotal = document.getElementById('quote-slider-total');
         elementSliderTotal.classList.remove('animation-quote-slider-total');          
         if (this.state.total !== this.state.falling.length) {
             this.loadFallingImage();
         };
     };
-    loadFallingImage () {
+    loadFallingImage() {
         if (this.state.total !== 0) {
             let fallingImage = new Image();
             fallingImage.src = '/resources/singles/petal.webp';
@@ -101,24 +101,24 @@ class WidgetQuote extends Component {
             clearInterval(intervalLoop);   
         };
     };
-    loop () {
+    loop() {
         this.clear();
         this.state.falling.forEach((falling) => falling.animate());
     };
-    clear () {
+    clear() {
         const canvas = document.getElementById('quote-canvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-    componentDidMount () {
+    componentDidMount() {
         this.handleNewQuote();
         this.loadFallingImage();
     };
-    componentWillUnmount () {
+    componentWillUnmount() {
         clearTimeout(timeoutCopy);
         clearInterval(intervalLoop);
     };
-    render () {
+    render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
@@ -214,7 +214,7 @@ class WidgetQuote extends Component {
 
 /// Created by Evan Jin (진경성) https://codepen.io/rudtjd2548
 class Falling {
-    constructor (image) {
+    constructor(image) {
         const canvas = document.getElementById('quote-canvas');
         this.fallingImage = image;
         this.x = -Math.random() * canvas.width;
@@ -227,7 +227,7 @@ class Falling {
         this.ySpeed = 1 + Math.random() * 1;
         this.flipSpeed = Math.random() * 0.03;
     };
-    draw () {
+    draw() {
         const canvas = document.getElementById('quote-canvas');
         const ctx = canvas.getContext('2d');
         if (this.y > canvas.height || this.x > canvas.width) {
@@ -246,7 +246,7 @@ class Falling {
             this.h * (0.8 + (Math.abs(Math.sin(this.flip)) / 5))
         );
     };
-    animate () {
+    animate() {
         this.x += this.xSpeed;
         this.y += this.ySpeed;
         this.flip += this.flipSpeed;

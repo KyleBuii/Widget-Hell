@@ -166,7 +166,7 @@ const optionsCursor = [
 ];
 
 class WidgetSetting extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             values: {
@@ -208,7 +208,7 @@ class WidgetSetting extends Component {
         this.handleScriptLoaded = this.handleScriptLoaded.bind(this);
         this.hideSettings = this.hideSettings.bind(this);
     };
-    handleTrick () {
+    handleTrick() {
         const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive, ...this.props.widgetsFunActive];
         if (combinedWidgets.length !== 0) {
             const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
@@ -220,7 +220,7 @@ class WidgetSetting extends Component {
             });
         };
     };
-    handleRandomTrick (checked) {
+    handleRandomTrick(checked) {
         this.setState({
             values: {
                 ...this.state.values,
@@ -235,7 +235,7 @@ class WidgetSetting extends Component {
             };
         });
     };
-    handleClose (event) {
+    handleClose(event) {
         let elementButton = document.getElementById(`show-hide-widgets-popout-button-${event.detail.element}`);
         if (elementButton !== null) {
             /// Default is a normal pressable button
@@ -272,7 +272,7 @@ class WidgetSetting extends Component {
             default: { break; };
         };
     };
-    handlePressableButton (what, where) {
+    handlePressableButton(what, where) {
         switch (what) {
             case 'showHideWidgets': {
                 const buttonShowHideWidgets = document.getElementById('settings-button-show-hide-widgets');
@@ -342,7 +342,7 @@ class WidgetSetting extends Component {
             };
         };
     };
-    handleToggleableButton (value, what) {
+    handleToggleableButton(value, what) {
         switch (what) {
             case 'button-screen-dimmer':
                 this.setState({
@@ -376,7 +376,7 @@ class WidgetSetting extends Component {
             default: break;
         };
     };
-    handleSlider (value, what) {
+    handleSlider(value, what) {
         switch (what) {
             case 'slider-screen-dimmer':
                 this.setState({
@@ -415,7 +415,7 @@ class WidgetSetting extends Component {
                 break;
         };
     };
-    handleSelect (what, where) {
+    handleSelect(what, where) {
         switch (where) {
             case 'background':
             case 'cursor':
@@ -432,7 +432,7 @@ class WidgetSetting extends Component {
                 break;
         };
     };
-    handleCheckbox (checked, what, type) {
+    handleCheckbox(checked, what, type) {
         switch (what) {
             case 'timeBased':
             case 'live2D':
@@ -464,20 +464,20 @@ class WidgetSetting extends Component {
                 break;
         };
     };
-    handleColor (event) {
+    handleColor(event) {
         this.props.updateValue(this.props.hexToRgb(event), 'cursorTrailColor', 'values');
     };
-    handleRadio (event) {
+    handleRadio(event) {
         this.props.updateValue(event.target.value, event.target.name, 'values');
     };
-    handleSearch (event) {
+    handleSearch(event) {
         this.setState({
             search: event.target.value
         }, () => {
             this.updateSearch(this.state.search);
         });
     };
-    handleInterval (what) {
+    handleInterval(what) {
         if (what === true) {
             this.updateScreenDimmer();
             intervalTimeBased = setInterval(this.updateScreenDimmer, 1800000);
@@ -486,7 +486,7 @@ class WidgetSetting extends Component {
             clearInterval(intervalTimeBased);
         };
     };
-    handleScroll () {
+    handleScroll() {
         let element = document.getElementById('settings-popout-animation');
         let arrowTop = document.getElementById('settings-popout-arrow-top');
         let arrowBottom = document.getElementById('settings-popout-arrow-bottom');
@@ -501,7 +501,7 @@ class WidgetSetting extends Component {
             arrowTop.style.opacity = 'unset';
         };
     };
-    handleMouse (what) {
+    handleMouse(what) {
         let element = document.getElementById('settings-popout-animation');
         let arrowTop = document.getElementById('settings-popout-arrow-top');
         let arrowBottom = document.getElementById('settings-popout-arrow-bottom');
@@ -525,7 +525,7 @@ class WidgetSetting extends Component {
             default: break;
         };
     };
-    handleScriptLoaded (event) {
+    handleScriptLoaded(event) {
         switch (event.detail.name) {
             case 'live2d':
                 this.updateLive2D();
@@ -533,7 +533,7 @@ class WidgetSetting extends Component {
             default: break;
         };
     };
-    handleTabSwitch (what) {
+    handleTabSwitch(what) {
         this.setState({
             search: '',
             activeTab: what
@@ -544,14 +544,14 @@ class WidgetSetting extends Component {
             };
         });
     };
-    handlePageClick (event) {
+    handlePageClick(event) {
         this.setState({
             [`page${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`]: event
         }, () => {
             this.updateTab(this.state.activeTab);    
         });
     };
-    updateTab (what) {
+    updateTab(what) {
         let tabCapitalized = what.replace(/^./, (char) => char.toUpperCase());
         let widgetPage = `page${tabCapitalized}`;
         let widgetKeys = Object.keys(this.props.widgets[what])
@@ -573,7 +573,7 @@ class WidgetSetting extends Component {
             };
         };
     };
-    updateSearch (what) {
+    updateSearch(what) {
         let widgetsMatch = [];
         let widgetButtons = this[`buttons${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`];
         if (what.length > 2) {
@@ -592,12 +592,12 @@ class WidgetSetting extends Component {
             };
         });
     };
-    updateBackground (what) {
+    updateBackground(what) {
         let e = document.getElementById('App');
         e.classList.remove(`background-${this.state.values.background.value}`);
         e.classList.add(`background-${what.value}`);    
     };
-    updateCursor (what) {
+    updateCursor(what) {
         if (what.value === 'default') {
             document.body.classList.remove('cursor-unset');
             document.body.classList.remove('cursor-custom');
@@ -608,7 +608,7 @@ class WidgetSetting extends Component {
             document.documentElement.style.setProperty('--cursorHover', `url(/resources/cursor/${what.value}/${what.value}-hover.webp)`);
         };
     };
-    updateScreenDimmer () {
+    updateScreenDimmer() {
         /// Triggers a new screen dim every 30 minutes based on time
         /// 24-6 = 40% brightness
         /// 7-8 = 40% - 100% brightness: 2 hours:30 minutes x 4 -> 15% increase
@@ -649,7 +649,7 @@ class WidgetSetting extends Component {
         };
         document.body.style.filter = `brightness(${brightness}%)`;
     };
-    updateLive2D () {
+    updateLive2D() {
         let elementLive2DToggle = document.getElementById('waifu-toggle');
         if (elementLive2DToggle !== null) {
             if (!this.state.values.live2D) {
@@ -662,7 +662,7 @@ class WidgetSetting extends Component {
             };
         };
     };
-    unorderedRemove (arr, i) {
+    unorderedRemove(arr, i) {
         if (i < 0 || i >= arr.length) return;
         if (i < arr.length-1) {
             arr[i] = arr[arr.length-1];
@@ -670,7 +670,7 @@ class WidgetSetting extends Component {
         arr.length -= 1;
         return arr;
     };
-    randomOption ({ what, element, min, max, options }) {
+    randomOption({ what, element, min, max, options }) {
         let random;
         switch (what) {
             case 'slider':
@@ -684,10 +684,10 @@ class WidgetSetting extends Component {
         };
 
     };
-    mute (what) {
+    mute(what) {
         this.props.updateValue(!this.props.values[`${what}Mute`], `${what}Mute`, 'values');
     };
-    randomTimeout (what) {
+    randomTimeout(what) {
         switch (what) {
             case 'trick':
                 if (this.state.values.randomTrick && timeoutTrick === undefined) {
@@ -702,7 +702,7 @@ class WidgetSetting extends Component {
             default: break;
         };
     };
-    hideSettings () {
+    hideSettings() {
         const buttonShowHideWidgets = document.getElementById('settings-button-show-hide-widgets');
         if (!buttonShowHideWidgets.classList.contains('disabled-option')) {
             const showHideWidgetsPopoutAnimation = document.getElementById('show-hide-widgets-popout-animation');
@@ -720,7 +720,7 @@ class WidgetSetting extends Component {
             this.props.showHidePopout(settingsPopoutAnimation, false, buttonSettings);
         };
     };
-    storeData () {
+    storeData() {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let keyValues = Object.keys(this.state.values);
@@ -740,7 +740,7 @@ class WidgetSetting extends Component {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
-    async componentDidMount () {
+    async componentDidMount() {
         window.addEventListener('close', this.handleClose);
         window.addEventListener('beforeunload', this.storeData);
         window.addEventListener('script loaded', this.handleScriptLoaded);
@@ -841,14 +841,14 @@ class WidgetSetting extends Component {
             };
         };
     };
-    componentWillUnmount () {
+    componentWillUnmount() {
         window.removeEventListener('close', this.handleClose);
         window.removeEventListener('beforeunload', this.storeData);
         window.removeEventListener('setting hide', this.hideSettings);
         clearInterval(intervalTimeBased);
         clearTimeout(timeoutTrick);
     };
-    render () {
+    render() {
         this.buttonsUtility = [];
         this.buttonsGames = [];
         this.buttonsFun = [];
