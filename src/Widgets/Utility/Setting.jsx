@@ -859,7 +859,7 @@ class WidgetSetting extends Component {
                 let widget = widgetKeys[widgetIndex];
                 let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
                     data-widgetname={widget}
-                    className='button-match option opt-medium disabled-option'
+                    className='button-match option disabled-option'
                     onClick={() => this.handlePressableButton(widget, tab)}>
                     {this.props.widgets[tab][widget]}
                 </button>;
@@ -909,10 +909,10 @@ class WidgetSetting extends Component {
                             <button id='settings-button-settings'
                                 className='button-match option opt-long disabled-option'
                                 onClick={() => this.handlePressableButton('settings')}>Settings</button>
-                            <section className='flex-center row gap'>
-                                <button className='button-match option opt-medium'
+                            <section className='button-set-two flex-center row gap'>
+                                <button className='button-match option'
                                     onClick={this.handleTrick}>Do a trick!</button>
-                                <button className='button-match option opt-medium'
+                                <button className='button-match option'
                                     onClick={() => this.props.randomColor()}>Change color</button>
                             </section>
                         </section>
@@ -973,7 +973,7 @@ class WidgetSetting extends Component {
                                         {/* Utility */}
                                         <TabPanel>
                                             <section id='show-hide-widgets-popout-button-utility'
-                                                className='font large-medium no-color space-nicely space-all'>
+                                                className='button-set-three font large-medium no-color space-nicely space-all'>
                                                 {(this.state.searched.length !== 0)
                                                     ? this.state.searched.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
                                                         return <span key={`widget-${widget.props['data-widgetname']}`}>

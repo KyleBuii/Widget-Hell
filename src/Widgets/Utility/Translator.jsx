@@ -1270,12 +1270,12 @@ class WidgetTranslator extends Component{
                                     <section className='grid space-nicely space-all length-long'>
                                         <button className='button-match option opt-long'
                                             onClick={this.handleSave}>Save</button>
-                                        <section className='flex-center row gap'>
+                                        <section className='button-set-two flex-center row gap'>
                                             <button id='reverse-popout-button-reverseWord'
-                                                className='button-match option opt-medium disabled-option'
+                                                className='button-match option disabled-option'
                                                 onClick={() => this.handlePressableButton('reverseWord', 'reverse')}>Word</button>
                                             <button id='reverse-popout-button-reverseSentence'
-                                                className='button-match option opt-medium disabled-option'
+                                                className='button-match option disabled-option'
                                                 onClick={() => this.handlePressableButton('reverseSentence', 'reverse')}>Sentence</button>
                                         </section>
                                     </section>

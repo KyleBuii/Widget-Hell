@@ -139,24 +139,22 @@ class WidgetMusicPlayer extends Component {
             this.animationInputAdd();
         };
     };
-    handleInputSubmit(event) {
-        /// Enter key
-        if ((event.keyCode === 13)
-            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(event.target.value))) {
-            if (/playlist/.test(event.target.value)) {
-                let playlistID = event.target.value.match(/(?:list=)(.*)/);
+    handleInputSubmit(link, key = 'Enter') {
+        if ((key === 'Enter')
+            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(link))) {
+            if (/playlist/.test(link)) {
+                let playlistID = link.match(/(?:list=)(.*)/);
                 this.fetchYoutubePlaylist(playlistID[1]);
             } else {
                 /// Remove queries
-                let cleanedUrl = (event.target.value).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
+                let cleanedUrl = (link).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
                 this.setState({
                     urls: [...this.state.urls, {
-                        url: (cleanedUrl) ? cleanedUrl[0] : event.target.value
+                        url: (cleanedUrl) ? cleanedUrl[0] : link
                     }]
                 }, () => {
                     if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
                     this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
-                    document.getElementById('musicplayer-input-add').classList.remove('musicplayer-animation-input-add');
                     document.getElementById('musicplayer-input-add').value = '';        
                     this.animationInputAdd();
                     unplayedSongsIndex.push(unplayedSongsMaxIndex);
@@ -165,7 +163,7 @@ class WidgetMusicPlayer extends Component {
                     const elementPlaylist = this.refPlaylist.getContentElement();
                     elementPlaylist.lastElementChild.classList.add('musicplayer-playlist-active');        
                 });
-            };
+            };    
         };
     };
     handleButton(type) {
@@ -262,6 +260,10 @@ class WidgetMusicPlayer extends Component {
             };
             case 'add': {
                 document.getElementById('musicplayer-input-add').classList.add('musicplayer-animation-input-add');
+                setTimeout(() => {
+                    document.getElementById('musicplayer-input-add').focus();
+                }, 500);
+                document.getElementById('musicplayer-button-add').classList.add('musicplayer-animation-button-add');
                 break;
             };
             case 'next': {
@@ -342,6 +344,11 @@ class WidgetMusicPlayer extends Component {
                 };
                 break;
             };
+            case 'input-add': {
+                const elementInput = document.getElementById('musicplayer-input-add').value;
+                this.handleInputSubmit(elementInput);
+                break;
+            }
             default: { break; };
         };
     };
@@ -412,6 +419,12 @@ class WidgetMusicPlayer extends Component {
         };
         activePlaylistItem = element.target;
         element.target.classList.add('musicplayer-playlist-active');
+    };
+    handleBlur() {
+        document.getElementById('musicplayer-input-add')
+            .classList.remove('musicplayer-animation-input-add');
+        document.getElementById('musicplayer-button-add')
+            .classList.remove('musicplayer-animation-button-add');
     };
     ended() {
         this.saveDataMusic(this.state.name);
@@ -787,7 +800,7 @@ class WidgetMusicPlayer extends Component {
                                 {/* Song Controls */}
                                 <div id='musicplayer-controls'
                                     className='flex-center row gap'>
-                                    <button id='musicplayer-remove' 
+                                    <button id='musicplayer-remove'
                                         className='button-match inverse disabled'
                                         onClick={() => this.handleButton('remove')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
@@ -829,7 +842,7 @@ class WidgetMusicPlayer extends Component {
                                             <IoPlayForward/>
                                         </IconContext.Provider>
                                     </button>
-                                    <button id='musicplayer-add' 
+                                    <button id='musicplayer-add'
                                         className='button-match inverse disabled'
                                         onClick={() => this.handleButton('add')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
@@ -838,14 +851,15 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <input id='musicplayer-input-add'
                                         className='input-match'
-                                        onKeyDown={(event) => this.handleInputSubmit(event)}
-                                        onBlur={() => {
-                                            document.getElementById('musicplayer-input-add')
-                                                .classList.remove('musicplayer-animation-input-add');
-                                        }}
+                                        onKeyDown={(event) => this.handleInputSubmit(event.target.value, event.key)}
+                                        onBlur={() => this.handleBlur()}
                                         autoComplete='off'
                                         type='text'
                                         name='musicplayer-input-add'/>
+                                    <button id='musicplayer-button-add'
+                                        className='button-match'
+                                        onClick={() => this.handleButton('input-add')}
+                                        onMouseDown={(event) => event.preventDefault()}>Add</button>
                                 </div>
                                 {/* Song Expanded Controls */}
                                 <div id='musicplayer-controls-expanded'>
