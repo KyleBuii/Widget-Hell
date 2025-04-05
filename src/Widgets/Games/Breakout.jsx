@@ -96,9 +96,19 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         refBall.current = state.ball;
         refHighscore.current = state.highscore;
     }, [state.paddle, state.bricks, state.ball, state.highscore]);
-    const handleMouse = (event) => {
+    const handlePaddleMovement = (inputType, event) => {
         let elementCanvas = document.getElementById('breakout-canvas');
-        let relativeX = event.clientX - elementCanvas.offsetLeft;
+        let elementCanvasRect = elementCanvas.getBoundingClientRect();
+        let relativeX = 0;
+        switch (inputType) {
+            case 'mouse':
+                relativeX = event.clientX - elementCanvas.offsetLeft;
+                break;
+            case 'touch':
+                relativeX = (event.touches[0].clientX - elementCanvasRect.left) * (elementCanvas.width / elementCanvasRect.width);
+                break;
+            default: break;
+        };
         if (relativeX > 0 && relativeX < elementCanvas.width) {
             setState((prevState) => ({
                 ...prevState,
@@ -335,7 +345,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                 defaultProps.dragStop('breakout');
                 defaultProps.updatePosition('breakout', 'games', data.x, data.y);
             }}
-            cancel='button'
+            cancel='button, canvas'
             bounds='parent'>
             <div id='breakout-widget'
                 className='widget'>
@@ -378,7 +388,8 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                     <canvas id='breakout-canvas'
                         height={600}
                         width={700}
-                        onMouseMove={handleMouse}/>
+                        onMouseMove={(event) => handlePaddleMovement('mouse', event)}
+                        onTouchMove={(event) => handlePaddleMovement('touch', event)}/>
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none') 
                         ? <div id='breakout-health'

@@ -75,7 +75,7 @@ let delayDebrisRight = 5000;
 let delayDebrisBottom = 7000;
 let numCells;
 
-const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
+const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         timer: 0,
@@ -726,6 +726,22 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris }) => {
                             </button>
                         </div>
                     </section>
+                    {isMobile && <section className='game-controls'>
+                        <section className='d-pad'>
+                            <button className='up'
+                                onClick={() => keyDown({ keyCode: 87 })}></button>
+                            <button className='right'
+                                onClick={() => keyDown({ keyCode: 68 })}></button>
+                            <button className='down'
+                                onClick={() => keyDown({ keyCode: 83 })}></button>
+                            <button className='left'
+                                onClick={() => keyDown({ keyCode: 65 })}></button>
+                        </section>
+                        <section style={{ flexGrow: '1', paddingLeft: '1rem' }}>
+                            <button className='button-match button-game'
+                                onClick={() => keyDown({ keyCode: 16 })}>Dash</button>
+                        </section>
+                    </section>}
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none') 
                         ? <section id='snake-health'

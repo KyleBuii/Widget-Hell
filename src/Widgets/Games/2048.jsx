@@ -8,7 +8,7 @@ import { VscDebugBreakpointLogUnverified } from 'react-icons/vsc';
 
 let intervalTimer;
 
-const Widget2048 = ({ defaultProps, gameProps }) => {
+const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
     const [state, setState] = useState({
         board: new Board(),
         goldEarned: 0,
@@ -183,6 +183,18 @@ const Widget2048 = ({ defaultProps, gameProps }) => {
                         <button className='button-match fill-width'
                             onClick={() => resetGame()}>Reset Game</button>
                     </section>
+                    {isMobile && <section className='game-controls'>
+                        <section className='d-pad'>
+                            <button className='up'
+                                onClick={() => handleKeyDown({ keyCode: 87 })}></button>
+                            <button className='right'
+                                onClick={() => handleKeyDown({ keyCode: 68 })}></button>
+                            <button className='down'
+                                onClick={() => handleKeyDown({ keyCode: 83 })}></button>
+                            <button className='left'
+                                onClick={() => handleKeyDown({ keyCode: 65 })}></button>
+                        </section>
+                    </section>}
                     {/* Gameover Overlay */}
                     <div id='twentyfortyeight-overlay-gameover'
                         className='overlay rounded flex-center'

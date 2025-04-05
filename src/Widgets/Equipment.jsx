@@ -261,272 +261,272 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                     {defaultProps.renderHotbar('equipment', 'utility')}
                     {/* Equipment Container */}
                     <SimpleBar style={{ maxHeight: '36em' }}>
-                    <section className='flex-center column gap medium-gap'>
-                        {/* Slots and Stats */}
-                        <section className='flex-center row gap medium-gap'>
-                            {/* Slots */}
-                            <section className='flex-center column gap medium-gap'>
-                                {/* Level */}
-                                <div className='aesthetic-scale scale-span flex-center column'>
-                                    <span className='font medium bold'>Level {stats.level}</span>
-                                    <span className='font micro transparent-normal'>EXP: {stats.exp} / {gameProps.formatNumber(stats.maxExp, 2)}</span>
-                                </div>
-                                {/* Armor Slots */}
-                                <div id='equipment-slots-armor'
-                                    className='aesthetic-scale scale-button slot flex-center column gap'>
-                                    {/* Helmet Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Headband */}
-                                        <button id='equipment-slot-headband'
+                        <section className='flex-center column gap medium-gap'>
+                            {/* Slots and Stats */}
+                            <section id='equipment-slot-and-stat'
+                                className='flex-center row gap medium-gap'>
+                                {/* Slots */}
+                                <section className='flex-center column gap medium-gap'>
+                                    {/* Level */}
+                                    <div className='aesthetic-scale scale-span flex-center column'>
+                                        <span className='font medium bold'>Level {stats.level}</span>
+                                        <span className='font micro transparent-normal'>EXP: {stats.exp} / {gameProps.formatNumber(stats.maxExp, 2)}</span>
+                                    </div>
+                                    {/* Armor Slots */}
+                                    <div id='equipment-slots-armor'
+                                        className='aesthetic-scale scale-button slot flex-center column gap'>
+                                        {/* Helmet Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Headband */}
+                                            <button id='equipment-slot-headband'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/headband.webp)`
+                                                }}></button>
+                                            {/* Helmet */}
+                                            <button id='equipment-slot-helmet'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/helmet.webp)`
+                                                }}></button>
+                                            {/* Eyewear */}
+                                            <button id='equipment-slot-eyewear'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/eyewear.webp)`,
+                                                    backgroundSize: '25px'
+                                                }}></button>
+                                        </div>
+                                        {/* Necklace Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Necklace */}
+                                            <button id='equipment-slot-necklace'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/necklace.webp)`,
+                                                    backgroundSize: '25px'
+                                                }}></button>
+                                        </div>
+                                        {/* Chestplate Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Undershirt */}
+                                            <button id='equipment-slot-undershirt'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/undershirt.webp)`
+                                                }}></button>
+                                            {/* Chestplate */}
+                                            <button id='equipment-slot-chestplate'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/chestplate.webp)`
+                                                }}></button>
+                                            {/* Cape */}
+                                            <button id='equipment-slot-cape'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/cape.webp)`
+                                                }}></button>
+                                        </div>
+                                        {/* Belt Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Right Bracelet */}
+                                            <button id='equipment-slot-bracelet-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/bracelet.webp)`,
+                                                    backgroundSize: '25px',
+                                                    transform: 'scaleX(-1)'
+                                                }}></button>
+                                            {/* Right Wrist */}
+                                            <button id='equipment-slot-wrist-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/wrist.webp)`,
+                                                    backgroundSize: '20px'
+                                                }}></button>
+                                            {/* Belt */}
+                                            <button id='equipment-slot-belt'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/belt.webp)`
+                                                }}></button>
+                                            {/* Left Wrist */}
+                                            <button id='equipment-slot-wrist-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/wrist.webp)`,
+                                                    backgroundSize: '20px'
+                                                }}></button>
+                                            {/* Left Bracelet */}
+                                            <button id='equipment-slot-bracelet-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/bracelet.webp)`,
+                                                    backgroundSize: '25px'
+                                                }}></button>
+                                        </div>
+                                        {/* Legging Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Main Item */}
+                                            <button id='equipment-slot-main'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/main.webp)`
+                                                }}></button>
+                                            {/* Right Glove */}
+                                            <button id='equipment-slot-glove-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/glove.webp)`,
+                                                    backgroundSize: '22px'
+                                                }}></button>
+                                            {/* Right Ring */}
+                                            <button id='equipment-slot-ring-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/ring.webp)`,
+                                                    backgroundSize: '20px',
+                                                    transform: 'scaleX(-1)'
+                                                }}></button>
+                                            {/* Legging */}
+                                            <button id='equipment-slot-legging'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/legging.webp)`
+                                                }}></button>
+                                            {/* Left Ring */}
+                                            <button id='equipment-slot-ring-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/ring.webp)`,
+                                                    backgroundSize: '20px'
+                                                }}></button>
+                                            {/* Left Glove */}
+                                            <button id='equipment-slot-glove-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/glove.webp)`,
+                                                    backgroundSize: '22px',
+                                                    transform: 'scaleX(-1)'
+                                                }}></button>
+                                            {/* Offhand Item */}
+                                            <button id='equipment-slot-offhand'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/offhand.webp)`,
+                                                    backgroundSize: '40px'
+                                                }}></button>
+                                        </div>
+                                        {/* Boot Container */}
+                                        <div className='flex-center row gap'>
+                                            {/* Right Hidden Item in Boot */}
+                                            <button id='equipment-slot-hidden-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/hidden.webp)`
+                                                }}></button>
+                                            {/* Right Boot */}
+                                            <button id='equipment-slot-boot-right'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/boot.webp)`,
+                                                    backgroundSize: '40px'
+                                                }}></button>
+                                            {/* Left Boot */}
+                                            <button id='equipment-slot-boot-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/boot.webp)`,
+                                                    backgroundSize: '40px',
+                                                    transform: 'scaleX(-1)'
+                                                }}></button>
+                                            {/* Left Hidden Item in Boot */}
+                                            <button id='equipment-slot-hidden-left'
+                                                style={{
+                                                    backgroundImage: `url(/resources/inventory/hidden.webp)`
+                                                }}></button>
+                                        </div>
+                                    </div>
+                                    {/* Consumable Slots */}
+                                    <div id='equipment-slots-consumable' 
+                                        className='slot flex-center row gap'>
+                                        <button id='equipment-slot-consumable1'
                                             style={{
-                                                backgroundImage: `url(/resources/inventory/headband.webp)`
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
-                                        {/* Helmet */}
-                                        <button id='equipment-slot-helmet'
+                                        <button id='equipment-slot-consumable2'
                                             style={{
-                                                backgroundImage: `url(/resources/inventory/helmet.webp)`
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
-                                        {/* Eyewear */}
-                                        <button id='equipment-slot-eyewear'
+                                        <button id='equipment-slot-consumable3'
                                             style={{
-                                                backgroundImage: `url(/resources/inventory/eyewear.webp)`,
-                                                backgroundSize: '25px'
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
+                                            }}></button>
+                                        <button id='equipment-slot-consumable4'
+                                            style={{
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
+                                            }}></button>
+                                        <button id='equipment-slot-consumable5'
+                                            style={{
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
+                                            }}></button>
+                                        <button id='equipment-slot-consumable6'
+                                            style={{
+                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                     </div>
-                                    {/* Necklace Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Necklace */}
-                                        <button id='equipment-slot-necklace'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/necklace.webp)`,
-                                                backgroundSize: '25px'
-                                            }}></button>
-                                    </div>
-                                    {/* Chestplate Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Undershirt */}
-                                        <button id='equipment-slot-undershirt'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/undershirt.webp)`
-                                            }}></button>
-                                        {/* Chestplate */}
-                                        <button id='equipment-slot-chestplate'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/chestplate.webp)`
-                                            }}></button>
-                                        {/* Cape */}
-                                        <button id='equipment-slot-cape'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/cape.webp)`
-                                            }}></button>
-                                    </div>
-                                    {/* Belt Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Right Bracelet */}
-                                        <button id='equipment-slot-bracelet-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/bracelet.webp)`,
-                                                backgroundSize: '25px',
-                                                transform: 'scaleX(-1)'
-                                            }}></button>
-                                        {/* Right Wrist */}
-                                        <button id='equipment-slot-wrist-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/wrist.webp)`,
-                                                backgroundSize: '20px'
-                                            }}></button>
-                                        {/* Belt */}
-                                        <button id='equipment-slot-belt'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/belt.webp)`
-                                            }}></button>
-                                        {/* Left Wrist */}
-                                        <button id='equipment-slot-wrist-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/wrist.webp)`,
-                                                backgroundSize: '20px'
-                                            }}></button>
-                                        {/* Left Bracelet */}
-                                        <button id='equipment-slot-bracelet-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/bracelet.webp)`,
-                                                backgroundSize: '25px'
-                                            }}></button>
-                                    </div>
-                                    {/* Legging Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Main Item */}
-                                        <button id='equipment-slot-main'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/main.webp)`
-                                            }}></button>
-                                        {/* Right Glove */}
-                                        <button id='equipment-slot-glove-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/glove.webp)`,
-                                                backgroundSize: '22px'
-                                            }}></button>
-                                        {/* Right Ring */}
-                                        <button id='equipment-slot-ring-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/ring.webp)`,
-                                                backgroundSize: '20px',
-                                                transform: 'scaleX(-1)'
-                                            }}></button>
-                                        {/* Legging */}
-                                        <button id='equipment-slot-legging'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/legging.webp)`
-                                            }}></button>
-                                        {/* Left Ring */}
-                                        <button id='equipment-slot-ring-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/ring.webp)`,
-                                                backgroundSize: '20px'
-                                            }}></button>
-                                        {/* Left Glove */}
-                                        <button id='equipment-slot-glove-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/glove.webp)`,
-                                                backgroundSize: '22px',
-                                                transform: 'scaleX(-1)'
-                                            }}></button>
-                                        {/* Offhand Item */}
-                                        <button id='equipment-slot-offhand'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/offhand.webp)`,
-                                                backgroundSize: '40px'
-                                            }}></button>
-                                    </div>
-                                    {/* Boot Container */}
-                                    <div className='flex-center row gap'>
-                                        {/* Right Hidden Item in Boot */}
-                                        <button id='equipment-slot-hidden-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/hidden.webp)`
-                                            }}></button>
-                                        {/* Right Boot */}
-                                        <button id='equipment-slot-boot-right'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/boot.webp)`,
-                                                backgroundSize: '40px'
-                                            }}></button>
-                                        {/* Left Boot */}
-                                        <button id='equipment-slot-boot-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/boot.webp)`,
-                                                backgroundSize: '40px',
-                                                transform: 'scaleX(-1)'
-                                            }}></button>
-                                        {/* Left Hidden Item in Boot */}
-                                        <button id='equipment-slot-hidden-left'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/hidden.webp)`
-                                            }}></button>
-                                    </div>
-                                </div>
-                                {/* Consumable Slots */}
-                                <div id='equipment-slots-consumable' 
-                                    className='slot flex-center row gap'>
-                                    <button id='equipment-slot-consumable1'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                    <button id='equipment-slot-consumable2'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                    <button id='equipment-slot-consumable3'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                    <button id='equipment-slot-consumable4'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                    <button id='equipment-slot-consumable5'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                    <button id='equipment-slot-consumable6'
-                                        style={{
-                                            backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                        }}></button>
-                                </div>
+                                </section>
+                                {/* Stats */}
+                                <table id='equipment-table-stats'
+                                    className='aesthetic-scale scale-table table font'>
+                                    <thead>
+                                        <tr>
+                                            <th scope='col'>Stat</th>
+                                            <th scope='col'>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Health:</td>
+                                            <td>{stats.health}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mana:</td>
+                                            <td>{stats.mana}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Attack:</td>
+                                            <td>{stats.attack}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Defense:</td>
+                                            <td>{stats.defense}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Strength:</td>
+                                            <td>{stats.strength}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Agility:</td>
+                                            <td>{stats.agility}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Vitality:</td>
+                                            <td>{stats.vitality}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Resilience:</td>
+                                            <td>{stats.resilience}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Intelligence:</td>
+                                            <td>{stats.intelligence}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dexterity:</td>
+                                            <td>{stats.dexterity}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Luck:</td>
+                                            <td>{stats.luck}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </section>
-                            {/* Stats */}
-                            <table id='equipment-table-stats' 
-                                className='aesthetic-scale scale-table table font'
-                                style={{ width: 'unset' }}>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Stat</th>
-                                        <th scope='col'>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Health:</td>
-                                        <td>{stats.health}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mana:</td>
-                                        <td>{stats.mana}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Attack:</td>
-                                        <td>{stats.attack}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Defense:</td>
-                                        <td>{stats.defense}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Strength:</td>
-                                        <td>{stats.strength}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Agility:</td>
-                                        <td>{stats.agility}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Vitality:</td>
-                                        <td>{stats.vitality}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Resilience:</td>
-                                        <td>{stats.resilience}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Intelligence:</td>
-                                        <td>{stats.intelligence}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dexterity:</td>
-                                        <td>{stats.dexterity}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Luck:</td>
-                                        <td>{stats.luck}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            {/* Abilities */}
+                            <SimpleBar className='fill-width font'
+                                style={{
+                                    maxHeight: '14.7em'
+                                }}>
+                                <table className='table'>
+                                    <thead>
+                                        <tr>
+                                            <th scope='col'>Abilities</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id='equipment-abilities'></tbody>
+                                </table>
+                            </SimpleBar>
                         </section>
-                        {/* Abilities */}
-                        <SimpleBar className='fill-width font'
-                            style={{
-                                maxHeight: '14.7em'
-                            }}>
-                            <table className='table'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Abilities</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='equipment-abilities'></tbody>
-                            </table>
-                        </SimpleBar>
-                    </section>
                     </SimpleBar>
                     {/* View Item Popout */}
                     <section id='equipment-popout-view-item'

@@ -12,7 +12,6 @@
 */
 
 :root{
-    /// Colors
     --randColor: ;
     --randColorLight: ;
     --randColorOpacity: ;
@@ -70,12 +69,27 @@
     //#endregion
     --cursorDefault: ;
     --cursorHover: ;
+    //#region D-pad
+    --dpad-radius: 17%;
+    --dpad-radius-in: 20%;
+    --dpad-fg: var(--randColor);
+    --dpad-bg: #fff;
+    --arrowcolor: var(--randColorLight);
+    --arrow-active-color: #fff;
+    --tri-sml-a: 13px;
+    --tri-sml-b: 19px;
+    --tri-lrg-a: 13px;
+    --tri-lrg-b: 19px;
+    --dpad-arrow-shift: 5px;
+    --dpad-arrow-move: 35%;
+    //#endregion
 }
 
 body{
     font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     margin: 0rem;
     overflow: hidden;
+    touch-action: manipulation;
 }
 
 
@@ -492,11 +506,11 @@ body{
     overflow-x: hidden;
     font-size: 0.948em;
     background-color: white;
+    box-sizing: border-box;
     &.textarea{
-        height: 6.3em;
-        width: 100%;
-        max-width: 29.8em;
-        width: calc(100vmin - 4.05em);
+        height: 100%;
+        max-width: 30em;
+        width: calc(100vmin - 4em);
         border: none;
         resize: none;
         outline: none;
@@ -504,8 +518,8 @@ body{
     }
     &.p{
         height: 100%;
-        max-width: 24em;
-        width: calc(100vmin - 3.4em);
+        max-width: 24.4em;
+        width: calc(100vmin - 3.2em);
         word-wrap: break-word;
         outline: none;
         color: var(--randColorLight);
@@ -639,6 +653,12 @@ body{
             opacity: 0.7;
         }
     }
+    &.button-game{
+        width: 100%;
+        max-height: 4rem;
+        min-height: 2rem;
+        height: calc(100vmin - 17rem);
+    }
 }
 
 .input-match{
@@ -667,11 +687,6 @@ body{
     color: var(--randColor);
     font-size: 0.75em;
     width: 100%;
-    &.select-length-medium{
-        max-width: 14.7em;
-        min-width: 8em;
-        width: calc(100vmin - 20em);
-    }
 }
 
 .radio-match{
@@ -898,9 +913,10 @@ body{
     &.all-side{
         border-radius: 5.6px;
         margin: 0.2em;
+        width: 100%;
         &.input-button-input{
             font-size: 0.8em;
-            width: 13.8em;
+            max-width: 10.3em;
             padding: 0.15rem 0.15rem;
         }
     }
@@ -4112,12 +4128,226 @@ body{
         left: -4em;
     }
 }
+
+.game-controls{
+    @extend .element-ends;
+    flex-wrap: nowrap;
+    margin-top: 2rem;
+}
+
+/// Created by tswone (https://codepen.io/tswone/pen/GLzZLd?editors=1100)
+.d-pad{
+    position: relative;
+    max-width: 200px;
+    max-height: 200px;
+    width: calc(100vmin - 10rem);
+    height: calc(100vmin - 10rem);
+    border-radius: 48%;
+    overflow: hidden;
+    &:before{
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 5%;       
+        transform: translate(-50%, -50%);
+        width: 66.6%;
+        height: 66.6%;
+        background-color: var(--dpad-fg);
+    }
+    &:after{
+        content: '';
+        cursor: pointer;
+        z-index: 2;
+        position: absolute;
+        display: none;
+        width: 20%;
+        height: 20%;
+        top: 50%;
+        left: 50%;
+        background: var(--dpad-fg);
+        border-radius: 50%;   
+        transform: translate(-50%, -50%);
+        transition: all .25s;
+    }
+    &:hover:after{
+        width: 30%;
+        height: 30%;
+    }
+    button{
+        display: block;
+        position: absolute;
+        width: 33.3%;
+        height: 43%;
+        line-height: 40%;
+        color: #fff;
+        text-align: center;  
+        border: none;
+        &:before{
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 5px;
+            border-style: solid;     
+            transition: all .25s;
+        }
+        &:after{
+            content: '';
+            position: absolute;
+            width: 102%;
+            height: 78%;
+            background: var(--dpad-bg);
+            border-radius: var(--dpad-radius-in);
+        }
+    }
+    button.left, button.right{
+        width: 43%;
+        height: 33%;
+        &:after{
+            width: 78%;
+            height: 102%;
+        }    
+    }
+    button.up{
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        border-radius: var(--dpad-radius) var(--dpad-radius) 50% 50%;
+        background-image: radial-gradient(
+            100% 100% at 50% 0%,
+            var(--randColorLight) 0,
+            var(--randColor) 90%);
+        &:after{
+            left: 0;
+            top: 0;
+            transform: translate(-100%, 0);
+            border-top-left-radius: 50%;
+            pointer-events: none;
+        }
+        &:before{
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-width: 0 var(--tri-sml-a) var(--tri-sml-b) var(--tri-sml-a);
+            border-color: transparent transparent var(--arrowcolor) transparent;
+        }
+        &:active:before{
+            border-bottom-color: var(--arrow-active-color);
+        }
+    }
+    button.up:hover:before{
+        top: var(--dpad-arrow-move);
+    }
+    button.down{
+        bottom: 0;
+        left: 50%;    
+        transform: translate(-50%, 0);
+        border-radius: 50% 50% var(--dpad-radius) var(--dpad-radius); 
+        background-image: radial-gradient(
+            100% 100% at 50% 100%,
+            var(--randColorLight) 0,
+            var(--randColor) 90%);
+        &:after{
+            right: 0;
+            bottom: 0;
+            transform: translate(100%, 0);
+            border-bottom-right-radius: 50%;
+            pointer-events: none;
+        }
+        &:before{
+            bottom: 40%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            border-width: var(--tri-sml-b) var(--tri-sml-a) 0px var(--tri-sml-a);
+            border-color: var(--arrowcolor) transparent transparent transparent;
+        }
+        &:active:before{
+            border-top-color: var(--arrow-active-color);
+        }
+    }
+    button.down:hover:before{
+        bottom: var(--dpad-arrow-move);
+    }
+    button.left{
+        top: 50%;
+        left: 0;    
+        transform: translate(0, -50%);
+        border-radius: var(--dpad-radius) 50% 50% var(--dpad-radius);
+        background-image: radial-gradient(
+            100% 100% at 0 50%,
+            var(--randColorLight) 0,
+            var(--randColor) 90%);
+        &:after{
+            left: 0;
+            bottom: 0;
+            transform: translate(0, 100%);
+            border-bottom-left-radius: 50%;
+            pointer-events: none;
+        }
+        &:before{
+            left: 40%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-width: var(--tri-sml-a) var(--tri-sml-b) var(--tri-sml-a) 0;
+            border-color: transparent var(--arrowcolor) transparent transparent;
+        }
+        &:active:before{
+            border-right-color: var(--arrow-active-color);
+        }
+    }
+    button.left:hover:before{
+        left: var(--dpad-arrow-move);
+    }
+    button.right{
+        top: 50%;
+        right: 0;    
+        transform: translate(0, -50%);  
+        border-radius: 50% var(--dpad-radius) var(--dpad-radius) 50%;
+        background-image: radial-gradient(
+            100% 100% at 100% 50%,
+            var(--randColorLight) 0,
+            var(--randColor) 90%);
+        &:after{
+            right: 0;
+            top: 0;
+            transform: translate(0, -100%);
+            border-top-right-radius: 50%;      
+            pointer-events: none;
+        }
+        &:before{
+            right: 40%;
+            top: 50%;
+            transform: translate(50%, -50%);
+            border-width: var(--tri-sml-a) 0 var(--tri-sml-a) var(--tri-sml-b);
+            border-color: transparent transparent transparent var(--arrowcolor);
+        }
+        &:active:before{
+            border-left-color: var(--arrow-active-color);
+        }
+    }
+    button.right:hover:before{
+        right: var(--dpad-arrow-move);
+    }      
+}
+.d-pad.up a.up:before{
+    border-bottom-color: #333;
+}
+.d-pad.down a.down:before{
+    border-top-color: #333;
+}
+.d-pad.left a.left:before{
+    border-right-color: #333;
+}
+.d-pad.right a.right:before{
+    border-left-color: #333;
+}
 //#endregion
 
 
 //////////////////// Libraries & Scripts ////////////////////
 //#region
-//#region React tabs
+//#region Tabs
 .react-tabs{
     @extend .no-highlight;
     &__tab-list{
@@ -4167,7 +4397,7 @@ body{
 }
 //#endregion
 
-//#region React calendar
+//#region Calendar
 .react-calendar{
     width: unset !important;
     color: var(--randColor);
@@ -4187,7 +4417,7 @@ body{
 }
 //#endregion
 
-//#region React time picker
+//#region Time picker
 .react-time-picker__wrapper{
     @extend .input-match;
 }
@@ -4204,7 +4434,7 @@ body{
 }
 //#endregion
 
-//#region React clock
+//#region Clock
 .react-clock{
     top: 0%;
 }
@@ -4218,6 +4448,11 @@ body{
     background-color: var(--randColorLight) !important;
 }
 //#endregion
+
+//#region Spreadsheet
+.Spreadsheet{
+    padding-bottom: 0.7rem;
+}
 
 //#region Simplebar
 .simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
@@ -4660,10 +4895,25 @@ body{
         height: 22em;
         width: 22em;
         img, div{
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
         }
+        div{
+            z-index: 2;
+        }
+    }
+    #character-image{
+        z-index: 1;
+    }
+    #character-image-clothes{
+        z-index: 2;
+    }
+    #character-image-front-hair{
+        z-index: 3;
+    }
+    #character-image-front-hand{
+        z-index: 4;
     }
 }
 
@@ -4689,7 +4939,7 @@ body{
 
 #equipment-widget{
     max-width: 35.1em;
-    width: 100vmin;
+    width: 100%;
     #equipment-slots-armor, #equipment-slots-consumable{
         button{
             @extend .flex-center;
@@ -4717,52 +4967,55 @@ body{
             width: 64px;
         }
     }
-    #equipment-table-stats{
-        tbody{
-            tr{
-                /// Health
-                &:nth-child(1){
-                    color: red;
-                }
-                /// Mana
-                &:nth-child(2){
-                    color: blue;
-                }
-                /// Attack
-                &:nth-child(3){
-                    color: #cb47dd;
-                }
-                /// Defense
-                &:nth-child(4){
-                    color: #010000;
-                }
-                /// Strength
-                &:nth-child(5){
-                    color: #ab0000;
-                }
-                /// Agility
-                &:nth-child(6){
-                    color: #2dd16c;
-                }
-                /// Vitality
-                &:nth-child(7){
-                    color: #be0011;
-                }
-                /// Resilience
-                &:nth-child(8){
-                    color: #808080;
-                }
-                /// Intelligence
-                &:nth-child(9){
-                    color: #337de9;
-                }
-                /// Dexterity
-                &:nth-child(10){
-                    color: #e86801;
-                }
-                /// Luck
-                &:nth-child(11){
-                    color: #b5af00;
+    #equipment-slot-and-stat{
+        width: 100%;
+        #equipment-table-stats{
+            tbody{
+                tr{
+                    /// Health
+                    &:nth-child(1){
+                        color: red;
+                    }
+                    /// Mana
+                    &:nth-child(2){
+                        color: blue;
+                    }
+                    /// Attack
+                    &:nth-child(3){
+                        color: #cb47dd;
+                    }
+                    /// Defense
+                    &:nth-child(4){
+                        color: #010000;
+                    }
+                    /// Strength
+                    &:nth-child(5){
+                        color: #ab0000;
+                    }
+                    /// Agility
+                    &:nth-child(6){
+                        color: #2dd16c;
+                    }
+                    /// Vitality
+                    &:nth-child(7){
+                        color: #be0011;
+                    }
+                    /// Resilience
+                    &:nth-child(8){
+                        color: #808080;
+                    }
+                    /// Intelligence
+                    &:nth-child(9){
+                        color: #337de9;
+                    }
+                    /// Dexterity
+                    &:nth-child(10){
+                        color: #e86801;
+                    }
+                    /// Luck
+                    &:nth-child(11){
+                        color: #b5af00;
+                    }
                 }
             }
         }
@@ -5148,6 +5401,15 @@ body{
     }
 }
 
+#spreadsheet-widget{
+    #spreadsheet-content{
+        max-width: 50rem;
+        max-height: 20rem;
+        width: calc(100vmin - 2.4rem);
+        margin-top: 0.5rem;
+    }
+}
+
 #translator-widget{
     font-size: 1.11em;
     #translator-widget-animation{
@@ -5309,6 +5571,11 @@ body{
     }
 }
 
+#bullethell-widget{
+    max-width: 653px;
+    width: 100%;
+}
+
 #chess-widget{
     #chess-board{
         max-width: 25em;
@@ -5366,6 +5633,8 @@ body{
     #minesweeper-board{
         max-width: 20em;
         max-height: 20em;
+        width: calc(100vmin - 2.8rem);
+        height: calc(100vmin - 2.8rem);
         align-items: flex-start;
         justify-content: flex-start;
     }
@@ -5582,6 +5851,16 @@ body{
 //////////////////// IDs: Widget Fun ////////////////////
 //#region
 #aiimagegenerator-widget{
+    #aiimagegenerator-images{
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1/1;
+        img{
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    }
     #aiimagegenerator-popout-animation-help{
         padding-right: 1.5em;
     }
@@ -6331,6 +6610,11 @@ input:-webkit-autofill:active{
     #show-hide-widgets-popout-button-games,
     #show-hide-widgets-popout-button-fun{
         grid-template-columns: repeat(2, auto) !important;
+    }
+    #equipment-widget{
+        #equipment-slot-and-stat{
+            flex-direction: column;
+        }
     }
 }
 //#endregion

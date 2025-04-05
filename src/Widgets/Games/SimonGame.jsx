@@ -26,7 +26,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
         score: 0,
         highscore: 0,
         counter: 0,
-        clickCounter: 0,
+        clickCounter: -1,
         pathGenerating: false,
         gameover: false,
         settings: false,

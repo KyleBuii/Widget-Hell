@@ -221,7 +221,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                             disabled={state.running}>{(state.running) ? 'Generating...' : 'Generate'}</button>
                         {/* Image */}
                         <div id='aiimagegenerator-images'
-                            className='aesthetic-scale scale-self grid col-auto'></div>
+                            className='aesthetic-scale scale-self'></div>
                         {/* Download Button */}
                         <button id='aiimagegenerator-button-download'
                             className='button-match inverse disabled circular float bottom-right'

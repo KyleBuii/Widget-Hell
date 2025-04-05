@@ -7069,6 +7069,7 @@ const punctuation = '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'
     + '\\*\\+\\,\\\\\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\['
     + '\\]\\^\\_\\`\\{\\|\\}\\~\\]';
 const matchAll = new RegExp('\\s*(\\.{3}|\\w+\\-\\w+|\\w+"(?:\\w+)?|\\w+|[' + punctuation + '])');
+let isMobile = false;
 //#region Select
 const formatGroupLabel = (data) => (
     <div style={{
@@ -8819,7 +8820,9 @@ class Widgets extends Component {
         window.addEventListener('new item', this.addItem);
         window.addEventListener('gold bag', this.addGoldBag);
         window.addEventListener('equip item', this.equipItem);
-        /// Load widget's data from local storage
+        if ('maxTouchPoints' in navigator) {
+            isMobile = navigator.maxTouchPoints > 0;
+        };
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let widgetsUtility = {};
@@ -8982,7 +8985,6 @@ class Widgets extends Component {
         if (localStorage.getItem('name') !== null) {
             window.username = JSON.parse(localStorage.getItem('name'));
         };
-        /// Load voices
         voices = window.speechSynthesis.getVoices();
         speechSynthesis.addEventListener('voiceschanged', () => {
             voices = window.speechSynthesis.getVoices();
@@ -9247,6 +9249,7 @@ class Widgets extends Component {
                         selectHideGroupHeading={selectHideGroupHeading}
                         selectHideGroupMenuList={selectHideGroupMenuList}
                         updateGlobalValue={this.updateGlobalValue}
+                        isMobile={isMobile}
                         smallIcon={smallIcon}/>}
                 {this.state.widgets.utility.weather.active
                     && <WidgetWeather defaultProps={this.generateDefaultProps('weather', 'utility')}
@@ -9298,10 +9301,12 @@ class Widgets extends Component {
                     && <WidgetSnake defaultProps={this.generateDefaultProps('snake', 'games')}
                         gameProps={gameProps}
                         foodTypes={foodTypes}
-                        debris={debrisPatterns}/>}
+                        debris={debrisPatterns}
+                        isMobile={isMobile}/>}
                 {this.state.widgets.games.tetris.active
                     && <WidgetTetris defaultProps={this.generateDefaultProps('tetris', 'games')}
-                        gameProps={gameProps}/>}
+                        gameProps={gameProps}
+                        isMobile={isMobile}/>}
                 {this.state.widgets.games.trivia.active
                     && <WidgetTrivia defaultProps={this.generateDefaultProps('trivia', 'games')}
                         gameProps={gameProps}
@@ -9311,7 +9316,8 @@ class Widgets extends Component {
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.games.twentyfortyeight.active
                     && <Widget2048 defaultProps={this.generateDefaultProps('twentyfortyeight', 'games')}
-                        gameProps={gameProps}/>}
+                        gameProps={gameProps}
+                        isMobile={isMobile}/>}
                 {this.state.widgets.games.typingtest.active
                     && <WidgetTypingTest defaultProps={this.generateDefaultProps('typingtest', 'games')}
                         gameProps={gameProps}

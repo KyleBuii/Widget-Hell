@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Scene } from 'phaser';
 import { EventBus } from '../EventBus';
 
@@ -15,7 +16,6 @@ import { EventBus } from '../EventBus';
 9 - Abilities / Abilities additions
 */
 //#endregion
-
 
 const HEIGHT = 850;
 const WIDTH = 600;
@@ -44,15 +44,15 @@ let velocityX = 0;
 let velocityY = 0;
 
 
-export class Game extends Scene{
-    constructor(){
+export class Game extends Scene {
+    constructor() {
         super('Game');
         this.player = null;
         this.boss = null;
         this.debuffs = [];
     };
-    create(){
-        if("maxTouchPoints" in navigator){
+    create() {
+        if ("maxTouchPoints" in navigator) {
             isMobile = navigator.maxTouchPoints > 0;
         };
         this.createMenu();
@@ -65,7 +65,7 @@ export class Game extends Scene{
         });
         EventBus.emit('current-scene-ready', this);
     };
-    createMenu(){
+    createMenu() {
         this.buttonContainer = this.add.image(95, 72, "box")
             .setDepth(2)
             .setDisplaySize(165, 105)
@@ -114,7 +114,7 @@ export class Game extends Scene{
             .setDisplaySize(140, 40)
             .setInteractive()
             .on('pointerdown', () => {
-                if(!isMobile){
+                if (!isMobile) {
                     mouseMovement = !mouseMovement;
                 };
             });
@@ -124,7 +124,7 @@ export class Game extends Scene{
         this.textCurrentAbility = this.add.text(580, 830, "")
             .setDepth(2)
             .setOrigin(1);
-        if(isMobile){
+        if (isMobile) {
             this.buttonAbility = this.add.image(60, 810, "button")
                 .setDepth(2)
                 .setDisplaySize(85, 40)
@@ -153,8 +153,8 @@ export class Game extends Scene{
                 .setOrigin(0.5);
         };
     };
-    toggleMenu(isHide, isGameover = false){
-        if(isHide){
+    toggleMenu(isHide, isGameover = false) {
+        if (isHide) {
             this.enemies.getChildren().forEach((enemy) => {
                 enemy.kill();
                 this.time.removeAllEvents();
@@ -168,11 +168,11 @@ export class Game extends Scene{
             this.textPlay.setVisible(false);
             this.buttonMouseMovement.setVisible(false);
             this.textMouseMovement.setVisible(false);
-        }else{
-            if(isGameover){
+        } else {
+            if (isGameover) {
                 this.buttonReturn.setVisible(true);
                 this.textReturn.setVisible(true);
-            }else{
+            } else {
                 this.buttonReturn.setVisible(false);
                 this.textReturn.setVisible(false);  
             };
@@ -183,7 +183,7 @@ export class Game extends Scene{
             this.textMouseMovement.setVisible(true);
         };
     };
-    createPlayer(){
+    createPlayer() {
         this.playerBullets = new Bullets(this, 100)
             .setDepth(3);
         this.playerAbilities = this.physics.add.group({
@@ -202,17 +202,17 @@ export class Game extends Scene{
         this.player = new Player(this, 'player-default', 300, 750, this.playerBullets, this.playerAbilitiesBullets)
             .setOffset(37, 60);
     };
-    createEnemy(){
+    createEnemy() {
         this.enemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
         this.spawnEnemy();
         this.time.delayedCall(1000, this.spawnEnemy, [], this);
         this.time.delayedCall(2000, this.spawnEnemy, [], this);
     };
-    createBoss(){
+    createBoss() {
         const playerCollider = {
             contains: (x, y) => {
                 let hit = false;
-                if(this.player.body.hitTest(x, y)){
+                if (this.player.body.hitTest(x, y)) {
                     hit = true;
                     this.damagePlayer(this.player, 1);
                 };
@@ -244,14 +244,14 @@ export class Game extends Scene{
         this.bossBombs = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
             .setDepth(8);
     };
-    createColliders(){
+    createColliders() {
         this.anchorOutside = this.physics.add.sprite(300, -100)
             .setSize(600, 1)
             .setPushable(false);
         this.anchorBoss = this.physics.add.sprite(300, 280)
             .setPushable(false);
         this.physics.add.collider(this.playerAbilities, this.anchorOutside, (anchor, ability) => {
-            switch(ability.name){
+            switch (ability.name) {
                 case "oceanicTerror":
                     ability.kill();
                     break;
@@ -280,7 +280,7 @@ export class Game extends Scene{
             this.abilityHitCallback(bullet, ability);
         });
     };
-    spawnEnemy(){
+    spawnEnemy() {
         let enemiesKeys = Object.keys(enemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
         let randomX = Math.random() * 500 + 100;
@@ -295,19 +295,19 @@ export class Game extends Scene{
         );
         this.enemies.add(enemy);
     };
-    spawnBoss(){
+    spawnBoss() {
         let randomBoss = Math.floor(Math.random() * 15 + 1);
         this.boss = new Boss(
             1, 200, 1, this.bossBullets, this, `boss-${randomBoss}`,
             300, 0, 1000, 0, 100
         );
-        if(this.debuffs.length !== 0){
+        if (this.debuffs.length !== 0) {
             this.debuffs.forEach((debuff) => {
                 this.boss.debuff(debuff);
             });
         };
         this.physics.add.overlap(this.boss, this.player, (boss, player) => {
-            if(player.hp.decrease(1)){
+            if (player.hp.decrease(1)) {
                 player.dead();
                 this.clearScreen();
             };
@@ -327,20 +327,19 @@ export class Game extends Scene{
         this.physics.add.collider(this.boss, this.anchorBoss, (boss, anchor) => {
             boss.body.setVelocityY(0);
             boss.danmaku.setProperties(this, boss.danmakuPatterns[0]);
-            // boss.danmaku.startUpDanmaku(this);
             boss.danmaku.follow(boss);
             this.bossBulletsEmitter.start();
             boss.ready = true;
         });
         this.physics.add.overlap(this.bossBombs, this.player, (player, bomb) => {
             bomb.destroy();
-            if(((3 * Math.floor((this.bossBombs.getLength()) / 3)) === this.bossBombs.getLength())
-                && this.boss.hp.decrease(100)){
+            if (((3 * Math.floor((this.bossBombs.getLength()) / 3)) === this.bossBombs.getLength())
+                && this.boss.hp.decrease(100)) {
                 this.boss.kill();
             };
         });
     };
-    setData(data){
+    setData(data) {
         this.player.hp = new HealthBar(
             this,
             (data.stats.health < 10)
@@ -402,29 +401,28 @@ export class Game extends Scene{
                 : ""
         );
     };
-    playerHitCallback(bullet, player){
-        if(bullet.active === true){
+    playerHitCallback(bullet, player) {
+        if (bullet.active === true) {
             this.damagePlayer(player, bullet.damage);
             bullet.remove();
         };
     };
-    abilityHitCallback(bullet, ability){
-        if(bullet.active === true){
-            if(ability.sponge){
-                if(ability.active && ability.hp.decrease(bullet.damage)){
+    abilityHitCallback(bullet, ability) {
+        if (bullet.active === true) {
+            if (ability.sponge) {
+                if (ability.active && ability.hp.decrease(bullet.damage)) {
                     ability.kill();
                 };
             };
-            if(ability.reflect){
+            if (ability.reflect) {
                 this.player.danmakuAbilities.resetDanmaku(this);
                 this.player.danmakuAbilities.setProperties(this,
-                    {
-                        name: "REFLECT",
+                    { name: "REFLECT",
                         danmakuConfig: {
                             type: "PARALLEL", countB: 1, 
                             angle: -90, 
                         },
-                        cannonConfig: {   
+                        cannonConfig: {
                             numberOfShots: 1,
                         },
                         bulletConfig: {
@@ -439,29 +437,29 @@ export class Game extends Scene{
                 this.player.danmakuAbilities.follow(ability);
                 this.player.danmakuAbilities.fireDanmaku(this);
             };
-            if(!ability.attack){
+            if (!ability.attack) {
                 bullet.remove();
             };
         };    
     };
-    enemyHitCallback(bullet, enemy){
-        if(bullet.active === true && enemy.active === true){
+    enemyHitCallback(bullet, enemy) {
+        if (bullet.active === true && enemy.active === true) {
             this.damageEnemy(enemy, (bullet.attack)
                 ? this.player.atk
                 : (bullet.addition)
                     ? this.player.atk / 4
                     : (bullet.damage || 0)
             );
-            if(!bullet.attack && !bullet.sponge && !bullet.addition){
+            if (!bullet.attack && !bullet.sponge && !bullet.addition) {
                 bullet.remove();
             };
             let hit;
-            switch(bullet.name){
+            switch (bullet.name) {
                 case "restInPeace":
                 case "restInPeaceHand":
                     hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "rest-in-peace-hit")
                         ?.setDepth(5);
-                    if(hit){
+                    if (hit) {
                         hit.setActive(true);
                         hit.setVisible(true);
                         this.tweens.add({
@@ -479,7 +477,7 @@ export class Game extends Scene{
                 case "oceanicTerror":
                     hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "oceanic-terror-hit")
                         ?.setDepth(5);
-                    if(hit){
+                    if (hit) {
                         hit.setActive(true);
                         hit.setVisible(true);
                         this.tweens.add({
@@ -498,30 +496,30 @@ export class Game extends Scene{
             };
         };
     };
-    damagePlayer(player, damage){
-        if(player.active && player.hp.decrease(damage)){
+    damagePlayer(player, damage) {
+        if (player.active && player.hp.decrease(damage)) {
             player.dead();
             this.clearScreen();
         };
     };
-    damageEnemy(enemy, damage){
-        if(enemy.hp.decrease(damage)){
+    damageEnemy(enemy, damage) {
+        if (enemy.hp.decrease(damage)) {
             enemy.kill();
-            if(enemy?.key !== "boss"){
+            if (enemy?.key !== "boss") {
                 this.spawnEnemy();
-            }else{
+            } else {
                 this.clearScreen();   
             };
         };
     };
-    clearScreen(){
+    clearScreen() {
         this.toggleMenu(false, true);
         this.bossBombs.clear(true, true);
     };
 };
 
-class HealthBar{
-    constructor(scene, health, offsetX, offsetY, depth = 6){
+class HealthBar {
+    constructor(scene, health, offsetX, offsetY, depth = 6) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
         this.bar.setDepth(depth);
         scene.add.existing(this.bar);
@@ -532,39 +530,39 @@ class HealthBar{
         this.p = 19 / health;
         this.draw();
     };
-    move(x, y){
+    move(x, y) {
         this.x = x - this.offsetX;
         this.y = y + this.offsetY;
         this.draw();
     };
-    decrease(amount){
+    decrease(amount) {
         this.value -= amount;
-        if(this.value < 0){
+        if (this.value < 0) {
             this.value = 0;
         };
-        return(this.value === 0);
+        return (this.value === 0);
     };
-    draw(){
+    draw() {
         this.bar.clear();
         this.bar.fillStyle(0x000000);
         this.bar.fillRect(this.x, this.y, 23, 7);
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, 19, 3);
-        if(this.value < (this.maxValue / 2)){
+        if (this.value < (this.maxValue / 2)) {
             this.bar.fillStyle(0xff0000);
-        }else{
+        } else {
             this.bar.fillStyle(0x00ff00);
         };
         let d = Math.floor(this.p * this.value);
         this.bar.fillRect(this.x + 2, this.y + 2, d, 3);
     };
-    reset(){
+    reset() {
         this.value = this.maxValue;
     };
 };
 
-class Player extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, texture, x, y, bullets, bulletsAbilities){
+class Player extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, texture, x, y, bullets, bulletsAbilities) {
         super(scene, x, y);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -590,16 +588,16 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.danmakuAbilities = new Danmaku(scene, bulletsAbilities, {});
         this.bulletLastFired = 0;
     };
-    preUpdate(time, delta){
+    preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        if(this.x !== this.danmaku.x || this.y !== this.danmaku.y){
+        if (this.x !== this.danmaku.x || this.y !== this.danmaku.y) {
             this.danmaku.follow(this);
         };
-        if(this.x !== this.hp.x || this.y !== this.hp.y){
+        if (this.x !== this.hp.x || this.y !== this.hp.y) {
             this.hp.move(this.x, this.y);
         };
         velocityX = 0; velocityY = 0;
-        if(!this.keyInitialized){
+        if (!this.keyInitialized) {
             this.keyW = this.scene.input.keyboard.addKey('W');
             this.keyA = this.scene.input.keyboard.addKey('A');
             this.keyS = this.scene.input.keyboard.addKey('S');
@@ -611,82 +609,82 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
             this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             this.keyAbilitySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);    
-            if(isMobile){
+            if (isMobile) {
                 this.scene.input.on('pointerdown', (pointer) => {
-                    if(this.x !== pointer.x || this.y !== pointer.y){
+                    if (this.active && (this.x !== pointer.x || this.y !== pointer.y)) {
                         this.setPosition(pointer.x, pointer.y);
                     };
                 });
                 this.scene.input.on('pointermove', (pointer) => {
-                    if(this.x !== pointer.x || this.y !== pointer.y){
+                    if (this.active && (this.x !== pointer.x || this.y !== pointer.y)) {
                         this.setPosition(pointer.x, pointer.y);
                     };
                 });
             };
             this.keyInitialized = true;
         };
-        if(mouseMovement){
+        if (mouseMovement) {
             let pointer = this.scene.input.activePointer;
-            if(this.x !== pointer.x || this.y !== pointer.y){
+            if (this.x !== pointer.x || this.y !== pointer.y) {
                 this.setPosition(pointer.x, pointer.y);
             };
         };
-        if(this.keyW?.isDown || this.keyUp?.isDown){
+        if (this.keyW?.isDown || this.keyUp?.isDown) {
             velocityY = (this.keyShift?.isDown)
                 ? -this.speed / 3
                 : -this.speed;
         };
-        if(this.keyA?.isDown || this.keyLeft?.isDown){
+        if (this.keyA?.isDown || this.keyLeft?.isDown) {
             velocityX = (this.keyShift?.isDown)
                 ? -this.speed / 3
                 : -this.speed;
         };
-        if(this.keyS?.isDown || this.keyRight?.isDown){
+        if (this.keyS?.isDown || this.keyRight?.isDown) {
             velocityY = (this.keyShift?.isDown)
                 ? this.speed / 3
                 : this.speed;
         };
-        if(this.keyD?.isDown || this.keyDown?.isDown){
+        if (this.keyD?.isDown || this.keyDown?.isDown) {
             velocityX = (this.keyShift?.isDown)
                 ? this.speed / 3
                 : this.speed;
         };
-        if(velocityX !== this.body.velocity.x){
+        if (velocityX !== this.body.velocity.x) {
             this.setVelocityX(velocityX);
         };
-        if(velocityY !== this.body.velocity.y){
+        if (velocityY !== this.body.velocity.y) {
             this.setVelocityY(velocityY);
         };
-        if(this.active){
-            if(this.keyShift?.isDown && !this.sneakInitialized){
+        if (this.active) {
+            if (this.keyShift?.isDown && !this.sneakInitialized) {
                 this.sneakInitialized = true;
                 this.danmaku.resetDanmaku(this.scene);
                 this.danmaku.setProperties(this.scene, this.weapons[1]);
                 this.danmaku.startUpDanmaku(this.scene);
-            }else if(!this.keyShift?.isDown && this.sneakInitialized){
+            } else if (!this.keyShift?.isDown && this.sneakInitialized) {
                 this.sneakInitialized = false;
                 this.danmaku.resetDanmaku(this.scene);
                 this.danmaku.setProperties(this.scene, this.weapons[0]);
                 this.danmaku.startUpDanmaku(this.scene);
             };
-            if(time > this.bulletLastFired + (300 - (this.dex * 10))){
+            if (time > this.bulletLastFired + (300 - (this.dex * 10))) {
                 this.bulletLastFired = time;
                 this.danmaku.fireDanmaku(this.scene);
             };
         };
-        if(Object.keys(this.abilities).length !== 0){
-            if(this.abilityTimer < this.abilityCooldown){
+        if (Object.keys(this.abilities).length !== 0) {
+            if (this.abilityTimer < this.abilityCooldown) {
                 this.abilityTimer += delta / 1000;
             };
-            if((this.keyAbility?.isDown || this.mobileAbility) && this.abilityTimer >= this.abilityCooldown){
+            if ((this.keyAbility?.isDown || this.mobileAbility) && this.abilityTimer >= this.abilityCooldown) {
                 this[this.ability]();
                 this.abilityTimer = 0;
             };
-            if(Phaser.Input.Keyboard.JustDown(this.keyAbilitySwitch)
-                && Object.keys(this.abilities).length > 0){
+            if (Phaser.Input.Keyboard.JustDown(this.keyAbilitySwitch)
+                && Object.keys(this.abilities).length > 0) {
                 let keysAbilities = Object.keys(this.abilities);
                 this.abilityIndex++;
-                if(this.abilityIndex >= keysAbilities.length){
+                if (this.abilityIndex >= keysAbilities.length) {
                     this.abilityIndex = 0;
                 };
                 this.ability = keysAbilities[this.abilityIndex];
@@ -698,9 +696,9 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             };
         };
     };
-    setAbilities(){
-        for(let ability of this.abilitiesRaw){
-            switch(ability){
+    setAbilities() {
+        for (let ability of this.abilitiesRaw) {
+            switch (ability) {
                 case "Places a grass block":
                     this.ability = "grassBlock";
                     this.abilityCooldown = 60;
@@ -722,7 +720,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                     break;
                 default: break;
             };
-            if(Object.keys(this.abilities).find((ability) => ability === this.ability) === undefined){
+            if (Object.keys(this.abilities).find((ability) => ability === this.ability) === undefined) {
                 this.abilities[this.ability] = this.abilityCooldown;
                 this.abilityCooldown = this.abilityCooldown - (0.1 * Math.pow(1.5, this.int));
                 this.abilityTimer = this.abilityCooldown;
@@ -731,22 +729,22 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         this.abilityIndex = Object.keys(this.abilities).length;
         this.abilitiesRaw.length = 0;
     };
-    dead(){
+    dead() {
         this.active = false;
         this.hp.draw();
     };
-    revive(){
+    revive() {
         this.active = true;
         this.hp.reset();
         this.abilityTimer = this.abilityCooldown;
     };
-    grassBlock(){
-        if(this.scene.playerAbilities.getChildren().find((ability) => {
-            if(ability.name === "grassBlock"){
+    grassBlock() {
+        if (this.scene.playerAbilities.getChildren().find((ability) => {
+            if (ability.name === "grassBlock") {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
                 return true;
             };
-        }) === undefined){
+        }) === undefined) {
             this.scene.playerAbilities.add(
                 new Ability(this.scene, "grassBlock", "grass-block", this.x, this.y - this.height / 2, {
                     healthXOffset: 4.5,
@@ -755,13 +753,13 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             );
         };
     };
-    codeOfHammurabi(){
-        if(this.scene.playerAbilities.getChildren().find((ability) => {
-            if(ability.name === "codeOfHammurabi"){
+    codeOfHammurabi() {
+        if (this.scene.playerAbilities.getChildren().find((ability) => {
+            if (ability.name === "codeOfHammurabi") {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
                 return true;
             };
-        }) === undefined){
+        }) === undefined) {
             this.scene.playerAbilities.add(
                 new Ability(this.scene, "codeOfHammurabi", "code-of-hammurabi", this.x, this.y - this.height / 2, {
                     healthXOffset: 3,
@@ -771,16 +769,16 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             );
         };
     };
-    restInPeace(){
-        if(this.scene.playerAbilities.getChildren().find((ability) => {
-            if((ability.name === "restInPeace") && (this.scene.tweens.isTweening(ability))){
+    restInPeace() {
+        if (this.scene.playerAbilities.getChildren().find((ability) => {
+            if ((ability.name === "restInPeace") && (this.scene.tweens.isTweening(ability))) {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
                 ability.anims.play("rest-in-peace", true);
                 let abilityAdditions = this.scene.playerAbilitiesAdditions.getChildren();
                 let count = 1;
-                loop: for(let i = 0; i < abilityAdditions.length; i++){
-                    if(abilityAdditions[i].name = "restInPeaceHand"){
-                        if(count > 7) break loop;
+                loop: for (let i = 0; i < abilityAdditions.length; i++) {
+                    if (abilityAdditions[i].name = "restInPeaceHand") {
+                        if (count > 7) break loop;
                         let abilityPositionLeft = ability.getTopLeft();
                         let abilityPositionRight = ability.getTopRight();
                         let randomX = Phaser.Math.Between(abilityPositionLeft.x, abilityPositionRight.x);
@@ -789,7 +787,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                             .setActive(true);
                         abilityAdditions[i].x = randomX;
                         abilityAdditions[i].y = abilityPositionLeft.y - (100 * count);
-                        if(abilityAdditions[i].y < -100) break loop;
+                        if (abilityAdditions[i].y < -100) break loop;
                         count++;
                         this.scene.tweens.add({
                             targets: abilityAdditions[i],
@@ -805,7 +803,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                 };
                 return true;
             };
-        }) === undefined){
+        }) === undefined) {
             let slash = new Ability(this.scene, "restInPeace", "rest-in-peace-0", this.x, this.y - this.height / 2, {
                 attack: true
             });
@@ -830,7 +828,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             });
             slash.anims.play("rest-in-peace", true);
             this.scene.playerAbilities.add(slash);
-            for(let i = 1; i <= 14; i++){
+            for (let i = 1; i <= 14; i++) {
                 let hand = this.scene.add.sprite(0, 0, "abilities-atlas", "rest-in-peace-hand")
                     .setActive(true)
                     .setVisible(true)
@@ -838,16 +836,16 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                     .setDepth(9);
                 hand.addition = true;
                 this.scene.playerAbilitiesAdditions.add(hand);
-                if(i <= 7){
+                if (i <= 7) {
                     let slashPositionLeft = slash.getTopLeft();
                     let slashPositionRight = slash.getTopRight();
                     let randomX = Phaser.Math.Between(slashPositionLeft.x, slashPositionRight.x);
                     hand.x = randomX;
                     hand.y = slashPositionLeft.y - (100 * i);
-                    if(hand.y < -100){
+                    if (hand.y < -100) {
                         hand.setActive(false)
                             .setVisible(false);
-                    }else{
+                    } else {
                         this.scene.tweens.add({
                             targets: hand,
                             alpha: 0,
@@ -859,21 +857,21 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                             }
                         });
                     };
-                }else{
+                } else {
                     hand.setActive(false)
                         .setVisible(false);
                 };
             };
         };
     };
-    oceanicTerror(){
-        if(this.scene.playerAbilities.getChildren().find((ability) => {
-            if((ability.name === "oceanicTerror" && !ability.active)){
+    oceanicTerror() {
+        if (this.scene.playerAbilities.getChildren().find((ability) => {
+            if ((ability.name === "oceanicTerror" && !ability.active)) {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
                 ability.setVelocityY(-300);
-                if(this.scene.playerAbilitiesTimeEvents.find((timeEvent, index) => {
-                    if((timeEvent.callback.name === "oceanicTerrorSpawnSeaCritter")
-                        && timeEvent.paused){
+                if (this.scene.playerAbilitiesTimeEvents.find((timeEvent, index) => {
+                    if ((timeEvent.callback.name === "oceanicTerrorSpawnSeaCritter")
+                        && timeEvent.paused) {
                         timeEvent.args = [
                             ability,
                             index
@@ -884,8 +882,8 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                 }));
                 return true;
             };
-        }) === undefined){
-            for(let i = 0; i < 4; i++){
+        }) === undefined) {
+            for (let i = 0; i < 4; i++) {
                 let wave = new Ability(this.scene, "oceanicTerror", "oceanic-terror-wave", this.x, this.y - this.height / 2, {
                     attack: true
                 });
@@ -898,24 +896,24 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                     args: [wave, this.scene.playerAbilitiesTimeEvents.length]
                 });
                 this.scene.playerAbilitiesTimeEvents.push(timeEvent);    
-                if(i === 0){
+                if (i === 0) {
                     timeEvent.paused = false;
                     wave.setVelocityY(-300);
-                }else{
+                } else {
                     wave.kill();
                     timeEvent.paused = true;  
                 };;
             };
         };
     };
-    oceanicTerrorSpawnSeaCritter(wave, timeEventIndex){
-        if(wave.y < 0){
+    oceanicTerrorSpawnSeaCritter(wave, timeEventIndex) {
+        if (wave.y < 0) {
             this.scene.playerAbilitiesTimeEvents[timeEventIndex].paused = true;
         };
         let chiocesSeaCritters = ["fish", "shark", "tentacle"];
         let randomSeaCritter = chiocesSeaCritters[Math.floor(Math.random() * chiocesSeaCritters.length)];
-        if(this.scene.playerAbilitiesAdditions.getChildren().find((ability) => {
-            if((ability.name === `oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`) && !ability.active){
+        if (this.scene.playerAbilitiesAdditions.getChildren().find((ability) => {
+            if ((ability.name === `oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`) && !ability.active) {
                 let wavePositionLeft = wave.getTopLeft();
                 let wavePositionRight = wave.getTopRight();
                 let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
@@ -934,7 +932,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
                 });        
                 return true;
             };
-        }) === undefined){
+        }) === undefined) {
             let wavePositionLeft = wave.getTopLeft();
             let wavePositionRight = wave.getTopRight();
             let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
@@ -964,7 +962,7 @@ class Ability extends Phaser.Physics.Arcade.Sprite{
         sponge = false,
         reflect = false,
         attack = false
-    }){
+    }) {
         super(scene, 0, 0, "abilities-atlas");
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -973,7 +971,7 @@ class Ability extends Phaser.Physics.Arcade.Sprite{
         this.setPosition(x, y);
         this.setDepth(9);
         this.setSize(this.width, this.height);
-        if(sponge){
+        if (sponge) {
             this.health = this.scene.player.mana;
             this.hp = new HealthBar(scene, this.health, this.width / healthXOffset, 11, 10);
         };
@@ -982,20 +980,20 @@ class Ability extends Phaser.Physics.Arcade.Sprite{
         this.reflect = reflect;
         this.attack = attack;
     };
-    preUpdate(time, delta){
+    preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        if(this.sponge && (this.x !== this.hp.x || this.y !== this.hp.y)){
+        if (this.sponge && (this.x !== this.hp.x || this.y !== this.hp.y)) {
             this.hp.move(this.x, this.y);
         };
     };
-    kill(){
+    kill() {
         this.hp?.bar.destroy();
         this.disableBody(true, true);
     };
 };
 
-class Enemy extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, texture, x, y, health, defense, speed, healthXOffset = 7){
+class Enemy extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, texture, x, y, health, defense, speed, healthXOffset = 7) {
         super(scene, x, y, "enemy-atlas");
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -1009,28 +1007,28 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
         this.spd = speed;
         this.alive = true;
     };
-    preUpdate(time, delta){
+    preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        if(!this.alive) this.kill();
-        if(this.x !== this.hp.x || this.y !== this.hp.y){
+        if (!this.alive) this.kill();
+        if (this.x !== this.hp.x || this.y !== this.hp.y) {
             this.hp.move(this.x, this.y);
         };
-        if((this.spd * 100) !== this.body.velocity.y){
+        if ((this.spd * 100) !== this.body.velocity.y) {
             this.body.setVelocityY(this.spd * 100);
         };
-        if(!Phaser.Geom.Rectangle.Overlaps(this.scene.physics.world.bounds, this.getBounds())){
+        if (!Phaser.Geom.Rectangle.Overlaps(this.scene.physics.world.bounds, this.getBounds())) {
             this.setPosition(Math.random() * 500 + 100, 0);
         };
     };
-    kill(){
+    kill() {
         this.hp.bar.destroy();
         this.alive = false;
         this.destroy();
     };
 };
 
-class Boss extends Enemy{
-    constructor(atk, atkSpd, atkRate, bullets, ...arg){
+class Boss extends Enemy {
+    constructor(atk, atkSpd, atkRate, bullets, ...arg) {
         super(...arg);
         this.setDepth(4);
         this.setSize(200, 200);
@@ -1065,41 +1063,41 @@ class Boss extends Enemy{
         this.danmakuPatterns = [];
         this.createDanmakuPatterns();
     };
-    preUpdate(){
-        if(this.x !== this.hp.x || this.y !== this.hp.y){
+    preUpdate() {
+        if (this.x !== this.hp.x || this.y !== this.hp.y) {
             this.hp.move(this.x, this.y);
         };
-        if(this.alive && this.ready){
-            // if(!this.pattern){
+        if (this.alive && this.ready) {
+            // if (!this.pattern) {
             //     this.pattern = patterns[Math.floor(Math.random() * patterns.length)];
             // };
             // this[this.pattern]();
-            if(/\b0\b|\b5000\b|\b10000\b|\b15000\b|\b20000\b|\b25000\b|\b30000\b|\b35000\b|\b40000\b|\b45000\b/.test(this.phaseTimer.toString())
-                && this.scene.player.active){
+            if (/\b0\b|\b5000\b|\b10000\b|\b15000\b|\b20000\b|\b25000\b|\b30000\b|\b35000\b|\b40000\b|\b45000\b/.test(this.phaseTimer.toString())
+                && this.scene.player.active) {
                 this.spawnBomb(3);
             };
             this.phaseTimer++;
-            // if(this.phaseTimer === 12000){
+            // if (this.phaseTimer === 12000) {
             //     this.phaseTimer = 0;
             //     this.nextDanmakuPattern();
             // };
-            // if(this.phaseTimerOffset !== -1){
+            // if (this.phaseTimerOffset !== -1) {
             //     this.phaseTimer = this.phaseTimerOffset;
             //     this.phaseTimerOffset = -1;
             // };
-            // for(let pattern of this.bulletPattern){
-            //     if(pattern.delay && (pattern.delayTimer !== 0) && (pattern.attackDurationTimer === pattern.atkDuration)){
+            // for (let pattern of this.bulletPattern){
+            //     if (pattern.delay && (pattern.delayTimer !== 0) && (pattern.attackDurationTimer === pattern.atkDuration)){
             //         pattern.delayTimer++;
-            //         if(pattern.delayTimer > pattern.delay){
+            //         if (pattern.delayTimer > pattern.delay){
             //             pattern.delayTimer = 0;
             //             pattern.attackDurationTimer = 0;
             //         };
-            //     }else{
+            //     } else {
             //         pattern.attackTimer++;
-            //         if(pattern.attackTimer > pattern.atkRate + this.atkRateDebuff){
+            //         if (pattern.attackTimer > pattern.atkRate + this.atkRateDebuff){
             //             pattern.attackTimer = 0;
             //             pattern.attackDurationTimer++;
-            //             if(pattern.attackDurationTimer === pattern.atkDuration){
+            //             if (pattern.attackDurationTimer === pattern.atkDuration){
             //                 pattern.delayTimer++;
             //             };
             //             this[pattern.attack]();
@@ -1108,7 +1106,7 @@ class Boss extends Enemy{
             // };
         };
     };
-    createDanmakuPatterns(){
+    createDanmakuPatterns() {
         this.danmakuPatterns.push({
             name: "RANDOM ANGLE RANDOM SPEED",
             danmakuConfig: {
@@ -1128,24 +1126,24 @@ class Boss extends Enemy{
             }
         });
     };
-    nextDanmakuPattern(){
+    nextDanmakuPattern() {
         this.danmaku.resetDanmaku(this.scene);
         this.danmaku.setProperties(this.scene, this.danmakuPatterns[Math.floor(Math.random() * this.danmakuPatterns.length)]);
         this.danmaku.startUpDanmaku(this.scene);
     };
-    generation1_1(){
-        if(this.phaseTimer === 0){
+    generation1_1() {
+        if (this.phaseTimer === 0) {
             let randomPatternIndex = Phaser.Math.Between(0, generation1_1Patterns.length - 1);
             let randomPattern = generation1_1Patterns[randomPatternIndex];
             this[randomPattern]();
         };
-        if(this.phaseTimer === 5000){
+        if (this.phaseTimer === 5000) {
             this.bulletPattern.length = 0;
             this.phaseTimerOffset = 0;
         };
     };
-    spiralColorfulSpeen(){
-        if(this.bulletPattern.length === 0){
+    spiralColorfulSpeen() {
+        if (this.bulletPattern.length === 0) {
             this.bulletPattern = [
                 {
                     atkRate: 25,
@@ -1154,7 +1152,7 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(!this.paramsSpiralColorSpeen){
+        if (!this.paramsSpiralColorSpeen) {
             this.paramsSpiralColorSpeen = {
                 lasers: 8,
                 laserAngle: 0,
@@ -1164,7 +1162,7 @@ class Boss extends Enemy{
             };
         };
         const params = this.paramsSpiralColorSpeen;
-        for(let i = 0; i < params.lasers; i++){
+        for (let i = 0; i < params.lasers; i++) {
             const angle = params.laserAngle + (360 / params.lasers) * i;
             const texture = params.textures[i % params.textures.length];
             this.attack({
@@ -1177,8 +1175,8 @@ class Boss extends Enemy{
         };
         params.laserAngle += params.rotationSpeed;
     };
-    arrowSparsedVomit(){
-        if(this.bulletPattern.length === 0){
+    arrowSparsedVomit() {
+        if (this.bulletPattern.length === 0) {
             this.bulletPattern = [
                 {
                     atkRate: 30,
@@ -1187,7 +1185,7 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(!this.paramsArrowSparsedVomit){
+        if (!this.paramsArrowSparsedVomit) {
             this.paramsArrowSparsedVomit = {
                 burstCount: 10,
                 burstSpeed: 450,
@@ -1196,7 +1194,7 @@ class Boss extends Enemy{
             };
         };
         const params = this.paramsArrowSparsedVomit;
-        for(let i = 0; i < params.burstCount; i++){
+        for (let i = 0; i < params.burstCount; i++) {
             const angle = Phaser.Math.Between(0, 360);
             const speed = Phaser.Math.Between(params.burstSpeed - 100, params.burstSpeed + 100);
             const texture = params.textures[Phaser.Math.Between(0, params.textures.length - 1)];
@@ -1209,8 +1207,8 @@ class Boss extends Enemy{
             });
         };
     };
-    icicleBloodAndIce(){
-        if(this.bulletPattern.length === 0){
+    icicleBloodAndIce() {
+        if (this.bulletPattern.length === 0) {
             this.bulletPattern = [
                 {
                     atkRate: 25,
@@ -1219,14 +1217,14 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(!this.paramsIcicleBloodAndIce){
+        if (!this.paramsIcicleBloodAndIce) {
             this.paramsIcicleBloodAndIce = {
                 speed: 350,
                 textures: ["icicle-3-blue", "icicle-red"],
             };
         };
         const params = this.paramsIcicleBloodAndIce;
-        for(let i = 0; i < 4; i++){
+        for (let i = 0; i < 4; i++) {
             const xOffset = Phaser.Math.Between(-300, 300);
             const texture = params.textures[Phaser.Math.Between(0, params.textures.length - 1)];
             this.attack({
@@ -1239,8 +1237,8 @@ class Boss extends Enemy{
             });
         };
     };
-    spiralRadiantBloom(){
-        if(this.bulletPattern.length === 0){
+    spiralRadiantBloom() {
+        if (this.bulletPattern.length === 0) {
             this.bulletPattern = [
                 {
                     atkRate: 40,
@@ -1249,7 +1247,7 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(!this.paramsSpiralRBS){
+        if (!this.paramsSpiralRBS) {
             this.paramsSpiralRBS = {
                 layerCount: 5,
                 bulletsPerLayer: 18,
@@ -1266,11 +1264,11 @@ class Boss extends Enemy{
             };
         };
         const params = this.paramsSpiralRBS;    
-        for(let layer = 0; layer < params.layerCount; layer++){
+        for (let layer = 0; layer < params.layerCount; layer++) {
             const radius = layer * params.layerSpacing;
             const speed = params.baseSpeed + layer * 20;
             const texture = params.textures[layer % params.textures.length];
-            for(let i = 0; i < params.bulletsPerLayer; i++){
+            for (let i = 0; i < params.bulletsPerLayer; i++) {
                 const angle = params.rotationAngle + (360 / params.bulletsPerLayer) * i;
                 const angleRad = Phaser.Math.DegToRad(angle);
                 this.attack({
@@ -1284,7 +1282,7 @@ class Boss extends Enemy{
             };
         };
         params.rotationAngle += params.rotationSpeed;
-        for(let i = 0; i < params.petalCount; i++){
+        for (let i = 0; i < params.petalCount; i++) {
             const angle = params.petalAngle + (360 / params.petalCount) * i;
             this.attack({
                 x: this.x, y: this.y,
@@ -1296,8 +1294,8 @@ class Boss extends Enemy{
         };
         params.petalAngle += params.petalRotationSpeed;
     };
-    spiralCosmicDance(){
-        if(this.bulletPattern.length === 0){
+    spiralCosmicDance() {
+        if (this.bulletPattern.length === 0) {
             this.bulletPattern = [
                 {
                     atkRate: 20,
@@ -1306,7 +1304,7 @@ class Boss extends Enemy{
                 }
             ];
         };
-        if(!this.paramsSpiralCD){
+        if (!this.paramsSpiralCD) {
             this.paramsSpiralCD = {
                 bulletSpeed: 160,
                 bulletCount: 30,
@@ -1322,10 +1320,10 @@ class Boss extends Enemy{
             };
         };
         const params = this.paramsSpiralCD;
-        if(params.timer <= 0){
-            for(let wave = 0; wave < params.waveCount; wave++){
+        if (params.timer <= 0) {
+            for (let wave = 0; wave < params.waveCount; wave++) {
                 const baseAngle = (360 / params.waveCount) * wave + params.angleOffset;
-                for(let i = 0; i < params.bulletCount; i++){
+                for (let i = 0; i < params.bulletCount; i++) {
                     const angle = baseAngle - (params.spreadAngle / 2) + (i * (params.spreadAngle / params.bulletCount));
                     const angleRad = Phaser.Math.DegToRad(angle);
                     const distance = Phaser.Math.FloatBetween(100, params.maxDistance);
@@ -1341,13 +1339,13 @@ class Boss extends Enemy{
             };
             params.timer = params.phaseDuration;
             params.angleOffset += params.spiralRotationSpeed;
-            if(params.angleOffset > 360){
+            if (params.angleOffset > 360) {
                 params.angleOffset = 0;
             };
-        }else{
+        } else {
             params.timer -= 16;
         };
-        for(let i = 0; i < 20; i++){
+        for (let i = 0; i < 20; i++) {
             const angle = (i * 18) + params.angleOffset;
             const angleRad = Phaser.Math.DegToRad(angle);
             const distance = 50 + (Math.sin(i / 10) * params.spiralGrowth);
@@ -1361,7 +1359,7 @@ class Boss extends Enemy{
                 size: 1.5
             });
         };
-        for(let i = 0; i < 12; i++){
+        for (let i = 0; i < 12; i++) {
             const angle = (i * 30) + params.angleOffset;
             const angleRad = Phaser.Math.DegToRad(angle);
             this.attack({
@@ -1375,9 +1373,9 @@ class Boss extends Enemy{
         };
     };
     /// Inspired by https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past
-    touhouFangameRecollectionOfScriptersPast(){
+    touhouFangameRecollectionOfScriptersPast() {
         /// North
-        if(this.phaseTimer === 0){
+        if (this.phaseTimer === 0) {
             this.bulletPattern = [{
                 atkRate: 10,
                 attackTimer: 0,
@@ -1386,7 +1384,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.north);
         };
         /// East
-        if(this.phaseTimer === 1000){
+        if (this.phaseTimer === 1000) {
             this.bulletPattern = [{
                 atkRate: 40,
                 attackTimer: 0,
@@ -1395,7 +1393,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.east);
         };
         /// South
-        if(this.phaseTimer === 2000){
+        if (this.phaseTimer === 2000) {
             this.bulletPattern = [{
                 atkRate: 10,
                 attackTimer: 0,
@@ -1404,7 +1402,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.south);
         };
         /// West
-        if(this.phaseTimer === 3000){
+        if (this.phaseTimer === 3000) {
             this.bulletPattern = [{
                 atkRate: 4,
                 attackTimer: 0,
@@ -1413,7 +1411,7 @@ class Boss extends Enemy{
             this.touhouFangameRecollectionOfScriptersPastCombine(this.paramsTouhouFangameRecollectionOfScriptersPast.combine.west);
         };
         /// Random direction
-        if(this.phaseTimer === 4000){
+        if (this.phaseTimer === 4000) {
             this.paramsTouhouFangameRecollectionOfScriptersPast.randomY = -1;
             this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation = -1;
             let decideSide = Math.floor(Math.random() * 4 + 1);
@@ -1421,7 +1419,7 @@ class Boss extends Enemy{
             let optionsEast = [1, 3, 4];
             let optionsSouth = [1, 4];
             let optionsWest = [1, 3];
-            switch(decideSide){
+            switch (decideSide) {
                 case 1:
                     this.paramsTouhouFangameRecollectionOfScriptersPast.combine.north = optionsNorth[Math.floor(Math.random() * optionsNorth.length)];
                     this.phaseTimerOffset = 0;
@@ -1442,7 +1440,7 @@ class Boss extends Enemy{
             };
         };
     };
-    touhouFangameRecollectionOfScriptersPastNorth(){
+    touhouFangameRecollectionOfScriptersPastNorth() {
         let randomX = Math.random() * 590 + 10;
         let calculateAngle = Phaser.Math.RadToDeg(Phaser.Math.Angle.Between(this.scene.player.x, this.scene.player.y, randomX, 0)) - 180;
         this.attack({
@@ -1453,11 +1451,11 @@ class Boss extends Enemy{
             target: this.scene.player
         });
     };
-    touhouFangameRecollectionOfScriptersPastEast(){
-        if(this.paramsTouhouFangameRecollectionOfScriptersPast.randomY === -1){
+    touhouFangameRecollectionOfScriptersPastEast() {
+        if (this.paramsTouhouFangameRecollectionOfScriptersPast.randomY === -1) {
             this.paramsTouhouFangameRecollectionOfScriptersPast.randomY = Math.random() * 420;
         };
-        for(let i = 0; i < 8; i++){
+        for (let i = 0; i < 8; i++) {
             this.attack({
                 x: 610, y: this.paramsTouhouFangameRecollectionOfScriptersPast.randomY + (60 * i),
                 speed: 200,
@@ -1466,8 +1464,8 @@ class Boss extends Enemy{
             });
         };
     };
-    touhouFangameRecollectionOfScriptersPastSouth(){
-        if(this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation === -1){
+    touhouFangameRecollectionOfScriptersPastSouth() {
+        if (this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation === -1) {
             this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation = (Math.random() < 0.5)
                 ? 20
                 : -20;
@@ -1480,7 +1478,7 @@ class Boss extends Enemy{
             angle: -90 - this.paramsTouhouFangameRecollectionOfScriptersPast.decideRotation
         });
     };
-    touhouFangameRecollectionOfScriptersPastWest(){
+    touhouFangameRecollectionOfScriptersPastWest() {
         let randomY = Math.random() * 840 + 10;
         this.attack({
             x: -10, y: randomY,
@@ -1488,8 +1486,8 @@ class Boss extends Enemy{
             texture: "sword-yellow"
         });
     };
-    touhouFangameRecollectionOfScriptersPastCombine(side){
-        switch(side){
+    touhouFangameRecollectionOfScriptersPastCombine(side) {
+        switch (side) {
             case 1:
                 this.bulletPattern.push({
                     atkRate: 10,
@@ -1536,13 +1534,13 @@ class Boss extends Enemy{
         target = null,
         maxLife = 4500,
         size = 1
-    }){
+    }) {
         this.scene.time.delayedCall(delay, () => {
-            for(let i = 0; i < amount / 2; i++){
-                if(!this.alive) return;
+            for (let i = 0; i < amount / 2; i++){
+                if (!this.alive) return;
                 let count = (amount % 2 === 0) ? i + 1 : i;
                 let bullet = this.scene.bossBullets.getFirstDead(false);
-                if(bullet){
+                if (bullet){
                     bullet.fire({
                         x: x, y: y,
                         angle: angle + (angleChange * count),
@@ -1556,7 +1554,7 @@ class Boss extends Enemy{
                         maxLife: maxLife,
                         size: size
                     });
-                    if(angleChange !== 0){
+                    if (angleChange !== 0){
                         bullet = this.scene.bossBullets.getFirstDead(false);
                         bullet.fire({
                             x: x, y: y,
@@ -1576,9 +1574,9 @@ class Boss extends Enemy{
             };
         });
     };
-    createEllipse(ellipses){
+    createEllipse(ellipses) {
         ellipses.forEach(({ centerX, centerY, xRadius, yRadius, bulletCount, lifetime = Infinity, texture, speed = 0, size = 1 }) => {
-            for(let i = 0; i < bulletCount; i++){
+            for (let i = 0; i < bulletCount; i++){
                 const angle = (i / bulletCount) * Math.PI * 2;
                 this.attack({
                     x: centerX + xRadius * Math.cos(angle),
@@ -1592,24 +1590,24 @@ class Boss extends Enemy{
             };
         });
     };
-    spawnBomb(amount){
+    spawnBomb(amount) {
         let randomX, randomY;
         let bounds = this.getBounds();
         let xMin = bounds.x;
         let xMax = bounds.x + bounds.width;
         let yMin = bounds.y;
         let yMax = bounds.y + bounds.height;
-        for(let i = 0; i < amount; i++){
-            do{
+        for (let i = 0; i < amount; i++) {
+            do {
                 randomX = Math.random() * 530 + 30;
-            }while((randomX < xMin) && (randomX > xMax));
-            do{
+            } while ((randomX < xMin) && (randomX > xMax));
+            do {
                 randomY = Math.random() * 825 + 25;
-            }while((randomY < yMin) && (randomY > yMax));
+            } while ((randomY < yMin) && (randomY > yMax));
             this.createHollowCircle(randomX, randomY);
         };
     };
-    createHollowCircle(x, y){
+    createHollowCircle(x, y) {
         const bomb = this.scene.physics.add.sprite(x, y, "bomb")
             .setSize(18, 18)
             .setDisplaySize(64, 64)
@@ -1617,21 +1615,21 @@ class Boss extends Enemy{
             .setDepth(8);
         this.scene.bossBombs.add(bomb);
     };
-    debuff(what){
-        switch(what){
+    debuff(what) {
+        switch (what) {
             case "morale":
                 this.atkRateDebuff = 10;
                 break;
             default: break;
         };
     };
-    kill(){
+    kill() {
         super.kill();
     };
 };
 
-class Bullets extends Phaser.Physics.Arcade.Group{
-    constructor(scene, maxBullets){
+class Bullets extends Phaser.Physics.Arcade.Group {
+    constructor(scene, maxBullets) {
         super(scene.physics.world, scene, { enable: false });
         this.bullets = this.createMultiple({
             classType: Bullet,
@@ -1643,7 +1641,7 @@ class Bullets extends Phaser.Physics.Arcade.Group{
     };
 };
 
-class Bullet extends Phaser.Physics.Arcade.Sprite{
+class Bullet extends Phaser.Physics.Arcade.Sprite {
     fire(
         scene,
         {
@@ -1677,7 +1675,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             bulletOrbitSpeed = 0,
             bulletSatellite,
             bulletAlpha
-        }){
+        }) {
         this.damage = bulletDamage;
         this.parent = parent;
         this.enableBody(true, x, y, true, true);
@@ -1724,9 +1722,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         this.newBulletSpeed = bulletTransform.speed || this.bulletSpeed;
         this.newBulletFlag = bulletTransform.flag || false;
         this.newBulletAcceleration = bulletTransform.acceleration;
-        if(bulletTransform.bearingLock){
+        if (bulletTransform.bearingLock) {
             this.newBulletBearing = this.cannonAngle;
-        }else{
+        } else {
             this.newBulletBearing = bulletTransform.bearing;
         };
         this.newBulletBearingVelocity = (bulletTransform.bearingVelocity === undefined)
@@ -1767,7 +1765,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         this.fragmentAngles = [];
         this.fragmentSpeeds = [];
         this.fragmentPositions = [];
-        if(this.bulletTransformClass === "DELAY"){
+        if (this.bulletTransformClass === "DELAY") {
             this.newBulletSpeed = this.bulletSpeed;
             this.bulletSpeed = 0;
             this.bulletTransformClass = "CHANGE";
@@ -1775,64 +1773,65 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         this.bulletSatellite = bulletSatellite;        
         this.setBulletConfig();
         this.setMotion();
-        if(this.bulletSatellite !== undefined) this.createSatellites(this);
+        if (this.bulletSatellite !== undefined) this.createSatellites(this);
     };
-    preUpdate(time, delta){
-        if((this.bulletClass === "ORBIT") && !this.parent.body.enable) this.remove();
+    preUpdate(time, delta) {
+        if ((this.bulletClass === "ORBIT") && !this.parent.body.enable) this.remove();
         this.bulletTimer += delta;
         this.lifeTimer += delta;
-        switch(this.bulletLife){
+        switch (this.bulletLife) {
             case -1: break;
             default:
-                if(this.bulletLifeAlpha){
+                if (this.bulletLifeAlpha) {
                     const alphaValue = (this.bulletLife - this.lifeTimer) / this.bulletLife;
                     this.setAlpha((alphaValue >=0) ? alphaValue : 0);
                 };
-                if(this.lifeTimer > this.bulletLife){
+                if (this.lifeTimer > this.bulletLife) {
                     this.remove();
                 };
                 break;
         };
         /// "BOUNCE!": reverse direction if hit left or right of screen
-        if((this.bulletBounceX > 0) && this.hitEdgeX(this)){
-            if(this.x <= (this.displayWidth / 2)){
+        if ((this.bulletBounceX > 0) && this.hitEdgeX(this)) {
+            if (this.x <= (this.displayWidth / 2)) {
                 this.setX(this.displayWidth / 2 + 1);
-            }else if(this.x >= WIDTH - this.displayWidth / 2){
+            } else if (this.x >= WIDTH - this.displayWidth / 2) {
                 this.setX(WIDTH - this.displayWidth / 2 - 1);
             };
             this.setVelocityX(-this.body.velocity.x * this.bulletBounceX);
             this.bounceOffWall();
         };
         /// "BOUNCE!": reverse direction if hit bottom or top of screen
-        if((this.bulletBounceY > 0) && this.hitEdgeY(this)){
-            if(this.y <= (this.displayHeight / 2)){
+        if ((this.bulletBounceY > 0) && this.hitEdgeY(this)) {
+            if (this.y <= (this.displayHeight / 2)) {
                 this.setY(this.displayHeight / 2 + 1);
-            }else if(this.y >= HEIGHT - this.displayHeight / 2){
+            } else if (this.y >= HEIGHT - this.displayHeight / 2) {
                 this.setY(HEIGHT - this.displayHeight / 2 - 1);
             };
             this.setVelocityY(-this.body.velocity.y * this.bulletBounceY);
             this.bounceOffWall();
         };
-        if((!this.bulletOffScreen) && (this.outOfScreenX() || this.outOfScreenY())){
+        if ((!this.bulletOffScreen) && (this.outOfScreenX() || this.outOfScreenY())) {
             this.remove();
         };
         /// If there is bearing velocity set, then adjust the bearing angle of the velocity
-        if(this.body.speed !==0 && this.bulletBearingVelocity !== 0){
+        if (this.body.speed !==0 && this.bulletBearingVelocity !== 0) {
             this.bulletBearing = this.referenceBearing + this.bearingChange.getValue();
             /// If the bullet is not rotating type, set the angle of bullet image in line with the bullet bearing
-            if(this.bulletAngularVelocity === 0){
+            if (this.bulletAngularVelocity === 0) {
                 this.setRotation(this.bulletBearing);
             };
             this.adjustVelocity(this.bulletBearing, this.body.speed, this.bulletAcceleration);
         };
-        switch(this.bulletClass){
-            case "ORBIT":
+        switch (this.bulletClass) {
+            case "ORBIT": {
                 this.setPosition(this.parent.x, this.parent.y);
                 Phaser.Math.RotateAroundDistance(this, this.parent.x, this.parent.y, this.orbitAngle, this.orbitRadius);
                 this.orbitAngle = Phaser.Math.Angle.Wrap(this.orbitAngle + this.orbitSpeed);
                 break;
-            case "ZIGZAG":
-                if(this.bulletTimer > this.bulletCycleLength){
+            };
+            case "ZIGZAG": {
+                if (this.bulletTimer > this.bulletCycleLength) {
                     this.bulletTimer = 0;
                     this.bulletToggle *= -1;
                     const newDirection = this.bulletBearing + this.bulletBearingDelta * this.bulletToggle;
@@ -1840,32 +1839,35 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
                     this.adjustVelocity(newDirection, this.bulletSpeed, this.bulletAcceleration);  
                 };
                 break;
-            case "HOMING":
+            };
+            case "HOMING": {
                 this.seek();
                 this.adjustVelocity(this.bulletBearing, this.bulletSpeed, this.bulletAcceleration);
                 break;
-            case "SWING":
+            };
+            case "SWING": {
                 const targetAngle = this.bulletBearing + this.swing.getValue();
                 this.setRotation(targetAngle);
                 this.adjustVelocity(targetAngle, this.body.speed, this.bulletAcceleration);
                 break;
-            default: break;
+            };
+            default: { break; };
         };
-        if((this.bulletTransformClass !== "NORMAL") && (this.bulletTimer > this.readStage())){
+        if ((this.bulletTransformClass !== "NORMAL") && (this.bulletTimer > this.readStage())) {
             this.stage1Count++;
-            if(this.bulletClass === "ORBIT"){
+            if (this.bulletClass === "ORBIT") {
                 this.bulletBearing = Phaser.Math.Angle.Between(this.parent.x, this.parent.y,this.x,this.y);
             };
-            switch(this.bulletTransformClass){
+            switch (this.bulletTransformClass) {
                 case "CHANGE":
                     this.oldToNew(); /// Copy the newbullet parameters to existing bullet config
                     this.setBulletConfig(); /// Activate the new properties
                     this.setMotion();
-                    if(this.maturity()){
+                    if (this.maturity()) {
                         this.spawnRepeatCount++;
-                        if(this.spawnRepeatCount >= this.spawnRepeat){
+                        if (this.spawnRepeatCount >= this.spawnRepeat) {
                             this.bulletTransformClass = "NORMAL";
-                        }else{
+                        } else {
                             this.bulletTimer = 0;
                             this.stage1Count = 0;
                         };
@@ -1890,12 +1892,12 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             };
         };
     };
-    createSatellites(scene){
-        for(let i= 0; i < this.bulletSatellite.count; i++){
+    createSatellites(scene) {
+        for (let i= 0; i < this.bulletSatellite.count; i++) {
             const angle = i * ((Math.PI * 2) / this.bulletSatellite.count);
             const orbit = new Phaser.Math.Vector2().setToPolar(angle, this.bulletSatellite.radius);
             const bullet = this.parent.munitions.getFirstDead(false);
-            if(bullet){
+            if (bullet) {
                 bullet.fire(scene, {
                     parent: this,
                     x: this.x + orbit.x,
@@ -1909,18 +1911,18 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             };
         };
     };
-    handleMaturity(){
+    handleMaturity() {
         /// At the end of executing one "cycle" of bulletTransform, take appropriate action
-        if(this.maturity()){
-            switch(this.spawnRepeat){
+        if (this.maturity()) {
+            switch (this.spawnRepeat) {
                 case 0:
                     this.remove();
                     break;
                 default:
                     this.spawnRepeatCount++;
-                    if(this.spawnRepeatCount >= this.spawnRepeat){
+                    if (this.spawnRepeatCount >= this.spawnRepeat) {
                         this.bulletTransformClass = "NORMAL";
-                    }else{
+                    } else {
                         this.bulletTimer = 0;
                         this.stage1Count = 0;                  
                     };
@@ -1928,19 +1930,19 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             };
         };
     };
-    maturity(){
-        if(typeof(this.bulletStage1Time) === "number")
+    maturity() {
+        if (typeof(this.bulletStage1Time) === "number")
             return true;
-        else if(this.stage1Count >= this.bulletStage1Time?.length)
+        else if (this.stage1Count >= this.bulletStage1Time?.length)
             return true;
     };
-    explode(scene){
+    explode(scene) {
         this.fragmentAngles = [];
         this.fragmentSpeeds = [];
         this.fragmentPositions = [];
         this.bulletConfig.bulletTexture = this.spawnTexture;
         this.bulletConfig.bulletFrame = this.spawnFrame;
-        if(this.bulletTransformType === undefined) this.bulletTransformType = "arc";
+        if (this.bulletTransformType === undefined) this.bulletTransformType = "arc";
         let cannonIndex = [];
         let cannonOrigin = [];
         danmakuSpokes({
@@ -1964,10 +1966,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             speedArray: this.fragmentSpeeds,
             cannonPositions: this.fragmentPositions
         });
-        for(let i = 0; i < this.fragmentAngles.length; i++){
+        for (let i = 0; i < this.fragmentAngles.length; i++) {
             const direction = this.fragmentAngles[i];
             const bullet = this.scene.bossBullets.getFirstDead(false);
-            if(bullet){
+            if (bullet) {
                 this.bulletConfig.bulletBearing = direction;
                 this.bulletConfig.bulletAngle = direction;
                 this.bulletConfig.bulletSpeed = this.fragmentSpeeds[0][i];
@@ -1975,29 +1977,29 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             };
         };
     };
-    spawn(scene){
-        for(let angle = 0; angle <= Math.PI * 2 * (this.spawnCount - 1) / this.spawnCount; angle += Math.PI * 2 / this.spawnCount){
+    spawn(scene) {
+        for (let angle = 0; angle <= Math.PI * 2 * (this.spawnCount - 1) / this.spawnCount; angle += Math.PI * 2 / this.spawnCount) {
             this.bulletConfig.bulletBearing = readAngle(this.bulletBearing+angle, this.spawnBearing);
             this.bulletConfig.bulletTexture = this.spawnTexture;
             this.bulletConfig.bulletFrame = this.spawnFrame;
-            if(Array.isArray(this.spawnSpeed)){
-                for(let i = 0; i < this.spawnSpeed.length; i++){
+            if (Array.isArray(this.spawnSpeed)) {
+                for (let i = 0; i < this.spawnSpeed.length; i++) {
                     const bullet = enemyBullets.getFirstDead(false);
-                    if(bullet){
+                    if (bullet) {
                         this.bulletConfig.bulletSpeed = this.spawnSpeed[i];
                         bullet.fire(scene, this.bulletConfig);
                     };
                 };
-            }else{
+            } else {
                 const bullet = enemyBullets.getFirstDead(false);
-                if(bullet){ 
+                if (bullet) {
                     this.bulletConfig.bulletSpeed = this.spawnSpeed;
                     bullet.fire(scene, this.bulletConfig);
                 };
             };
         };
     };
-    oldToNew(){
+    oldToNew() {
         this.bulletSpeed = this.newBulletSpeed || this.bulletSpeed;   
         this.bulletBearing = (this.newBulletSeek === true)
             ? Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y)
@@ -2013,9 +2015,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         this.bulletLife = (this.newBulletLife === undefined) ? this.bulletLife : this.newBulletLife;
         this.bulletLifeAlpha = (this.newBulletLifeAlpha === undefined) ? this.bulletLifeAlpha : this.newBulletLifeAlpha;
     };
-    stopAndGo(scene){
+    stopAndGo(scene) {
         const bullet = enemyBullets.getFirstDead(false);
-        if(bullet){ 
+        if (bullet) {
             this.bulletConfig.bulletSpeed = 0;
             this.bulletConfig.bulletAcceleration = 0;
             this.bulletConfig.bulletTransform.class = "CHANGE";
@@ -2023,19 +2025,19 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             bullet.fire(scene, this.bulletConfig);
         };
     };
-    setBulletConfig(){
+    setBulletConfig() {
         this.setTexture(this.bulletTexture, this.bulletFrame);
         this.setAlpha(this.bulletAlpha || 1);
         this.setSize(this.height / 1.5, this.width / 1.5);
         this.body.speed = this.bulletSpeed; /// It's necessary to manually set speed of body otherwise sometimes pre-update sets the velocity to zero, before the bullet gets going
         this.body.setMaxSpeed(this.bulletMaxSpeed);
     };
-    setMotion(){
+    setMotion() {
         const bearing = this.bulletBearing + this.bulletBearingDelta * this.bulletToggle;
         const adjustedSpeed = this.bulletSpeed + this.randomSpeed(this.bulletVRandom);
         this.adjustVelocity(bearing, adjustedSpeed, this.bulletAcceleration);
         /// If bulletBearingVelocity is set, it means the bullet should fly along curve - so set up tween to adjust direction
-        if(this.bulletBearingVelocity !== 0){
+        if (this.bulletBearingVelocity !== 0) {
             this.bearingChange = this.scene.tweens.addCounter({
                 from: 0,
                 to: Math.sign(this.bulletBearingVelocity) * 2 * Math.PI,
@@ -2044,7 +2046,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             });
         };
         /// If SWING type, then set up tween to adjust the bulletBearing
-        if(this.bulletClass === "SWING"){
+        if (this.bulletClass === "SWING") {
             this.swing = this.scene.tweens.addCounter({
                 from: -this.bulletSwingDelta,
                 to: this.bulletSwingDelta,
@@ -2055,7 +2057,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
         };
         this.body.setAngularVelocity(this.bulletAngularVelocity);
     };
-    adjustVelocity(targetAngle, speed, acceleration){
+    adjustVelocity(targetAngle, speed, acceleration) {
         this.scene.physics.velocityFromRotation(
             targetAngle,
             speed,
@@ -2066,31 +2068,31 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             acceleration,
             this.body.acceleration
         );
-        if(this.bulletAngularVelocity === 0){
+        if (this.bulletAngularVelocity === 0) {
             this.setRotation(targetAngle);
         };
     };
-    readStage(){
-        if(typeof(this.bulletStage1Time) === "number")
+    readStage() {
+        if (typeof(this.bulletStage1Time) === "number")
             return this.bulletStage1Time;
-        else if(Array.isArray(this.bulletStage1Time))
+        else if (Array.isArray(this.bulletStage1Time))
             return this.bulletStage1Time[this.stage1Count];
     };
-    bounceOffWall(){
+    bounceOffWall() {
         this.setRotation(Phaser.Math.Angle.Wrap(this.body.velocity.angle()));
         this.referenceBearing = this.rotation;
         this.bulletBearing = this.rotation;
-        if(this.swing) this.swing.restart();
-        if(this.bearingChange) this.bearingChange.restart();
+        if (this.swing) this.swing.restart();
+        if (this.bearingChange) this.bearingChange.restart();
     };
-    randomSpeed(randomness){
+    randomSpeed(randomness) {
         const randomFactor = Phaser.Math.Between(-randomness / 2, randomness / 2);
         return randomFactor;
     };
-    setBaseConfig(current = false){
-        switch(current){
+    setBaseConfig(current = false) {
+        switch (current) {
             case false:
-                return{
+                return {
                     parent: this,
                     x: this.x, y: this.y,
                     bulletType: "NORMAL",
@@ -2116,7 +2118,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
                 };
                 break;
             default:
-                return{
+                return {
                     parent: this,
                     x: this.x, y: this.y,
                     bulletType: "NORMAL",
@@ -2144,10 +2146,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
                 break;
         };
     };
-    delayedMove(scene){
+    delayedMove(scene) {
         const bullet = enemyBullets.getFirstDead(false);
-        if(bullet){
-            if(this.newBulletSeek){
+        if (bullet) {
+            if (this.newBulletSeek) {
                 /// This returns the angle between 2 points in radians
                 this.bulletConfig.bulletBearing = Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y);
                 this.bulletConfig.bulletAngle = this.newBulletBearing;
@@ -2155,50 +2157,50 @@ class Bullet extends Phaser.Physics.Arcade.Sprite{
             bullet.fire(scene, this.bulletConfig);
         };
     };
-    remove(){
-        if(this.swing) this.swing.remove();
-        if(this.bearingChange) this.bearingChange.remove();
+    remove() {
+        if (this.swing) this.swing.remove();
+        if (this.bearingChange) this.bearingChange.remove();
         this.disableBody(true, true);
     };
-    seek(){
+    seek() {
         /// This returns the angle between 2 points in radians
         const targetAngle = Phaser.Math.Angle.Between(this.x, this.y, this.bulletTarget.x, this.bulletTarget.y);
         let diff = Phaser.Math.Angle.Wrap(targetAngle - this.bulletBearing);
         /// To to targetAngle if less than degrees per turn
-        if(Math.abs(diff) < this.perTurnConstraint){
+        if (Math.abs(diff) < this.perTurnConstraint) {
             this.bulletBearing = targetAngle;
-        }else{
+        } else {
             let angle = this.bulletBearing;
-            if(diff > 0)
+            if (diff > 0)
                 angle += this.perTurnConstraint;
             else
                 angle -= this.perTurnConstraint;
             this.bulletBearing = angle;
         }; 
     };
-    outOfScreenY(){
-        return(
+    outOfScreenY() {
+        return (
             this.y + (this.displayHeight / 2) <= 0 || this.y >= HEIGHT + (this.displayHeight / 2)
         );
     };
-    outOfScreenX(){
-        return(
+    outOfScreenX() {
+        return (
             this.x + (this.displayWidth / 2) <= 0 || this.x >= WIDTH + (this.displayWidth / 2)
         );
     };
-    hitEdgeY(bullet){
-        return(
+    hitEdgeY(bullet) {
+        return (
             bullet.y <= (bullet.displayHeight / 2) || bullet.y >= HEIGHT - (bullet.displayHeight / 2)
         );
     };
-    hitEdgeX(bullet){
-        return(
+    hitEdgeX(bullet) {
+        return (
             bullet.x <= (bullet.displayWidth / 2) || bullet.x >= WIDTH - (bullet.displayWidth / 2)
         );
     };
 };
 
-class Danmaku extends Phaser.Physics.Arcade.Image{
+class Danmaku extends Phaser.Physics.Arcade.Image {
     constructor(
         scene,
         munitions,
@@ -2206,7 +2208,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             x = 0, y = 0,
             danmakuTexture = null,
             danmakuFrame = null
-        } = {}){
+        } = {}) {
             super(scene, x, y, danmakuTexture, danmakuFrame);
             scene.add.existing(this);
             scene.physics.add.existing(this);
@@ -2215,10 +2217,10 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             this.munitions = munitions;
             this.danmakuPosition = new Phaser.Math.Vector2(this.x, this.y);
     };
-    resetDanmaku(scene){
-        if(this.washerTween) this.washerTween.remove();
-        if(this.repeatShotsTimer !== undefined) scene.time.removeEvent(this.repeatShotsTimer);
-        if(this.intervalTimer !== undefined) scene.time.removeEvent(this.intervalTimer);
+    resetDanmaku(scene) {
+        if (this.washerTween) this.washerTween.remove();
+        if (this.repeatShotsTimer !== undefined) scene.time.removeEvent(this.repeatShotsTimer);
+        if (this.intervalTimer !== undefined) scene.time.removeEvent(this.intervalTimer);
         this.disableBody(true, true);
     };
     setProperties(
@@ -2233,7 +2235,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             washer = null,
             bulletTransform,
             /// perTurnConstraint = 0
-        }){
+        }) {
             this.enableBody(true, x, y, true, false);
             this.name = name;
             this.danmakuClass = danmakuConfig.class;
@@ -2249,7 +2251,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             this.danmakuSwitch = danmakuConfig.switch;
             this.danmakuFlag = danmakuConfig.flag;
             this.danmakuOption = danmakuConfig.option;
-            if(Array.isArray(danmakuConfig.aOffset))
+            if (Array.isArray(danmakuConfig.aOffset))
                 this.danmakuAOffset = danmakuConfig.aOffset.map(x=>Phaser.Math.DegToRad(x));
             else
                 this.danmakuAOffset = Phaser.Math.DegToRad(danmakuConfig.aOffset) || 0;
@@ -2271,7 +2273,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 ? Math.PI * 2
                 : Phaser.Math.DegToRad(danmakuConfig.angleRange);
             this.danmakuWasher = danmakuConfig.washer;
-            if(this.danmakuWasher !== undefined) this.setWasher(scene);
+            if (this.danmakuWasher !== undefined) this.setWasher(scene);
             this.danmakuTarget = danmakuConfig.target;
             this.cannonClass = cannonConfig.class || "NORMAL"; 
             this.cannonType = cannonConfig.type;
@@ -2287,11 +2289,11 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 ? -1
                 : this.numberOfShots - 1;
             this.stopShotsTime = cannonConfig.stopShotsTime;
-            if(Array.isArray(cannonConfig.angleRange)){
+            if (Array.isArray(cannonConfig.angleRange)) {
                 this.cannonAngleRangeStart = cannonConfig.angleRange.map(x => Phaser.Math.DegToRad(x));
                 this.cannonAngleRangeRef = this.cannonAngleRangeStart[0];
-            }else{
-                switch(typeof(cannonConfig.angleRange)){
+            } else {
+                switch (typeof(cannonConfig.angleRange)) {
                     case "number":
                         this.cannonAngleRangeStart = Phaser.Math.DegToRad(cannonConfig.angleRange);
                         this.cannonAngleRangeStep = 0;
@@ -2309,7 +2311,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                         break;
                 };
                 this.cannonAngleRangeRef = this.cannonAngleRangeStart;
-                if(!this.cannonAngleRangeEnd) this.cannonAngleRangeEnd = (this.cannonAngleRangeStep > 0) ? (2 * Math.PI) : 0;
+                if (!this.cannonAngleRangeEnd) this.cannonAngleRangeEnd = (this.cannonAngleRangeStep > 0) ? (2 * Math.PI) : 0;
             };
             this.cannonShotSFX = cannonConfig.sound;
             this.cannonPRotation = (cannonConfig.pRotation === undefined)
@@ -2353,12 +2355,12 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             this.bulletSatellite = bulletConfig.satellite;
             this.bulletAlpha = bulletConfig.alpha;
             this.bulletTransform = Phaser.Utils.Objects.DeepCopy(bulletTransform);
-            if(this.bulletTransform !== undefined)
+            if (this.bulletTransform !== undefined)
                 this.transformTimer = this.bulletTransform.stage1Time;
             else
                 this.transformTimer = undefined;
             this.perTurnConstraint = Phaser.Math.DegToRad(bulletConfig.perTurnConstraint);
-            if(this.cannonClass === "PAINT"){
+            if (this.cannonClass === "PAINT") {
                 this.numberOfShots = this.danmakuPicture.length;
                 this.shotsCount = this.numberOfShots - 1;
             };
@@ -2370,7 +2372,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 callbackScope: this,
                 repeat: this.shotsCount
             };
-            if(this.numberOfShots !== 1) this.repeatShotsTimer = new Phaser.Time.TimerEvent(this.repeatShotsConfig);
+            if (this.numberOfShots !== 1) this.repeatShotsTimer = new Phaser.Time.TimerEvent(this.repeatShotsConfig);
             this.intervalConfig = {
                 delay: this.timeBetweenShots * (this.numberOfShots) + this.stopShotsTime,
                 callback: this.fireDanmaku,
@@ -2378,24 +2380,24 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 callbackScope: this,
                 repeat: -1
             };
-            if(this.stopShotsTime > 0) this.intervalTimer = new Phaser.Time.TimerEvent(this.intervalConfig);
+            if (this.stopShotsTime > 0) this.intervalTimer = new Phaser.Time.TimerEvent(this.intervalConfig);
             this.cannonPositions;
             this.cannonAngles;
             this.cannonShotSpeeds;
     };
-    startUpDanmaku(scene){
-        switch(this.numberOfShots){
+    startUpDanmaku(scene) {
+        switch (this.numberOfShots) {
             case 1:
                 this.fireShot(scene);
                 break;
             default:
                 scene.time.addEvent(this.repeatShotsTimer);
-                if(this.stopShotsTime) scene.time.addEvent(this.intervalTimer);
+                if (this.stopShotsTime) scene.time.addEvent(this.intervalTimer);
                 break;
         };
     };
-    fireDanmaku(scene){
-        switch(this.numberOfShots){
+    fireDanmaku(scene) {
+        switch (this.numberOfShots) {
             case 1:
                 this.fireShot(scene);
                 break;
@@ -2405,28 +2407,28 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 break;
         };
     };
-    fireShot(scene){
+    fireShot(scene) {
         this.danmakuCounter++;
-        if(this.repeatShotsTimer) this.repeatShotsCount = this.repeatShotsTimer.getRepeatCount()
-        if(this.danmakuTarget) this.aimAt(this.danmakuTarget);
-        switch(this.danmakuAngleLock){
+        if (this.repeatShotsTimer) this.repeatShotsCount = this.repeatShotsTimer.getRepeatCount()
+        if (this.danmakuTarget) this.aimAt(this.danmakuTarget);
+        switch (this.danmakuAngleLock) {
             case true:
-                if(this.repeatShotsCount === this.shotsCount) this.referenceAngle = this.rotation;
+                if (this.repeatShotsCount === this.shotsCount) this.referenceAngle = this.rotation;
                 break;
             default:
                 this.referenceAngle = this.rotation;
                 break;
         };
-        if(Array.isArray(this.cannonAngleRangeStart)){
+        if (Array.isArray(this.cannonAngleRangeStart)) {
             this.cannonAngleRangeRef = readParam(this.cannonAngleRangeStart, this.danmakuCounter);
-        }else{
+        } else {
             /// This switch determines how frequently the cannons angle range is "adjusted"
-            switch(this.cannonAngleRangeLock){
+            switch (this.cannonAngleRangeLock) {
                 case false:
                     this.cannonStepThruAngleRange();
                     break;
                 default:
-                    if((this.cannonAngleRangeStep !== 0) && (this.repeatShotsCount === this.shotsCount))
+                    if ((this.cannonAngleRangeStep !== 0) && (this.repeatShotsCount === this.shotsCount))
                         this.cannonStepThruAngleRange();
                     break;
             };
@@ -2451,7 +2453,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             spokesArray: cannonIndex,
             originsArray: cannonOrigin
         });
-        switch(this.cannonClass){
+        switch (this.cannonClass) {
             case "PAINT":
                 paintCannons({
                     spokesArray: cannonIndex, 
@@ -2491,7 +2493,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                     flyAwayAngles: flyAwayAngles,
                 });   
                 break;    
-            default:     
+            default:
                 /// Based on the "spokes", set up the relevant arrays for "NORMAL", "OVERTAKE", "SPREAD" shots
                 setUpCannons({
                     shotType: this.shotType,
@@ -2512,18 +2514,18 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 break;
         };
         const bulletImage = { texture: "bullet-atlas", frame: readParam(this.bulletFrame,this.danmakuCounter) };
-        for(let i = 0; i < this.spreadCount; i++){
-            if(this.cannonShotSFX) this.cannonShotSFX.play();
-            for(let j = 0; j < this.cannonShotSpeeds[i].length; j++){
+        for (let i = 0; i < this.spreadCount; i++) {
+            if (this.cannonShotSFX) this.cannonShotSFX.play();
+            for (let j = 0; j < this.cannonShotSpeeds[i].length; j++) {
                 const shotAngle = this.cannonAngles[j];
                 const origin = (this.cannonPositions.length === 0)
                     ? this.danmakuPosition
                     : this.cannonPositions[j];
                 const bullet = this.munitions.getFirstDead(false);
-                if(bullet){
-                    if(this.transformTimer !== undefined)
+                if (bullet) {
+                    if (this.transformTimer !== undefined)
                         this.bulletTransform.stage1Time = readParam(this.transformTimer, this.danmakuCounter);
-                    if(this.flyAwayOption >0) this.bulletTransform.bearing = flyAwayAngles[j];
+                    if (this.flyAwayOption >0) this.bulletTransform.bearing = flyAwayAngles[j];
                     bullet.fire(scene, {
                         parent: this,
                         x: origin.x, y: origin.y,
@@ -2560,14 +2562,14 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             };
         };
     };
-    cannonStepThruAngleRange(){
+    cannonStepThruAngleRange() {
         this.cannonAngleRangeRef += this.cannonAngleRangeStep;
-        switch(Math.sign(this.cannonAngleRangeStep)){
+        switch (Math.sign(this.cannonAngleRangeStep)) {
             case 1:
-                if(this.cannonAngleRangeRef >= Math.min(Math.PI * 2, this.cannonAngleRangeEnd)){
-                    if(!this.cannonAngleRangeYoYo){
+                if (this.cannonAngleRangeRef >= Math.min(Math.PI * 2, this.cannonAngleRangeEnd)) {
+                    if (!this.cannonAngleRangeYoYo) {
                         this.cannonAngleRangeRef = this.cannonAngleRangeStart;
-                    }else{
+                    } else {
                         this.cannonAngleRangeRef = Math.min(Math.PI * 2, this.cannonAngleRangeEnd);
                         this.cannonAngleRangeStep *= -1;
                         [this.cannonAngleRangeStart, this.cannonAngleRangeEnd] = [this.cannonAngleRangeEnd, this.cannonAngleRangeStart];
@@ -2575,10 +2577,10 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 };
                 break;
             default:
-                if(this.cannonAngleRangeRef <= Math.max(0, this.cannonAngleRangeEnd)){
-                    if(!this.cannonAngleRangeYoYo){
+                if (this.cannonAngleRangeRef <= Math.max(0, this.cannonAngleRangeEnd)) {
+                    if (!this.cannonAngleRangeYoYo) {
                         this.cannonAngleRangeRef = this.cannonAngleRangeStart;
-                    }else{
+                    } else {
                         this.cannonAngleRangeRef = Math.max(0, this.cannonAngleRangeEnd);
                         this.cannonAngleRangeStep *= -1;
                         [this.cannonAngleRangeStart,this.cannonAngleRangeEnd] = [this.cannonAngleRangeEnd,this.cannonAngleRangeStart];
@@ -2587,7 +2589,7 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
                 break;
         };
     };
-    setWasher(scene){
+    setWasher(scene) {
         this.setAngle(this.danmakuAngle)
         this.body.setAngularVelocity(0); /// If swing type, cannon angle velocity must be zero
         this.washerTween = this.scene.tweens.add({
@@ -2602,13 +2604,13 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
             yoyo: true
         });
     };
-    follow(object){
+    follow(object) {
         this.x = object.x;
         this.y = object.y;
         this.danmakuPosition.x = this.x;
         this.danmakuPosition.y = this.y;
     };
-    aimAt(target){
+    aimAt(target) {
         const targetAngle = Phaser.Math.Angle.Between(
             this.x,
             this.y,
@@ -2619,12 +2621,12 @@ class Danmaku extends Phaser.Physics.Arcade.Image{
     };
 };
 
-function readSpeed(cannon, inst){
-    switch(typeof(inst)){
+function readSpeed(cannon, inst) {
+    switch (typeof(inst)) {
         case "undefined": return cannon;
         case "number": return inst;
         case "string":
-            switch(inst[0]){
+            switch (inst[0]) {
                 case "n": /// Any string starting with "n" like "null", "none"
                     return cannon
                 case "f": /// "flip" the speed (ie: negate it)
@@ -2642,8 +2644,8 @@ function readSpeed(cannon, inst){
     };
 };
 
-function readAngle(cannon, inst){
-    switch(typeof(inst)){
+function readAngle(cannon, inst) {
+    switch (typeof(inst)) {
         case "undefined": return cannon;
         case "number": return Phaser.Math.DegToRad(inst);
         case "string":
@@ -2661,31 +2663,32 @@ function readAngle(cannon, inst){
                 case "-":
                     return cannon + Phaser.Math.DegToRad(parseFloat(inst));
                 case "s": /// Symmetry
-                    if(Math.abs(cannon) > Math.PI / 2){
+                    if (Math.abs(cannon) > Math.PI / 2){
                         return cannon - Phaser.Math.DegToRad(parseFloat(inst.substring(1)));
-                    }else if(Math.abs(cannon) < Math.PI / 2){
+                    } else if (Math.abs(cannon) < Math.PI / 2){
                         return cannon + Phaser.Math.DegToRad(parseFloat(inst.substring(1)));
-                    }else{
+                    } else {
                         return cannon; 
                     };
                 case "*": return cannon * parseFloat(inst.substring(1));          
                 default: break;
             };
+            break;
         default: break;
     };
 };
 
-function readParam(param, count){
-    if(Array.isArray(param))
+function readParam(param, count) {
+    if (Array.isArray(param))
         return param[count % param.length];
     else
         return param;
 };
 
-function DegToRad(param){
-    if(typeof(param) === "number"){
+function DegToRad(param) {
+    if (typeof(param) === "number") {
         return Phaser.Math.DegToRad(param);
-    }else{
+    } else {
         const workArray = [];
         param.forEach((item) => {
             workArray.push(DegToRad(item));
@@ -2706,16 +2709,16 @@ function danmakuSpokes({
     width,
     spokesArray, /// Output array to hold cannon angles
     originsArray /// Output array to hold cannon positions
-}){  
+}) {  
     let directions = []; /// This is the working array to hold the cannon angles --> pushed to spokesArray at end of this function
-    function getAngles(centreAngle, range, points){
+    function getAngles(centreAngle, range, points) {
         let tempArray = [];
-        switch(points){
+        switch (points) {
             case 1:
                 tempArray.push(centreAngle)
                 break;
             default:
-                switch(range){
+                switch (range) {
                     case Math.PI * 2:
                         tempArray = new Array(points).fill(centreAngle).map((item,index) => Phaser.Math.Angle.Wrap(item + (index * Math.PI * 2) / points))
                         break;
@@ -2730,12 +2733,12 @@ function danmakuSpokes({
     directions = getAngles(heading + offset, totalRange, nways)
         .reduce((acc,j) => [...acc, ...getAngles(j, nwayRange,cannonsInNway)], []);
     /// Do a bit more processing for PARALLEL and BI-DIRECTIONAL danmaku
-    switch(danmakuType){
-        case "PARALLEL":
+    switch (danmakuType) {
+        case "PARALLEL": {
             const line = createLine(0, width); 
             directions.forEach((angle, i) => {
                 const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
-                for (let j = 0; j < readParam(numberOfPoints, i); j++){
+                for (let j = 0; j < readParam(numberOfPoints, i); j++) {
                     const point = line.getPoint(j / (readParam(numberOfPoints, i) - 1))
                         .rotate(angle)
                         .add(shift);
@@ -2743,21 +2746,24 @@ function danmakuSpokes({
                     spokesArray.push(angle);
                 };
             });
-            break;        
-        case "BI_DIRECTIONAL":
+            break; 
+        };       
+        case "BI_DIRECTIONAL": {
             spokesArray.push(...directions, ...directions.map(x => -x));
             spokesArray.forEach((angle) => {
                 const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
-                if(vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
+                if (vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
             });
             break;
-        default:
+        };
+        default: {
             directions.forEach((angle) => {
                 const shift = new Phaser.Math.Vector2(vOffset, hOffset).rotate(angle);
-                if(vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
+                if (vOffset !==0 || hOffset !==0) originsArray.push(new Phaser.Math.Vector2(0,0).add(shift));
                 spokesArray.push(angle);
             });
             break;
+        };
     };
 };
 
@@ -2775,10 +2781,10 @@ function setUpCannons({
     anglesArray,
     pointsArray,
     speedArray
-}){ 
+}) { 
     anglesArray.push(...spokesArray);
     pointsArray.push(...originsArray.reduce((acc,p) => [...acc, p.add(centre)], []));
-    switch(shotType){
+    switch (shotType) {
         case "OVERTAKE":
             speedArray.push(new Array(anglesArray.length).fill(bulletSpeed + (shotsCount - counter) * shotAcceleration));
             break;
@@ -2809,7 +2815,7 @@ function paintCannons({
     anglesArray,
     pointsArray,
     speedArray
-}){
+}) {
     const speeds = [];
     const textLine = picture[counter];
     const count = textLine.length;
@@ -2819,18 +2825,20 @@ function paintCannons({
             ? centre
             : originsArray[j].add(centre); 
         Array.from(textLine).forEach((char, i) => {
-            if(char !== " "){
-                switch(keepShape){
-                    case true:
+            if (char !== " ") {
+                switch (keepShape) {
+                    case true: {
                         const point = line.getPoint(i / (count - 1))
                             .rotate(angle)
                             .add(realOrigin);
                         pointsArray.push(point);
                         anglesArray.push(angle);
                         break;
-                    default:
+                    };
+                    default: {
                         anglesArray.push(angle + pAngleRange * (0.5 - i / (count - 1)));
                         break;
+                    };
                 };
                 speeds.push(bulletSpeed);
             };
@@ -2839,7 +2847,7 @@ function paintCannons({
     speedArray.push(speeds);
 };
 
-function createLine(offset = 0, width){
+function createLine(offset = 0, width) {
     const aa = new Phaser.Math.Vector2(offset, width / 2);
     const bb = new Phaser.Math.Vector2(offset, -width / 2);
     return new Phaser.Curves.Line(aa, bb);
@@ -2865,7 +2873,7 @@ function drawCannons({
     cannonPositions,
     flyAwayOption = 0,
     flyAwayAngles = []
-}){
+}) {
     const curve = (shapes === "arc")
         ? createArc(pRatio, Phaser.Math.RadToDeg(angleRange))
         : album.pages[shapes].drawing;
@@ -2876,11 +2884,11 @@ function drawCannons({
             ? centre
             : originIndex[j].add(centre); 
         let angleT = 0;
-        for(let i = 0; i < numberOfPoints; i++){
+        for (let i = 0; i < numberOfPoints; i++) {
             const point = curve.getPoint(i / (numberOfPoints - 1 * open))
                 .rotate(Math.PI / 2 + (pRotation === undefined ? angle : pRotation)); 
-            if(keepShape){
-                switch(emerge){
+            if (keepShape) {
+                switch (emerge) {
                     case 0:
                         anglesArray.push(angle);
                         speeds.push(speed)
@@ -2892,8 +2900,8 @@ function drawCannons({
                         speeds.push(Phaser.Math.Distance.BetweenPoints(Phaser.Math.Vector2.ZERO, point) * speed);
                         break;
                 };
-            }else{
-                switch(emerge){
+            } else {
+                switch (emerge) {
                     case 0:
                         anglesArray.push(angle);
                         speeds.push(Phaser.Math.Distance.BetweenPoints(Phaser.Math.Vector2.ZERO, point) * speed);
@@ -2915,7 +2923,7 @@ function drawCannons({
     speedArray.push(speeds);
 };
 
-function createArc(aspectRatio = 1, angleRange){
+function createArc(aspectRatio = 1, angleRange) {
     angleRange = isNaN(angleRange) ? 360 : angleRange;
     const startAngle = (angleRange === undefined) ? 0 : -90 - angleRange / 2;
     const endAngle = (angleRange === undefined) ? 360 : -90 + angleRange / 2;

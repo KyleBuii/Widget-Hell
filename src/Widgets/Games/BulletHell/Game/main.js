@@ -11,6 +11,10 @@ const config = {
     height: 850,
     parent: 'bullethell-game',
     backgroundColor: '#016EC6',
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics: {
         default: 'arcade',
         arcade: {

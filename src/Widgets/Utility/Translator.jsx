@@ -11,7 +11,6 @@ import Select from 'react-select';
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
 let timeoutCopy, timeoutDialogue, timeoutDialogueOut, timeoutIdle, timeoutSleep;
 let intervalSleepTalk;
-let isMobile = false;
 let cunnyCodeEncode = false;  /// Checks if encoding/decoding is done once OR an error was dismissed
 let cunnyCodeError = false;   /// Checks if encoding/decoding error is done once
 let cunnyCodeSpecial = false; /// Checks if a special message is done once
@@ -234,7 +233,7 @@ class WidgetTranslator extends Component{
                 elementImage.classList.add('dragging');
                 elementImage.style.animationFillMode = 'none';
                 elementImageAdditions.classList.add('dragging');
-                if (isMobile) {
+                if (this.props.isMobile) {
                     document.addEventListener('touchmove', this.handleCunnyCodeAronaDragging);
                     document.addEventListener('touchend', this.handleCunnyCodeAronaDrag);
                 } else {
@@ -253,8 +252,13 @@ class WidgetTranslator extends Component{
                 elementImageAdditions.classList.remove('dragging');
                 elementImageAdditions.style.left = '2.5em';
                 elementImageAdditions.style.top = '2em';
-                document.removeEventListener('mousemove', this.handleCunnyCodeAronaDragging);
-                document.removeEventListener('mouseup', this.handleCunnyCodeAronaDrag);
+                if (this.props.isMobile) {
+                    document.removeEventListener('touchmove', this.handleCunnyCodeAronaDragging);
+                    document.removeEventListener('touchend', this.handleCunnyCodeAronaDrag);
+                } else {
+                    document.removeEventListener('mousemove', this.handleCunnyCodeAronaDragging);
+                    document.removeEventListener('mouseup', this.handleCunnyCodeAronaDrag);
+                };
                 break;
         };
     };
@@ -262,7 +266,7 @@ class WidgetTranslator extends Component{
         const elementImageContainer = document.getElementById('translator-container-image').getBoundingClientRect();
         const elementImage = document.getElementById('translator-image');
         const elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
-        if (isMobile) {
+        if (this.props.isMobile) {
             const touch = event.touches[0];
             elementImage.style.left = `${touch.clientX - elementImageContainer.left - 66}px`;
             elementImage.style.top = `${touch.clientY - elementImageContainer.top + 108}px`;
@@ -1029,9 +1033,6 @@ class WidgetTranslator extends Component{
                 this.handleBackground();
             });
         };
-        if ('maxTouchPoints' in navigator) {
-            isMobile = navigator.maxTouchPoints > 0;
-        };
     };
     componentWillUnmount() {
         let data = {
@@ -1128,10 +1129,10 @@ class WidgetTranslator extends Component{
                             {/* Translator Container */}
                             <section>
                                 {/* Select */}
-                                <div className='flex-center wrap space-nicely space-bottom'>
+                                <div className='flex-center space-nicely space-bottom'>
                                     {/* Select From */}
                                     <Select id='translator-translate-from'
-                                        className='select-match select-length-medium'
+                                        className='select-match'
                                         value={this.state.from}
                                         defaultValue={optionsTranslateFrom[0]['options'][0]}
                                         onChange={this.handleFrom}
@@ -1156,7 +1157,7 @@ class WidgetTranslator extends Component{
                                     </button>
                                     {/* Select To */}
                                     <Select id='translator-translate-to'
-                                        className='select-match select-length-medium'
+                                        className='select-match'
                                         value={this.state.to}
                                         defaultValue={optionsTranslateTo[0]['options'][0]}
                                         onChange={this.handleTo}

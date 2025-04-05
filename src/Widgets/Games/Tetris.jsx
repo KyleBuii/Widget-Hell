@@ -9,7 +9,7 @@ const pieces = ['O', 'I', 'S', 'Z', 'L', 'J', 'T'];
 let intervalLoop;
 let intervalTimer;
 
-const WidgetTetris = ({ defaultProps, gameProps }) => {
+const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 	const [state, setState] = useState({
 		gameOver: true,
 		highscore: 0,
@@ -160,7 +160,7 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 				defaultProps.dragStop('tetris');
 				defaultProps.updatePosition('tetris', 'games', data.x, data.y);
 			}}
-			cancel='canvas'
+			cancel='canvas, button'
 			bounds='parent'>
 			<div id='tetris-widget'
 				className='widget'>
@@ -205,6 +205,27 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 						width={600}
 						onKeyDown={(event) => handleKeyDown(event)}
 						tabIndex={-1}></canvas>
+					{isMobile && <section className='game-controls'>
+                        <section className='d-pad'>
+                            <button className='up'
+                                onClick={() => handleKeyDown({ keyCode: 87 })}></button>
+                            <button className='right'
+                                onClick={() => handleKeyDown({ keyCode: 68 })}></button>
+                            <button className='down'
+                                onClick={() => handleKeyDown({ keyCode: 83 })}></button>
+                            <button className='left'
+                                onClick={() => handleKeyDown({ keyCode: 65 })}></button>
+                        </section>
+                        <section className='flex-center column gap'
+							style={{ flexGrow: '1', paddingLeft: '1rem' }}>
+                            <button className='button-match button-game'
+                                onClick={() => handleKeyDown({ keyCode: 70 })}>Start</button>
+                            <button className='button-match button-game'
+                                onClick={() => handleKeyDown({ keyCode: 16 })}>Hold</button>
+                            <button className='button-match button-game'
+                                onClick={() => handleKeyDown({ keyCode: 32 })}>Drop</button>
+                        </section>
+                    </section>}
 					{/* Author */}
 					{(defaultProps.values.authorNames)
 						? <span className='font smaller transparent-normal author-name'>
