@@ -952,6 +952,16 @@ body{
         outline: none;
     }
 }
+
+.input-game{
+    box-sizing: border-box;
+    border: 2px solid black;
+    width: 100%;
+    height: 100%;
+    &:focus{
+        outline: none;
+    }
+}
 //#endregion
 
 .help-button{
@@ -983,6 +993,22 @@ body{
     }
     &:active{
         background-color: rgba(var(--randColorOpacity), 0.2);
+    }
+}
+
+.button-game{
+    cursor: pointer;
+    border: 2px solid black;
+    background-color: white;
+    font-weight: bold;
+    transition: background-color, 0.5s;
+    width: 100%;
+    height: 100%;
+    &:hover{
+        background-color: #eaeaea;
+    }
+    &:active{
+        background-color: #cecece;
     }
 }
 
@@ -5592,6 +5618,27 @@ body{
             height: 55px;
             width: 55px;
         }
+    }
+}
+
+#circlebeat-widget{
+    max-width: 653px;
+    width: 100%;
+    #circlebeat-game{
+        position: relative;
+    }
+    #circlebeat-video{
+        @extend .float, .center;
+        pointer-events: none;
+    }
+    #circlebeat-add{
+        @extend .flex-center, .column, .gap;
+        display: none;
+        position: absolute;
+        top: 16%;
+        left: 11%;
+        width: 28%;
+        height: 5%;
     }
 }
 

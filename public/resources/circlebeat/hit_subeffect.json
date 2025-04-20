@@ -1,0 +1,641 @@
+{
+    "frames": [
+        {
+            "filename": "hit_subeffect_0",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_1",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_2",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_3",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_4",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_5",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 0
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_6",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_7",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_8",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_9",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_10",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_11",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 100
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_12",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_13",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_14",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_15",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_16",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_17",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 200
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_18",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_19",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_20",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_21",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_22",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_23",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 300
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_24",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_25",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_26",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_27",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_28",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_29",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 400
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_30",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_31",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_32",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_33",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_34",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_35",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 500
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_36",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_37",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_38",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_39",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_40",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_41",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 600
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_42",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_43",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 100,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_44",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 200,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_45",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 300,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_46",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 400,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_47",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 500,
+                "y": 700
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        {
+            "filename": "hit_subeffect_48",
+            "frame": {
+                "w": 100,
+                "h": 100,
+                "x": 0,
+                "y": 800
+            },
+            "anchor": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    ]
+}

@@ -19,6 +19,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         - [Sheep](https://x.com/Yupina_Ch) - Yupina
     - **Patterns**
         - [Recollection Of Scripter's Past Bullets](https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past) by AJS
+- **Circle Beat**
+    - [Hit Animation](https://opengameart.org/content/pixel-fx-pack) by CodeManu
+    - [Hit Sound](https://pixabay.com/sound-effects/clap-10-36723/) by Pixabay
 - **Currency Converter**
     - [Hundred Dollar Bill](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by PublicDomainPictures
 - **Equipment**

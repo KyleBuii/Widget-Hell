@@ -48,6 +48,7 @@ import { FaExclamationTriangle, FaExpand } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import { IoIosArrowUp } from 'react-icons/io';
 import WidgetBulletHell from './Widgets/Games/BulletHell/BulletHell.jsx';
+import WidgetCircleBeat from './Widgets/Games/CircleBeat/CircleBeat.jsx';
 
 
 //////////////////// Temp Variables ////////////////////
@@ -7475,6 +7476,17 @@ class Widgets extends Component {
                             disabled: false
                         }
                     },
+                    circlebeat: {
+                        name: 'Circle Beat',
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                     colormemory: {
                         name: 'Color Memory',
                         active: false,
@@ -9278,6 +9290,9 @@ class Widgets extends Component {
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.chess.active
                     && <WidgetChess defaultProps={this.generateDefaultProps('chess', 'games')}
+                        gameProps={gameProps}/>}
+                {this.state.widgets.games.circlebeat.active
+                    && <WidgetCircleBeat defaultProps={this.generateDefaultProps('circlebeat', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.colormemory.active
                     && <WidgetColorMemory defaultProps={this.generateDefaultProps('colormemory', 'games')}
