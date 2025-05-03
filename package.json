@@ -23,6 +23,7 @@
     "eslint-plugin-react-refresh": "^0.4.12",
     "mathjs": "^11.9.1",
     "phaser": "^3.85.2",
+    "phaser3-rex-plugins": "^1.80.15",
     "pokeapi-js-wrapper": "^1.2.4",
     "postcss": "^8.5.1",
     "rc-slider": "^10.2.1",

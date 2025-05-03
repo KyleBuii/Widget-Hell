@@ -19,6 +19,13 @@ export class Preloader extends Scene{
         this.load.atlas('hit_subeffect-atlas', 'hit_subeffect.webp', 'hit_subeffect.json');
         this.load.audio('hit-sound', 'hit.mp3');
         this.load.image('disc_add_song', 'disc_add_song.webp');
+        this.load.image('disc_image_one', 'https://i.ytimg.com/vi/T1VAYTEWWgM/hqdefault.jpg');
+        this.load.image('disc_image_two', 'https://i.ytimg.com/vi/NWnFhu0JbU0/hqdefault.jpg');
+        this.load.image('disc_image_three', 'https://i.ytimg.com/vi/JyVCWlSPp0g/hqdefault.jpg');
+        this.load.image('disc_image_four', 'https://i.ytimg.com/vi/8_-iOvzH65A/hqdefault.jpg');
+        this.load.image('disc_image_five', 'https://i.ytimg.com/vi/5ta148UdiCI/hqdefault.jpg');
+
+        this.load.plugin('rexcirclemaskimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcirclemaskimageplugin.min.js', true);
     };
     create(){
         this.scene.start('MainMenu');

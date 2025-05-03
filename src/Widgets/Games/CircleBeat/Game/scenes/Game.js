@@ -7,16 +7,16 @@ const HEIGHT = 850;
 const barYPosition = 700;
 const noteSize = 20;
 const noteColor = '0x00ff00';
-const bpm = 130;
 const scrollSpeed = 1;
 const songStartTime = 0;
+let bpm, time;
 
 export class Game extends Scene {
     constructor() {
         super('Game');
         this.gameStarted = false;
         this.nextNoteTime = 0;
-        this.noteInterval = (60 / bpm) * 1000;
+        this.stopSpawning = false;
     };
     create() {
         this.createAnims();
@@ -24,14 +24,34 @@ export class Game extends Scene {
         this.noteSpeed = 200 * scrollSpeed;
         this.notes = new Notes(this, 20);
         this.createOutOfBoundsBar();
+
         EventBus.emit('current-scene-ready', this);
-        EventBus.emit('play', this);
+        EventBus.once('play information', (information) => {
+            this.stopSpawning = false;
+            bpm = information.bpm;
+            time = this.convertTime(information.time);
+            this.noteInterval = (60 / bpm) * 1000;
+            const travelTime = (barYPosition - (-noteSize)) / this.noteSpeed * 1000;
+            const lastNoteSpawnTime = time - travelTime;
+            this.time.delayedCall(lastNoteSpawnTime, () => {
+                this.stopSpawning = true;
+            });    
+            EventBus.emit('play', this);
+        });
+        EventBus.once('play end', () => {
+            this.time.delayedCall(2000, () => {
+                this.notes.clear(true, true);
+                this.game.scene.sleep('Game');
+                this.game.scene.wake('SongSelect');
+            });
+        });
+
         this.time.delayedCall(songStartTime * 1000, () => {
             this.gameStarted = true;
         });
     };
     update(time, delta) {
-        if (!this.gameStarted) return;
+        if (!this.gameStarted || this.stopSpawning) return;
         this.nextNoteTime += delta;
         if (this.nextNoteTime >= this.noteInterval) {
             const randomX = Phaser.Math.Between(noteSize, WIDTH - noteSize);
@@ -39,9 +59,14 @@ export class Game extends Scene {
             this.nextNoteTime = 0;
         };
     };
+    convertTime(time) {
+        let minutesAndSeconds = time.split(':');
+        let totalMilliseconds = (minutesAndSeconds[0] * 60000) + (minutesAndSeconds[1] * 1000);
+        return totalMilliseconds;
+    };
     createBar() {
-        this.bar = this.add.rectangle(300, barYPosition, WIDTH, 10, 0xff0000);
-        this.hitArea = this.add.rectangle(300, barYPosition, WIDTH, 30)
+        this.bar = this.add.rectangle(300, barYPosition, WIDTH, 14, 0xff0000);
+        this.hitArea = this.add.rectangle(300, barYPosition, WIDTH, 34)
             .setInteractive()
             .on('pointerdown', (pointer) => this.createHit(pointer));
     };
@@ -74,6 +99,9 @@ export class Game extends Scene {
         hit.on('animationcomplete', () => {
             this.physics.world.removeCollider(overlap);
             hit.destroy();
+        });
+        hitSubeffect.on('animationcomplete', () => {
+            hitSubeffect.destroy();
         });
     };
     createAnims() {
