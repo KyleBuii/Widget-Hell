@@ -5,6 +5,7 @@ import { Game } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { SongSelect } from './scenes/SongSelect';
+import { Score } from './scenes/Score';
 
 
 const config = {
@@ -46,7 +47,8 @@ const config = {
         Preloader,
         MainMenu,
         SongSelect,
-        Game
+        Game,
+        Score,
     ]
 };
 

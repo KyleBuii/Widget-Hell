@@ -6,22 +6,98 @@ import ReactPlayer from 'react-player';
 import { EventBus } from './Game/EventBus';
 import { PhaserGame } from './Game/PhaserGame';
 
+let discs = [
+    {
+        url: 'https://www.youtube.com/watch?v=T1VAYTEWWgM',
+        name: 'Hate Me',
+        author: 'blueberry',
+        duration: '2:13',
+        bpm: 230,
+    },
+    {
+        url: 'https://www.youtube.com/watch?v=NWnFhu0JbU0',
+        name: 'LOUCA ENCUBADA',
+        author: 'DJ SAMIR',
+        duration: '1:59',
+        bpm: 130,
+    },
+    {
+        url: 'https://www.youtube.com/watch?v=JyVCWlSPp0g',
+        name: 'back to you',
+        author: 'bad narrator',
+        duration: '2:39',
+        bpm: 126,
+    },
+    {
+        url: 'https://www.youtube.com/watch?v=8_-iOvzH65A',
+        name: '怪物 / ‘Monster’',
+        author: 'Saya Velleth',
+        duration: '3:07',
+        bpm: 150,
+    },
+    {
+        url: 'https://www.youtube.com/watch?v=5ta148UdiCI',
+        name: 'DANÇA DO VERÃO',
+        author: 'NXGHT!, SH3RWIN, Scythermane',
+        duration: '1:13',
+        bpm: 135,
+    },
+];
+
 const WidgetCircleBeat = ({ defaultProps }) => {
-    const [url, setUrl] = useState('');
+    const [url, setUrl] = useState('https://www.youtube.com/watch?v=JyVCWlSPp0g');
     const [playing, setPlaying] = useState(false);
+    const [pendingUrl, setPendingUrl] = useState(false);
     const phaserRef = useRef(null);
     const playerRef = useRef(null);
     useEffect(() => {
+        window.addEventListener('beforeunload', storeData);
+
+        const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+        const dataCircleBeat = dataLocalStorage['games']['circlebeat'];
+        if (dataCircleBeat['discs'] !== undefined) {
+            discs = [...dataCircleBeat['discs']];
+        };
+
+        EventBus.on('song select ready', () => {
+            EventBus.emit('discs', discs);
+        });
         EventBus.on('play', () => handlePlay());
         EventBus.on('clicked disc add', () => {
             const addPopout = document.getElementById('circlebeat-add');
             addPopout.style.display = 'flex';
         });
         EventBus.on('clicked disc', (disc) => handleDiscClick(disc));
+
         return () => {
+            window.removeEventListener('beforeunload', storeData);
             EventBus.removeAllListeners();
+
+            storeData();
         };
     }, []);
+    const storeData = () => {
+        if (localStorage.getItem('widgets') !== null) {
+            const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+
+            const game = phaserRef.current?.game; // Assuming `PhaserGame` attaches the Phaser.Game instance to `this.game`
+            const songSelectScene = game?.scene?.keys?.['SongSelect'];
+            if (songSelectScene?.getAllScores) {
+                const allScores = songSelectScene.getAllScores();
+                for (const { index, scores } of allScores) {
+                    discs[index].scores = scores;
+                };
+            };
+            console.log(discs)
+
+            dataLocalStorage['games']['circlebeat'] = {
+                ...dataLocalStorage['games']['circlebeat'],
+                discs: [...discs],
+            };
+
+            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+        };
+    };
     const handlePlay = () => {
         playerRef.current.seekTo(0);
         setPlaying(true);
@@ -39,30 +115,53 @@ const WidgetCircleBeat = ({ defaultProps }) => {
         EventBus.emit('play end');
         setPlaying(false);
     };
-    const handleAdd = () => {
-        const enteredURL = document.getElementsByClassName('input-game');
-        if ((/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(enteredURL[0].value))) {
-            setUrl(enteredURL[0].value);
-            fetchURLData(enteredURL[0].value);
-            enteredURL[0].value = '';
+    const handleAdd = (event) => {
+        event.preventDefault();
+        const userInputs = document.getElementsByClassName('input-game');
+        if ((/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(userInputs[0].value))) {
+            setPendingUrl(true);
+            setUrl(userInputs[0].value);
         };
     };
-    const fetchURLData = async (URL) => {
+    const handlePlayerDuration = (duration) => {
+        if (pendingUrl) {
+            const userInputs = document.getElementsByClassName('input-game');
+            fetchURLData(userInputs[0].value, duration, userInputs[1].value);
+            userInputs[0].value = '';
+            userInputs[1].value = '';
+            setPendingUrl(false);
+
+            const addPopout = document.getElementById('circlebeat-add');
+            addPopout.style.display = 'none';    
+        };
+    };
+    const fetchURLData = async (URL, duration, BPM) => {
         try {
             const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
             const result = await fetch(url);
             const data = await result.json();
+            const newDisc = {
+                url: URL,
+                name: data.title,
+                author: data.author_name,
+                duration: formatTime(duration),
+                bpm: BPM,
+            };
+            discs.push(newDisc);
             EventBus.emit('add song',
                 {
-                    url: URL,
-                    name: data.title,
-                    artist: data.author_name,
+                    ...newDisc,
                     image: data.thumbnail_url,
                 }
             );
         } catch (err) {
             console.error(err);
         };
+    };
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;    
     };
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
@@ -94,6 +193,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                         url={url}
                         playing={playing}
                         onReady={() => handlePlayerReady()}
+                        onDuration={(event) => handlePlayerDuration(event)}
                         onEnded={() => handlePlayerEnd()}
                         config={{
                             youtube: {
@@ -106,11 +206,19 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                             }
                         }}/>
                     <PhaserGame ref={phaserRef}/>
-                    <section id='circlebeat-add'>
-                        <input className='input-game'/>
+                    <form id='circlebeat-add'
+                        onSubmit={(event) => handleAdd(event)}>
+                        <div className='flex-center row gap'>
+                            <input className='input-game'
+                                placeholder='Link'
+                                required/>
+                            <input className='input-game'
+                                placeholder='BPM'
+                                required/>
+                        </div>
                         <button className='button-game'
-                            onClick={() => handleAdd()}>Add</button>
-                    </section>
+                            type='submit'>Add</button>
+                    </form>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>

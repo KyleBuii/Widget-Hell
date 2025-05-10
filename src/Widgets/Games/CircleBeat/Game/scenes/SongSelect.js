@@ -6,11 +6,11 @@ const WIDTH = 600;
 const HEIGHT = 850;
 const bgColor = 0x01b5f8;
 const discPositions = [
-    [650, 60],
-    [510, 210],
-    [430, 425],
-    [510, 650],
-    [650, 800],
+    [750, 160],
+    [610, 310],
+    [530, 525],
+    [610, 750],
+    [750, 900],
 ];
 
 export class SongSelect extends Scene {
@@ -20,89 +20,70 @@ export class SongSelect extends Scene {
         this.discs = [];
         this.discName = 'N/A';
         this.discAuthor = 'N/A';
-        this.discTime = '00:00:00';
+        this.discTime = '00:00';
         this.discBPM = '0';
         this.scores = [{
-            scoreRank: 'E',
+            grade: 'E',
             score: 0,
-            date: 'January 0 0000'
+            date: 'January 0, 0000'
         }];
     };
     create() {
         this.add.image(WIDTH / 2, HEIGHT / 2, 'background');
         this.currentDepth = 1;
-        this.createDiscs();
+
         this.createDiscAdd(180, 850);
         this.createContainers();
-        this.createDiscInfo();
-        this.createDiscScore();
         this.createPlayButton();
-    };
-    createDiscs() {
-        this.discs = [
-            new Disc(
-                this,
-                0,
-                'https://www.youtube.com/watch?v=T1VAYTEWWgM',
-                'disc_image_one',
-                'Hate Me',
-                'blueberry',
-                '2:13',
-                230,
-            ),
-            new Disc(
-                this,
-                1,
-                'https://www.youtube.com/watch?v=NWnFhu0JbU0',
-                'disc_image_two',
-                'LOUCA ENCUBADA',
-                'DJ SAMIR',
-                '1:59',
-                130,
-            ),
-            new Disc(
-                this,
-                2,
-                'https://www.youtube.com/watch?v=JyVCWlSPp0g',
-                'disc_image_three',
-                'back to you',
-                'bad narrator',
-                '2:39',
-                126,
-            ),
-            new Disc(
-                this,
-                3,
-                'https://www.youtube.com/watch?v=8_-iOvzH65A',
-                'disc_image_four',
-                '怪物 / ‘Monster’',
-                'Saya Velleth',
-                '3:07',
-                150,
-            ),
-            new Disc(
-                this,
-                4,
-                'https://www.youtube.com/watch?v=5ta148UdiCI',
-                'disc_image_five',
-                'DANÇA DO VERÃO',
-                'NXGHT!, SH3RWIN, Scythermane',
-                '1:13',
-                135,
-            ),
-        ];
-        this.discs.forEach((disc, index) => {
-            const [x, y] = discPositions[index];
-            disc.moveDisc(x, y);
-        });
-        this.children.bringToTop(this.discs[2].disc);
-        this.children.moveBelow(this.discs[4].disc, this.discs[3].disc);
 
-        this.discName = this.discs[2].name;
-        this.discAuthor = this.discs[2].author;
-        this.discTime = this.discs[2].time;
-        this.discBPM = this.discs[2].BPM;
-        this.scores = this.discs[2].scores;
+        EventBus.once('discs', (discs) => this.createDiscs(discs));
+        EventBus.once('add song', (song) => this.addSong(song));
+        EventBus.once('new score', (score) => this.discs[this.middleDiscIndex].addScore(score));
+
+        EventBus.emit('song select ready');
+    };
+    createDiscs(discs) {
+        discs.forEach((disc, index) => {
+            const videoID = disc.url.match(/watch\?v=(.*)/)[1];
+            this.load.image(`disc_image_${index + 1}`, `https://i.ytimg.com/vi/${videoID}/hqdefault.jpg`);
+        });
+
+        this.load.once('complete', () => {
+            discs.forEach((disc, index) => {
+                this.discs.push(
+                    new Disc(
+                        this,
+                        index,
+                        disc.url,
+                        `disc_image_${index + 1}`,
+                        disc.name,
+                        disc.author,
+                        disc.duration,
+                        disc.bpm,
+                        disc?.score,
+                    )
+                );
+            });
+            
+            for (let i = 0; i < 5; i++) {
+                const [x, y] = discPositions[i];
+                this.discs[i].moveDisc(x, y);
+            };
+
+            this.children.bringToTop(this.discs[2].disc);
+            this.children.moveBelow(this.discs[4].disc, this.discs[3].disc);
+
+            this.discName = this.discs[2].name;
+            this.discAuthor = this.discs[2].author;
+            this.discTime = this.discs[2].time;
+            this.discBPM = this.discs[2].BPM;
+            this.scores = this.discs[2].scores;
+
+            this.createDiscInfo();
+            this.createDiscScore();
+        });
+
+        this.load.start();
     };
     createDiscAdd(x, y) {
         const disc = this.add.container(x, y);
@@ -146,7 +127,7 @@ export class SongSelect extends Scene {
         for (let i in this.scores) {
             if (i == 6) break;
             let currentScore = this.scores[i];
-            const textScore = this.add.text(WIDTH / 4.3, 295 + (60 * i), `${currentScore.scoreRank} ${currentScore.score}\n${currentScore.date}`, {
+            const textScore = this.add.text(WIDTH / 4.3, 295 + (60 * i), `${currentScore.grade} ${currentScore.score}\n${currentScore.date}`, {
                 color: 0xffffff,
                 fontSize: 20,
                 fontStyle: 'bold'
@@ -167,7 +148,10 @@ export class SongSelect extends Scene {
                 };
                 EventBus.emit('play information', {
                     bpm: this.discBPM,
-                    time: this.discTime
+                    time: this.discTime,
+                    index: this.middleDiscIndex,
+                    name: this.discName,
+                    author: this.discAuthor,
                 });
             });
         this.add.text(WIDTH / 4.3, 670, 'Play', {
@@ -176,19 +160,80 @@ export class SongSelect extends Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5, 0.5);
     };
+    addSong(song) {
+        const newDiscIndex = this.discs.length;
+        const imageKey = `disc_image_${newDiscIndex + 1}`;
+        if (!this.textures.exists(imageKey)) {
+            const videoID = song.url.match(/watch\?v=(.*)/)[1];
+            this.load.image(imageKey, `https://i.ytimg.com/vi/${videoID}/hqdefault.jpg`);
+            this.load.once('complete', () => {
+                this.createAndPlaceDisc(song, newDiscIndex, imageKey);
+            });
+            this.load.start();
+        } else {
+            this.createAndPlaceDisc(song, newDiscIndex, imageKey);
+        };
+    };
+    createAndPlaceDisc(song, index, image) {
+        this.discs.push(
+            new Disc(
+                this,
+                index,
+                song.url,
+                image,
+                song.name,
+                song.author,
+                song.duration,
+                song.bpm,
+            )
+        );
+
+        this.middleDiscIndex = index;
+
+        const total = this.discs.length;
+        const newIndices = [];
+        for (let i = -2; i <= 2; i++) {
+            newIndices.push((index + i + total) % total);
+        };
+    
+        for (let i = 0; i < newIndices.length; i++) {
+            const disc = this.discs[newIndices[i]];
+            const [x, y] = discPositions[i];
+            disc.moveDisc(x, y);
+        };
+    
+        this.children.bringToTop(this.discs[index].disc);
+        this.children.moveBelow(this.discs[newIndices[0]].disc, this.discs[newIndices[1]].disc);
+        this.children.moveBelow(this.discs[newIndices[4]].disc, this.discs[newIndices[3]].disc);
+
+        const middleDisc = this.discs[this.middleDiscIndex];
+        this.discName = middleDisc.name;
+        this.discAuthor = middleDisc.author;
+        this.discTime = middleDisc.time;
+        this.discBPM = middleDisc.BPM;
+        this.scores = middleDisc.scores;
+        this.createDiscInfo();
+        this.createDiscScore();
+    };
     truncateText(text, maxLength) {
         if (text.length > maxLength) {
             return `${text.substring(0, maxLength - 3)}...`;
         };
         return text;
     };
+    getAllScores() {
+        return this.discs.map((disc, index) => ({
+            index,
+            scores: disc.scores || []
+        }));
+    };
 };
 
 class Disc {
     constructor(scene, number, URL, image, name, author, time, BPM, scores = []) {
         this.scene = scene;
-        this.x = 0;
-        this.y = 0;
+        this.x = -100;
+        this.y = -100;
         this.number = number;
         this.url = URL;
         this.image = image;
@@ -203,14 +248,14 @@ class Disc {
         if (this.disc) {
             this.disc.destroy(true);
         };
-        const disc = this.scene.add.container(0, 0);
-        disc.add(this.scene.add.circle(0, 0, WIDTH / 4, 0x000000));
-        disc.add(this.scene.add.rexCircleMaskImage(0, 0, this.image).setScale(0.79)
+        const disc = this.scene.add.container(this.x, this.y);
+        disc.add(this.scene.add.circle(this.x, this.y, WIDTH / 4, 0x000000));
+        disc.add(this.scene.add.rexCircleMaskImage(this.x, this.y, this.image).setScale(0.79)
             .setInteractive()
             .on('pointerdown', () => this.handleDiscClick())
         );
-        disc.add(this.scene.add.circle(0, 0, 50, 0x000000));
-        disc.add(this.scene.add.circle(0, 0, 44, bgColor));
+        disc.add(this.scene.add.circle(this.x, this.y, 50, 0x000000));
+        disc.add(this.scene.add.circle(this.x, this.y, 44, bgColor));
         return disc;
     };
     handleDiscClick() {
@@ -222,37 +267,24 @@ class Disc {
         this.scene.createDiscInfo();
         this.scene.createDiscScore();
         EventBus.emit('clicked disc', this.url);
-
+    
         if (this.number === this.scene.middleDiscIndex) return;
-
+    
         const total = this.scene.discs.length;
-        const middle = this.scene.middleDiscIndex;
-        const ccw = (middle - 1 + total) % total;
-        const cw = (middle + 1) % total;
-
-        let newMiddle;
-        if (this.number === ccw) {
-            newMiddle = ccw;
-        } else if (this.number === cw) {
-            newMiddle = cw;
-        } else {
-            return;
+        const visibleIndices = [];
+            for (let i = -2; i <= 2; i++) {
+            visibleIndices.push((this.number + i + total) % total);
         };
-        this.scene.middleDiscIndex = newMiddle;
-
-        const newIndices = [];
-        for (let i = -2; i <= 2; i++) {
-            newIndices.push((newMiddle + i + total) % total);
-        };
-        for (let i = 0; i < newIndices.length; i++) {
-            const disc = this.scene.discs[newIndices[i]];
+        for (let i = 0; i < visibleIndices.length; i++) {
+            const disc = this.scene.discs[visibleIndices[i]];
             const [x, y] = discPositions[i];
             disc.moveDisc(x, y);
         };
 
-        this.scene.children.bringToTop(this.scene.discs[newMiddle].disc);
-        this.scene.children.moveBelow(this.scene.discs[newIndices[0]].disc, this.scene.discs[newIndices[1]].disc);
-        this.scene.children.moveBelow(this.scene.discs[newIndices[4]].disc, this.scene.discs[newIndices[3]].disc);
+        this.scene.middleDiscIndex = this.number;
+        this.scene.children.bringToTop(this.scene.discs[this.scene.middleDiscIndex].disc);
+        this.scene.children.moveBelow(this.scene.discs[visibleIndices[0]].disc, this.scene.discs[visibleIndices[1]].disc);
+        this.scene.children.moveBelow(this.scene.discs[visibleIndices[4]].disc, this.scene.discs[visibleIndices[3]].disc);
     };
     changeDiscInformation(number, URL, image, name, author, time, BPM, scores) {
         this.number = number;
@@ -272,5 +304,6 @@ class Disc {
     };
     addScore(newScore) {
         this.scores.push(newScore);
+        this.scene.createDiscScore();
     };
 };
