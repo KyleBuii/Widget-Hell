@@ -180,6 +180,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                             </input>
                             <button id='weather-search-help-button'
                                 className='button-match inverse'
+                                aria-label='Help'
                                 onClick={() => handlePressableButton('help')}>
                                 <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
                                     <FaRegCircleQuestion/>

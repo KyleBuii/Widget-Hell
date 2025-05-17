@@ -334,6 +334,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                             onClick={() => start()}>Start Game</button>
                         <button id='simongame-button-settings'
                             className='button-match inverse disabled-option space-nicely space-top length-medium'
+                            aria-label='Setting'
                             onClick={() => handlePressableButton()}>
                             <IconContext.Provider value={{ size: '1.5em', className: 'global-class-name' }}>
                                 <AiOutlineSetting/>
@@ -364,6 +365,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                                                 Speed
                                             </span>
                                             <button className='button-match inverse when-elements-are-not-straight'
+                                                aria-label='Speed reset'
                                                 onClick={() => handleSetting('speed', 'reset')}>
                                                 <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                     <BsArrowCounterclockwise/>

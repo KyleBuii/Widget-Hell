@@ -8,14 +8,11 @@ import { RiPlayListFill } from 'react-icons/ri';
 import { VscClearAll } from 'react-icons/vsc';
 import ReactPlayer from 'react-player';
 import SimpleBar from 'simplebar-react';
+import { TbRepeat, TbRepeatOnce } from 'react-icons/tb';
 
 
 const audio = new Audio();
-let timeoutAnimationRemove;
-let timeoutAnimationPrevious;
-let timeoutAnimationNext;
-let timeoutPlaylistClear;
-let timeoutPlaylistPanel;
+let timeoutAnimationRemove, timeoutAnimationPrevious, timeoutAnimationNext, timeoutPlaylistClear, timeoutPlaylistPanel;
 let urlsAdd = [];
 let dataSongsAdd = [];
 let dataSongsRemoved = [];
@@ -25,6 +22,7 @@ let previousShuffleNextSong = -1;
 let timePlayed = 0;
 let unplayedSongsIndex = [];
 let unplayedSongsMaxIndex = 0;
+let totalTimesPlayed = 0;
 
 class WidgetMusicPlayer extends Component {
     constructor(props) {
@@ -75,7 +73,9 @@ class WidgetMusicPlayer extends Component {
             seeking: false,
             shuffle: false,
             ready: false,
-            confirmClear: false
+            confirmClear: false,
+            loop: false,
+            loopOnce: false,
         };
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
@@ -298,6 +298,25 @@ class WidgetMusicPlayer extends Component {
                 buttonShuffle.classList.toggle('disabled');
                 break;
             };
+            case 'loop': {
+                const buttonLoop = document.getElementById('musicplayer-button-loop');
+                let isLoop = false;
+                let isLoopOnce = false;
+                if (this.state.loop) {
+                    isLoopOnce = true;
+                } else if (this.state.loopOnce) {
+                    buttonLoop.classList.toggle('disabled');
+                } else {
+                    isLoop = true;
+                    buttonLoop.classList.toggle('disabled');
+                };
+
+                this.setState({
+                    loop: isLoop,
+                    loopOnce: isLoopOnce,
+                });
+                break;
+            };
             case 'playlist': {
                 if (timeoutPlaylistPanel === undefined) {
                     const elementPlaylistLength = document.getElementById('musicplayer-playlist-length');
@@ -432,6 +451,18 @@ class WidgetMusicPlayer extends Component {
             currentDuration: '00:00',
             maxDuration: '00:00'
         });
+
+        if (this.state.loop) return;
+        if (this.state.loopOnce) {
+            if (totalTimesPlayed === 0) {
+                totalTimesPlayed++;
+                this.player.seekTo(0);
+                return;
+            } else {
+                totalTimesPlayed = 0;
+            };
+        };
+
         this.handleNextMusic();
     };
     clearMusic() {
@@ -744,6 +775,7 @@ class WidgetMusicPlayer extends Component {
                                         ref={this.ref}
                                         url={this.state.url}
                                         playing={this.state.playing && this.state.playerDisplay === 'block'}
+                                        loop={this.state.loop}
                                         height={'21em'}
                                         width={'21em'}
                                         onDuration={(event) => this.setMaxDuration(event)}
@@ -802,6 +834,7 @@ class WidgetMusicPlayer extends Component {
                                     className='flex-center row gap'>
                                     <button id='musicplayer-remove'
                                         className='button-match inverse disabled'
+                                        aria-label='Remove song'
                                         onClick={() => this.handleButton('remove')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
                                             <FaMinus/>
@@ -809,6 +842,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-button-previous'
                                         className='button-match inverse'
+                                        aria-label='Previous song'
                                         onClick={() => this.handleButton('previous')}>
                                         <IconContext.Provider value={{ size: '4em', className: 'global-class-name' }}>
                                             <IoPlayBack/>
@@ -816,6 +850,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-button-play'
                                         className='button-match inverse'
+                                        aria-label={(this.state.playing) ? 'Pause' : 'Play'}
                                         onClick={() => this.toggleMusic()}>
                                         {(this.state.playing)
                                             ? <IconContext.Provider value={{ size: '4.5em', className: 'global-class-name' }}>
@@ -837,6 +872,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-button-next'
                                         className='button-match inverse'
+                                        aria-label='Next song'
                                         onClick={() => this.handleButton('next')}>
                                         <IconContext.Provider value={{ size: '4em', className: 'global-class-name' }}>
                                             <IoPlayForward/>
@@ -844,6 +880,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-add'
                                         className='button-match inverse disabled'
+                                        aria-label='Add song'
                                         onClick={() => this.handleButton('add')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
                                             <FaPlus/>
@@ -863,8 +900,17 @@ class WidgetMusicPlayer extends Component {
                                 </div>
                                 {/* Song Expanded Controls */}
                                 <div id='musicplayer-controls-expanded'>
+                                    <button id='musicplayer-button-loop'
+                                        className='button-match inverse disabled'
+                                        aria-label='Loop'
+                                        onClick={() => this.handleButton('loop')}>
+                                        <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
+                                            {(this.state.loopOnce) ? <TbRepeatOnce/> : <TbRepeat/>}
+                                        </IconContext.Provider>
+                                    </button>
                                     <button id='musicplayer-button-shuffle'
                                         className='button-match inverse disabled'
+                                        aria-label='Shuffle'
                                         onClick={() => this.handleButton('shuffle')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
                                             <FaShuffle/>
@@ -872,6 +918,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-button-playlist'
                                         className='button-match inverse'
+                                        aria-label='Playlist'
                                         onClick={() => this.handleButton('playlist')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
                                             <RiPlayListFill/>
@@ -879,6 +926,7 @@ class WidgetMusicPlayer extends Component {
                                     </button>
                                     <button id='musicplayer-button-playlist-clear'
                                         className='button-match inverse'
+                                        aria-label='Clear playlist'
                                         onClick={() => this.handleButton('playlist-clear')}>
                                         <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
                                             <VscClearAll/>

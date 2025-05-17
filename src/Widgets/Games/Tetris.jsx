@@ -208,12 +208,16 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 					{isMobile && <section className='game-controls'>
                         <section className='d-pad'>
                             <button className='up'
+								aria-label='D-pad up'
                                 onClick={() => handleKeyDown({ keyCode: 87 })}></button>
                             <button className='right'
+								aria-label='D-pad right'
                                 onClick={() => handleKeyDown({ keyCode: 68 })}></button>
                             <button className='down'
+								aria-label='D-pad down'
                                 onClick={() => handleKeyDown({ keyCode: 83 })}></button>
                             <button className='left'
+								aria-label='D-pad left'
                                 onClick={() => handleKeyDown({ keyCode: 65 })}></button>
                         </section>
                         <section className='flex-center column gap'

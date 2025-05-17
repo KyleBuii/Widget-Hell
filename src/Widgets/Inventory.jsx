@@ -78,6 +78,7 @@ class WidgetInventory extends Component {
             if (!newItemNames.includes(event.detail[i].name)) {
                 arrayItemSlots[this.state.countItem + newItemCounter] = (
                     <button id={`item-${event.detail[i].name}`}
+                        aria-label={`Item ${event.detail[i].name}`}
                         onClick={() => this.viewItem(event.detail[i])}
                         style={{
                             backgroundImage: `url(${this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
@@ -94,6 +95,7 @@ class WidgetInventory extends Component {
                 });
                 arrayItemSlots[itemButtonIndex] = (
                     <button id={`item-${event.detail[i].name}`}
+                        aria-label={`Item ${event.detail[i].name}`}
                         onClick={() => this.viewItem(event.detail[i])}
                         style={{
                             backgroundImage: `url(${this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
@@ -138,6 +140,7 @@ class WidgetInventory extends Component {
         for (let i = 0; i < this.state.countItem; i++) {
             slots[i] = (
                 <button id={`item-${this.props.inventory[i].name}`}
+                    aria-label={`Item ${this.props.inventory[i].name}`}
                     onClick={() => this.viewItem(this.props.inventory[i])}
                     style={{
                         backgroundImage: `url(${this.props.items[this.props.inventory[i].rarity][this.props.inventory[i].name]?.image})`
@@ -238,6 +241,7 @@ class WidgetInventory extends Component {
                                 {/* Pages Buttons */}
                                 <div id='inventory-pages'>
                                     <button className='button-match inverse flex-center'
+                                        aria-label='Left page'
                                         onClick={() => this.handlePages('left')}>
                                         <IconContext.Provider value={{ size: '1.5em', className: 'global-class-name' }}>
                                             <FaRegArrowAltCircleLeft color={
@@ -248,6 +252,7 @@ class WidgetInventory extends Component {
                                         </IconContext.Provider>
                                     </button>
                                     <button className='button-match inverse flex-center'
+                                        aria-label='Right page'
                                         onClick={() => this.handlePages('right')}>
                                         <IconContext.Provider value={{ size: '1.5em', className: 'global-class-name' }}>
                                             <FaRegArrowAltCircleRight color={

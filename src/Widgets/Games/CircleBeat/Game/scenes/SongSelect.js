@@ -60,7 +60,7 @@ export class SongSelect extends Scene {
                         disc.author,
                         disc.duration,
                         disc.bpm,
-                        disc?.score,
+                        disc?.scores,
                     )
                 );
             });

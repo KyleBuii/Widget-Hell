@@ -497,6 +497,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                     {/* Utility Bar */}
                     <div className='font smaller flex-center space-nicely space-bottom length-short'>
                         <button className='button-match fadded inversed'
+                            aria-label='Copy'
                             onClick={() => handleCopy()}>
                             <IconContext.Provider value={{ className: 'global-class-name' }}>
                                 <FaRegPaste/>
@@ -504,6 +505,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                         </button>
                         <button id='calculator-button-input-expand' 
                             className='button-match fadded inversed'
+                            aria-label='Expand'
                             onClick={() => handlePressableButton('input-expand')}>
                             <IconContext.Provider value={{ className: 'global-class-name' }}>
                                 <BiExpand/>
@@ -543,12 +545,16 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                         <div id='calculator-button-memory-display'>
                             <div id='calculator-button-memory-container'></div>
                             <button id='calculator-button-memory-display-close'
+                                aria-label='Memory close'
                                 onClick={handleClick}
                                 value='memory-close'></button>
                             <button id='calculator-button-trash'
                                 className='button-match inverse'
+                                aria-label='Memory delete'
                                 onClick={handleDelete}
-                                value='trash'><FaRegTrashCan id='calculator-button-trash-icon'/></button>
+                                value='trash'>
+                                <FaRegTrashCan id='calculator-button-trash-icon'/>
+                            </button>
                         </div>
                         <button className='button-match'
                             onClick={handleClick}
@@ -611,8 +617,11 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             onClick={handleClick}
                             value='+'>+</button>
                         <button className='button-match'
+                            aria-label='Negate'
                             onClick={handleClick}
-                            value='negate'><BsPlusSlashMinus className='pointer-events-none'/></button>
+                            value='negate'>
+                            <BsPlusSlashMinus className='pointer-events-none'/>
+                        </button>
                         <button className='button-match'
                             onClick={handleClick}
                             value='0'>0</button>

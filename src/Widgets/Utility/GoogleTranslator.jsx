@@ -219,6 +219,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                                 }
                             })}/>
                         <button className='button-match inverse'
+                            aria-label='Swap'
                             onClick={handleSwap}>
                             <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
                                 <BsArrowLeftRight/>
@@ -243,6 +244,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                                 }
                             })}/>
                         <button className='button-match inverse'
+                            aria-label='Translate'
                             onClick={handleTranslate}
                             disabled={state.running}>
                             <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
@@ -268,6 +270,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                         <div className='flex-center row'>
                             {/* Clipboard */}
                             <button className='button-match fadded inversed'
+                                aria-label='Copy'
                                 onClick={() => handleCopy()}>
                                 <IconContext.Provider value={{ className: 'global-class-name' }}>
                                     <FaRegPaste/>
@@ -275,6 +278,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                             </button>
                             {/* Talk */}
                             <button className='button-match fadded inversed'
+                                aria-label='Read'
                                 onClick={() => handleTalk()}>
                                 <IconContext.Provider value={{ className: 'global-class-name' }}>
                                     <FaVolumeHigh/>

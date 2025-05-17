@@ -112,6 +112,7 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
                             </div>
                             {/* Download Button */}
                             <button className='button-match inverse'
+                                aria-label='Download'
                                 onClick={() => {
                                     let svg = document.getElementById('qrcode');
                                     let svgData = new XMLSerializer().serializeToString(svg);

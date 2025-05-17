@@ -193,6 +193,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                         <div id='rockpaperscissor-container-choices'>
                             {Object.keys(rps).map((choice) => {
                                 return <button className='button-match inverse'
+                                    aria-label={choice}
                                     key={choice}
                                     onClick={() => {
                                         changeChoice('player', choice);

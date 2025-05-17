@@ -88,7 +88,6 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                     discs[index].scores = scores;
                 };
             };
-            console.log(discs)
 
             dataLocalStorage['games']['circlebeat'] = {
                 ...dataLocalStorage['games']['circlebeat'],

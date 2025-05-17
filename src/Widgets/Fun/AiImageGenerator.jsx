@@ -179,6 +179,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                             <div className='element-ends'>
                                 <span className='origin-left'>Prompt</span>
                                 <button className='when-elements-are-not-straight button-match inverse'
+                                    aria-label='Help'
                                     onClick={() => handleButtonHelp()}>
                                     <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
                                         <FaRegCircleQuestion/>
@@ -225,6 +226,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                         {/* Download Button */}
                         <button id='aiimagegenerator-button-download'
                             className='button-match inverse disabled circular float bottom-right'
+                            aria-label='Download'
                             onClick={() => downloadImage()}>
                             <IconContext.Provider value={{ size: smallMedIcon, className: 'global-class-name' }}>
                                 <FaDownload/>

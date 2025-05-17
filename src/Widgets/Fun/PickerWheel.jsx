@@ -70,17 +70,12 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
         };
     }, [state.finished]);
     const handleClick = (what) => {
-        let inputValue = document.getElementById('pickerwheel-input').value;
+        let elementInput = document.getElementById('pickerwheel-input');
+        let inputValue = elementInput.value;
         switch (what) {
             case 'add':
-                if (inputValue !== '') {
-                    let randomColor = Math.floor(Math.random() * 16777215).toString(16);
-                    setState((prevState) => ({
-                        ...prevState,
-                        segments: [...state.segments, inputValue],
-                        segmentsColor: [...state.segmentsColor, `#${randomColor}`]
-                    }));
-                };
+                handleAdd(inputValue);
+                elementInput.value = '';
                 break;
             case 'remove':
                 if (inputValue !== '') {
@@ -104,6 +99,23 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                 };
                 break;
             default: break;
+        };
+    };
+    const handleKeyDown = (key) => {
+        let elementInput = document.getElementById('pickerwheel-input');
+        if (key === 'Enter') {
+            handleAdd(elementInput.value);
+            elementInput.value = '';
+        };
+    };
+    const handleAdd = (value) => {
+        if (value !== '') {
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+            setState((prevState) => ({
+                ...prevState,
+                segments: [...state.segments, value],
+                segmentsColor: [...state.segmentsColor, `#${randomColor}`]
+            }));
         };
     };
     const handleOverlay = () => {
@@ -263,7 +275,9 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                     {/* Input */}
                     <section className='flex-center wrap row gap space-nicely space-bottom length-longer'>
                         <input id='pickerwheel-input'
-                            className='input-match'/>
+                            className='input-match'
+                            onKeyDown={(event) => handleKeyDown(event.key)}
+                            />
                         <button className='button-match with-input'
                             onClick={() => handleClick('add')}
                             disabled={!state.finished}>Add</button>
@@ -280,6 +294,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                         height={'600'}/>
                     {/* Invisible Spin Button */}
                     <button id='pickerwheel-button-spin'
+                        aria-label='Invisible spin'
                         onClick={spin}></button>
                     {/* Winner Overlay */}
                     <section id='pickerwheel-overlay-winner'

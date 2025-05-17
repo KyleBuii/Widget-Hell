@@ -279,16 +279,19 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Headband */}
                                             <button id='equipment-slot-headband'
+                                                aria-label='Slot headband'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/headband.webp)`
                                                 }}></button>
                                             {/* Helmet */}
                                             <button id='equipment-slot-helmet'
+                                                aria-label='Slot helment'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/helmet.webp)`
                                                 }}></button>
                                             {/* Eyewear */}
                                             <button id='equipment-slot-eyewear'
+                                                aria-label='Slot eyewear'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/eyewear.webp)`,
                                                     backgroundSize: '25px'
@@ -298,6 +301,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Necklace */}
                                             <button id='equipment-slot-necklace'
+                                                aria-label='Slot necklace'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/necklace.webp)`,
                                                     backgroundSize: '25px'
@@ -307,16 +311,19 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Undershirt */}
                                             <button id='equipment-slot-undershirt'
+                                                aria-label='Slot undershirt'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/undershirt.webp)`
                                                 }}></button>
                                             {/* Chestplate */}
                                             <button id='equipment-slot-chestplate'
+                                                aria-label='Slot chestplate'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/chestplate.webp)`
                                                 }}></button>
                                             {/* Cape */}
                                             <button id='equipment-slot-cape'
+                                                aria-label='Slot cape'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/cape.webp)`
                                                 }}></button>
@@ -325,6 +332,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Right Bracelet */}
                                             <button id='equipment-slot-bracelet-right'
+                                                aria-label='Slot right bracelet'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/bracelet.webp)`,
                                                     backgroundSize: '25px',
@@ -332,23 +340,27 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 }}></button>
                                             {/* Right Wrist */}
                                             <button id='equipment-slot-wrist-right'
+                                                aria-label='Slot right wrist'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/wrist.webp)`,
                                                     backgroundSize: '20px'
                                                 }}></button>
                                             {/* Belt */}
                                             <button id='equipment-slot-belt'
+                                                aria-label='Slot belt'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/belt.webp)`
                                                 }}></button>
                                             {/* Left Wrist */}
                                             <button id='equipment-slot-wrist-left'
+                                                aria-label='Slot left wrist'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/wrist.webp)`,
                                                     backgroundSize: '20px'
                                                 }}></button>
                                             {/* Left Bracelet */}
                                             <button id='equipment-slot-bracelet-left'
+                                                aria-label='Slot left bracelet'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/bracelet.webp)`,
                                                     backgroundSize: '25px'
@@ -358,17 +370,20 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Main Item */}
                                             <button id='equipment-slot-main'
+                                                aria-label='Slot main item'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/main.webp)`
                                                 }}></button>
                                             {/* Right Glove */}
                                             <button id='equipment-slot-glove-right'
+                                                aria-label='Slot right glove'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/glove.webp)`,
                                                     backgroundSize: '22px'
                                                 }}></button>
                                             {/* Right Ring */}
                                             <button id='equipment-slot-ring-right'
+                                                aria-label='Slot right ring'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/ring.webp)`,
                                                     backgroundSize: '20px',
@@ -376,17 +391,20 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 }}></button>
                                             {/* Legging */}
                                             <button id='equipment-slot-legging'
+                                                aria-label='Slot legging'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/legging.webp)`
                                                 }}></button>
                                             {/* Left Ring */}
                                             <button id='equipment-slot-ring-left'
+                                                aria-label='Slot left ring'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/ring.webp)`,
                                                     backgroundSize: '20px'
                                                 }}></button>
                                             {/* Left Glove */}
                                             <button id='equipment-slot-glove-left'
+                                                aria-label='Slot left glove'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/glove.webp)`,
                                                     backgroundSize: '22px',
@@ -394,6 +412,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 }}></button>
                                             {/* Offhand Item */}
                                             <button id='equipment-slot-offhand'
+                                                aria-label='Slot offhand item'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/offhand.webp)`,
                                                     backgroundSize: '40px'
@@ -403,17 +422,20 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         <div className='flex-center row gap'>
                                             {/* Right Hidden Item in Boot */}
                                             <button id='equipment-slot-hidden-right'
+                                                aria-label='Slot right hidden item in boot'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/hidden.webp)`
                                                 }}></button>
                                             {/* Right Boot */}
                                             <button id='equipment-slot-boot-right'
+                                                aria-label='Slot right boot'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/boot.webp)`,
                                                     backgroundSize: '40px'
                                                 }}></button>
                                             {/* Left Boot */}
                                             <button id='equipment-slot-boot-left'
+                                                aria-label='Slot left boot'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/boot.webp)`,
                                                     backgroundSize: '40px',
@@ -421,6 +443,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 }}></button>
                                             {/* Left Hidden Item in Boot */}
                                             <button id='equipment-slot-hidden-left'
+                                                aria-label='Slot left hidden item in boot'
                                                 style={{
                                                     backgroundImage: `url(/resources/inventory/hidden.webp)`
                                                 }}></button>
@@ -430,26 +453,32 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                     <div id='equipment-slots-consumable' 
                                         className='slot flex-center row gap'>
                                         <button id='equipment-slot-consumable1'
+                                            aria-label='Slot consumable 1'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                         <button id='equipment-slot-consumable2'
+                                            aria-label='Slot consumable 2'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                         <button id='equipment-slot-consumable3'
+                                            aria-label='Slot consumable 3'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                         <button id='equipment-slot-consumable4'
+                                            aria-label='Slot consumable 4'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                         <button id='equipment-slot-consumable5'
+                                            aria-label='Slot consumable 5'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                         <button id='equipment-slot-consumable6'
+                                            aria-label='Slot consumable 6'
                                             style={{
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>

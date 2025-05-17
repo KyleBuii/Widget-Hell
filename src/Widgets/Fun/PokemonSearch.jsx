@@ -346,6 +346,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                     }))}/>
                                 {/* Random Button */}
                                 <button className='button-match inverse'
+                                    aria-label='Random pokemon'
                                     type='button'
                                     onClick={() => handleButton('random')}>
                                     <IconContext.Provider value={{ size: microIcon, className: 'global-class-name' }}>
@@ -362,6 +363,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                             {/* Setting Button */}
                             <button id='pokemonsearch-button-setting'
                                 className='button-match inverse disabled-option space-nicely space-top length-medium'
+                                aria-label='Setting'
                                 onClick={() => handleButton('setting')}>
                                 <IconContext.Provider value={{ size: '1.5em', className: 'global-class-name' }}>
                                     <AiOutlineSetting/>

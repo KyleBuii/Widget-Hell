@@ -1150,6 +1150,7 @@ class WidgetTranslator extends Component{
                                             }
                                         })}/>
                                     <button className='button-match inverse'
+                                        aria-label='Swap'
                                         onClick={this.handleSwap}>
                                         <IconContext.Provider value={{ size: this.props.smallIcon, className: 'global-class-name' }}>
                                             <BsArrowLeftRight/>
@@ -1199,6 +1200,7 @@ class WidgetTranslator extends Component{
                                     <div className='flex-center row'>
                                         {/* Clipboard */}
                                         <button className='button-match fadded inversed'
+                                            aria-label='Copy'
                                             onClick={() => this.handleCopy()}>
                                             <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                 <FaRegPaste/>
@@ -1206,6 +1208,7 @@ class WidgetTranslator extends Component{
                                         </button>
                                         {/* Talk */}
                                         <button className='button-match fadded inversed'
+                                            aria-label='Read'
                                             onClick={() => this.handleTalk()}>
                                             <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                 <FaVolumeHigh/>

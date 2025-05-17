@@ -186,6 +186,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                                     }
                                 })}/>
                             <button className='button-match inverse'
+                                aria-label='Swap'
                                 onClick={handleSwap}>
                                 <IconContext.Provider value={{ className: 'global-class-name' }}>
                                     <BsArrowLeftRight/>

@@ -719,6 +719,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                                 onClick={startGame}>Start Game</button>
                             <button id='snake-button-settings'
                                 className='button-match inverse disabled-option space-nicely space-top length-medium'
+                                aria-label='Setting'
                                 onClick={() => handlePressableButton('settings')}>
                                 <IconContext.Provider value={{ size: '1.5em', className: 'global-class-name' }}>
                                     <AiOutlineSetting/>
@@ -729,12 +730,16 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                     {isMobile && <section className='game-controls'>
                         <section className='d-pad'>
                             <button className='up'
+                                aria-label='D-pad up'
                                 onClick={() => keyDown({ keyCode: 87 })}></button>
                             <button className='right'
+                                aria-label='D-pad right'
                                 onClick={() => keyDown({ keyCode: 68 })}></button>
                             <button className='down'
+                                aria-label='D-pad down'
                                 onClick={() => keyDown({ keyCode: 83 })}></button>
                             <button className='left'
+                                aria-label='D-pad left'
                                 onClick={() => keyDown({ keyCode: 65 })}></button>
                         </section>
                         <section style={{ flexGrow: '1', paddingLeft: '1rem' }}>
@@ -776,6 +781,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                                                 Speed
                                             </span>
                                             <button className='button-match inverse when-elements-are-not-straight'
+                                                aria-label='Reset speed'
                                                 onClick={resetSpeed}>
                                                 <IconContext.Provider value={{ className: 'global-class-name' }}>
                                                     <BsArrowCounterclockwise/>

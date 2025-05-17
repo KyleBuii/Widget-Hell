@@ -162,6 +162,7 @@ class WidgetQuote extends Component {
                             <div className='flex-center row space-nicely space-left'>
                                 {/* Clipboard */}
                                 <button className='button-match inverse'
+                                    aria-label='Copy'
                                     onClick={() => this.handleButton('copy')}>
                                     <IconContext.Provider value={{ className: 'global-class-name' }}>
                                         <FaRegPaste/>
@@ -169,6 +170,7 @@ class WidgetQuote extends Component {
                                 </button>
                                 {/* Talk */}
                                 <button className='button-match inverse'
+                                    aria-label='Read'
                                     onClick={() => this.handleButton('talk')}>
                                     <IconContext.Provider value={{ className: 'global-class-name' }}>
                                         <FaVolumeHigh/>
@@ -176,6 +178,7 @@ class WidgetQuote extends Component {
                                 </button>
                                 {/* Total */}
                                 <button className='button-match inverse'
+                                    aria-label='Total petals'
                                     onClick={() => this.handleButton('total')}>
                                     <IconContext.Provider value={{ className: 'global-class-name' }}>
                                         <MdNumbers/>

@@ -1,54 +1,59 @@
 import DOMPurify from 'dompurify';
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
+import { FaExclamationTriangle, FaExpand } from 'react-icons/fa';
+import { Fa0 } from 'react-icons/fa6';
+import { IoIosArrowUp } from 'react-icons/io';
+import { IoClose } from 'react-icons/io5';
 import { components } from 'react-select';
 import SimpleBar from 'simplebar-react';
 import Cursor from './cursor.jsx';
 import './index.scss';
 import Particle from './particle.jsx';
-import WidgetCharacter from './Widgets/Character.jsx';
-import WidgetEquipment from './Widgets/Equipment.jsx';
-import WidgetAiImageGenerator from './Widgets/Fun/AiImageGenerator.jsx';
-import WidgetDonutAnimation from './Widgets/Fun/DonutAnimation.jsx';
-import WidgetFacts from './Widgets/Fun/Facts.jsx';
-import WidgetPickerWheel from './Widgets/Fun/PickerWheel.jsx';
-import WidgetPokemonSearch from './Widgets/Fun/PokemonSearch.jsx';
-import WidgetSticker from './Widgets/Fun/Sticker.jsx';
-import Widget2048 from './Widgets/Games/2048.jsx';
-import WidgetBreakout from './Widgets/Games/Breakout.jsx';
-import WidgetChess from './Widgets/Games/Chess.jsx';
-import WidgetColorMemory from './Widgets/Games/ColorMemory.jsx';
-import WidgetGrindshot from './Widgets/Games/Grindshot/Grindshot.jsx';
-import WidgetMinesweeper from './Widgets/Games/Minesweeper.jsx';
-import WidgetRockPaperScissor from './Widgets/Games/RockPaperScissor.jsx';
-import WidgetSimonGame from './Widgets/Games/SimonGame.jsx';
-import WidgetSnake from './Widgets/Games/Snake.jsx';
-import WidgetTetris from './Widgets/Games/Tetris.jsx';
-import WidgetTrivia from './Widgets/Games/Trivia.jsx';
-import WidgetTypingTest from './Widgets/Games/TypingTest.jsx';
-import WidgetInventory from './Widgets/Inventory.jsx';
-import WidgetAnimeSearcher from './Widgets/Utility/AnimeSearcher.jsx';
-import WidgetBattery from './Widgets/Utility/Battery.jsx';
-import WidgetCalculator from './Widgets/Utility/Calculator.jsx';
-import WidgetCurrencyConverter from './Widgets/Utility/CurrencyConverter.jsx';
-import WidgetGoogleTranslator from './Widgets/Utility/GoogleTranslator.jsx';
-import WidgetImageColorPicker from './Widgets/Utility/ImageColorPicker.jsx';
-import WidgetMusicPlayer from './Widgets/Utility/MusicPlayer.jsx';
-import WidgetQRCode from './Widgets/Utility/QRCode.jsx';
-import WidgetQuote from './Widgets/Utility/Quote.jsx';
-import WidgetSetting from './Widgets/Utility/Setting.jsx';
-import WidgetSpreadsheet from './Widgets/Utility/Spreadsheet.jsx';
-import WidgetTimeConversion from './Widgets/Utility/TimeConversion.jsx';
-import WidgetTranslator from './Widgets/Utility/Translator.jsx';
-import WidgetWeather from './Widgets/Utility/Weather.jsx';
-import { Fa0 } from 'react-icons/fa6';
-import { FaExclamationTriangle, FaExpand } from 'react-icons/fa';
-import { IoClose } from 'react-icons/io5';
-import { IoIosArrowUp } from 'react-icons/io';
-import WidgetBulletHell from './Widgets/Games/BulletHell/BulletHell.jsx';
-import WidgetCircleBeat from './Widgets/Games/CircleBeat/CircleBeat.jsx';
+
+
+//////////////////// Widget Variables ////////////////////
+//#region
+const WidgetCharacter = React.lazy(() => import('./Widgets/Character.jsx'));
+const WidgetEquipment = React.lazy(() => import('./Widgets/Equipment.jsx'));
+const WidgetAiImageGenerator = React.lazy(() => import('./Widgets/Fun/AiImageGenerator.jsx'));
+const WidgetDonutAnimation = React.lazy(() => import('./Widgets/Fun/DonutAnimation.jsx'));
+const WidgetFacts = React.lazy(() => import('./Widgets/Fun/Facts.jsx'));
+const WidgetPickerWheel = React.lazy(() => import('./Widgets/Fun/PickerWheel.jsx'));
+const WidgetPokemonSearch = React.lazy(() => import('./Widgets/Fun/PokemonSearch.jsx'));
+const WidgetSticker = React.lazy(() => import('./Widgets/Fun/Sticker.jsx'));
+const Widget2048 = React.lazy(() => import('./Widgets/Games/2048.jsx'));
+const WidgetBreakout = React.lazy(() => import('./Widgets/Games/Breakout.jsx'));
+const WidgetBulletHell = React.lazy(() => import('./Widgets/Games/BulletHell/BulletHell.jsx'));
+const WidgetChess = React.lazy(() => import('./Widgets/Games/Chess.jsx'));
+const WidgetCircleBeat = React.lazy(() => import('./Widgets/Games/CircleBeat/CircleBeat.jsx'));
+const WidgetColorMemory = React.lazy(() => import('./Widgets/Games/ColorMemory.jsx'));
+const WidgetGrindshot = React.lazy(() => import('./Widgets/Games/Grindshot/Grindshot.jsx'));
+const WidgetMinesweeper = React.lazy(() => import('./Widgets/Games/Minesweeper.jsx'));
+const WidgetRockPaperScissor = React.lazy(() => import('./Widgets/Games/RockPaperScissor.jsx'));
+const WidgetSimonGame = React.lazy(() => import('./Widgets/Games/SimonGame.jsx'));
+const WidgetSnake = React.lazy(() => import('./Widgets/Games/Snake.jsx'));
+const WidgetTetris = React.lazy(() => import('./Widgets/Games/Tetris.jsx'));
+const WidgetTrivia = React.lazy(() => import('./Widgets/Games/Trivia.jsx'));
+const WidgetTypingTest = React.lazy(() => import('./Widgets/Games/TypingTest.jsx'));
+const WidgetInventory = React.lazy(() => import('./Widgets/Inventory.jsx'));
+const WidgetAnimeSearcher = React.lazy(() => import('./Widgets/Utility/AnimeSearcher.jsx'));
+const WidgetBattery = React.lazy(() => import('./Widgets/Utility/Battery.jsx'));
+const WidgetCalculator = React.lazy(() => import('./Widgets/Utility/Calculator.jsx'));
+const WidgetCurrencyConverter = React.lazy(() => import('./Widgets/Utility/CurrencyConverter.jsx'));
+const WidgetGoogleTranslator = React.lazy(() => import('./Widgets/Utility/GoogleTranslator.jsx'));
+const WidgetImageColorPicker = React.lazy(() => import('./Widgets/Utility/ImageColorPicker.jsx'));
+const WidgetMusicPlayer = React.lazy(() => import('./Widgets/Utility/MusicPlayer.jsx'));
+const WidgetQRCode = React.lazy(() => import('./Widgets/Utility/QRCode.jsx'));
+const WidgetQuote = React.lazy(() => import('./Widgets/Utility/Quote.jsx'));
+const WidgetSetting = React.lazy(() => import('./Widgets/Utility/Setting.jsx'));
+const WidgetSpreadsheet = React.lazy(() => import('./Widgets/Utility/Spreadsheet.jsx'));
+const WidgetTimeConversion = React.lazy(() => import('./Widgets/Utility/TimeConversion.jsx'));
+const WidgetTranslator = React.lazy(() => import('./Widgets/Utility/Translator.jsx'));
+const WidgetWeather = React.lazy(() => import('./Widgets/Utility/Weather.jsx'));
+//#endregion
 
 
 //////////////////// Temp Variables ////////////////////
@@ -408,6 +413,12 @@ function calculateBounds(parent, popout) {
         };
     };
     return bounds;
+};
+
+const LazyWidget = ({ Component, ...props }) => {
+    return <Suspense fallback={<div>Loading...</div>}>
+        <Component {...props}/>
+    </Suspense>
 };
 //#endregion
 
@@ -7921,12 +7932,17 @@ class Widgets extends Component {
                 }
             }), () => {
                 let e = document.getElementById(`${what}-widget-animation`);
-                let elementSelects = e.querySelectorAll('.select-match');
+                if (!e) return;
+
                 widgetsTextActive = [...document.querySelectorAll('.text-animation')];
+
+                let elementSelects = e.querySelectorAll('.select-match');
                 for (let i of elementSelects) {
                     i.style.display = 'block';
                 };
+
                 this.handleAnimation(what);
+
                 if (this.state.values.customBorder.value !== 'default') {
                     this.updateCustomBorder(what);
                 };
@@ -8678,24 +8694,28 @@ class Widgets extends Component {
             className='hotbar'>
             {(this.state.values.showOnTop)
                 ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar show on top'
                     onClick={() => this.handleHotbar(widget, 'showOnTop', type)}>
                     <IoIosArrowUp/>
                 </button>
                 : <></>}
             {(this.state.values.resetPosition)
                 ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar reset position'
                     onClick={() => this.handleHotbar(widget, 'resetPosition', type)}>
                     <Fa0/>
                 </button>
                 : <></>}
             {(this.state.values.fullscreen)
                 ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar fullscreen'
                     onClick={() => this.handleHotbar(widget, 'fullscreen', type)}>
                     <FaExpand/>
                 </button>
                 : <></>}
             {(this.state.values.close)
                 ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar close'
                     onClick={() => this.handleHotbar(widget, 'close', type)}>
                     <IoClose/>
                 </button>
@@ -9066,6 +9086,7 @@ class Widgets extends Component {
                 <pre id='clipboard-dump'></pre>
                 <button id='widget-button-setting'
                     className='button-match inverse button-setting-active'
+                    aria-label='Setting'
                     onClick={() => this.showSetting()}>
                     <IconContext.Provider value={{ size: '2em', className: 'global-class-name' }}>
                         <AiOutlineSetting/>
@@ -9106,7 +9127,8 @@ class Widgets extends Component {
                 {
                     //#region
                 }
-                <WidgetSetting widgets={widgets}
+                <LazyWidget Component={WidgetSetting}
+                    widgets={widgets}
                     widgetActiveVariables={widgetActiveVariables}
                     values={this.state.values}
                     showHide={this.handleShowHide}
@@ -9150,11 +9172,13 @@ class Widgets extends Component {
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
                 {this.state.widgets.utility.character.active
-                    && <WidgetCharacter defaultProps={this.generateDefaultProps('character', 'utility')}
+                    && <LazyWidget Component={WidgetCharacter}
+                        defaultProps={this.generateDefaultProps('character', 'utility')}
                         punctuation={punctuation}
                         equipment={this.state.equipment}/>}
                 {this.state.widgets.utility.equipment.active
-                    && <WidgetEquipment defaultProps={this.generateDefaultProps('equipment', 'utility')}
+                    && <LazyWidget Component={WidgetEquipment}
+                        defaultProps={this.generateDefaultProps('equipment', 'utility')}
                         gameProps={gameProps}
                         updateGameValue={this.updateGameValue}
                         equipment={this.state.equipment}
@@ -9162,7 +9186,8 @@ class Widgets extends Component {
                         stats={this.state.stats}
                         abilities={this.state.abilities}/>}
                 {this.state.widgets.utility.inventory.active
-                    && <WidgetInventory defaultProps={this.generateDefaultProps('inventory', 'utility')}
+                    && <LazyWidget Component={WidgetInventory}
+                        defaultProps={this.generateDefaultProps('inventory', 'utility')}
                         gameProps={gameProps}
                         inventory={this.state.inventory}
                         items={items}/>}
@@ -9174,25 +9199,30 @@ class Widgets extends Component {
                     //#region
                 }
                 {this.state.widgets.utility.animesearcher.active
-                    && <WidgetAnimeSearcher defaultProps={this.generateDefaultProps('animesearcher', 'utility')}
+                    && <LazyWidget Component={WidgetAnimeSearcher}
+                        defaultProps={this.generateDefaultProps('animesearcher', 'utility')}
                         copyToClipboard={copyToClipboard}/>}
                 {this.state.widgets.utility.battery.active
-                    && <WidgetBattery defaultProps={this.generateDefaultProps('battery', 'utility')}
+                    && <LazyWidget Component={WidgetBattery}
+                        defaultProps={this.generateDefaultProps('battery', 'utility')}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.calculator.active
-                    && <WidgetCalculator defaultProps={this.generateDefaultProps('calculator', 'utility')}
+                    && <LazyWidget Component={WidgetCalculator}
+                        defaultProps={this.generateDefaultProps('calculator', 'utility')}
                         copyToClipboard={copyToClipboard}
                         medIcon={medIcon}
                         operation={operation}/>}
                 {this.state.widgets.utility.currencyconverter.active
-                    && <WidgetCurrencyConverter defaultProps={this.generateDefaultProps('currencyconverter', 'utility')}
+                    && <LazyWidget Component={WidgetCurrencyConverter}
+                        defaultProps={this.generateDefaultProps('currencyconverter', 'utility')}
                         moneyConversions={moneyConversions}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         randomColor={this.randomColor}/>}
                 {this.state.widgets.utility.googletranslator.active
-                    && <WidgetGoogleTranslator defaultProps={this.generateDefaultProps('googletranslator', 'utility')}
+                    && <LazyWidget Component={WidgetGoogleTranslator}
+                        defaultProps={this.generateDefaultProps('googletranslator', 'utility')}
                         randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         randSentence={randSentence}
@@ -9203,36 +9233,43 @@ class Widgets extends Component {
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}/>}
                 {this.state.widgets.utility.imagecolorpicker.active
-                    && <WidgetImageColorPicker defaultProps={this.generateDefaultProps('imagecolorpicker', 'utility')}
+                    && <LazyWidget Component={WidgetImageColorPicker}
+                        defaultProps={this.generateDefaultProps('imagecolorpicker', 'utility')}
                         copyToClipboard={copyToClipboard}
                         randomColor={this.randomColor}/>}
                 {this.state.widgets.utility.musicplayer.active
-                    && <WidgetMusicPlayer defaultProps={this.generateDefaultProps('musicplayer', 'utility')}
+                    && <LazyWidget Component={WidgetMusicPlayer}
+                        defaultProps={this.generateDefaultProps('musicplayer', 'utility')}
                         copyToClipboard={copyToClipboard}/>}
                 {this.state.widgets.utility.qrcode.active
-                    && <WidgetQRCode defaultProps={this.generateDefaultProps('qrcode', 'utility')}
+                    && <LazyWidget Component={WidgetQRCode}
+                        defaultProps={this.generateDefaultProps('qrcode', 'utility')}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.quote.active
-                    && <WidgetQuote defaultProps={this.generateDefaultProps('quote', 'utility')}
+                    && <LazyWidget Component={WidgetQuote}
+                        defaultProps={this.generateDefaultProps('quote', 'utility')}
                         copyToClipboard={copyToClipboard}
                         quotes={quotes}
                         talk={this.talk}/>}
                 {this.state.widgets.utility.spreadsheet.active
-                    && <WidgetSpreadsheet defaultProps={this.generateDefaultProps('spreadsheet', 'utility')}
+                    && <LazyWidget Component={WidgetSpreadsheet}
+                        defaultProps={this.generateDefaultProps('spreadsheet', 'utility')}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.timeconversion.active
-                    && <WidgetTimeConversion defaultProps={this.generateDefaultProps('timeconversion', 'utility')}
+                    && <LazyWidget Component={WidgetTimeConversion}
+                        defaultProps={this.generateDefaultProps('timeconversion', 'utility')}
                         sortSelect={sortSelect}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.utility.translator.active
-                    && <WidgetTranslator defaultProps={this.generateDefaultProps('translator', 'utility')}
+                    && <LazyWidget Component={WidgetTranslator}
+                        defaultProps={this.generateDefaultProps('translator', 'utility')}
                         randomColor={this.randomColor}
                         copyToClipboard={copyToClipboard}
                         grep={grep}
@@ -9264,16 +9301,19 @@ class Widgets extends Component {
                         isMobile={isMobile}
                         smallIcon={smallIcon}/>}
                 {this.state.widgets.utility.weather.active
-                    && <WidgetWeather defaultProps={this.generateDefaultProps('weather', 'utility')}
+                    && <LazyWidget Component={WidgetWeather}
+                        defaultProps={this.generateDefaultProps('weather', 'utility')}
                         smallIcon={smallIcon}/>}
                 {/* {this.state.widgets.utility.notepad.active
-                    && <WidgetNotepad defaultProps={this.generateDefaultProps('notepad', 'utility')}
+                    && <LazyWidget Component={WidgetNotepad}
+                        defaultProps={this.generateDefaultProps('notepad', 'utility')}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
                         selectTheme={selectTheme}
                         smallMedIcon={smallMedIcon}/>} */}
                 {/* {this.state.widgets.utility.urlshortner.active
-                    && <WidgetURLShortner defaultProps={this.generateDefaultProps('urlshortner', 'utility')}/>} */}
+                    && <LazyWidget Component={WidgetURLShortner}
+                        defaultProps={this.generateDefaultProps('urlshortner', 'utility')}/>} */}
                 {
                     //#endregion
                 }
@@ -9282,59 +9322,73 @@ class Widgets extends Component {
                     //#region
                 }
                 {this.state.widgets.games.breakout.active
-                    && <WidgetBreakout defaultProps={this.generateDefaultProps('breakout', 'games')}
+                    && <LazyWidget Component={WidgetBreakout}
+                        defaultProps={this.generateDefaultProps('breakout', 'games')}
                         gameProps={gameProps}
                         patterns={breakoutPatterns}/>}
                 {this.state.widgets.games.bullethell.active
-                    && <WidgetBulletHell defaultProps={this.generateDefaultProps('bullethell', 'games')}
+                    && <LazyWidget Component={WidgetBulletHell}
+                        defaultProps={this.generateDefaultProps('bullethell', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.chess.active
-                    && <WidgetChess defaultProps={this.generateDefaultProps('chess', 'games')}
+                    && <LazyWidget Component={WidgetChess}
+                        defaultProps={this.generateDefaultProps('chess', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.circlebeat.active
-                    && <WidgetCircleBeat defaultProps={this.generateDefaultProps('circlebeat', 'games')}
+                    && <LazyWidget Component={WidgetCircleBeat}
+                        defaultProps={this.generateDefaultProps('circlebeat', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.colormemory.active
-                    && <WidgetColorMemory defaultProps={this.generateDefaultProps('colormemory', 'games')}
+                    && <LazyWidget Component={WidgetColorMemory}
+                        defaultProps={this.generateDefaultProps('colormemory', 'games')}
                         gameProps={gameProps}
                         hexToRgb={hexToRgb}
                         randomColor={this.randomColor}/>}
                 {this.state.widgets.games.grindshot.active
-                    && <WidgetGrindshot defaultProps={this.generateDefaultProps('grindshot', 'games')}
+                    && <LazyWidget Component={WidgetGrindshot}
+                        defaultProps={this.generateDefaultProps('grindshot', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.minesweeper.active
-                    && <WidgetMinesweeper defaultProps={this.generateDefaultProps('minesweeper', 'games')}
+                    && <LazyWidget Component={WidgetMinesweeper}
+                        defaultProps={this.generateDefaultProps('minesweeper', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.rockpaperscissor.active
-                    && <WidgetRockPaperScissor defaultProps={this.generateDefaultProps('rockpaperscissor', 'games')}
+                    && <LazyWidget Component={WidgetRockPaperScissor}
+                        defaultProps={this.generateDefaultProps('rockpaperscissor', 'games')}
                         gameProps={gameProps}
                         rps={rps}/>}
                 {this.state.widgets.games.simongame.active
-                    && <WidgetSimonGame defaultProps={this.generateDefaultProps('simongame', 'games')}
+                    && <LazyWidget Component={WidgetSimonGame}
+                        defaultProps={this.generateDefaultProps('simongame', 'games')}
                         gameProps={gameProps}/>}
                 {this.state.widgets.games.snake.active
-                    && <WidgetSnake defaultProps={this.generateDefaultProps('snake', 'games')}
+                    && <LazyWidget Component={WidgetSnake}
+                        defaultProps={this.generateDefaultProps('snake', 'games')}
                         gameProps={gameProps}
                         foodTypes={foodTypes}
                         debris={debrisPatterns}
                         isMobile={isMobile}/>}
                 {this.state.widgets.games.tetris.active
-                    && <WidgetTetris defaultProps={this.generateDefaultProps('tetris', 'games')}
+                    && <LazyWidget Component={WidgetTetris}
+                        defaultProps={this.generateDefaultProps('tetris', 'games')}
                         gameProps={gameProps}
                         isMobile={isMobile}/>}
                 {this.state.widgets.games.trivia.active
-                    && <WidgetTrivia defaultProps={this.generateDefaultProps('trivia', 'games')}
+                    && <LazyWidget Component={WidgetTrivia}
+                        defaultProps={this.generateDefaultProps('trivia', 'games')}
                         gameProps={gameProps}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         sortSelect={sortSelect}
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.games.twentyfortyeight.active
-                    && <Widget2048 defaultProps={this.generateDefaultProps('twentyfortyeight', 'games')}
+                    && <LazyWidget Component={Widget2048}
+                        defaultProps={this.generateDefaultProps('twentyfortyeight', 'games')}
                         gameProps={gameProps}
                         isMobile={isMobile}/>}
                 {this.state.widgets.games.typingtest.active
-                    && <WidgetTypingTest defaultProps={this.generateDefaultProps('typingtest', 'games')}
+                    && <LazyWidget Component={WidgetTypingTest}
+                        defaultProps={this.generateDefaultProps('typingtest', 'games')}
                         gameProps={gameProps}
                         randSentence={randSentence}/>}
                 { 
@@ -9345,24 +9399,30 @@ class Widgets extends Component {
                     //#region
                 }
                 {this.state.widgets.fun.aiimagegenerator.active
-                    && <WidgetAiImageGenerator defaultProps={this.generateDefaultProps('aiimagegenerator', 'fun')}
+                    && <LazyWidget Component={WidgetAiImageGenerator}
+                        defaultProps={this.generateDefaultProps('aiimagegenerator', 'fun')}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.fun.donutanimation.active
-                    && <WidgetDonutAnimation defaultProps={this.generateDefaultProps('donutanimation', 'fun')}/>}
+                    && <LazyWidget Component={WidgetDonutAnimation}
+                        defaultProps={this.generateDefaultProps('donutanimation', 'fun')}/>}
                 {this.state.widgets.fun.facts.active
-                    && <WidgetFacts defaultProps={this.generateDefaultProps('facts', 'fun')}/>}
+                    && <LazyWidget Component={WidgetFacts}
+                        defaultProps={this.generateDefaultProps('facts', 'fun')}/>}
                 {this.state.widgets.fun.pickerwheel.active
-                    && <WidgetPickerWheel defaultProps={this.generateDefaultProps('pickerwheel', 'fun')}
+                    && <LazyWidget Component={WidgetPickerWheel}
+                        defaultProps={this.generateDefaultProps('pickerwheel', 'fun')}
                         color={color}/>}
                 {this.state.widgets.fun.pokemonsearch.active
-                    && <WidgetPokemonSearch defaultProps={this.generateDefaultProps('pokemonsearch', 'fun')}
+                    && <LazyWidget Component={WidgetPokemonSearch}
+                        defaultProps={this.generateDefaultProps('pokemonsearch', 'fun')}
                         microIcon={microIcon}/>}
                 {this.state.widgets.fun.sticker.active
-                    && <WidgetSticker defaultProps={this.generateDefaultProps('sticker', 'fun')}
+                    && <LazyWidget Component={WidgetSticker}
+                        defaultProps={this.generateDefaultProps('sticker', 'fun')}
                         stickers={this.state.stickers}
                         updateStickers={this.updateStickers}/>}
                 {

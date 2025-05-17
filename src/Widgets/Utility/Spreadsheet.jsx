@@ -156,24 +156,28 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                     {defaultProps.renderHotbar('spreadsheet', 'utility')}
                     <section>
                         <button className='button-match inverse'
+                            aria-label='Add column'
                             onClick={() => handleButton('addColumn')}>
                             <IconContext.Provider value={{ size: smallMedIcon, className: 'global-class-name' }}>
                                 <FcAddColumn/>
                             </IconContext.Provider>
                         </button>
                         <button className='button-match inverse'
+                            aria-label='Add row'
                             onClick={() => handleButton('addRow')}>
                             <IconContext.Provider value={{ size: smallMedIcon, className: 'global-class-name' }}>
                                 <FcAddRow/>
                             </IconContext.Provider>
                         </button>
                         <button className='button-match inverse'
+                            aria-label='Delete column'
                             onClick={() => handleButton('removeColumn')}>
                             <IconContext.Provider value={{ size: smallMedIcon, className: 'global-class-name' }}>
                                 <FcDeleteColumn/>
                             </IconContext.Provider>
                         </button>
                         <button className='button-match inverse'
+                            aria-label='Delete row'
                             onClick={() => handleButton('removeRow')}>
                             <IconContext.Provider value={{ size: smallMedIcon, className: 'global-class-name' }}>
                                 <FcDeleteRow/>

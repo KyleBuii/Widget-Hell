@@ -56,6 +56,7 @@
   "scripts": {
     "dev": "vite --config vite/config.dev.mjs",
     "build": "vite build --config vite/config.prod.mjs",
+    "preview": "vite preview --config vite/config.prod.mjs",
     "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css",
     "dev-nolog": "vite --config vite/config.dev.mjs",
     "build-nolog": "vite build --config vite/config.prod.mjs"
