@@ -12,6 +12,7 @@ import SimpleBar from 'simplebar-react';
 import Cursor from './cursor.jsx';
 import './index.scss';
 import Particle from './particle.jsx';
+import WidgetSetting from './Widgets/Utility/Setting.jsx';
 
 
 //////////////////// Widget Variables ////////////////////
@@ -48,7 +49,6 @@ const WidgetImageColorPicker = React.lazy(() => import('./Widgets/Utility/ImageC
 const WidgetMusicPlayer = React.lazy(() => import('./Widgets/Utility/MusicPlayer.jsx'));
 const WidgetQRCode = React.lazy(() => import('./Widgets/Utility/QRCode.jsx'));
 const WidgetQuote = React.lazy(() => import('./Widgets/Utility/Quote.jsx'));
-const WidgetSetting = React.lazy(() => import('./Widgets/Utility/Setting.jsx'));
 const WidgetSpreadsheet = React.lazy(() => import('./Widgets/Utility/Spreadsheet.jsx'));
 const WidgetTimeConversion = React.lazy(() => import('./Widgets/Utility/TimeConversion.jsx'));
 const WidgetTranslator = React.lazy(() => import('./Widgets/Utility/Translator.jsx'));
@@ -9127,8 +9127,7 @@ class Widgets extends Component {
                 {
                     //#region
                 }
-                <LazyWidget Component={WidgetSetting}
-                    widgets={widgets}
+                <WidgetSetting widgets={widgets}
                     widgetActiveVariables={widgetActiveVariables}
                     values={this.state.values}
                     showHide={this.handleShowHide}
