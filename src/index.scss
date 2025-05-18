@@ -4612,6 +4612,74 @@ body{
 //#endregion
 //#endregion
 
+//#region SimpleBar
+.simplebar-offset{
+    direction: inherit !important;
+    box-sizing: inherit !important;
+    resize: none !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.simplebar-content-wrapper{
+    direction: inherit;
+    box-sizing: border-box !important;
+    position: relative;
+    display: block;
+    height: 100%; /* Required for horizontal native scrollbar to not appear if parent is taller than natural height */
+    width: auto;
+    max-width: 100%; /* Not required for horizontal scroll to trigger */
+    max-height: 100%; /* Needed for vertical scroll to trigger */
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.simplebar-track{
+    z-index: 1;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.simplebar-scrollbar:before{
+    position: absolute;
+    content: '';
+    background: black;
+    border-radius: 7px;
+    left: 2px;
+    right: 2px;
+    opacity: 0;
+    transition: opacity 0.2s 0.5s linear;
+}
+
+.simplebar-scrollbar.simplebar-visible:before{
+    opacity: 0.5;
+    transition-delay: 0s;
+    transition-duration: 0s;
+}
+
+.simplebar-track.simplebar-vertical{
+    top: 0;
+    width: 11px;
+}
+
+.simplebar-scrollbar:before{
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+}
+//#endregion
+
 
 //////////////////// IDs ////////////////////
 //#region
@@ -5325,26 +5393,17 @@ body{
     }
     #musicplayer-playlist{
         @extend .font, .small;
+        position: absolute;
         width: 8em;
-        height: 6.7em;
-        top: 4.7em;
+        max-height: 6.7em;
+        right: 1em;
+        bottom: 0.5em;
         background-color: white;
-        margin-left: -2em;
-        margin-right: -9em;
         padding: 1em 1em 1em 2em;
         border-radius: 0 25px 25px 0;
-        transform: translateX(-10em);
-        transition: transform 0.5s;
-        &.musicplayer-playlist-show{
-            transform: unset;
-        }
-        .musicplayer-playlist-active{
-            color: white;
-            background-color: var(--randColorLight);
-            .transparent-normal{
-                color: rgba(256, 256, 256, 0.7);
-            }
-        }
+        transform: translateX(0);
+        transition-property: transform right;
+        transition-duration: 0.5s;
         section{
             cursor: pointer;
             height: 4em;
@@ -5361,6 +5420,16 @@ body{
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+            }
+        }
+        &.musicplayer-playlist-show{
+            transform: translateX(10em);
+        }
+        .musicplayer-playlist-active{
+            color: white;
+            background-color: var(--randColorLight);
+            .transparent-normal{
+                color: rgba(256, 256, 256, 0.7);
             }
         }
     }

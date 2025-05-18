@@ -936,7 +936,6 @@ class WidgetMusicPlayer extends Component {
                             </section>
                             <span id='musicplayer-playlist-length'>{this.state.urls.length}</span>
                             <SimpleBar id='musicplayer-playlist'
-                                style={{ maxHeight: '10em' }}
                                 ref={(ref) => this.refPlaylist = ref}>
                                 {this.state.urls.map((url, index) => {
                                     return <section className='flex-center column align-items-left box no-highlight'
