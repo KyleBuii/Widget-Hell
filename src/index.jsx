@@ -223,7 +223,7 @@ function createPopup(text, type = 'normal', randomPosition = false) {
         timeoutRemove = setTimeout(() => {
             widgetContainer.removeChild(popup);
             clearTimeout(timeoutAnimation);
-            clearTimeout(timeoutRemove);    
+            clearTimeout(timeoutRemove);
         }, 900);
     }, 1000);
     popup.onclick = () => {
@@ -368,14 +368,6 @@ function renderHearts(health) {
     return elementHearts;
 };
 
-function playAudio(audio) {
-    let duplicateAudio = audio.cloneNode();
-    duplicateAudio.play();
-    duplicateAudio.onended = () => {
-        duplicateAudio.remove();
-    };    
-};
-
 function hexToRgb(hex) {
     /// Input Format: #000000
     /// Return Format: [0, 0, 0]
@@ -416,7 +408,13 @@ function calculateBounds(parent, popout) {
 };
 
 const LazyWidget = ({ Component, ...props }) => {
-    return <Suspense fallback={<div>Loading...</div>}>
+    return <Suspense fallback={
+            <section className='flex-center column gap'>
+                <img src='/resources/singles/fumo_speen.gif'
+                    alt='Fumo spining'/>
+                <span className='font bold'>Loading...</span>
+            </section>
+        }>
         <Component {...props}/>
     </Suspense>
 };
@@ -7193,7 +7191,8 @@ class Widgets extends Component {
                 horror: false,
                 particle: {value: 'default', label: 'Default'},
                 decoration: {value: 'default', label: 'Default'},
-                particleMute: false
+                particleMute: false,
+                transcribeAudio: false,
             },
             prevPosition: {
                 prevX: 0,
@@ -7877,6 +7876,7 @@ class Widgets extends Component {
         this.updateGameValue = this.updateGameValue.bind(this);
         this.updateGlobalValue = this.updateGlobalValue.bind(this);
         this.talk = this.talk.bind(this);
+        this.playAudio = this.playAudio.bind(this);
         this.renderHotbar = this.renderHotbar.bind(this);
         this.showSetting = this.showSetting.bind(this);
     };
@@ -8667,6 +8667,66 @@ class Widgets extends Component {
             };
         };
     };
+    playAudio(audio) {
+        let duplicateAudio = audio.cloneNode();
+        duplicateAudio.play();
+        duplicateAudio.onended = () => {
+            duplicateAudio.remove();
+        };
+
+        if (this.state.values.transcribeAudio) {
+            const transcriptContainer = document.getElementById('transcript');
+            const audioName = audio.src.match(/([^/]+)[.]/)[1];
+            const transcribedAudio = this.getTranscribedAudio(audioName);
+
+            const transcribedElement = document.createElement('span');
+            transcribedElement.innerText = transcribedAudio;
+            transcriptContainer.appendChild(transcribedElement);
+
+            let timeoutAnimation, timeoutRemove;
+            timeoutAnimation = setTimeout(() => {
+                window.requestAnimationFrame(() => {
+                    transcribedElement.style.animation = 'fadeOut 2s';
+                });
+                timeoutRemove = setTimeout(() => {
+                    transcriptContainer.removeChild(transcribedElement);
+                    clearTimeout(timeoutAnimation);
+                    clearTimeout(timeoutRemove);
+                }, 1800);
+            }, 2000);
+        };
+    };
+    getTranscribedAudio(audio) {
+        let transcribedAudio = '';
+        switch (audio) {
+            case 'bite_small':
+                transcribedAudio = 'splorp';
+                break;
+            case 'cloth':
+                transcribedAudio = 'crumph';
+                break;
+            case 'cloth_inventory':
+                transcribedAudio = 'fwump';
+                break;
+            case 'magnet_on_reduced':
+                transcribedAudio = 'clak';
+                break;
+            case 'ring_inventory':
+                transcribedAudio = 'chink';
+                break;
+            case 'spin':
+                transcribedAudio = 'trrrrktktktktktkt...kt...kt...kt...kt';
+                break;
+            case 'switch_006':
+                transcribedAudio = 'plop';
+                break;
+            case 'switch_007':
+                transcribedAudio = 'twud';
+                break;
+            default: break;
+        };
+        return transcribedAudio;
+    };
     updateGlobalValue(what, value) {
         switch (what) {
             case 'hour':
@@ -8737,7 +8797,7 @@ class Widgets extends Component {
             values: {
                 authorNames: this.state.values.authorNames
             },
-            playAudio: playAudio,
+            playAudio: this.playAudio,
             calculateBounds: calculateBounds,
             renderHotbar: this.renderHotbar,
             largeIcon: largeIcon
@@ -9066,6 +9126,8 @@ class Widgets extends Component {
         return (
             <div id='widget-container'
                 onMouseMove={(event) => this.handleMouseMove(event)}>
+                {(this.state.values.transcribeAudio)
+                    && <section id='transcript'></section>}
                 <section id='disclaimer'
                     onClick={() => { document.getElementById('disclaimer').style.display = 'none'; }}>
                     <span>

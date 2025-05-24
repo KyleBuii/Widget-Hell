@@ -21,6 +21,7 @@
     "dragscroll": "^0.0.8",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
+    "lodash": "^4.17.21",
     "mathjs": "^11.9.1",
     "phaser": "^3.85.2",
     "phaser3-rex-plugins": "^1.80.15",

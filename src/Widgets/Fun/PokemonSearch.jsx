@@ -436,7 +436,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                             className='button-expand'
                             onClick={() => showExtraInformation()}>Collapse Information</button>
                         <table id='pokemonsearch-extra-information'
-                            className='aesthetic-scale scale-table table font'>
+                            className='aesthetic-scale scale-table table font'
+                            aria-label='Pokemon stats'>
                             <thead>
                                 <tr>
                                     <th scope='col'>Base</th>

@@ -151,6 +151,12 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
         let colorRgb = hexToRgb(`#${hex}`);
         randomColor(colorRgb[0], colorRgb[1], colorRgb[2]);
     };
+    const handleColorKeyDown = (index, event) => {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            colorClick(seenColorsHex[index]);
+        };
+    };
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -241,7 +247,9 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                                             backgroundImage: `url(${image})`
                                         }}
                                         key={image}
-                                        onClick={() => colorClick(seenColorsHex[index])}>
+                                        onClick={() => colorClick(seenColorsHex[index])}
+                                        onKeyDown={(event) => handleColorKeyDown(index, event)}
+                                        tabIndex={0}>
                                         <span className='font micro white float center'
                                             style={{
                                                 display: 'block',

@@ -486,7 +486,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                 </section>
                                 {/* Stats */}
                                 <table id='equipment-table-stats'
-                                    className='aesthetic-scale scale-table table font'>
+                                    className='aesthetic-scale scale-table table font'
+                                    aria-label='Stats'>
                                     <thead>
                                         <tr>
                                             <th scope='col'>Stat</th>
@@ -546,7 +547,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                 style={{
                                     maxHeight: '14.7em'
                                 }}>
-                                <table className='table'>
+                                <table className='table'
+                                    aria-label='Abilities'>
                                     <thead>
                                         <tr>
                                             <th scope='col'>Abilities</th>
@@ -574,7 +576,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                 maxHeight: 160,
                                 width: 150
                             }}>
-                                <table className='flex-center column font small'>
+                                <table className='flex-center column font small'
+                                    aria-label='Item stats'>
                                     <tbody>
                                         <tr>
                                             <td scope='row'>Rarity:</td>

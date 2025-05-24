@@ -272,6 +272,12 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
         }));
         resetButtons();
     };
+    const handleResetKeyDown = (event) => {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            resetGame();
+        };
+    };
     const resetButtons = () => {
         for (let i = 0; i < document.getElementById('trivia-choices').children.length; i++) {
             let buttonChoice = document.getElementById(`trivia-button-${i}`);
@@ -454,8 +460,9 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                         {(state.gameOver)
                             ? <div id='trivia-reset'
                                 className='font medium flex-center row gap'
-                                onClick={() => resetGame()}>
-                                Click<div> here </div>to reset
+                                onClick={() => resetGame()}
+                                onKeyDown={(event) => handleResetKeyDown(event)}>
+                                Click<div tabIndex={0}> here </div>to reset
                             </div>
                             : <></>}
                     </section>

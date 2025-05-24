@@ -12,6 +12,7 @@ import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import Switch from 'react-switch';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { debounce } from 'lodash';
 
 
 let intervalTimeBased;
@@ -192,7 +193,7 @@ class WidgetSetting extends Component {
             maxPageFun: 0,
             pageUtility: -1,
             pageGames: -1,
-            pageFun: -1
+            pageFun: -1,
         };
         this.randomTimeout = this.randomTimeout.bind(this);
         this.handleRandomTrick = this.handleRandomTrick.bind(this);
@@ -207,6 +208,7 @@ class WidgetSetting extends Component {
         this.storeData = this.storeData.bind(this);
         this.handleScriptLoaded = this.handleScriptLoaded.bind(this);
         this.hideSettings = this.hideSettings.bind(this);
+        this.debounceUpdateSearch = debounce(this.updateSearch.bind(this), 200);
     };
     handleTrick() {
         const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive, ...this.props.widgetsFunActive];
@@ -471,11 +473,9 @@ class WidgetSetting extends Component {
         this.props.updateValue(event.target.value, event.target.name, 'values');
     };
     handleSearch(event) {
-        this.setState({
-            search: event.target.value
-        }, () => {
-            this.updateSearch(this.state.search);
-        });
+        const value = event.target.value;
+        this.setState({ search: value });
+        this.debounceUpdateSearch(value);
     };
     handleInterval(what) {
         if (what === true) {
@@ -580,7 +580,7 @@ class WidgetSetting extends Component {
             let regexSearch = new RegExp(`(${what})`, 'i');
             for (let i of widgetButtons) {
                 if (regexSearch.test(i.props['data-widgetname'])) {
-                    widgetsMatch.push(i);
+                    widgetsMatch.push(i.props['data-widgetname']);
                 };
             };
         };
@@ -720,6 +720,30 @@ class WidgetSetting extends Component {
             this.props.showHidePopout(settingsPopoutAnimation, false, buttonSettings);
         };
     };
+    createWidgetButtons() {
+        this.buttonsUtility = [];
+        this.buttonsGames = [];
+        this.buttonsFun = [];
+        let tabs = ['utility', 'games', 'fun'];
+        for (let tab of tabs) {
+            let widgetKeys = Object.keys(this.props.widgets[tab]).sort();
+            for (let widgetIndex in widgetKeys) {
+                let widget = widgetKeys[widgetIndex];
+                let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
+                    data-widgetname={widget}
+                    className='button-match option disabled-option'
+                    onClick={() => this.handlePressableButton(widget, tab)}>
+                    {this.props.widgets[tab][widget]}
+                </button>;
+                switch (tab) {
+                    case 'utility': this.buttonsUtility.push(elementButton); break;
+                    case 'games':   this.buttonsGames.push(elementButton);   break;
+                    case 'fun':     this.buttonsFun.push(elementButton);     break;
+                    default: break;
+                };
+            };    
+        };
+    };
     storeData() {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -745,20 +769,22 @@ class WidgetSetting extends Component {
         window.addEventListener('beforeunload', this.storeData);
         window.addEventListener('script loaded', this.handleScriptLoaded);
         window.addEventListener('setting hide', this.hideSettings);
-        /// Sort selects
+
         this.props.sortSelect(optionsAnimation);
         this.props.sortSelect(optionsBackground);
         this.props.sortSelect(optionsCustomBorder);
         this.props.sortSelect(optionsParticle);
         this.props.sortSelect(optionsVoice);
         this.props.sortSelect(optionsHealth);
-        /// Prevents typing in non-display selects
+
         let elementSelects = document.getElementById('settings-widget-animation')
             .querySelectorAll('.select-match');
         for (let i of elementSelects) {
             i.style.display = 'none';
         };
-        /// Set max page number
+
+        this.createWidgetButtons();
+
         let utilityPageMax = Math.ceil(this.buttonsUtility.length / 12);
         let gamesPageMax = Math.ceil(this.buttonsGames.length / 12);
         let funPageMax = Math.ceil(this.buttonsFun.length / 12);
@@ -849,28 +875,6 @@ class WidgetSetting extends Component {
         clearTimeout(timeoutTrick);
     };
     render() {
-        this.buttonsUtility = [];
-        this.buttonsGames = [];
-        this.buttonsFun = [];
-        let tabs = ['utility', 'games', 'fun'];
-        for (let tab of tabs) {
-            let widgetKeys = Object.keys(this.props.widgets[tab]).sort();
-            for (let widgetIndex in widgetKeys) {
-                let widget = widgetKeys[widgetIndex];
-                let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
-                    data-widgetname={widget}
-                    className='button-match option disabled-option'
-                    onClick={() => this.handlePressableButton(widget, tab)}>
-                    {this.props.widgets[tab][widget]}
-                </button>;
-                switch (tab) {
-                    case 'utility': this.buttonsUtility.push(elementButton); break;
-                    case 'games':   this.buttonsGames.push(elementButton);   break;
-                    case 'fun':     this.buttonsFun.push(elementButton);     break;
-                    default: break;
-                };
-            };    
-        };
         return (
             <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
                 onStart={() => this.props.dragStart('settings')}
@@ -929,13 +933,17 @@ class WidgetSetting extends Component {
                                 className='popout'>
                                 <section id='show-hide-widgets-popout-animation'
                                     className='popout-animation'>
-                                    <Tabs defaultIndex={0}>
+                                    <Tabs defaultIndex={0}
+                                        onSelect={(index) => {
+                                            const tabs = ['utility', 'games', 'fun'];
+                                            this.handleTabSwitch(tabs[index]);
+                                        }}>
                                         <TabList id='show-hide-widgets-popout-tabs'>
                                             {/* Tabs */}
                                             <div>
-                                                <Tab onClick={() => this.handleTabSwitch('utility')}>Utility</Tab>
-                                                <Tab onClick={() => this.handleTabSwitch('games')}>Games</Tab>
-                                                <Tab onClick={() => this.handleTabSwitch('fun')}>Fun</Tab>
+                                                <Tab>Utility</Tab>
+                                                <Tab>Games</Tab>
+                                                <Tab>Fun</Tab>
                                             </div>
                                             {/* Other Stuff */}
                                             <div className='flex-center wrap'>
@@ -948,7 +956,7 @@ class WidgetSetting extends Component {
                                                         <BiBriefcase/>
                                                     </IconContext.Provider>
                                                 </button>
-                                                <button id='show-hide-widgets-popout-button-equipment' 
+                                                <button id='show-hide-widgets-popout-button-equipment'
                                                     className='button-match inverse disabled'
                                                     aria-label='Equipment'
                                                     type='button'
@@ -957,7 +965,7 @@ class WidgetSetting extends Component {
                                                         <GiAxeSword/>
                                                     </IconContext.Provider> 
                                                 </button>
-                                                <button id='show-hide-widgets-popout-button-character' 
+                                                <button id='show-hide-widgets-popout-button-character'
                                                     className='button-match inverse disabled'
                                                     aria-label='Character'
                                                     type='button'
@@ -966,7 +974,8 @@ class WidgetSetting extends Component {
                                                         <IoBodyOutline/>
                                                     </IconContext.Provider> 
                                                 </button>
-                                                <input className='input-typable all-side'
+                                                {/* <input className='input-typable all-side' */}
+                                                <input className='input-typable'
                                                     name='settings-input-show-hide-widgets-search'
                                                     type='text'
                                                     placeholder='Search'
@@ -978,45 +987,57 @@ class WidgetSetting extends Component {
                                         <TabPanel>
                                             <section id='show-hide-widgets-popout-button-utility'
                                                 className='button-set-three font large-medium no-color space-nicely space-all'>
-                                                {(this.state.searched.length !== 0)
-                                                    ? this.state.searched.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
+                                                {(this.state.search.length === 0)
+                                                    ? this.buttonsUtility?.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
                                                         return <span key={`widget-${widget.props['data-widgetname']}`}>
                                                             {widget}
                                                         </span>})
-                                                    : this.buttonsUtility.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
-                                                        return <span key={`widget-${widget.props['data-widgetname']}`}>
-                                                            {widget}
-                                                        </span>})}
+                                                    : (this.state.searched.length !== 0)
+                                                        ? this.buttonsUtility?.filter((button) => this.state.searched.includes(button.props['data-widgetname']))
+                                                            .map((button) => {
+                                                                return <span key={`widget-${button.props['data-widgetname']}`}>
+                                                                    {button}
+                                                                </span>
+                                                            })
+                                                        : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
                                             <section id='show-hide-widgets-popout-button-games'
                                                 className='font large-medium no-color space-nicely space-all'>
-                                                {(this.state.searched.length !== 0)
-                                                    ? this.state.searched.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
+                                                {(this.state.search.length === 0)
+                                                    ? this.buttonsGames?.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
                                                         return <span key={`widget-${widget.props['data-widgetname']}`}>
                                                             {widget}
                                                         </span>})
-                                                    : this.buttonsGames.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
-                                                        return <span key={`widget-${widget.props['data-widgetname']}`}>
-                                                            {widget}
-                                                        </span>})}
+                                                    : (this.state.searched.length !== 0)
+                                                        ? this.buttonsGames?.filter((button) => this.state.searched.includes(button.props['data-widgetname']))
+                                                            .map((button) => {
+                                                                return <span key={`widget-${button.props['data-widgetname']}`}>
+                                                                    {button}
+                                                                </span>
+                                                            })
+                                                        : <></>}
                                             </section>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
                                             <section id='show-hide-widgets-popout-button-fun'
                                                 className='font large-medium no-color space-nicely space-all'>
-                                                {(this.state.searched.length !== 0)
-                                                    ? this.state.searched.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
+                                                {(this.state.search.length === 0)
+                                                    ? this.buttonsFun?.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
                                                         return <span key={`widget-${widget.props['data-widgetname']}`}>
                                                             {widget}
                                                         </span>})
-                                                    : this.buttonsFun.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
-                                                        return <span key={`widget-${widget.props['data-widgetname']}`}>
-                                                            {widget}
-                                                        </span>})}
+                                                    : (this.state.searched.length !== 0)
+                                                        ? this.buttonsFun?.filter((button) => this.state.searched.includes(button.props['data-widgetname']))
+                                                            .map((button) => {
+                                                                return <span key={`widget-${button.props['data-widgetname']}`}>
+                                                                    {button}
+                                                                </span>
+                                                            })
+                                                        : <></>}
                                             </section>
                                         </TabPanel>
                                     </Tabs>
@@ -1060,6 +1081,23 @@ class WidgetSetting extends Component {
                                     onMouseEnter={() => this.handleMouse('enter')}
                                     onMouseLeave={() => this.handleMouse('leave')}>
                                     <section className='aesthetic-scale scale-span scale-label scale-legend font large-medium flex-center column gap space-nicely space-all'>
+                                        {/* Accessibility Settings */}
+                                        <section className='section-group'>
+                                            <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
+                                                <b>Accessibility</b>
+                                            </span>
+                                            <section className='element-ends'>
+                                                <label className='font small'
+                                                    htmlFor='settings-popout-accessibility-transcribeAudio'>
+                                                    Transcribe Audio
+                                                </label>
+                                                <input id='settings-popout-accessibility-transcribeAudio'
+                                                    name='settings-input-popout-accessibility-transcribeAudio'
+                                                    type='checkbox'
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, 'transcribeAudio', 'values')}
+                                                    checked={this.props.values.transcribeAudio}/>
+                                            </section>
+                                        </section>
                                         {/* Display Settings */}
                                         <section className='section-group'>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
@@ -1384,6 +1422,80 @@ class WidgetSetting extends Component {
                                                         checked={this.props.values.showOnTop}/>
                                                 </section>
                                             </fieldset>
+                                        </section>
+                                        {/* Game Settings */}
+                                        <section className='section-group'>
+                                            <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
+                                                <b>Game</b>
+                                            </span>
+                                            {/* Health Display */}
+                                            <section>
+                                                <section className='element-ends'>
+                                                    <span className='font small'>
+                                                        Health Display
+                                                    </span>
+                                                    <button className='button-match inverse'
+                                                        aria-label='Random health display'
+                                                        onClick={() => this.randomOption({ what: 'health', options: optionsHealth })}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: 'global-class-name' }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id='settings-popout-game-select-health'
+                                                    className='select-match space-nicely space-top length-small'
+                                                    value={this.props.values.health}
+                                                    defaultValue={optionsHealth[0]['options'][0]}
+                                                    isDisabled={!this.state.settings}
+                                                    onChange={(event) => this.handleSelect(event, 'health')}
+                                                    options={optionsHealth}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
+                                            {/* Loot Display */}
+                                            <section>
+                                                <section className='element-ends'>
+                                                    <span className='font small'>
+                                                        Loot Display
+                                                    </span>
+                                                    <button className='button-match inverse'
+                                                        aria-label='Random loot display'
+                                                        onClick={() => this.randomOption({ what: 'loot', options: optionsLoot })}>
+                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: 'global-class-name' }}>
+                                                            <FaRandom/>
+                                                        </IconContext.Provider>
+                                                    </button>
+                                                </section>
+                                                <Select id='settings-popout-game-select-loot'
+                                                    className='select-match space-nicely space-top length-small'
+                                                    value={this.props.values.loot}
+                                                    defaultValue={optionsLoot[0]['options'][0]}
+                                                    isDisabled={!this.state.settings}
+                                                    onChange={(event) => this.handleSelect(event, 'loot')}
+                                                    options={optionsLoot}
+                                                    formatGroupLabel={this.props.formatGroupLabel}
+                                                    styles={this.props.selectStyleSmall}
+                                                    components={{
+                                                        MenuList: this.props.menuListScrollbar
+                                                    }}
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            ...this.props.selectTheme
+                                                        }
+                                                    })}/>
+                                            </section>
                                         </section>
                                         {/* Misc Settings */}
                                         <section className='section-group'>
@@ -1723,80 +1835,6 @@ class WidgetSetting extends Component {
                                                         checked={this.state.values.live2D}/>
                                                 </section>
                                             </fieldset>
-                                        </section>
-                                        {/* Game Settings */}
-                                        <section className='section-group'>
-                                            <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
-                                                <b>Game</b>
-                                            </span>
-                                            {/* Health Display */}
-                                            <section>
-                                                <section className='element-ends'>
-                                                    <span className='font small'>
-                                                        Health Display
-                                                    </span>
-                                                    <button className='button-match inverse'
-                                                        aria-label='Random health display'
-                                                        onClick={() => this.randomOption({ what: 'health', options: optionsHealth })}>
-                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: 'global-class-name' }}>
-                                                            <FaRandom/>
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </section>
-                                                <Select id='settings-popout-game-select-health'
-                                                    className='select-match space-nicely space-top length-small'
-                                                    value={this.props.values.health}
-                                                    defaultValue={optionsHealth[0]['options'][0]}
-                                                    isDisabled={!this.state.settings}
-                                                    onChange={(event) => this.handleSelect(event, 'health')}
-                                                    options={optionsHealth}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
-                                                    components={{
-                                                        MenuList: this.props.menuListScrollbar
-                                                    }}
-                                                    theme={(theme) => ({
-                                                        ...theme,
-                                                        colors: {
-                                                            ...theme.colors,
-                                                            ...this.props.selectTheme
-                                                        }
-                                                    })}/>
-                                            </section>
-                                            {/* Loot Display */}
-                                            <section>
-                                                <section className='element-ends'>
-                                                    <span className='font small'>
-                                                        Loot Display
-                                                    </span>
-                                                    <button className='button-match inverse'
-                                                        aria-label='Random loot display'
-                                                        onClick={() => this.randomOption({ what: 'loot', options: optionsLoot })}>
-                                                        <IconContext.Provider value={{ size: this.props.microIcon, className: 'global-class-name' }}>
-                                                            <FaRandom/>
-                                                        </IconContext.Provider>
-                                                    </button>
-                                                </section>
-                                                <Select id='settings-popout-game-select-loot'
-                                                    className='select-match space-nicely space-top length-small'
-                                                    value={this.props.values.loot}
-                                                    defaultValue={optionsLoot[0]['options'][0]}
-                                                    isDisabled={!this.state.settings}
-                                                    onChange={(event) => this.handleSelect(event, 'loot')}
-                                                    options={optionsLoot}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
-                                                    components={{
-                                                        MenuList: this.props.menuListScrollbar
-                                                    }}
-                                                    theme={(theme) => ({
-                                                        ...theme,
-                                                        colors: {
-                                                            ...theme.colors,
-                                                            ...this.props.selectTheme
-                                                        }
-                                                    })}/>
-                                            </section>
                                         </section>
                                     </section>
                                     {/* Scrollable Arrow */}

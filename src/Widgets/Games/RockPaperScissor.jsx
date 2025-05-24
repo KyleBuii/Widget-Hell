@@ -112,7 +112,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                 defaultProps.dragStop('rockpaperscissor');
                 defaultProps.updatePosition('rockpaperscissor', 'games', data.x, data.y);
             }}
-            cancel='button, img'
+            cancel='button, img, .simplebar-placeholder'
             bounds='parent'>
             <div id='rockpaperscissor-widget'
                 className='widget'>

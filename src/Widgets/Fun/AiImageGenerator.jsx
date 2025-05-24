@@ -77,6 +77,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                     ...prevState,
                     running: true
                 }));
+                
                 const randomNumber = Math.floor(Math.random() * 10000 + 1);
                 const result = await hf.textToImage({
                     inputs: `${state.prompt} ${randomNumber}`,
@@ -86,6 +87,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                     }
                 });
                 const imageURL = URL.createObjectURL(result);
+
                 const elementImage = document.createElement('img');
                 const elementImagesContainer = document.getElementById('aiimagegenerator-images');
                 elementImagesContainer.innerHTML = '';
@@ -97,10 +99,12 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                 elementImage.style.height = `${state.size}px`;
                 elementImage.style.width = `${state.size}px"`;
                 elementImagesContainer.appendChild(elementImage);
+
                 setState((prevState) => ({
                     ...prevState,
                     image: imageURL
                 }));
+
                 document.getElementById('aiimagegenerator-button-download').style.visibility = 'visible';
             } catch(err) {
                 console.error(err)
@@ -222,7 +226,8 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                             disabled={state.running}>{(state.running) ? 'Generating...' : 'Generate'}</button>
                         {/* Image */}
                         <div id='aiimagegenerator-images'
-                            className='aesthetic-scale scale-self'></div>
+                            className='aesthetic-scale scale-self'
+                            style={{ display: (state.image.length === 0) ? 'none' : 'block' }}></div>
                         {/* Download Button */}
                         <button id='aiimagegenerator-button-download'
                             className='button-match inverse disabled circular float bottom-right'

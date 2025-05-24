@@ -276,8 +276,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                     <section className='flex-center wrap row gap space-nicely space-bottom length-longer'>
                         <input id='pickerwheel-input'
                             className='input-match'
-                            onKeyDown={(event) => handleKeyDown(event.key)}
-                            />
+                            onKeyDown={(event) => handleKeyDown(event.key)}/>
                         <button className='button-match with-input'
                             onClick={() => handleClick('add')}
                             disabled={!state.finished}>Add</button>

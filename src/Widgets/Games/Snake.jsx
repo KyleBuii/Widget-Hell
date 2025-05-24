@@ -6,6 +6,7 @@ import { AiOutlineSetting } from 'react-icons/ai';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
+import { FiExternalLink } from 'react-icons/fi';
 import { TbMoneybag } from 'react-icons/tb';
 
 
@@ -803,11 +804,17 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>
-                            Created by
+                            Created by&nbsp;
                             <a className='font transparent-normal link-match'
                                 href='https://codepen.io/anh194/pen/LwVbew'
                                 target='_blank'
-                                rel='noreferrer'> anh</a>
+                                rel='noreferrer'
+                                aria-label="anh's Codepen (opens in a new tab)">
+                                anh
+                                <IconContext.Provider value={{ size: '0.8em', className: 'global-class-name' }}>
+                                    <FiExternalLink aria-hidden='true'/>
+                                </IconContext.Provider>
+                            </a>
                             &emsp;
                             Modified by Me
                         </span>

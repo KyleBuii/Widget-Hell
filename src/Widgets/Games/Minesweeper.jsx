@@ -32,7 +32,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
     useEffect(() => {
         let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
         let localStorageMinesweeper = dataLocalStorage['games']['minesweeper'];
-        /// Load data from local storage
+
         if (localStorageMinesweeper['mines'] !== undefined) {
             setState((prevState) => ({
                 ...prevState,
@@ -47,13 +47,18 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                 grid: createBoard()
             }));
         };
-        /// Set stats
+
         let calculateMaxHealth = calculateHealth();
         setState((prevState) => ({
             ...prevState,
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
+
+        if (window.dragscroll) {
+            window.dragscroll.reset();
+        };
+
         return () => {
             storeData();
             clearInterval(intervalTimer);

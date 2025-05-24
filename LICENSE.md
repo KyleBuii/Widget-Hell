@@ -41,6 +41,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Inventory Sound Effects](https://opengameart.org/content/inventory-sound-effects) by artisticdude
     - [Kenny Interface Sounds Pack](https://www.kenney.nl/assets/interface-sounds) by Kenny
     - [RPG Sound Pack](https://opengameart.org/content/rpg-sound-pack) by artisticdude
+    - [Loading Widget Image - Spining Fumo](https://tenor.com/view/touhou-fumo-reimu-hakurei-raymoo-spin-gif-18089589) by Tenor
 - **Picker Wheel**
     - [Template](https://github.com/Mridul2820/wheel-number-picker/tree/master) - by Mridul2820
     - **Audio**

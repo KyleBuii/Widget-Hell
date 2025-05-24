@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
+import { FiExternalLink } from "react-icons/fi";
 import { TbMoneybag } from 'react-icons/tb';
 import { VscDebugBreakpointLogUnverified } from 'react-icons/vsc';
 
@@ -140,7 +141,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                         {/* Board */}
                         <div id='twentyfortyeight-board'
                             onKeyDown={handleKeyDown}
-                            tabIndex={-1}>
+                            tabIndex={0}>
                             {/* Cells */}
                             {state.board.cells.map((row, rowIndex) => {
                                 return (
@@ -222,10 +223,17 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>
-                            Created by <a className='font transparent-normal link-match'
+                            Created by&nbsp;
+                            <a className='font transparent-normal link-match'
                                 href='https://github.com/monicatvera/2048/'
                                 target='_blank'
-                                rel='noreferrer'>Mónica Ilenia Tardón Vera</a>
+                                rel='noreferrer'
+                                aria-label="Mónica Ilenia Tardón Vera's Github (opens in a new tab)">
+                                Mónica Ilenia Tardón Vera
+                                <IconContext.Provider value={{ size: '0.8em', className: 'global-class-name' }}>
+                                    <FiExternalLink aria-hidden='true'/>
+                                </IconContext.Provider>
+                            </a>
                             &emsp;Modified by Me
                         </span>
                         : <></>}

@@ -128,6 +128,12 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             }));    
         };
     };
+    const handleColorKeyDown = (event) => {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            handleColorClick(event);
+        };
+    };
     const handlePressableButton = () => {
         const buttonSettings = document.getElementById('simongame-button-settings');
         const popoutSettings = document.getElementById('simongame-popout-settings');
@@ -290,16 +296,24 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                         className='grid col-auto box'>
                         <div id='simongame-color-1'
                             className='box'
-                            onClick={(event) => handleColorClick(event)}></div>
+                            onClick={(event) => handleColorClick(event)}
+                            onKeyDown={(event) => handleColorKeyDown(event)}
+                            tabIndex={0}></div>
                         <div id='simongame-color-2'
                             className='box'
-                            onClick={(event) => handleColorClick(event)}></div>
+                            onClick={(event) => handleColorClick(event)}
+                            onKeyDown={(event) => handleColorKeyDown(event)}
+                            tabIndex={0}></div>
                         <div id='simongame-color-3'
                             className='box'
-                            onClick={(event) => handleColorClick(event)}></div>
+                            onClick={(event) => handleColorClick(event)}
+                            onKeyDown={(event) => handleColorKeyDown(event)}
+                            tabIndex={0}></div>
                         <div id='simongame-color-4'
                             className='box'
-                            onClick={(event) => handleColorClick(event)}></div>
+                            onClick={(event) => handleColorClick(event)}
+                            onKeyDown={(event) => handleColorKeyDown(event)}
+                            tabIndex={0}></div>
                     </section>
                     {/* Counter and Light Indicator */}
                     <div id='simongame-counter-light'

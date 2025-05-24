@@ -47,10 +47,18 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
     const refPaddle = useRef(state.paddle);
     const refBricks = useRef(state.bricks);
     const refBall = useRef(state.ball);
-    const refHighscore = useRef(state.highscore); 
+    const refHighscore = useRef(state.highscore);
+    const refKeyPressed = useRef({
+        ArrowLeft: false,
+        ArrowRight: false,
+        a: false,
+        d: false,
+    });
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
-        /// Load widget's data from local storage
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let localStorageBreakout = dataLocalStorage['games']['breakout'];
@@ -61,6 +69,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                 }));
             };
         };
+
         let elementCanvas = document.getElementById('breakout-canvas');
         let startingBricks = [];
         let calculateMaxHealth = calculateHealth();
@@ -82,10 +91,16 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
+
         document.getElementById('breakout-overlay-gameover').style.visibility = 'visible';
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+
             storeData();
+
             clearInterval(intervalGame);
             clearInterval(intervalTimer);
         };
@@ -118,6 +133,37 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                 }
             }));
         };
+    };
+    const handleKeyDown = (event) => {
+        if (event.key.match(/ArrowLeft|ArrowRight|a|d/)) {
+            refKeyPressed.current[event.key] = true;
+        };
+    };
+    const handleKeyUp = (event) => {
+        if (event.key.match(/ArrowLeft|ArrowRight|a|d/)) {
+            refKeyPressed.current[event.key] = false;
+        };
+    };
+    const keyboardMovePaddle = () => {
+        let elementCanvas = document.getElementById('breakout-canvas');
+        let newX = refPaddle.current.x;
+
+        if (refKeyPressed.current.ArrowLeft || refKeyPressed.current.a) {
+            newX -= 7;
+        };
+        if (refKeyPressed.current.ArrowRight || refKeyPressed.current.d) {
+            newX += 7;
+        };
+
+        newX = Math.max(0, Math.min(elementCanvas.width - refPaddle.current.width, newX));
+
+        setState(prev => ({
+            ...prev,
+            paddle: {
+                ...prev.paddle,
+                x: newX
+            }
+        }));
     };
     const drawPaddle = () => {
         let elementCanvas = document.getElementById('breakout-canvas');
@@ -305,6 +351,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         document.getElementById('breakout-overlay-gameover').style.visibility = 'hidden';
     };
     const playing = () => {
+        keyboardMovePaddle();
         drawPaddle();
         drawBall();
         drawBricks();

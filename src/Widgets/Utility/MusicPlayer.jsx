@@ -69,7 +69,7 @@ class WidgetMusicPlayer extends Component {
             songIndex: 0,
             autoplay: false,
             url: null,
-            playerDisplay: 'none',
+            playerVisibility: 'hidden',
             seeking: false,
             shuffle: false,
             ready: false,
@@ -139,31 +139,40 @@ class WidgetMusicPlayer extends Component {
             this.animationInputAdd();
         };
     };
-    handleInputSubmit(link, key = 'Enter') {
-        if ((key === 'Enter')
-            && (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(link))) {
-            if (/playlist/.test(link)) {
-                let playlistID = link.match(/(?:list=)(.*)/);
-                this.fetchYoutubePlaylist(playlistID[1]);
-            } else {
-                /// Remove queries
-                let cleanedUrl = (link).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
-                this.setState({
-                    urls: [...this.state.urls, {
-                        url: (cleanedUrl) ? cleanedUrl[0] : link
-                    }]
-                }, () => {
-                    if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
-                    this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
-                    document.getElementById('musicplayer-input-add').value = '';        
-                    this.animationInputAdd();
-                    unplayedSongsIndex.push(unplayedSongsMaxIndex);
-                    unplayedSongsMaxIndex++;
-                    activePlaylistItem?.classList.remove('musicplayer-playlist-active');
-                    const elementPlaylist = this.refPlaylist.getContentElement();
-                    elementPlaylist.lastElementChild.classList.add('musicplayer-playlist-active');        
-                });
-            };    
+    handleInputSubmit(link, key) {
+        switch (key) {
+            case 'Enter':
+                if (/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be)/.test(link)) {
+                    if (/playlist/.test(link)) {
+                        let playlistID = link.match(/(?:list=)(.*)/);
+                        this.fetchYoutubePlaylist(playlistID[1]);
+                    } else {
+                        let cleanedUrl = (link).match(/(?:https:\/\/)?(?:www\.)?(youtu(be)?|soundcloud)\.(com|be).+?(?=[&]|\?[^v])/);
+                        this.setState({
+                            urls: [...this.state.urls, {
+                                url: (cleanedUrl) ? cleanedUrl[0] : link
+                            }]
+                        }, () => {
+                            if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+
+                            this.loadMusic([...this.state.music, ...this.state.urls].length - 1);
+                            document.getElementById('musicplayer-input-add').value = '';        
+                            this.animationInputAdd();
+
+                            unplayedSongsIndex.push(unplayedSongsMaxIndex);
+                            unplayedSongsMaxIndex++;
+
+                            activePlaylistItem?.classList.remove('musicplayer-playlist-active');
+                            const elementPlaylist = this.refPlaylist.getContentElement();
+                            elementPlaylist.lastElementChild.classList.add('musicplayer-playlist-active');        
+                        });
+                    };
+                };
+                break;
+            case 'Escape':
+                this.handleBlur();
+                break;
+            default: break;
         };
     };
     handleButton(type) {
@@ -439,6 +448,19 @@ class WidgetMusicPlayer extends Component {
         activePlaylistItem = element.target;
         element.target.classList.add('musicplayer-playlist-active');
     };
+    playlistHandleKeyDown(index, event) {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            this.handlePlaylist(index, event);
+        };
+    };
+    handlePlayerReady() {
+        const player = document.getElementById('musicplayer-player');
+        const iframe = player?.querySelector('iframe');
+        if (iframe) {
+            iframe.setAttribute('tabindex', '-1');
+        };
+    };
     handleBlur() {
         document.getElementById('musicplayer-input-add')
             .classList.remove('musicplayer-animation-input-add');
@@ -478,7 +500,7 @@ class WidgetMusicPlayer extends Component {
             songIndex: 0,
             autoplay: false,
             url: null,
-            playerDisplay: 'none'
+            playerVisibility: 'hidden'
         });
     };
     discSwitch() {
@@ -501,6 +523,12 @@ class WidgetMusicPlayer extends Component {
             elementPlayer.classList.remove('musicplayer-player-medium');
         };
     };
+    discHandleKeyDown(event) {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            this.discSwitch();
+        };
+    };
     animationInputAdd() {
         let elementDetails = document.getElementById('musicplayer-details');
         elementDetails.classList.add('musicplayer-animation-add-details');
@@ -515,7 +543,7 @@ class WidgetMusicPlayer extends Component {
                 playing: !this.state.playing,
                 autoplay: !this.state.autoplay
             }, () => {
-                if (this.state.playerDisplay === 'none') {
+                if (this.state.playerVisibility === 'hidden') {
                     if (this.state.playing) {
                         audio.play();
                         window.requestAnimationFrame(() => {
@@ -614,7 +642,7 @@ class WidgetMusicPlayer extends Component {
                 progress: 0,    
                 songIndex: musicIndex,
                 url: randomMusic.url,
-                playerDisplay: 'block'
+                playerVisibility: 'visible'
             });
             audio.pause();
             document.getElementById('musicplayer-disc').style.animation = 'none';
@@ -623,7 +651,7 @@ class WidgetMusicPlayer extends Component {
                 name: randomMusic.name,
                 artist: randomMusic.artist,
                 songIndex: musicIndex,
-                playerDisplay: 'none'
+                playerVisibility: 'hidden'
             });
             /// Audio
             audio.src = randomMusic.song;
@@ -770,20 +798,22 @@ class WidgetMusicPlayer extends Component {
                                 {/* Song Disc */}
                                 <div id='musicplayer-disc'
                                     className='circle no-highlight'
-                                    onClick={() => this.discSwitch()}>
+                                    onClick={() => this.discSwitch()}
+                                    onKeyDown={(event) => this.discHandleKeyDown(event)}
+                                    tabIndex={0}>
                                     <ReactPlayer id='musicplayer-player'
                                         ref={this.ref}
                                         url={this.state.url}
-                                        playing={this.state.playing && this.state.playerDisplay === 'block'}
+                                        playing={this.state.playing && this.state.playerVisibility === 'visible'}
                                         loop={this.state.loop}
                                         height={'21em'}
                                         width={'21em'}
                                         onDuration={(event) => this.setMaxDuration(event)}
                                         onProgress={(event) => this.updateDuration(event)}
                                         onEnded={this.ended}
-                                        onReady={() => {}}
+                                        onReady={() => this.handlePlayerReady()}
                                         style={{
-                                            display: this.state.playerDisplay
+                                            visibility: this.state.playerVisibility
                                         }}
                                         config={{
                                             youtube: {
@@ -896,10 +926,12 @@ class WidgetMusicPlayer extends Component {
                                     <button id='musicplayer-button-add'
                                         className='button-match'
                                         onClick={() => this.handleButton('input-add')}
-                                        onMouseDown={(event) => event.preventDefault()}>Add</button>
+                                        onMouseDown={(event) => event.preventDefault()}
+                                        tabIndex={-1}>Add</button>
                                 </div>
                                 {/* Song Expanded Controls */}
-                                <div id='musicplayer-controls-expanded'>
+                                <div id='musicplayer-controls-expanded'
+                                    tabIndex={0}>
                                     <button id='musicplayer-button-loop'
                                         className='button-match inverse disabled'
                                         aria-label='Loop'
@@ -936,11 +968,14 @@ class WidgetMusicPlayer extends Component {
                             </section>
                             <span id='musicplayer-playlist-length'>{this.state.urls.length}</span>
                             <SimpleBar id='musicplayer-playlist'
-                                ref={(ref) => this.refPlaylist = ref}>
+                                ref={(ref) => this.refPlaylist = ref}
+                                tabIndex={-1}>
                                 {this.state.urls.map((url, index) => {
                                     return <section className='flex-center column align-items-left box no-highlight'
+                                        key={`playlist-item-${index}`}
                                         onClick={(event) => this.handlePlaylist(index, event)}
-                                        key={`playlist-item-${index}`}>
+                                        onKeyDown={(event) => this.playlistHandleKeyDown(index, event)}
+                                        tabIndex={0}>
                                         <span>{url.name}</span>
                                         <span className='font transparent-normal'>{url.artist}</span>
                                     </section>

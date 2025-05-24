@@ -14,9 +14,9 @@ const regexItemsLeftAndRight = /bracelet|wrist|glove|ring|hidden|boot/;
 const audioItemOpen = new Audio('/resources/audio/switch_006.wav');
 const audioItemClose = new Audio('/resources/audio/switch_007.wav');
 const audioPageClick = new Audio('/resources/audio/magnet_on_reduced.wav');
-const audioItemEquip = new Audio('/resources/audio/cloth-inventory.wav');
+const audioItemEquip = new Audio('/resources/audio/cloth_inventory.wav');
 const audioItemEquipJewelry = new Audio('/resources/audio/ring_inventory.wav');
-const audioItemEquipConsumable = new Audio('/resources/audio/bite-small.wav');
+const audioItemEquipConsumable = new Audio('/resources/audio/bite_small.wav');
 
 class WidgetInventory extends Component {
     constructor(props) {
@@ -316,7 +316,8 @@ class WidgetInventory extends Component {
                                     loading='lazy'
                                     decoding='async'/>
                                 <SimpleBar style={{ maxHeight: 80, width: 150 }}>
-                                    <table className='flex-center column font small'>
+                                    <table className='flex-center column font small'
+                                        aria-label='Item stats'>
                                         <tbody>
                                             <tr>
                                                 <td scope='row'>Rarity:</td>

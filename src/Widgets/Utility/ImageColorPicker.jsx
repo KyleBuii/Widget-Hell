@@ -98,6 +98,12 @@ class WidgetImageColorPicker extends Component {
             default: { break; };
         };
     };
+    handleFileKeyDown(event) {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            document.getElementById('imagecolorpicker-uploaded-file').click();
+        };
+    };
     renderColorPicker({ onClick }) {
         return <button id='imagecolorpicker-eye-dropper-button'
             onClick={onClick}></button>
@@ -133,7 +139,9 @@ class WidgetImageColorPicker extends Component {
                                 <input id='imagecolorpicker-uploaded-file'
                                     type='file'
                                     onChange={() => this.getImage('uploaded')}/>
-                                <label htmlFor='imagecolorpicker-uploaded-file'>Use your image</label>
+                                <label htmlFor='imagecolorpicker-uploaded-file'
+                                    onKeyDown={(event) => this.handleFileKeyDown(event)}
+                                    tabIndex={0}>Use your image</label>
                             </div>
                             {/* <input className='input-match fill-width'
                                 type='text'

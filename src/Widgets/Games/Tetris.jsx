@@ -2,6 +2,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
+import { FiExternalLink } from 'react-icons/fi';
 import { TbMoneybag } from 'react-icons/tb';
 
 
@@ -204,7 +205,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 						height={800}
 						width={600}
 						onKeyDown={(event) => handleKeyDown(event)}
-						tabIndex={-1}></canvas>
+						tabIndex={0}></canvas>
 					{isMobile && <section className='game-controls'>
                         <section className='d-pad'>
                             <button className='up'
@@ -233,10 +234,17 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 					{/* Author */}
 					{(defaultProps.values.authorNames)
 						? <span className='font smaller transparent-normal author-name'>
-							Created by <a className='font transparent-normal link-match'
+							Created by&nbsp;
+							<a className='font transparent-normal link-match'
 								href='https://codepen.io/REast/pen/bGMyqP'
 								target='_blank'
-								rel='noreferrer'>Rich East</a>
+								rel='noreferrer'
+                                aria-label="Rich East's Codepen (opens in a new tab)">
+								Rich East
+								<IconContext.Provider value={{ size: '0.8em', className: 'global-class-name' }}>
+									<FiExternalLink aria-hidden='true'/>
+								</IconContext.Provider>
+							</a>
 							&emsp;Modified by Me
 						</span>
 						: <></>}

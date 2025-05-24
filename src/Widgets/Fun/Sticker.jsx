@@ -40,6 +40,12 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             reader.fileName = elementInput.files[0].name;
         };
     };
+    const handleFileKeyDown = (event) => {
+        if (event.code.match(/Space|Enter/)) {
+            event.preventDefault();
+            document.getElementById('sticker-file').click();
+        };
+    };
     const handlePosition = (childIndex, coordinate, event) => {
         const elementWidgetContainer = document.getElementById('widget-container');
         let maxSize = elementWidgetContainer.getBoundingClientRect();
@@ -138,12 +144,14 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                     <section className='flex-center column gap small-gap'>
                         {/* File Upload Button */}
                         <div className='file-input-match fill-width'>
-                            <label htmlFor='sticker-file'>Upload image</label>
                             <input id='sticker-file'
                                 type='file'
                                 name='sticker-file'
                                 onChange={handleFile}
                                 onClick={(event) => {event.target.value = null}}/>
+                            <label htmlFor='sticker-file'
+                                onKeyDown={(event) => handleFileKeyDown(event)}
+                                tabIndex={0}>Upload image</label>
                         </div>
                         {/* Stickers */}
                         <div id='sticker-stickers'
