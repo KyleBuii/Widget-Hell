@@ -44,7 +44,7 @@ let velocityX = 0;
 let velocityY = 0;
 
 
-export class Game extends Scene {
+export class GameScreen extends Scene {
     constructor() {
         super('Game');
         this.player = null;
@@ -52,7 +52,7 @@ export class Game extends Scene {
         this.debuffs = [];
     };
     create() {
-        if ("maxTouchPoints" in navigator) {
+        if ('maxTouchPoints' in navigator) {
             isMobile = navigator.maxTouchPoints > 0;
         };
         this.createMenu();
@@ -608,7 +608,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.keyDown = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
             this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
             this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-            this.keyAbilitySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);    
+            this.keyAbilitySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);   
             if (isMobile) {
                 this.scene.input.on('pointerdown', (pointer) => {
                     if (this.active && (this.x !== pointer.x || this.y !== pointer.y)) {

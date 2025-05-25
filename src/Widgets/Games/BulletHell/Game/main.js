@@ -1,19 +1,19 @@
-import Phaser from 'phaser';
+import { CANVAS, Game, Scale } from 'phaser';
 import { Boot } from './scenes/Boot';
-import { Game } from './scenes/Game';
+import { GameScreen } from './scenes/GameScreen';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 
 
 const config = {
-    type: Phaser.CANVAS,
+    type: CANVAS,
     width: 600,
     height: 850,
     parent: 'bullethell-game',
     backgroundColor: '#016EC6',
     scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Scale.FIT,
+        autoCenter: Scale.CENTER_BOTH
     },
     physics: {
         default: 'arcade',
@@ -34,12 +34,12 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
-        Game
+        GameScreen,
     ]
 };
 
 const StartGame = (parent) => {
-    return new Phaser.Game({ ...config, parent });
+    return new Game({ ...config, parent });
 };
 
 export default StartGame;

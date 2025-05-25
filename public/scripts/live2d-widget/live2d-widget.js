@@ -1,7 +1,7 @@
 /// Made by 张书樵 (Zhang Shuqi) https://github.com/stevenjoezhang/live2d-widget
 
 /// live2d_path 参数建议使用绝对路径
-const live2d_path = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/';
+const live2d_path = 'https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@0.9.0/';
 
 /// 封装异步加载资源的方法
 function loadExternalResource(url, type) {

@@ -8,7 +8,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
     const game = useRef();
     useLayoutEffect(() => {
         if(game.current === undefined){
-            game.current = StartGame("bullethell-game");
+            game.current = StartGame('bullethell-game');
             if(ref !== null){
                 ref.current = {
                     game: game.current,
@@ -35,7 +35,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
         };
     }, [currentActiveScene, ref]);
     return(
-        <div id="bullethell-game"></div>
+        <div id='bullethell-game'></div>
     );
 });
 

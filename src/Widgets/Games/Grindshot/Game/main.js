@@ -1,14 +1,14 @@
-import Phaser from 'phaser';
+import { AUTO, Game } from 'phaser';
 import { Boot } from './scenes/Boot';
-import { Game } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
+import { GameScreen } from './scenes/GameScreen';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 
 
 /// The main game entry point. This contains the game configuration and start the game.
 const config = {
-    type: Phaser.AUTO,
+    type: AUTO,
     width: 900,
     height: 650,
     parent: 'grindshot-game',
@@ -31,13 +31,13 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
-        Game,
+        GameScreen,
         GameOver
     ]
 };
 
 const StartGame = (parent) => {
-    return new Phaser.Game({ ...config, parent });
+    return new Game({ ...config, parent });
 };
 
 export default StartGame;

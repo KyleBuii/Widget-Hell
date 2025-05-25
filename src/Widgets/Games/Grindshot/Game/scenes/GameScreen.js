@@ -47,7 +47,7 @@ const enemies = {
 };
 
 
-export class Game extends Scene{
+export class GameScreen extends Scene{
     constructor(){
         super('Game');
         this.player = null;

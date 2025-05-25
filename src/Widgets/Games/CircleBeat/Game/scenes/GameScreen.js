@@ -35,7 +35,7 @@ const noteScores = {
 let bpm, time, score, index, name, author;
 let noteCount = { perfect: 0, good: 0, fine: 0, bad: 0, miss: 0, };
 
-export class Game extends Scene {
+export class GameScreen extends Scene {
     constructor() {
         super('Game');
         this.gameStarted = false;

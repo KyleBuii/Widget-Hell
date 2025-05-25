@@ -1,22 +1,22 @@
-import Phaser from 'phaser';
+import { CANVAS, Game, Scale } from 'phaser';
 import CircleMaskImagePlugin from 'phaser3-rex-plugins/plugins/circlemaskimage-plugin.js';
 import { Boot } from './scenes/Boot';
-import { Game } from './scenes/Game';
+import { GameScreen } from './scenes/GameScreen';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
-import { SongSelect } from './scenes/SongSelect';
 import { Score } from './scenes/Score';
+import { SongSelect } from './scenes/SongSelect';
 
 
 const config = {
-    type: Phaser.CANVAS,
+    type: CANVAS,
     width: 600,
     height: 850,
     parent: 'circlebeat-game',
     transparent: true,
     scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Scale.FIT,
+        autoCenter: Scale.CENTER_BOTH
     },
     plugins: {
         global: [
@@ -47,13 +47,13 @@ const config = {
         Preloader,
         MainMenu,
         SongSelect,
-        Game,
+        GameScreen,
         Score,
     ]
 };
 
 const StartGame = (parent) => {
-    return new Phaser.Game({ ...config, parent });
+    return new Game({ ...config, parent });
 };
 
 export default StartGame;

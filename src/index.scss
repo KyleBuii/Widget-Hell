@@ -4654,10 +4654,6 @@ input[type='checkbox'], input[type='radio']{
     left: 2px;
     right: 2px;
 }
-
-.simplebar-placeholder{
-    display: none;
-}
 //#endregion
 
 //#region Live2D widget
@@ -5588,6 +5584,9 @@ input[type='checkbox'], input[type='radio']{
             visibility: visible;
             top: 8.2em;
         }
+    }
+    .simplebar-placeholder{
+        display: none;
     }
 }
 
