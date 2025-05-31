@@ -46,7 +46,7 @@ class WidgetURLShortner extends Component{
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar("urlshortner", "utility")}
-                        <section className="flex-center column gap small-gap">
+                        <div className="flex-center column gap small-gap">
                             <input className="input-match"
                                 type="text"
                                 name="urlshortner-input"
@@ -60,7 +60,7 @@ class WidgetURLShortner extends Component{
                                 type="text"
                                 readOnly
                                 placeholder="Shorten URL"/>
-                        </section>
+                        </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className="font smaller transparent-normal author-name">Created by Me</span>

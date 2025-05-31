@@ -114,8 +114,11 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
             }}
             cancel='button, img, .simplebar-placeholder'
             bounds='parent'>
-            <div id='rockpaperscissor-widget'
-                className='widget'>
+            <section id='rockpaperscissor-widget'
+                className='widget'
+                aria-labelledby='rockpaperscissor-widget-heading'>
+                <h2 id='rockpaperscissor-widget-heading'
+                    className='screen-reader-only'>Rock Paper Scissor Widget</h2>
                 <div id='rockpaperscissor-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -127,7 +130,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                     </span>
                     {defaultProps.renderHotbar('rockpaperscissor', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Gold Earned */}
                         <span className='text-animation flex-center row'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
@@ -150,9 +153,9 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Choice */}
-                    <section id='rockpaperscissor-choice'
+                    <div id='rockpaperscissor-choice'
                         className='font bold element-ends'>
                         <div className='flex-center column gap'>
                             <img id='rockpaperscissor-choice-player'
@@ -187,9 +190,11 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                                 decoding='async'/>
                             <span>{state.choiceComputer.replace(/^./, (char) => char.toUpperCase())}</span>
                         </div>
-                    </section>
+                    </div>
                     {/* Choices */}
-                    <SimpleBar style={{ maxHeight: '10em' }}>
+                    <SimpleBar style={{ maxHeight: '10em' }}
+                        role='region'
+                        aria-label='Rock Paper Scissors Choices'>
                         <div id='rockpaperscissor-container-choices'>
                             {Object.keys(rps).map((choice) => {
                                 return <button className='button-match inverse'
@@ -218,7 +223,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

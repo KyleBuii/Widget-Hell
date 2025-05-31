@@ -129,8 +129,11 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             }}
             cancel='label, input, button, span'
             bounds='parent'>
-            <div id='sticker-widget'
-                className='widget'>
+            <section id='sticker-widget'
+                className='widget'
+                aria-labelledby='sticker-widget-heading'>
+                <h2 id='sticker-widget-heading'
+                    className='screen-reader-only'>Sticker Widget</h2>
                 <div id='sticker-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -141,7 +144,7 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                         </IconContext.Provider>
                     </span>
                     {defaultProps.renderHotbar('sticker', 'fun')}
-                    <section className='flex-center column gap small-gap'>
+                    <div className='flex-center column gap small-gap'>
                         {/* File Upload Button */}
                         <div className='file-input-match fill-width'>
                             <input id='sticker-file'
@@ -156,13 +159,13 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                         {/* Stickers */}
                         <div id='sticker-stickers'
                             className='font'></div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

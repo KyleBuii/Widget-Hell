@@ -307,8 +307,11 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             }}
             cancel='span, button, input, label, .select-match, #trivia-reset'
             bounds='parent'>
-            <div id='trivia-widget'
-                className='widget'>
+            <section id='trivia-widget'
+                className='widget'
+                aria-labelledby='trivia-widget-heading'>
+                <h2 id='trivia-widget-heading'
+                    className='screen-reader-only'>Trivia Widget</h2>
                 <div id='trivia-widget-animation'
                     className='widget-animation'>
                     {/* Author */}
@@ -324,7 +327,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                     </span>
                     {defaultProps.renderHotbar('trivia', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Question Number */}
                         <span className='text-animation flex-center row gap'>
                             <IconContext.Provider value={{ size: '0.75em', className: 'global-class-name' }}>
@@ -354,9 +357,9 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Customize Trivia Overlay */}
-                    <section id='trivia-overlay-customize'
+                    <div id='trivia-overlay-customize'
                         className='overlay rounded'>
                         <div className='aesthetic-scale scale-span font flex-center column gap small-gap only-justify-content fill-width'>
                             <label htmlFor='trivia-input-number-of-questions'
@@ -426,9 +429,9 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                         <button className='button-match fill-width space-nicely space-top not-bottom'
                             onClick={() => fetchTrivia()}
                             disabled={state.running}>Start Trivia</button>
-                    </section>
+                    </div>
                     {/* Question and Choices */}
-                    <section id='trivia-questions'
+                    <div id='trivia-questions'
                         className='aesthetic-scale scale-span flex-center column gap large-gap'>
                         {/* Question */}
                         <div className='flex-center column gap small-gap font space-nicely space-top not-bottom'>
@@ -465,18 +468,18 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                                 Click<div tabIndex={0}> here </div>to reset
                             </div>
                             : <></>}
-                    </section>
+                    </div>
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none') 
-                        ? <section id='trivia-health'
+                        ? <div id='trivia-health'
                             className='flex-center space-nicely space-top not-bottom'>
                             {gameProps.renderHearts(state.health).map((heart) => {
                                 return heart;
                             })}
-                        </section>
+                        </div>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

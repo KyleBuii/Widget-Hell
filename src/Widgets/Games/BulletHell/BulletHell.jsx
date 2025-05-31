@@ -41,8 +41,11 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
             }}
             cancel='button, #bullethell-game'
             bounds='parent'>
-            <div id='bullethell-widget'
-                className='widget'>
+            <section id='bullethell-widget'
+                className='widget'
+                aria-labelledby='bullethell-widget-heading'>
+                <h2 id='bullethell-widget-heading'
+                    className='screen-reader-only'>Bullet Hell Widget</h2>
                 <div id='bullethell-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -60,7 +63,7 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

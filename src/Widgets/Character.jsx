@@ -87,8 +87,11 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
             }}
             cancel='button'
             bounds='parent'>
-            <div id='character-widget'
-                className='widget'>
+            <section id='character-widget'
+                className='widget'
+                aria-labelledby='character-widget-heading'>
+                <h2 id='character-widget-heading'
+                    className='screen-reader-only'>Character Widget</h2>
                 <div id='character-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -100,7 +103,7 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
                     </span>
                     {defaultProps.renderHotbar('character', 'utility')}
                     {/* Character */}
-                    <section id='character-container'>
+                    <div id='character-container'>
                         <img id='character-image'
                             className='no-highlight'
                             src={'/resources/character/character-default.webp'}
@@ -157,13 +160,13 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
                         <div id='character-consumable4'></div>
                         <div id='character-consumable5'></div>
                         <div id='character-consumable6'></div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

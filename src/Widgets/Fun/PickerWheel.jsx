@@ -260,8 +260,11 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             }}
             cancel='button, span, input'
             bounds='parent'>
-            <div id='pickerwheel-widget'
-                className='widget'>
+            <section id='pickerwheel-widget'
+                className='widget'
+                aria-labelledby='pickerwheel-widget-heading'>
+                <h2 id='pickerwheel-widget-heading'
+                    className='screen-reader-only'>Picker Wheel Widget</h2>
                 <div id='pickerwheel-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -273,10 +276,16 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                     </span>
                     {defaultProps.renderHotbar('pickerwheel', 'fun')}
                     {/* Input */}
-                    <section className='flex-center wrap row gap space-nicely space-bottom length-longer'>
+                    <div className='flex-center wrap row gap space-nicely space-bottom length-longer'>
                         <input id='pickerwheel-input'
                             className='input-match'
+                            placeholder='Type a choice here'
+                            aria-describedby='pickerwheel-input-aria-describedby'
                             onKeyDown={(event) => handleKeyDown(event.key)}/>
+                        <span id='pickerwheel-input-aria-describedby'
+                            className='screen-reader-only'>
+                            Type a choice here.
+                        </span>
                         <button className='button-match with-input'
                             onClick={() => handleClick('add')}
                             disabled={!state.finished}>Add</button>
@@ -286,7 +295,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                         <button className='button-match with-input'
                             onClick={() => handleClick('removeAll')}
                             disabled={!state.finished}>Remove All</button>
-                    </section>
+                    </div>
                     {/* Wheel */}
                     <canvas id='pickerwheel-canvas-wheel'
                         width={'600'}
@@ -296,17 +305,17 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                         aria-label='Invisible spin'
                         onClick={spin}></button>
                     {/* Winner Overlay */}
-                    <section id='pickerwheel-overlay-winner'
+                    <div id='pickerwheel-overlay-winner'
                         className='overlay rounded flex-center'>
                         <span className='text-animation aesthetic-scale scale-self font largerer bold break-word'
                            onClick={handleOverlay}>{state.winner}</span>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

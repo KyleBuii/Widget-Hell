@@ -93,8 +93,11 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
             }}
             cancel='span, button, .cell, .overlay'
             bounds='parent'>
-            <div id='twentyfortyeight-widget'
-                className='widget'>
+            <section id='twentyfortyeight-widget'
+                className='widget'
+                aria-labelledby='twentyfortyeight-widget-heading'>
+                <h2 id='twentyfortyeight-widget-heading'
+                    className='screen-reader-only'>Twenty Fortyeight Widget</h2>
                 <div id='twentyfortyeight-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -106,7 +109,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                     </span>
                     {defaultProps.renderHotbar('twentyfortyeight', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Score */}
                         <span className='text-animation flex-center row gap'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: 'green', className: 'global-class-name' }}>
@@ -136,8 +139,8 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
-                    <section className='flex-center column gap'>
+                    </div>
+                    <div className='flex-center column gap'>
                         {/* Board */}
                         <div id='twentyfortyeight-board'
                             onKeyDown={handleKeyDown}
@@ -183,9 +186,9 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                         {/* Reset Button */}
                         <button className='button-match fill-width'
                             onClick={() => resetGame()}>Reset Game</button>
-                    </section>
-                    {isMobile && <section className='game-controls'>
-                        <section className='d-pad'>
+                    </div>
+                    {isMobile && <div className='game-controls'>
+                        <div className='d-pad'>
                             <button className='up'
                                 aria-label='D-pad up'
                                 onClick={() => handleKeyDown({ keyCode: 87 })}></button>
@@ -198,8 +201,8 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                             <button className='left'
                                 aria-label='D-pad left'
                                 onClick={() => handleKeyDown({ keyCode: 65 })}></button>
-                        </section>
-                    </section>}
+                        </div>
+                    </div>}
                     {/* Gameover Overlay */}
                     <div id='twentyfortyeight-overlay-gameover'
                         className='overlay rounded flex-center'
@@ -238,7 +241,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
                         </span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

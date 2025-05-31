@@ -315,10 +315,13 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                 defaultProps.dragStop('pokemonsearch');
                 defaultProps.updatePosition('pokemonsearch', 'fun', data.x, data.y);
             }}
-            cancel='input, button, .card, .popout'
+            cancel='input, button, table, .card, .popout'
             bounds='parent'>
-            <div id='pokemonsearch-widget'
-                className='widget'>
+            <section id='pokemonsearch-widget'
+                className='widget'
+                aria-labelledby='pokemonsearch-widget-heading'>
+                <h2 id='pokemonsearch-widget-heading'
+                    className='screen-reader-only'>Pokemon Search Widget</h2>
                 <div id='pokemonsearch-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -332,7 +335,9 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                     {/* Pokemon Search */}
                     <div className='flex-center column gap space-nicely space-bottom length-longer'>
                         <label className='aesthetic-scale scale-self font medium bold'
-                            htmlFor='pokemonsearch-input-search'>Search for Pokémon Name or ID:</label>
+                            htmlFor='pokemonsearch-input-search'>
+                            Search for Pokémon Name or ID:
+                        </label>
                         <div className='flex-center row gap wrap'>
                             <div className='input-with-button-inside'>
                                 {/* Search Field */}
@@ -340,10 +345,15 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                     className='input-match'
                                     type='text'
                                     name='pokemonsearch-input-search'
+                                    aria-describedby='pokemonsearch-input-search-aria-describedby'
                                     onChange={(e) => setState((prevState) => ({
                                         ...prevState,
                                         input: e.target.value.toLowerCase()
                                     }))}/>
+                                <span id='pokemonsearch-input-search-aria-describedby'
+                                    className='screen-reader-only'>
+                                    Type a Pokémon name or ID here.
+                                </span>
                                 {/* Random Button */}
                                 <button className='button-match inverse'
                                     aria-label='Random pokemon'
@@ -476,18 +486,18 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                         }}
                         onStop={(event, data) => defaultProps.updatePosition('pokemonsearch', 'fun', data.x, data.y, 'popout', 'settings')}
                         bounds={defaultProps.calculateBounds('pokemonsearch-widget', 'pokemonsearch-popout-setting')}>
-                        <section id='pokemonsearch-popout-setting'
+                        <div id='pokemonsearch-popout-setting'
                             className='popout'>
-                            <section id='pokemonsearch-popout-animation-setting'
+                            <div id='pokemonsearch-popout-animation-setting'
                                 className='popout-animation'>
-                                <section className='grid space-nicely space-all length-long font medium'>
+                                <div className='grid space-nicely space-all length-long font medium'>
                                     <button id='pokemonsearch-popout-setting-button-shiny'
                                         className='button-match option opt-long disabled-option'
                                         onClick={() => handleButtonPressable('shiny')}>Shiny</button>
                                     <button id='pokemonsearch-popout-setting-button-flipped'
                                         className='button-match option opt-long disabled-option'
                                         onClick={() => handleButtonPressable('flipped')}>Flipped</button>
-                                    <section className='flex-center row gap'>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-amazingRare'
                                                 type='radio'
@@ -504,8 +514,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-cosmosHolo'>Cosmos Holo</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-radiantHolo'
                                                 type='radio'
@@ -522,8 +532,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-rainbowAlt'>Rainbow Alt</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-rainbowHolo'
                                                 type='radio'
@@ -540,8 +550,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-regularHolo'>Regular Holo</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-reverseHolo'
                                                 type='radio'
@@ -558,8 +568,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-secretRare'>Secret Rare</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-shinyRare'
                                                 type='radio'
@@ -576,8 +586,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-shinyV'>Shiny V</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-shinyVmax'
                                                 type='radio'
@@ -594,8 +604,8 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-vmax'>VMAX</label>
                                         </div>
-                                    </section>
-                                    <section className='flex-center row gap'>
+                                    </div>
+                                    <div className='flex-center row gap'>
                                         <div className='radio-match'>
                                             <input id='pokemonsearch-popout-setting-button-v'
                                                 type='radio'
@@ -612,17 +622,17 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                                                 onClick={(event) => handleRadioPressable(event)}/>
                                             <label htmlFor='pokemonsearch-popout-setting-button-vstar'>VSTAR</label>
                                         </div>
-                                    </section>
-                                </section>
-                            </section>
-                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

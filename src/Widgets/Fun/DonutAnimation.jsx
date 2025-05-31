@@ -102,8 +102,11 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
             }}
             cancel='button, span, .slider'
             bounds='parent'>
-            <div id='donutanimation-widget'
-                className='widget'>
+            <section id='donutanimation-widget'
+                className='widget'
+                aria-labelledby='donutanimation-widget-heading'>
+                <h2 id='donutanimation-widget-heading'
+                    className='screen-reader-only'>Donut Animation Widget</h2>
                 <div id='donutanimation-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -115,7 +118,7 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                     </span>
                     {defaultProps.renderHotbar('donutanimation', 'fun')}
                     {/* Donut Container */}
-                    <section className='flex-center column gap large-gap'>
+                    <div className='flex-center column gap large-gap'>
                         {/* Donut */}
                         <pre id='donutanimation-donut'
                             className='text-animation no-highlight'></pre>
@@ -254,13 +257,13 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 }}
                                 defaultValue={0.03}/>
                         </div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

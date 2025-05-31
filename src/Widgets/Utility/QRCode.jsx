@@ -49,8 +49,11 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
             }}
             cancel='input, .select-match, button, #qrcode'
             bounds='parent'>
-            <div id='qrcode-widget'
-                className='widget'>
+            <section id='qrcode-widget'
+                className='widget'
+                aria-labelledby='qrcode-widget-heading'>
+                <h2 id='qrcode-widget-heading'
+                    className='screen-reader-only'>QR Code Widget</h2>
                 <div id='qrcode-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -71,8 +74,13 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
                             type='text'
                             name='qrcode-input-text'
                             placeholder='Enter QR Text'
+                            aria-labelledby='qrcode-input-aria-describedby'
                             value={state.input}
                             onChange={(event) => handleChange(event.target.value, 'input')}></input>
+                        <span id='qrcode-input-aria-describedby'
+                            className='screen-reader-only'>
+                            Type text here to turn it into a QR code.
+                        </span>
                         {/* Dimension */}
                         <Select className='select-match'
                             defaultValue={optionsSize[0]['options'][3]}
@@ -138,7 +146,7 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

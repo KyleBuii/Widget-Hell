@@ -240,8 +240,11 @@ class WidgetTimeConversion extends Component {
                 }}
                 cancel='input, label, button, .select-match, .react-calendar, .react-time-picker, .react-clock'
                 bounds='parent'>
-                <div id='timeconversion-widget'
-                    className='widget'>
+                <section id='timeconversion-widget'
+                    className='widget'
+                    aria-labelledby='timeconversion-widget-heading'>
+                    <h2 id='timeconversion-widget-heading'
+                        className='screen-reader-only'>Time Conversion Widget</h2>
                     <div id='timeconversion-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -253,13 +256,13 @@ class WidgetTimeConversion extends Component {
                         </span>
                         {this.props.defaultProps.renderHotbar('timeconversion', 'utility')}
                         {/* Time Conversion Container */}
-                        <section id='timeconversion-container'
+                        <div id='timeconversion-container'
                             className='flex-center row'>
-                            <section className='flex-center column gap'>
+                            <div className='flex-center column gap'>
                                 {/* Original date and time */}
-                                <section className='flex-center column gap'>
+                                <div className='flex-center column gap'>
                                     {/* Inputs */}
-                                    <section className='grid col-auto'>
+                                    <div className='grid col-auto'>
                                         {/* <label htmlFor='timeconversion-select-timezone-original'
                                             className='font medium'>
                                             Zone:
@@ -283,7 +286,12 @@ class WidgetTimeConversion extends Component {
                                             max='12'
                                             min='1'
                                             value={this.state.month}
+                                            aria-describedby='timeconversion-input-month-aria-describedby'
                                             onChange={(event) => this.updateDate(event, 'month')}></input>
+                                        <span id='timeconversion-input-month-aria-describedby'
+                                            className='screen-reader-only'>
+                                            Type the month in numeric form here.
+                                        </span>
                                         <label htmlFor='timeconversion-input-day'
                                             className='font medium'>
                                             Day: 
@@ -295,7 +303,12 @@ class WidgetTimeConversion extends Component {
                                             max='31'
                                             min='1'
                                             value={this.state.day}
+                                            aria-describedby='calculator-input-day-aria-describedby'
                                             onChange={(event) => this.updateDate(event, 'day')}></input>
+                                        <span id='calculator-input-day-aria-describedby'
+                                            className='screen-reader-only'>
+                                            Type the day in numeric form here.
+                                        </span>
                                         <label htmlFor='timeconversion-input-year'
                                             className='font medium'>
                                             Year: 
@@ -307,7 +320,12 @@ class WidgetTimeConversion extends Component {
                                             max='9999'
                                             min='100'
                                             value={this.state.year}
+                                            aria-describedby='calculator-input-year-aria-describedby'
                                             onChange={(event) => this.updateDate(event, 'year')}></input>
+                                        <span id='calculator-input-year-aria-describedby'
+                                            className='screen-reader-only'>
+                                            Type the year here.
+                                        </span>
                                         <span className='font medium'>
                                             Time:
                                         </span>
@@ -315,18 +333,18 @@ class WidgetTimeConversion extends Component {
                                             onChange={(val) => this.handleChange('time', val)}
                                             value={this.state.time}
                                             locale={this.state.timeformat}/>
-                                    </section>
-                                    <section className='grid col-50-50 fill-width'>
+                                    </div>
+                                    <div className='grid col-50-50 fill-width'>
                                         <button id='time-conversion-button-twelvehr'
                                             className='button-match option'
                                             onClick={() => this.handleButton('12hr')}>12hr</button>
                                         <button id='time-conversion-button-twentyfourhr' 
                                             className='button-match option'
                                             onClick={() => this.handleButton('24hr')}>24hr</button>
-                                    </section>
-                                </section>
+                                    </div>
+                                </div>
                                 {/* Convert */}
-                                <section className='flex-center row gap space-nicely space-all'>
+                                <div className='flex-center row gap space-nicely space-all'>
                                     <IconContext.Provider value={{ size: '1.8em', className: 'global-class-name' }}>
                                         <FaArrowDownLong/>
                                     </IconContext.Provider>
@@ -350,27 +368,27 @@ class WidgetTimeConversion extends Component {
                                                 ...this.props.selectTheme
                                             }
                                         })}/>
-                                </section>
+                                </div>
                                 {/* Converted date */}
-                                <section className='flex-center column gap'>
+                                <div className='flex-center column gap'>
                                     <span className='text-animation aesthetic-scale scale-self font medium'>
                                         {this.state.date.toLocaleString('en-US', {
                                             hour12: this.state.hour12,
                                             timeZone: this.state.timezone.value
                                         })}
                                     </span>
-                                </section>
-                            </section>
+                                </div>
+                            </div>
                             <Calendar id='timeconversion-calendar'
                                 onChange={(val) => this.handleChange('date', val)}
                                 value={this.state.date}/>
-                        </section>
+                        </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

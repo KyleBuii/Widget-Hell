@@ -374,7 +374,7 @@ class WidgetMusicPlayer extends Component {
             };
             case 'input-add': {
                 const elementInput = document.getElementById('musicplayer-input-add').value;
-                this.handleInputSubmit(elementInput);
+                this.handleInputSubmit(elementInput, 'Enter');
                 break;
             }
             default: { break; };
@@ -780,8 +780,11 @@ class WidgetMusicPlayer extends Component {
                 }}
                 cancel='button, span, input, #musicplayer-disc, #musicplayer-playlist'
                 bounds='parent'>
-                <div id='musicplayer-widget'
-                    className='widget'>
+                <section id='musicplayer-widget'
+                    className='widget'
+                    aria-labelledby='musicplayer-widget-heading'>
+                    <h2 id='musicplayer-widget-heading'
+                        className='screen-reader-only'>Music Player Widget</h2>
                     <div id='musicplayer-widget-animation'
                         className='widget-animation custom-shape'>
                         {/* Drag Handle */}
@@ -792,12 +795,14 @@ class WidgetMusicPlayer extends Component {
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar('musicplayer', 'utility')}
-                        <section className='flex-center row'>
+                        <div className='flex-center row'>
                             {/* Song */}
-                            <section className='flex-center column'>
+                            <div className='flex-center column'>
                                 {/* Song Disc */}
                                 <div id='musicplayer-disc'
                                     className='circle no-highlight'
+                                    role='button'
+                                    aria-label='Change music disc'
                                     onClick={() => this.discSwitch()}
                                     onKeyDown={(event) => this.discHandleKeyDown(event)}
                                     tabIndex={0}>
@@ -845,6 +850,8 @@ class WidgetMusicPlayer extends Component {
                                             min={0}
                                             max={0.999999}
                                             step={'any'}
+                                            aria-label='Song progress'
+                                            aria-valuetext={`${this.state.currentDuration} of ${this.state.maxDuration}`}
                                             onMouseDown={() => this.handleSeeking({ what: 'down' })}
                                             onTouchStart={() => this.handleSeeking({ what: 'down' })}
                                             onChange={(event) => this.handleSeeking({ event: event })}
@@ -922,7 +929,13 @@ class WidgetMusicPlayer extends Component {
                                         onBlur={() => this.handleBlur()}
                                         autoComplete='off'
                                         type='text'
-                                        name='musicplayer-input-add'/>
+                                        name='musicplayer-input-add'
+                                        placeholder='Enter URL'
+                                        aria-labelledby='musicplayer-input-add-aria-describedby'/>
+                                    <span id='musicplayer-input-add-aria-describedby'
+                                        className='screen-reader-only'>
+                                        Type a link here to add it.
+                                    </span>
                                     <button id='musicplayer-button-add'
                                         className='button-match'
                                         onClick={() => this.handleButton('input-add')}
@@ -965,14 +978,18 @@ class WidgetMusicPlayer extends Component {
                                         </IconContext.Provider>
                                     </button>
                                 </div>
-                            </section>
+                            </div>
                             <span id='musicplayer-playlist-length'>{this.state.urls.length}</span>
                             <SimpleBar id='musicplayer-playlist'
                                 ref={(ref) => this.refPlaylist = ref}
+                                role='list'
+                                aria-label='Playlist'
                                 tabIndex={-1}>
                                 {this.state.urls.map((url, index) => {
                                     return <section className='flex-center column align-items-left box no-highlight'
                                         key={`playlist-item-${index}`}
+                                        role='button'
+                                        aria-label={`Play ${url.name} by ${url.artist}`}
                                         onClick={(event) => this.handlePlaylist(index, event)}
                                         onKeyDown={(event) => this.playlistHandleKeyDown(index, event)}
                                         tabIndex={0}>
@@ -981,13 +998,13 @@ class WidgetMusicPlayer extends Component {
                                     </section>
                                 })}
                             </SimpleBar>
-                        </section>
+                        </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

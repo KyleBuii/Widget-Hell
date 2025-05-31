@@ -463,10 +463,13 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                 defaultProps.dragStop('calculator');
                 defaultProps.updatePosition('calculator', 'utility', data.x, data.y);
             }}
-            cancel='button, span, p, input, textarea, section'
+            cancel='button, span, p, input, textarea, .popout'
             bounds='parent'>
-            <div id='calculator-widget'
-                className='widget'>
+            <section id='calculator-widget'
+                className='widget'
+                aria-labelledby='calculator-widget-heading'>
+                <h2 id='calculator-widget-heading'
+                    className='screen-reader-only'>Calculator Widget</h2>
                 <div id='calculator-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -491,8 +494,13 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             name='calculator-input-input'
                             type='text'
                             value={state.input}
+                            aria-labelledby='calculator-input-field-aria-describedby'
                             onChange={handleChange}>
                         </input>
+                        <span id='calculator-input-field-aria-describedby'
+                            className='screen-reader-only'>
+                            Type a calculation or view the equation here.
+                        </span>
                     </div>
                     {/* Utility Bar */}
                     <div className='font smaller flex-center space-nicely space-bottom length-short'>
@@ -540,7 +548,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             value='Mv'>M&#709;</button>
                     </div>
                     {/* Buttons */}
-                    <section className='grid col-4 font'>
+                    <div className='grid col-4 font'>
                         {/* Memory Display */}
                         <div id='calculator-button-memory-display'>
                             <div id='calculator-button-memory-container'></div>
@@ -632,7 +640,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             className='button-match'
                             onClick={handleClick}
                             value='='>=</button>
-                    </section>
+                    </div>
                     {/* Expand Input Popout */}
                     <Draggable cancel='p'
                         position={{
@@ -643,23 +651,23 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             defaultProps.updatePosition('calculator', 'utility', data.x, data.y, 'popout', 'expandinput');
                         }}
                         bounds={defaultProps.calculateBounds('calculator-widget', 'calculator-input-expand-popout')}>
-                        <section id='calculator-input-expand-popout'
+                        <div id='calculator-input-expand-popout'
                             className='popout'>
-                            <section id='calculator-input-expand-popout-animation'
+                            <div id='calculator-input-expand-popout-animation'
                                 className='popout-animation'>
                                 <p id='calculator-input-expand-text'
                                     className='cut-scrollbar-corner-part-2 p area-short font medium break-word space-nicely space-all length-long'>
                                     {state.input}
                                 </p>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

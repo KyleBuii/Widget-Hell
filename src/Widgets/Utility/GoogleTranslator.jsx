@@ -186,8 +186,11 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             }}
             cancel='button, span, p, textarea, .select-match'
             bounds='parent'>
-            <div id='googletranslator-widget'
-                className='widget'>
+            <section id='googletranslator-widget'
+                className='widget'
+                aria-labelledby='googletranslator-widget-heading'>
+                <h2 id='googletranslator-widget-heading'
+                    className='screen-reader-only'>Google Translator Widget</h2>
                 <div id='googletranslator-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -255,9 +258,14 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                     <div className='cut-scrollbar-corner-part-1 textarea'>
                         <textarea className='cut-scrollbar-corner-part-2 textarea'
                             name='googletranslator-textarea-input'
+                            aria-describedby='google-translator-input-aria-describedby'
                             onChange={handleChange}
                             value={state.input}></textarea>
                     </div>
+                    <span id='google-translator-input-aria-describedby'
+                        className='screen-reader-only'>
+                        Type text here to translate it.
+                    </span>
                     {/* Display */}
                     <div id='googletranslator-preview-cut-corner'
                         className='cut-scrollbar-corner-part-1 p'>
@@ -294,7 +302,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

@@ -142,8 +142,11 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             }}
             cancel='button, input, span, .select-match'
             bounds='parent'>
-            <div id='currencyconverter-widget'
-                className='widget'>
+            <section id='currencyconverter-widget'
+                className='widget'
+                aria-labelledby='currencyconverter-widget-heading'>
+                <h2 id='currencyconverter-widget-heading'
+                    className='screen-reader-only'>Currency Converter Widget</h2>
                 <div id='currencyconverter-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -155,7 +158,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                     </span>
                     {defaultProps.renderHotbar('currencyconverter', 'utility')}
                     {/* Currency Converter Container */}
-                    <section id='currencyconverter-container'
+                    <div id='currencyconverter-container'
                         className='flex-center column gap small-gap'>
                         <div id='currencyconverter-result'
                             className='aesthetic-scale scale-span flex-center column fill-width'>
@@ -165,8 +168,13 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                         <input className='input-match fill-width'
                             type='number'
                             name='currencyconverter-input'
+                            aria-describedby='calculator-input-field-aria-describedby'
                             onChange={handleInput}
                             value={state.input}/>
+                        <span id='calculator-input-field-aria-describedby'
+                            className='screen-reader-only'>
+                            Type a number to convert here.
+                        </span>
                         <div className='flex-center row gap'>
                             <Select id='currencyconverter-select-from'
                                 className='select-match'
@@ -214,13 +222,13 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                             type='button'
                             onClick={() => fetchExchangeRate()}
                             disabled={state.running}>Exchange</button>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

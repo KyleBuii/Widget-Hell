@@ -310,8 +310,11 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             }}
             cancel='button, p, span'
             bounds='parent'>
-            <div id='typingtest-widget'
-                className='widget'>
+            <section id='typingtest-widget'
+                className='widget'
+                aria-labelledby='typingtest-widget-heading'>
+                <h2 id='typingtest-widget-heading'
+                    className='screen-reader-only'>Typing Test Widget</h2>
                 <div id='typingtest-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -323,7 +326,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                     </span>
                     {defaultProps.renderHotbar('typingtest', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Gold Earned */}
                         <span className='text-animation flex-center row'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
@@ -339,7 +342,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                             </IconContext.Provider>
                             {gameProps.formatNumber(gameProps.gold, 1)}
                         </span>
-                    </section>
+                    </div>
                     {/* Input */}
                     <input id='typingtest-input-field'
                         onChange={handleTyping}
@@ -373,7 +376,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                             }}>Try Again</button>
                     </div>
                     {/* Settings */}
-                    <section className='flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top'
+                    <div className='flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top'
                         style={{ width: 'unset' }}>
                         {/* Presets */}
                         <div className='flex-center column'>
@@ -415,13 +418,13 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                                     onClick={() => handleModifications('fontSmall')}>Font: Small</button>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

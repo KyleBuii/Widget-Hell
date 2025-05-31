@@ -163,8 +163,11 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			}}
 			cancel='canvas, button'
 			bounds='parent'>
-			<div id='tetris-widget'
-				className='widget'>
+			<section id='tetris-widget'
+				className='widget'
+				aria-labelledby='tetris-widget-heading'>
+                <h2 id='tetris-widget-heading'
+                    className='screen-reader-only'>Tetris Widget</h2>
 				<div id='tetris-widget-animation'
 					className='widget-animation'>
 					{/* Drag Handle */}
@@ -176,7 +179,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 					</span>
 					{defaultProps.renderHotbar('tetris', 'games')}
 					{/* Information Container */}
-					<section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+					<div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
 						{/* Gold Earned */}
 						<span className='text-animation flex-center row'>
 							<IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
@@ -199,15 +202,15 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 							</IconContext.Provider>
 							{state.timer}
 						</span>
-					</section>
+					</div>
 					{/* Canvas */}
 					<canvas id='tetris-canvas'
 						height={800}
 						width={600}
 						onKeyDown={(event) => handleKeyDown(event)}
 						tabIndex={0}></canvas>
-					{isMobile && <section className='game-controls'>
-                        <section className='d-pad'>
+					{isMobile && <div className='game-controls'>
+                        <div className='d-pad'>
                             <button className='up'
 								aria-label='D-pad up'
                                 onClick={() => handleKeyDown({ keyCode: 87 })}></button>
@@ -220,8 +223,8 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
                             <button className='left'
 								aria-label='D-pad left'
                                 onClick={() => handleKeyDown({ keyCode: 65 })}></button>
-                        </section>
-                        <section className='flex-center column gap'
+                        </div>
+                        <div className='flex-center column gap'
 							style={{ flexGrow: '1', paddingLeft: '1rem' }}>
                             <button className='button-match button-game'
                                 onClick={() => handleKeyDown({ keyCode: 70 })}>Start</button>
@@ -229,8 +232,8 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
                                 onClick={() => handleKeyDown({ keyCode: 16 })}>Hold</button>
                             <button className='button-match button-game'
                                 onClick={() => handleKeyDown({ keyCode: 32 })}>Drop</button>
-                        </section>
-                    </section>}
+                        </div>
+                    </div>}
 					{/* Author */}
 					{(defaultProps.values.authorNames)
 						? <span className='font smaller transparent-normal author-name'>
@@ -249,7 +252,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 						</span>
 						: <></>}
 				</div>
-			</div>
+			</section>
 		</Draggable>
 	);
 };

@@ -209,8 +209,11 @@ class WidgetInventory extends Component {
                 }}
                 cancel='button, span, .overlay, #inventory-tabs'
                 bounds='parent'>
-                <div id='inventory-widget'
-                    className='widget'>
+                <section id='inventory-widget'
+                    className='widget'
+                    aria-labelledby='inventory-widget-heading'>
+                    <h2 id='inventory-widget-heading'
+                        className='screen-reader-only'>Inventory Widget</h2>
                     <div id='inventory-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -226,9 +229,9 @@ class WidgetInventory extends Component {
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                         {/* Inventory */}
-                        <section className='flex-center column gap medium-gap'>
+                        <div className='flex-center column gap medium-gap'>
                             {/* Inventory Slots */}
-                            <section className='flex-center column'>
+                            <div className='flex-center column'>
                                 {/* Slots */}
                                 <div id='inventory-slots' 
                                     className='aesthetic-scale scale-div grid col-4 spread-inventory slot box dimmed'>
@@ -263,10 +266,10 @@ class WidgetInventory extends Component {
                                         </IconContext.Provider>
                                     </button>
                                 </div>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                         {/* Inventory Bar */}
-                        <section style={{ marginTop: '0.4em' }}>
+                        <div style={{ marginTop: '0.4em' }}>
                             <div className='aesthetic-scale scale-div element-ends font bold'>
                                 {/* Item Count */}
                                 <div className='flex-center row gap'>
@@ -290,20 +293,20 @@ class WidgetInventory extends Component {
                                     <span>{this.props.gameProps.formatNumber(this.props.gameProps.gold, 1)}</span>
                                 </div>
                             </div>
-                        </section>
+                        </div>
                         {/* Inventory Information */}
                         {/* <Tabs id='inventory-tabs'>
                             <TabList>
                                 <Tab>Currency</Tab>
                             </TabList>
                             <TabPanel>
-                                <section id='inventory-currency'
+                                <div id='inventory-currency'
                                     className='grid col-inventory font bold'>
-                                </section>
+                                </div>
                             </TabPanel>
                         </Tabs> */}
                         {/* View Item Popout */}
-                        <section id='inventory-popout-view-item'
+                        <div id='inventory-popout-view-item'
                             className='overlay rounded flex-center column gap font no-highlight'
                             onClick={() => {
                                 this.props.defaultProps.playAudio(audioItemClose);
@@ -389,9 +392,9 @@ class WidgetInventory extends Component {
                                         this.state.item.rarity,
                                         this.props.items[this.state.item.rarity][this.state.item.name].slot
                                     )}>Equip</button>}
-                        </section>
+                        </div>
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

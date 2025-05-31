@@ -28,8 +28,11 @@ const WidgetGrindshot = ({ defaultProps, gameProps }) => {
             }}
             cancel='button, #grindshot-game'
             bounds='parent'>
-            <div id='grindshot-widget'
-                className='widget'>
+            <section id='grindshot-widget'
+                className='widget'
+                aria-labelledby='grindshot-widget-heading'>
+                <h2 id='grindshot-widget-heading'
+                    className='screen-reader-only'>Grindshot Widget</h2>
                 <div id='grindshot-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -47,7 +50,7 @@ const WidgetGrindshot = ({ defaultProps, gameProps }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

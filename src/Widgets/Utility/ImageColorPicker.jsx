@@ -119,8 +119,11 @@ class WidgetImageColorPicker extends Component {
                 }}
                 cancel='input, label, img, #imagecolorpicker-color'
                 bounds='parent'>
-                <div id='imagecolorpicker-widget'
-                    className='widget'>
+                <section id='imagecolorpicker-widget'
+                    className='widget'
+                    aria-labelledby='imagecolorpicker-widget-heading'>
+                    <h2 id='imagecolorpicker-widget-heading'
+                        className='screen-reader-only'>Image Color Picker Widget</h2>
                     <div id='imagecolorpicker-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -131,7 +134,7 @@ class WidgetImageColorPicker extends Component {
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar('imagecolorpicker', 'utility')}
-                        <section className='flex-center column gap small-gap'>
+                        <div className='flex-center column gap small-gap'>
                             {/* Image */}
                             <div id='imagecolorpicker-image'></div>
                             {/* Button */}
@@ -174,13 +177,13 @@ class WidgetImageColorPicker extends Component {
                                     className='aesthetic-scale scale-self box'
                                     onClick={() => this.handleColorClick()}></div>
                             </div>
-                        </section>
+                        </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

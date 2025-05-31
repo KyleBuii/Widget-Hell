@@ -253,8 +253,11 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             }}
             cancel='button, span, #simongame-container, #simongame-counter-light, .popout'
             bounds='parent'>
-            <div id='simongame-widget'
-                className='widget'>
+            <section id='simongame-widget'
+                className='widget'
+                aria-labelledby='simongame-widget-heading'>
+                <h2 id='simongame-widget-heading'
+                    className='screen-reader-only'>Simon Game Widget</h2>
                 <div id='simongame-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -266,7 +269,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                     </span>
                     {defaultProps.renderHotbar('simongame', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'
                         style={{zIndex: 300}}>
                         {/* Gold Earned */}
                         <span className='text-animation flex-center row'>
@@ -290,9 +293,9 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Game Container */}
-                    <section id='simongame-container'
+                    <div id='simongame-container'
                         className='grid col-auto box'>
                         <div id='simongame-color-1'
                             className='box'
@@ -314,7 +317,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                             onClick={(event) => handleColorClick(event)}
                             onKeyDown={(event) => handleColorKeyDown(event)}
                             tabIndex={0}></div>
-                    </section>
+                    </div>
                     {/* Counter and Light Indicator */}
                     <div id='simongame-counter-light'
                         className='float center font large bold circle'>
@@ -326,15 +329,15 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                     </div>
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none')
-                        ? <section id='simongame-health'
+                        ? <div id='simongame-health'
                             className='flex-center space-nicely space-top not-bottom'>
                             {gameProps.renderHearts(state.health).map((heart) => {
                                 return heart;
                             })}
-                        </section>
+                        </div>
                         : <></>}
                     {/* Gameover Overlay */}
-                    <section id='simongame-overlay-gameover'
+                    <div id='simongame-overlay-gameover'
                         className='aesthetic-scale scale-span overlay rounded flex-center column gap'>
                         {(state.gameover)
                             ? <div className='flex-center column gap'>
@@ -354,7 +357,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                                 <AiOutlineSetting/>
                             </IconContext.Provider>
                         </button>
-                    </section>
+                    </div>
                     {/* Settings Popout */}
                     <Draggable cancel='span, .slider, button'
                         position={{
@@ -365,16 +368,16 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                             defaultProps.updatePosition('simongame', 'games', data.x, data.y, 'popout', 'settings');
                         }}
                         bounds={defaultProps.calculateBounds('simongame-widget', 'simongame-popout-settings')}>
-                        <section id='simongame-popout-settings'
+                        <div id='simongame-popout-settings'
                             className='popout'>
-                            <section id='simongame-popout-animation-settings'
+                            <div id='simongame-popout-animation-settings'
                                 className='popout-animation'>
-                                <section className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
-                                    <section className='section-group'>
+                                <div className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
+                                    <div className='div-group'>
                                         <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                             <b>Gameplay</b>
                                         </span>
-                                        <section className='element-ends'>
+                                        <div className='element-ends'>
                                             <span className='font small'>
                                                 Speed
                                             </span>
@@ -385,7 +388,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                                                     <BsArrowCounterclockwise/>
                                                 </IconContext.Provider>
                                             </button>
-                                        </section>
+                                        </div>
                                         <Slider className='slider space-nicely space-top length-medium'
                                             onChange={(event) => handleSetting('speed', 'change', event)}
                                             value={state.speed}
@@ -399,17 +402,17 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                                             }}
                                             defaultValue={600}
                                             reverse/>
-                                    </section>
-                                </section>
-                            </section>
-                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

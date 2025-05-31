@@ -409,11 +409,11 @@ function calculateBounds(parent, popout) {
 
 const LazyWidget = ({ Component, ...props }) => {
     return <Suspense fallback={
-            <section className='flex-center column gap'>
+            <div className='flex-center column gap'>
                 <img src='/resources/singles/fumo_speen.gif'
                     alt='Fumo spining'/>
                 <span className='font bold'>Loading...</span>
-            </section>
+            </div>
         }>
         <Component {...props}/>
     </Suspense>
@@ -8750,7 +8750,7 @@ class Widgets extends Component {
         };
     };
     renderHotbar(widget, type) {
-        return <section id={`${widget}-hotbar`}
+        return <div id={`${widget}-hotbar`}
             className='hotbar'>
             {(this.state.values.showOnTop)
                 ? <button className='button-match inverse when-elements-are-not-straight'
@@ -8780,7 +8780,7 @@ class Widgets extends Component {
                     <IoClose/>
                 </button>
                 : <></>}
-        </section>
+        </div>
     };
     generateDefaultProps(widget, type) {
         let defaultProps = {
@@ -9126,9 +9126,10 @@ class Widgets extends Component {
         return (
             <div id='widget-container'
                 onMouseMove={(event) => this.handleMouseMove(event)}>
+                <h1 className='screen-reader-only'>Widget Hell Dashboard</h1>
                 {(this.state.values.transcribeAudio)
-                    && <section id='transcript'></section>}
-                <section id='disclaimer'
+                    && <div id='transcript'></div>}
+                <div id='disclaimer'
                     onClick={() => { document.getElementById('disclaimer').style.display = 'none'; }}>
                     <span>
                         <FaExclamationTriangle/>
@@ -9136,7 +9137,7 @@ class Widgets extends Component {
                         <FaExclamationTriangle/>
                     </span>
                     <span>All item names, logos, characters, brands, trademarks and registered trademarks are property of their respective owners and unrelated to Widget Hell.</span>
-                </section>
+                </div>
                 {(this.state.values.cursorTrail)
                     && <Cursor color={this.state.values.cursorTrailColor}
                         flat={this.state.values.cursorTrailFlat}
@@ -9155,7 +9156,7 @@ class Widgets extends Component {
                     </IconContext.Provider>
                 </button>
                 {(this.state.developer)
-                    && <section style={{
+                    && <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         position: 'absolute',
@@ -9184,7 +9185,7 @@ class Widgets extends Component {
                             this.setState({inventory: []});}}>
                             Reset inventory
                         </button>
-                    </section>}
+                    </div>}
                 {/* Widgets: Special */}
                 {
                     //#region

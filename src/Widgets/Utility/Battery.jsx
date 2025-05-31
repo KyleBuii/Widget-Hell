@@ -68,8 +68,11 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
             }}
             cancel='button'
             bounds='parent'>
-            <div id='battery-widget'
-                className='widget'>
+            <section id='battery-widget'
+                className='widget'
+                aria-labelledby='battery-widget-heading'>
+                <h2 id='battery-widget-heading'
+                    className='screen-reader-only'>Battery Widget</h2>
                 <div id='battery-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -100,7 +103,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

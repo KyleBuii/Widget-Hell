@@ -93,11 +93,11 @@ const WidgetNotepad = ({ defaultProps }) => {
                     </span>
                     {defaultProps.renderHotbar('notepad', 'utility')}
                     {/* Utility Bar */}
-                    <section className='flex-center row gap small-gap space-nicely space-bottom'>
+                    <div className='flex-center row gap small-gap space-nicely space-bottom'>
                         {/* Buttons */}
-                        <section className='flex-center column'>
+                        <div className='flex-center column'>
                             {/* General */}
-                            <section className='flex-center row'>
+                            <div className='flex-center row'>
                                 <button id='notepad-button-bold' 
                                     className='button-match fadded inversed'
                                     onClick={() => handleButton('bold')}>
@@ -227,9 +227,9 @@ const WidgetNotepad = ({ defaultProps }) => {
                                     <input type='color'
                                         onBlur={(event) => handleText('backColor', event.target.value)}></input>
                                 </div>
-                            </section>
+                            </div>
                             {/* Font Name */}
-                            <section className='flex-center row'>
+                            <div className='flex-center row'>
                                 <button className='button-match inverse'
                                     onClick={() => handleText('fontName', 'Arial')}>
                                     <span className='font bold'>Arial</span>
@@ -258,11 +258,11 @@ const WidgetNotepad = ({ defaultProps }) => {
                                     onClick={() => handleText('fontName', 'Cursive')}>
                                     <span className='font bold'>Cursive</span>
                                 </button>
-                            </section>
+                            </div>
                             {/* Headers and Font Size */}
-                            <section id='notepad-section-header-and-font-size' 
+                            <div id='notepad-section-header-and-font-size' 
                                 className='flex-center row gap small-gap'>
-                                <section>
+                                <div>
                                     <button className='button-match inverse'
                                         onClick={() => handleText('formatBlock', 'H1')}>
                                         <span className='font bold'>H1</span>
@@ -287,11 +287,11 @@ const WidgetNotepad = ({ defaultProps }) => {
                                         onClick={() => handleText('formatBlock', 'H6')}>
                                         <span className='font bold'>H6</span>
                                     </button>
-                                </section>
-                                <section id='notepad-section-font-size'></section>
-                            </section>
-                        </section>
-                    </section>
+                                </div>
+                                <div id='notepad-section-font-size'></section>
+                            </div>
+                        </div>
+                    </div>
                     {/* Textarea */}
                     <div className='cut-scrollbar-corner-part-1 p area-large'>
                         <p className='cut-scrollbar-corner-part-2 p area-large'

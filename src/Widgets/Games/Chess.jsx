@@ -308,10 +308,13 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
             }}
             cancel='button, #chess-board'
             bounds='parent'>
-            <div id='chess-widget'
-                className='widget flex-center column gap medium-gap'>
+            <section id='chess-widget'
+                className='widget flex-center column gap medium-gap'
+                aria-labelledby='chess-widget-heading'>
+                <h2 id='chess-widget-heading'
+                    className='screen-reader-only'>Chess Widget</h2>
                 {/* Chess Board */}
-                <section id='chess-board'>
+                <div id='chess-board'>
                     <Chessboard animationDuration={200}
                         arePiecesDraggable={false}
                         position={state.game.fen()}
@@ -326,7 +329,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                         customArrowColor='var(--randColor)'
                         promotionToSquare={state.moveTo}
                         showPromotionDialog={state.promotionDialog}/>
-                </section>
+                </div>
                 <div id='chess-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -338,7 +341,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                     </span>
                     {defaultProps.renderHotbar('chess', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Pieces Captured */}
                         <span className='text-animation flex-center row'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#000', className: 'global-class-name' }}>
@@ -368,24 +371,24 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Buttons */}
-                    <section className='flex-center column gap'>
+                    <div className='flex-center column gap'>
                         <button className='button-match option opt-long'
                             onClick={() => handleButton('reset')}>Reset</button>
                         <button className='button-match option opt-long'
                             onClick={() => handleButton('undo')}>Undo</button>
-                    </section>
+                    </div>
                     {/* Captured Pieces */}
-                    <section className='flex-center'>
+                    <div className='flex-center'>
                         <div id='chess-captured-pieces-black'></div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

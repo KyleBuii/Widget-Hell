@@ -578,8 +578,11 @@ class WidgetAnimeSearcher extends Component {
                 }}
                 cancel='input, button, span, a, img, .popout, .simplebar-track, #animesearcher-information'
                 bounds='parent'>
-                <div id='animesearcher-widget'
-                    className='widget'>
+                <section id='animesearcher-widget'
+                    className='widget'
+                    aria-labelledby='animesearcher-widget-heading'>
+                    <h2 id='animesearcher-widget-heading'
+                        className='screen-reader-only'>Anime Searcher Widget</h2>
                     <div id='animesearcher-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -590,7 +593,7 @@ class WidgetAnimeSearcher extends Component {
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar('animesearcher', 'utility')}
-                        <section className='flex-center row gap'>
+                        <div className='flex-center row gap'>
                             <div className='flex-center column gap'>
                                 {/* Search bar */}
                                 <div className='flex-center row gap fill-width'>
@@ -601,7 +604,12 @@ class WidgetAnimeSearcher extends Component {
                                             onKeyDown={(event) => this.handleKeyDown(event)}
                                             type='url'
                                             placeholder='Anilist ID / Name / Image URL'
+                                            aria-labelledby='animesearcher-input-search-aria-describedby'
                                             disabled={this.state.running}/>
+                                        <span id='animesearcher-input-search-aria-describedby'
+                                            className='screen-reader-only'>
+                                            Type an Anilist ID, name, or image url here.
+                                        </span>
                                         <button id='animesearcher-button-spoiler'
                                             className='disabled-active font bold button-match inverse disabled'
                                             onClick={() => this.handleButtonSpoiler()}
@@ -614,7 +622,10 @@ class WidgetAnimeSearcher extends Component {
                                 <SimpleBar id='animesearcher-information'
                                     className='font'
                                     style={{ maxHeight: '34em' }}>
-                                    <div className='character'>
+                                    <section className='character'
+                                        aria-labelledby='animesearcher-uploaded-image-heading'>
+                                        <h2 id='animesearcher-uploaded-image-heading'
+                                            className='screen-reader-only'>Anime Searcher Uploaded Image</h2>
                                         {/* Uploaded Image */}
                                         <div id='animesearcher-image-uploaded'
                                             className='flex-center'></div>
@@ -628,7 +639,7 @@ class WidgetAnimeSearcher extends Component {
                                                 <span>{this.state.linkSimilarity}%</span>
                                             </div>
                                             : <></>}
-                                    </div>
+                                    </section>
                                     {/* Banner Image */}
                                     <img id='animesearcher-image-banner'
                                         style={{
@@ -658,8 +669,11 @@ class WidgetAnimeSearcher extends Component {
                                                 alt='cover'
                                                 loading='lazy'
                                                 decoding='async'/>
-                                            <div id='animesearcher-container-information-sidebar'
-                                                className='text-animation aesthetic-scale scale-span alternating-text-color fade-color flex-center column gap small-gap align-items-left box dimmed-border'>
+                                            <section id='animesearcher-container-information-sidebar'
+                                                className='text-animation aesthetic-scale scale-span alternating-text-color fade-color flex-center column gap small-gap align-items-left box dimmed-border'
+                                                aria-labelledby='anime-information-sidebar-heading'>
+                                                <h2 id='anime-information-sidebar-heading'
+                                                    className='screen-reader-only'>Anime Information Sidebar</h2>
                                                 {/* Type */}
                                                 <div className='flex-center column only-justify-content gap'>
                                                     <span>Type</span>
@@ -778,11 +792,14 @@ class WidgetAnimeSearcher extends Component {
                                                         </div>
                                                     </div>
                                                     : <></>}
-                                            </div>
+                                            </section>
                                         </div>
                                         {/* Description Container */}
-                                        <div id='animesearcher-container-description'
-                                            className='flex-center column gap small-gap only-align-items align-items-left space-nicely space-top not-bottom'>
+                                        <section id='animesearcher-container-description'
+                                            className='flex-center column gap small-gap only-align-items align-items-left space-nicely space-top not-bottom'
+                                            aria-labelledby='anime-description-heading'>
+                                            <h2 id='anime-description-heading'
+                                                className='screen-reader-only'>Anime Description</h2>
                                             {/* Title */}
                                             <div className='element-ends'>
                                                 <div className='text-animation flex-center column gap align-items-left'>
@@ -836,10 +853,13 @@ class WidgetAnimeSearcher extends Component {
                                                 ? <span className='font bold small'>Relations</span>
                                                 : <></>}
                                             {(this.state.relations.length !== 0)
-                                                ? <SimpleBar id='animesearcher-relations'>
+                                                ? <SimpleBar id='animesearcher-relations'
+                                                    role='list'
+                                                    aria-label='Related Media'>
                                                     {this.state.relations.map((relation, index) => {
                                                         return <div className='character flex-center column'
-                                                            key={`relation-${index}`}> 
+                                                            key={`relation-${index}`}
+                                                            role='listitem'> 
                                                             <img id={`animesearcher-relation-${index}`}
                                                                 className='image-character'
                                                                 onClick={() => {
@@ -862,10 +882,13 @@ class WidgetAnimeSearcher extends Component {
                                                 ? <span className='font bold small'>Characters</span>
                                                 : <></>}
                                             {(this.state.characters.length !== 0)
-                                                ? <SimpleBar id='animesearcher-characters'>
+                                                ? <SimpleBar id='animesearcher-characters'
+                                                    role='list'
+                                                    aria-label='Character List'>
                                                     {this.state.characters.map((character, index) => {
                                                         return <div className='character flex-center column'
-                                                            key={`character-${index}`}>
+                                                            key={`character-${index}`}
+                                                            role='listitem'>
                                                             <img id={`animesearcher-character-${index}`}
                                                                 className='image-character'
                                                                 onClick={() => this.characterClick(index)}
@@ -887,7 +910,9 @@ class WidgetAnimeSearcher extends Component {
                                                     className='popout box dimmed no-highlight'
                                                     onClick={() => {
                                                         this.characterClick();
-                                                    }}>
+                                                    }}
+                                                    role='region'
+                                                    aria-label='Character information panel'>
                                                     {/* Image */}
                                                     <img className='image-character large-image'
                                                         src={this.state.characters[this.state.characterIndex]?.image.large}
@@ -979,10 +1004,13 @@ class WidgetAnimeSearcher extends Component {
                                                 ? <span className='font bold small'>Episode Videos</span>
                                                 : <></>}
                                             {(this.state.streamingEpisodes.length !== 0)
-                                                ? <SimpleBar id='animesearcher-streaming-episodes'>
+                                                ? <SimpleBar id='animesearcher-streaming-episodes'
+                                                    role='list'
+                                                    aria-label='Streaming Episodes'>
                                                     {this.state.streamingEpisodes.map((episode, index) => {
                                                         return <div className='character flex-center column'
-                                                            key={`episode-${index}`}>
+                                                            key={`episode-${index}`}
+                                                            role='listitem'>
                                                             <img id={`animesearcher-streaming-episodes-${index}`}
                                                                 className='image-character'
                                                                 onClick={() => {
@@ -1005,10 +1033,13 @@ class WidgetAnimeSearcher extends Component {
                                                 ? <span className='font bold small'>Recommendations</span>
                                                 : <></>}
                                             {(this.state.recommendations.length !== 0)
-                                                ? <SimpleBar id='animesearcher-recommendations'>
+                                                ? <SimpleBar id='animesearcher-recommendations'
+                                                    role='list'
+                                                    aria-label='Recommended Media'>
                                                     {this.state.recommendations.map((recommendation, index) => {
                                                         return <div className='character flex-center column'
-                                                            key={`recommendation-${index}`}>
+                                                            key={`recommendation-${index}`}
+                                                            role='listitem'>
                                                             <img id={`animesearcher-recommendation-${index}`}
                                                                 className='image-character'
                                                                 onClick={() => {
@@ -1026,17 +1057,17 @@ class WidgetAnimeSearcher extends Component {
                                                     })}
                                                 </SimpleBar>
                                                 : <></>}
-                                        </div>
+                                        </section>
                                     </div>
                                 </SimpleBar>
                             </div>
-                        </section>
+                        </div>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

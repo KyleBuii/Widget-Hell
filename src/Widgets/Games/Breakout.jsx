@@ -394,8 +394,11 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             }}
             cancel='button, canvas'
             bounds='parent'>
-            <div id='breakout-widget'
-                className='widget'>
+            <section id='breakout-widget'
+                className='widget'
+                aria-labelledby='breakout-widget-heading'>
+                <h2 id='breakout-widget-heading'
+                    className='screen-reader-only'>Breakout Widget</h2>
                 <div id='breakout-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -407,7 +410,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                     </span>
                     {defaultProps.renderHotbar('breakout', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Gold Earned */}
                         <span className='text-animation flex-center row'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
@@ -430,7 +433,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Game Canvas */}
                     <canvas id='breakout-canvas'
                         height={600}
@@ -447,7 +450,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                         </div>
                         : <></>}
                     {/* Gameover Overlay */}
-                    <section id='breakout-overlay-gameover'
+                    <div id='breakout-overlay-gameover'
                         className='aesthetic-scale scale-span overlay rounded flex-center column gap'>
                         {(state.gameover)
                             ? <div className='flex-center column gap'>
@@ -466,13 +469,13 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                                 <AiOutlineSetting/>
                             </IconContext.Provider>
                         </button> */}
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

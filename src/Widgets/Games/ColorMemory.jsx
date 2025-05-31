@@ -167,8 +167,11 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             }}
             cancel='button, span, .box'
             bounds='parent'>
-            <div id='colormemory-widget'
-                className='widget'>
+            <section id='colormemory-widget'
+                className='widget'
+                aria-labelledby='colormemory-widget-heading'>
+                <h2 id='colormemory-widget-heading'
+                    className='screen-reader-only'>Color Memory Widget</h2>
                 <div id='colormemory-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -180,7 +183,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                     </span>
                     {defaultProps.renderHotbar('colormemory', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Score */}
                         <span className='text-animation flex-center row gap'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: 'green', className: 'global-class-name' }}>
@@ -210,7 +213,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     <div id='colormemory-image'
                         className='box'
                         style={{
@@ -223,7 +226,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                             onClick={() => start()}>Start</button>
                     </div>
                     {(state.started)
-                        ? <section className='grid col-50-50 space-nicely space-top not-bottom length-medium'>
+                        ? <div className='grid col-50-50 space-nicely space-top not-bottom length-medium'>
                             <button id='colormemory-button-new'
                                 className='button-match'
                                 onClick={() => handleNew()}
@@ -232,12 +235,14 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                                 className='button-match'
                                 onClick={() => handleSeen()}
                                 disabled={state.gameover}>Seen</button>
-                        </section>
+                        </div>
                         : <></>}
                     {(state.gameover)
                         ? <SimpleBar style={{ maxHeight: '13.8em' }}>
-                            <section id='colormemory-gameover-colors'
-                                className='aesthetic-scale scale-div flex-center space-nicely space-top not-bottom length-medium'>
+                            <div id='colormemory-gameover-colors'
+                                className='aesthetic-scale scale-div flex-center space-nicely space-top not-bottom length-medium'
+                                role='list'
+                                aria-label='Colors'>
                                 {seenColorsImage.map((image, index) => {
                                     return <div className='box'
                                         style={{
@@ -247,6 +252,8 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                                             backgroundImage: `url(${image})`
                                         }}
                                         key={image}
+                                        role='listitem'
+                                        aria-label={`${seenColorsName[index]} Color`}
                                         onClick={() => colorClick(seenColorsHex[index])}
                                         onKeyDown={(event) => handleColorKeyDown(index, event)}
                                         tabIndex={0}>
@@ -258,7 +265,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                                             }}>{seenColorsName[index]}</span>
                                     </div>
                                 })}
-                            </section>
+                            </div>
                         </SimpleBar>
                         : <></>}
                     {/* Author */}
@@ -266,7 +273,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

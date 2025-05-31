@@ -179,6 +179,7 @@ class WidgetSetting extends Component {
                 randomTrick: false,
                 live2D: false,
                 cursor: { value: 'default', label: 'Default' },
+                reducedMotion: false,
             },
             search: '',
             searched: [],
@@ -438,6 +439,7 @@ class WidgetSetting extends Component {
         switch (what) {
             case 'timeBased':
             case 'live2D':
+            case 'reducedMotion':
                 this.setState({
                     values: {
                         ...this.state.values,
@@ -456,6 +458,9 @@ class WidgetSetting extends Component {
                             break;
                         case 'live2D':
                             this.updateLive2D();
+                            break;
+                        case 'reducedMotion':
+                            document.body.classList.toggle('reduced-motion');
                             break;
                         default: break;
                     };    
@@ -882,10 +887,13 @@ class WidgetSetting extends Component {
                     this.props.dragStop('settings');
                     this.props.updatePosition('setting', 'utility', data.x, data.y);
                 }}
-                cancel='button, span, p, section, li'
+                cancel='button, span, p, li, .popout'
                 bounds='parent'>
-                <div id='settings-widget'
-                    className='widget'>
+                <section id='settings-widget'
+                    className='widget'
+                    aria-labelledby='settings-widget-heading'>
+                    <h2 id='settings-widget-heading'
+                        className='screen-reader-only'>Settings Widget</h2>
                     <div id='settings-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -896,7 +904,7 @@ class WidgetSetting extends Component {
                             </IconContext.Provider>
                         </span>
                         {/* Hotbar */}
-                        <section className='hotbar'>
+                        <div className='hotbar'>
                             {/* Close */}
                             {(this.props.valueClose)
                                 ? <button className='button-match inverse when-elements-are-not-straight'
@@ -905,22 +913,22 @@ class WidgetSetting extends Component {
                                     <IoClose/>
                                 </button>
                                 : <></>}
-                        </section>
+                        </div>
                         {/* Buttons */}
-                        <section className='font large-medium no-color flex-center column gap'>
+                        <div className='font large-medium no-color flex-center column gap'>
                             <button id='settings-button-show-hide-widgets'
                                 className='button-match option opt-long disabled-option'
                                 onClick={() => this.handlePressableButton('showHideWidgets')}>Show/Hide Widgets</button>
                             <button id='settings-button-settings'
                                 className='button-match option opt-long disabled-option'
                                 onClick={() => this.handlePressableButton('settings')}>Settings</button>
-                            <section className='button-set-two flex-center row gap'>
+                            <div className='button-set-two flex-center row gap'>
                                 <button className='button-match option'
                                     onClick={this.handleTrick}>Do a trick!</button>
                                 <button className='button-match option'
                                     onClick={() => this.props.randomColor()}>Change color</button>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                         {/* Show/Hide Widgets Popout */}
                         <Draggable cancel='button, #show-hide-widgets-popout-tabs, .paginate-pages'
                             position={{
@@ -930,8 +938,11 @@ class WidgetSetting extends Component {
                             onStop={(event, data) => this.props.updatePosition('setting', 'utility', data.x, data.y, 'popout', 'showhidewidgets')}
                             bounds={this.props.calculateBounds('settings-widget', 'show-hide-widgets-popout')}>
                             <section id='show-hide-widgets-popout'
-                                className='popout'>
-                                <section id='show-hide-widgets-popout-animation'
+                                className='popout'
+                                aria-labelledby='show-hide-widgets-popout-heading'>
+                                <h2 id='show-hide-widgets-popout-heading'
+                                    className='screen-reader-only'>Show/Hide Widgets Popout</h2>
+                                <div id='show-hide-widgets-popout-animation'
                                     className='popout-animation'>
                                     <Tabs defaultIndex={0}
                                         onSelect={(index) => {
@@ -974,18 +985,20 @@ class WidgetSetting extends Component {
                                                         <IoBodyOutline/>
                                                     </IconContext.Provider> 
                                                 </button>
-                                                {/* <input className='input-typable all-side' */}
                                                 <input className='input-typable'
                                                     name='settings-input-show-hide-widgets-search'
                                                     type='text'
                                                     placeholder='Search'
+                                                    aria-describedby='show-hide-widgets-input-aria-describedby'
                                                     value={this.state.search}
                                                     onChange={this.handleSearch}></input>
+                                                <span id='show-hide-widgets-input-aria-describedby'
+                                                    className='screen-reader-only'>Type here to search for a widget.</span>
                                             </div>
                                         </TabList>
                                         {/* Utility */}
                                         <TabPanel>
-                                            <section id='show-hide-widgets-popout-button-utility'
+                                            <div id='show-hide-widgets-popout-button-utility'
                                                 className='button-set-three font large-medium no-color space-nicely space-all'>
                                                 {(this.state.search.length === 0)
                                                     ? this.buttonsUtility?.slice((12 * this.state.pageUtility), (12 + (12 * this.state.pageUtility))).map((widget) => {
@@ -1000,11 +1013,11 @@ class WidgetSetting extends Component {
                                                                 </span>
                                                             })
                                                         : <></>}
-                                            </section>
+                                            </div>
                                         </TabPanel>
                                         {/* Games */}
                                         <TabPanel>
-                                            <section id='show-hide-widgets-popout-button-games'
+                                            <div id='show-hide-widgets-popout-button-games'
                                                 className='font large-medium no-color space-nicely space-all'>
                                                 {(this.state.search.length === 0)
                                                     ? this.buttonsGames?.slice((12 * this.state.pageGames), (12 + (12 * this.state.pageGames))).map((widget) => {
@@ -1019,11 +1032,11 @@ class WidgetSetting extends Component {
                                                                 </span>
                                                             })
                                                         : <></>}
-                                            </section>
+                                            </div>
                                         </TabPanel>
                                         {/* Fun */}
                                         <TabPanel>
-                                            <section id='show-hide-widgets-popout-button-fun'
+                                            <div id='show-hide-widgets-popout-button-fun'
                                                 className='font large-medium no-color space-nicely space-all'>
                                                 {(this.state.search.length === 0)
                                                     ? this.buttonsFun?.slice((12 * this.state.pageFun), (12 + (12 * this.state.pageFun))).map((widget) => {
@@ -1038,7 +1051,7 @@ class WidgetSetting extends Component {
                                                                 </span>
                                                             })
                                                         : <></>}
-                                            </section>
+                                            </div>
                                         </TabPanel>
                                     </Tabs>
                                     <ReactPaginate className='paginate-pages font bold'
@@ -1062,11 +1075,11 @@ class WidgetSetting extends Component {
                                             </span>
                                         }
                                         renderOnZeroPageCount={null}/>
-                                </section>
+                                </div>
                             </section>
                         </Draggable>
                         {/* Settings Popout */}
-                        <Draggable cancel='span, .toggleable, .slider, input, button, .select-match'
+                        <Draggable cancel='span, label, input, button, .toggleable, .slider, .select-match'
                             position={{
                                 x: this.props.positionPopout.settings.x,
                                 y: this.props.positionPopout.settings.y
@@ -1074,19 +1087,25 @@ class WidgetSetting extends Component {
                             onStop={(event, data) => this.props.updatePosition('setting', 'utility', data.x, data.y, 'popout', 'settings')}
                             bounds={this.props.calculateBounds('settings-widget', 'settings-popout')}>
                             <section id='settings-popout'
-                                className='popout'>
-                                <section id='settings-popout-animation'
+                                className='popout'
+                                aria-labelledby='settings-popout-heading'>
+                                <h2 id='settings-popout-heading'
+                                    className='screen-reader-only'>Settings Popout</h2>
+                                <div id='settings-popout-animation'
                                     className='popout-animation scrollable'
                                     onScroll={this.handleScroll}
                                     onMouseEnter={() => this.handleMouse('enter')}
                                     onMouseLeave={() => this.handleMouse('leave')}>
-                                    <section className='aesthetic-scale scale-span scale-label scale-legend font large-medium flex-center column gap space-nicely space-all'>
+                                    <div className='aesthetic-scale scale-span scale-label scale-legend font large-medium flex-center column gap space-nicely space-all'>
                                         {/* Accessibility Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-accessibility-heading'>
+                                            <h2 id='settings-accessibility-heading'
+                                                className='screen-reader-only'>Accessibility Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Accessibility</b>
                                             </span>
-                                            <section className='element-ends'>
+                                            <div className='element-ends'>
                                                 <label className='font small'
                                                     htmlFor='settings-popout-accessibility-transcribeAudio'>
                                                     Transcribe Audio
@@ -1096,15 +1115,29 @@ class WidgetSetting extends Component {
                                                     type='checkbox'
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, 'transcribeAudio', 'values')}
                                                     checked={this.props.values.transcribeAudio}/>
-                                            </section>
+                                            </div>
+                                            <div className='element-ends'>
+                                                <label className='font small'
+                                                    htmlFor='settings-popout-accessibility-reducedMotion'>
+                                                    Reduced Motion
+                                                </label>
+                                                <input id='settings-popout-accessibility-reducedMotion'
+                                                    name='settings-input-popout-accessibility-reducedMotion'
+                                                    type='checkbox'
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, 'reducedMotion', 'values')}
+                                                    checked={this.state.values.reducedMotion}/>
+                                            </div>
                                         </section>
                                         {/* Display Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-display-heading'>
+                                            <h2 id='settings-display-heading'
+                                                className='screen-reader-only'>Display Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Display</b>
                                             </span>
                                             {/* Screen Dimmer */}
-                                            <section className='element-ends'>
+                                            <div className='element-ends'>
                                                 <span className='font small'>
                                                     Screen Dimmer
                                                 </span>
@@ -1121,7 +1154,7 @@ class WidgetSetting extends Component {
                                                     activeBoxShadow='0px 0px 1px 5px rgba(0, 0, 0, 0.2)'
                                                     height={15}
                                                     width={30}/>
-                                            </section>
+                                            </div>
                                             <Slider className='slider space-nicely space-top length-small'
                                                 onChange={(value) => this.handleSlider(value, 'slider-screen-dimmer')}
                                                 min={5}
@@ -1134,27 +1167,30 @@ class WidgetSetting extends Component {
                                                 }}
                                                 value={this.state.values.screenDimmerValue}
                                                 disabled={!this.state.values.screenDimmerSlider}/>
-                                            <section className='element-ends'>
-                                                <label className='font small'
-                                                    htmlFor='settings-popout-display-timeBased'>
-                                                    Change based on time
-                                                </label>
+                                            <div className='element-ends'>
                                                 <input id='settings-popout-display-timeBased'
                                                     name='settings-input-popout-display-timeBased'
                                                     type='checkbox'
                                                     disabled={!this.state.values.screenDimmer}
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, 'timeBased', 'values')}
                                                     checked={this.state.values.timeBased}/>
-                                            </section>
+                                                <label className='font small'
+                                                    htmlFor='settings-popout-display-timeBased'>
+                                                    Change based on time
+                                                </label>
+                                            </div>
                                         </section>
                                         {/* Design Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-design-heading'>
+                                            <h2 id='settings-design-heading'
+                                                className='screen-reader-only'>Design Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Design</b>
                                             </span>
                                             {/* Animation */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Animation
                                                     </span>
@@ -1165,7 +1201,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-design-select-animation'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.animation}
@@ -1184,10 +1220,10 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Background */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Background
                                                     </span>
@@ -1198,7 +1234,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-design-select-background'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.state.values.background}
@@ -1217,10 +1253,10 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Custom Border */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Custom Border
                                                     </span>
@@ -1231,7 +1267,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-design-select-custom-border'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.customBorder}
@@ -1250,10 +1286,10 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Particle */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Particle
                                                     </span>
@@ -1273,7 +1309,7 @@ class WidgetSetting extends Component {
                                                             </IconContext.Provider>
                                                         </button>
                                                     </div>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-design-select-particle'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.particle}
@@ -1292,10 +1328,10 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Decoration */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Decoration
                                                     </span>
@@ -1308,7 +1344,7 @@ class WidgetSetting extends Component {
                                                             </IconContext.Provider>
                                                         </button>
                                                     </div>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-design-select-decoration'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.decoration}
@@ -1327,11 +1363,11 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Checkboxes */}
-                                            <section className='grid col-2 spread-setting'>
+                                            <div className='grid col-2 spread-setting'>
                                                 {/* Shadow */}
-                                                <section className='element-ends not-spaced'>
+                                                <div className='element-ends not-spaced'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-design-shadow'>
                                                         Shadow
@@ -1342,11 +1378,14 @@ class WidgetSetting extends Component {
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'shadow', 'values')}
                                                         checked={this.props.values.shadow}
                                                         />
-                                                </section>
-                                            </section>
+                                                </div>
+                                            </div>
                                         </section>
                                         {/* Feature Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-feature-heading'>
+                                            <h2 id='settings-feature-heading'
+                                                className='screen-reader-only'>Feature Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Feature</b>
                                             </span>
@@ -1356,7 +1395,7 @@ class WidgetSetting extends Component {
                                                     General
                                                 </legend>
                                                 {/* Display author names */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-feature-authorNames'>
                                                         Author Names
@@ -1366,7 +1405,7 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'authorNames', 'values')}
                                                         checked={this.props.values.authorNames}/>
-                                                </section>
+                                                </div>
                                             </fieldset>
                                             {/* Hotbar */}
                                             <fieldset className='section-sub space-nicely space-top not-bottom length-medium'>
@@ -1374,7 +1413,7 @@ class WidgetSetting extends Component {
                                                     Hotbar
                                                 </legend>
                                                 {/* Close */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-feature-close'>
                                                         Close
@@ -1384,9 +1423,9 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'close', 'values')}
                                                         checked={this.props.values.close}/>
-                                                </section>
+                                                </div>
                                                 {/* Fullscreen */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-feature-fullscreen'>
                                                         Fullscreen
@@ -1396,9 +1435,9 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'fullscreen', 'values')}
                                                         checked={this.props.values.fullscreen}/>
-                                                </section>
+                                                </div>
                                                 {/* Reset Position */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-feature-resetPosition'>
                                                         Reset Position
@@ -1408,9 +1447,9 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'resetPosition', 'values')}
                                                         checked={this.props.values.resetPosition}/>
-                                                </section>
+                                                </div>
                                                 {/* Show on Top */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-feature-showOnTop'>
                                                         Show on Top
@@ -1420,17 +1459,20 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'showOnTop', 'values')}
                                                         checked={this.props.values.showOnTop}/>
-                                                </section>
+                                                </div>
                                             </fieldset>
                                         </section>
                                         {/* Game Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-game-heading'>
+                                            <h2 id='settings-game-heading'
+                                                className='screen-reader-only'>Game Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Game</b>
                                             </span>
                                             {/* Health Display */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Health Display
                                                     </span>
@@ -1441,7 +1483,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-game-select-health'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.health}
@@ -1461,10 +1503,10 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                             {/* Loot Display */}
-                                            <section>
-                                                <section className='element-ends'>
+                                            <div>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Loot Display
                                                     </span>
@@ -1475,7 +1517,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-game-select-loot'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.loot}
@@ -1495,10 +1537,13 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
-                                            </section>
+                                            </div>
                                         </section>
                                         {/* Misc Settings */}
-                                        <section className='section-group'>
+                                        <section className='section-group'
+                                            aria-labelledby='settings-misc-heading'>
+                                            <h2 id='settings-misc-heading'
+                                                className='screen-reader-only'>Misc Settings</h2>
                                             <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                                 <b>Misc</b>
                                             </span>
@@ -1508,7 +1553,7 @@ class WidgetSetting extends Component {
                                                     Voice
                                                 </legend>
                                                 {/* Voice Change */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Type
                                                     </span>
@@ -1519,7 +1564,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-misc-select-type'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.props.values.voice}
@@ -1539,7 +1584,7 @@ class WidgetSetting extends Component {
                                                         }
                                                     })}/>
                                                 {/* Pitch */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Pitch
                                                     </span>
@@ -1550,7 +1595,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Slider className='slider space-nicely space-top length-small'
                                                     onChange={(value) => this.handleSlider(value, 'slider-voice-pitch')}
                                                     min={0}
@@ -1564,7 +1609,7 @@ class WidgetSetting extends Component {
                                                     }}
                                                     value={this.props.values.pitch}/>
                                                 {/* Rate */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Rate
                                                     </span>
@@ -1575,7 +1620,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Slider className='slider space-nicely space-top length-small'
                                                     onChange={(value) => this.handleSlider(value, 'slider-voice-rate')}
                                                     min={0.1}
@@ -1595,7 +1640,7 @@ class WidgetSetting extends Component {
                                                     Popout
                                                 </legend>
                                                 {/* Save position of popup */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-savepositionpopup'>
                                                         Save Position
@@ -1605,7 +1650,7 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'savePositionPopout', 'values')}
                                                         checked={this.props.values.savePositionPopout}/>
-                                                </section>
+                                                </div>
                                             </fieldset>
                                             {/* Cursor */}
                                             <fieldset className='section-sub space-nicely space-top not-bottom length-medium'>
@@ -1613,7 +1658,7 @@ class WidgetSetting extends Component {
                                                     Cursor
                                                 </legend>
                                                 {/* Cursor Type */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <span className='font small'>
                                                         Type
                                                     </span>
@@ -1624,7 +1669,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Select id='settings-popout-misc-cursor-select-type'
                                                     className='select-match space-nicely space-top length-small'
                                                     value={this.state.values.cursor}
@@ -1644,7 +1689,7 @@ class WidgetSetting extends Component {
                                                         }
                                                     })}/>
                                                 {/* Cursor Trail */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-cursor-trail'>
                                                         Trail
@@ -1654,11 +1699,11 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'cursorTrail', 'values')}
                                                         checked={this.props.values.cursorTrail}/>
-                                                </section>
+                                                </div>
                                                 {/* Cursor Trail Color */}
-                                                <section className='grid col-2 spread-setting'>
+                                                <div className='grid col-2 spread-setting'>
                                                     {/* Flat */}
-                                                    <section className='element-ends'>
+                                                    <div className='element-ends'>
                                                         <label className='font small'
                                                             htmlFor='settings-popout-misc-cursor-trail-flat'>
                                                             Flat
@@ -1669,19 +1714,20 @@ class WidgetSetting extends Component {
                                                             onChange={(event) => this.handleCheckbox(event.target.checked, 'cursorTrailFlat', 'values')}
                                                             checked={this.props.values.cursorTrailFlat}
                                                             disabled={!this.props.values.cursorTrail}/>
-                                                    </section>
+                                                    </div>
                                                     {/* Cursor Color */}
                                                     <input id='settings-popout-misc-cursor-trail-color'
                                                         name='settings-popout-misc-cursor-trail-color'
                                                         className='color-input-match boxxed'
                                                         type='color'
                                                         onBlur={(event) => this.handleColor(event.target.value)}
-                                                        disabled={!this.props.values.cursorTrail}/>
-                                                </section>
+                                                        disabled={!this.props.values.cursorTrail}
+                                                        aria-label='Select cursor trail color'/>
+                                                </div>
                                                 {/* Cursor Trail Modes */}
-                                                <section className='grid col-2 spread-setting'>
+                                                <div className='grid col-2 spread-setting'>
                                                     {/* Default */}
-                                                    <section className='element-ends'>
+                                                    <div className='element-ends'>
                                                         <label className='font small'
                                                             htmlFor='settings-popout-misc-cursor-trail-default'>
                                                             Default
@@ -1692,9 +1738,9 @@ class WidgetSetting extends Component {
                                                             value='default'
                                                             onChange={(event) => this.handleRadio(event)}
                                                             disabled={!this.props.values.cursorTrail}/>
-                                                    </section>
+                                                    </div>
                                                     {/* Squiggly */}
-                                                    <section className='element-ends'>
+                                                    <div className='element-ends'>
                                                         <label className='font small'
                                                             htmlFor='settings-popout-misc-cursor-trail-squiggly'>
                                                             Squiggly
@@ -1705,9 +1751,9 @@ class WidgetSetting extends Component {
                                                             value='squiggly'
                                                             onChange={(event) => this.handleRadio(event)}
                                                             disabled={!this.props.values.cursorTrail}/>
-                                                    </section>
+                                                    </div>
                                                     {/* Circle */}
-                                                    <section className='element-ends'>
+                                                    <div className='element-ends'>
                                                         <label className='font small'
                                                             htmlFor='settings-popout-misc-cursor-trail-circle'>
                                                             Circle
@@ -1718,10 +1764,10 @@ class WidgetSetting extends Component {
                                                             value='circle'
                                                             onChange={(event) => this.handleRadio(event)}
                                                             disabled={!this.props.values.cursorTrail}/>
-                                                    </section>
-                                                </section>
+                                                    </div>
+                                                </div>
                                                 {/* Thickness */}
-                                                <section className='element-ends space-nicely space-top length-small'>
+                                                <div className='element-ends space-nicely space-top length-small'>
                                                     <span className='font small'>
                                                         Thickness
                                                     </span>
@@ -1733,7 +1779,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Slider className='slider space-nicely space-top length-small'
                                                     onChange={(value) => this.handleSlider(value, 'cursorTrailThickness')}
                                                     min={0}
@@ -1748,7 +1794,7 @@ class WidgetSetting extends Component {
                                                     value={this.props.values.cursorTrailThickness}
                                                     disabled={!this.props.values.cursorTrail}/>
                                                 {/* Duration */}
-                                                <section className='element-ends space-nicely space-top length-medium'>
+                                                <div className='element-ends space-nicely space-top length-medium'>
                                                     <span className='font small'>
                                                         Duration
                                                     </span>
@@ -1760,7 +1806,7 @@ class WidgetSetting extends Component {
                                                             <FaRandom/>
                                                         </IconContext.Provider>
                                                     </button>
-                                                </section>
+                                                </div>
                                                 <Slider className='slider space-nicely space-top length-small'
                                                     onChange={(value) => this.handleSlider(value, 'cursorTrailDuration')}
                                                     min={0.1}
@@ -1781,7 +1827,7 @@ class WidgetSetting extends Component {
                                                     Random Events
                                                 </legend>
                                                 {/* Trick */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-random-trick'>
                                                         Trick
@@ -1791,9 +1837,9 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleRandomTrick(event.target.checked)}
                                                         checked={this.state.values.randomTrick}/>
-                                                </section>
+                                                </div>
                                                 {/* Text */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-random-text'>
                                                         Text
@@ -1803,9 +1849,9 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'randomText', 'values')}
                                                         checked={this.props.values.randomText}/>
-                                                </section>
+                                                </div>
                                                 {/* Horror */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-horror'>
                                                         Horror
@@ -1815,7 +1861,7 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'horror', 'values')}
                                                         checked={this.props.values.horror}/>
-                                                </section>
+                                                </div>
                                             </fieldset>
                                             {/* Fun */}
                                             <fieldset className='section-sub space-nicely space-top not-bottom length-medium'>
@@ -1823,7 +1869,7 @@ class WidgetSetting extends Component {
                                                     Fun
                                                 </legend>
                                                 {/* Live2D */}
-                                                <section className='element-ends'>
+                                                <div className='element-ends'>
                                                     <label className='font small'
                                                         htmlFor='settings-popout-misc-fun-live2d'>
                                                         Live2D
@@ -1833,20 +1879,20 @@ class WidgetSetting extends Component {
                                                         type='checkbox'
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'live2D', 'values')}
                                                         checked={this.state.values.live2D}/>
-                                                </section>
+                                                </div>
                                             </fieldset>
                                         </section>
-                                    </section>
+                                    </div>
                                     {/* Scrollable Arrow */}
-                                    <section id='settings-popout-arrow-top'
-                                        className='scrollable-arrow top-arrow'>&#x2BC5;</section>
-                                    <section id='settings-popout-arrow-bottom'
-                                        className='scrollable-arrow bottom-arrow'>&#x2BC6;</section>
-                                </section>
+                                    <div id='settings-popout-arrow-top'
+                                        className='scrollable-arrow top-arrow'>&#x2BC5;</div>
+                                    <div id='settings-popout-arrow-bottom'
+                                        className='scrollable-arrow bottom-arrow'>&#x2BC6;</div>
+                                </div>
                             </section>
                         </Draggable>
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

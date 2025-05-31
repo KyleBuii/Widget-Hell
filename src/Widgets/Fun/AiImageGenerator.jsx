@@ -164,8 +164,11 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
             }}
             cancel='span, textarea, button, .popout, .select-match'
             bounds='parent'>
-            <div id='aiimagegenerator-widget'
-                className='widget'>
+            <section id='aiimagegenerator-widget'
+                className='widget'
+                aria-labelledby='aiimagegenerator-widget-heading'>
+                <h2 id='aiimagegenerator-widget-heading'
+                    className='screen-reader-only'>Ai Image Generator Widget</h2>
                 <div id='aiimagegenerator-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -176,7 +179,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                         </IconContext.Provider>
                     </span>
                     {defaultProps.renderHotbar('aiimagegenerator', 'fun')}
-                    <section className='flex-center column gap small-gap'>
+                    <div className='flex-center column gap small-gap'>
                         {/* Inputs */}
                         <div id='aiimagegenerator-inputs'
                             className='aesthetic-scale scale-span flex-center only-justify-content column gap font bold'>
@@ -193,14 +196,24 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                             <textarea className='textarea-match'
                                 value={state.prompt}
                                 name='textarea-prompt'
-                                placeholder='Write your prompt here.'
+                                placeholder='Type your prompt here.'
+                                aria-describedby='prompt-aria-describedby'
                                 onChange={(event) => handleInput('prompt', event)}></textarea>
+                            <span id='prompt-aria-describedby'
+                                className='screen-reader-only'>
+                                Type your prompt here.
+                            </span>
                             <span className='origin-left'>Undesired Content</span>
                             <textarea className='textarea-match'
                                 value={state.negative}
                                 name='textarea-undesired-content'
-                                placeholder='Write what you want removed here.'
+                                placeholder='Type what you want removed here.'
+                                aria-describedby='undesired-content-aria-describedby'
                                 onChange={(event) => handleInput('negative', event)}></textarea>
+                            <span id='undesired-content-aria-describedby'
+                                className='screen-reader-only'>
+                                Type what you want removed here.
+                            </span>
                         </div>
                         {/* Model Select */}
                         <Select className='select-match'
@@ -237,7 +250,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                                 <FaDownload/>
                             </IconContext.Provider>
                         </button>
-                    </section>
+                    </div>
                     {/* Prompt Help Popout */}
                     <Draggable cancel='li'
                         position={{
@@ -246,23 +259,23 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                         }}
                         onStop={(event, data) => defaultProps.updatePosition('aiimagegenerator', 'fun', data.x, data.y, 'popout', 'prompthelp')}
                         bounds={defaultProps.calculateBounds('aiimagegenerator-widget', 'aiimagegenerator-popout-help')}>
-                        <section id='aiimagegenerator-popout-help'
+                        <div id='aiimagegenerator-popout-help'
                             className='popout'>
-                            <section id='aiimagegenerator-popout-animation-help'
+                            <div id='aiimagegenerator-popout-animation-help'
                                 className='popout-animation'>
                                 <ul className='aesthetic-scale scale-li font medium'>
                                     <li>[ ] - De-emphasizes a tag</li>
                                     <li>&#123; &#125; - Emphasizes a tag</li>
                                 </ul>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

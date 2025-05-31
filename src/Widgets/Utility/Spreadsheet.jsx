@@ -142,8 +142,11 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
             }}
             cancel='.Spreadsheet, button, .select-match, input, label'
             bounds='parent'>
-            <div id='spreadsheet-widget'
-                className='widget'>
+            <section id='spreadsheet-widget'
+                className='widget'
+                aria-labelledby='spreadsheet-widget-heading'>
+                <h2 id='spreadsheet-widget-heading'
+                    className='screen-reader-only'>Spreadsheet Widget</h2>
                 <div id='spreadsheet-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -154,7 +157,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                         </IconContext.Provider>
                     </span>
                     {defaultProps.renderHotbar('spreadsheet', 'utility')}
-                    <section>
+                    <div>
                         <button className='button-match inverse'
                             aria-label='Add column'
                             onClick={() => handleButton('addColumn')}>
@@ -183,7 +186,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                                 <FcDeleteRow/>
                             </IconContext.Provider>
                         </button>
-                    </section>
+                    </div>
                     <SimpleBar id='spreadsheet-content'
                         autoHide={false}>
                         <Spreadsheet data={state.data}
@@ -196,7 +199,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

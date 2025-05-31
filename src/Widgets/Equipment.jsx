@@ -247,8 +247,11 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             }}
             cancel='table, button, span, #equipment-popout-view-item'
             bounds='parent'>
-            <div id='equipment-widget'
-                className='widget'>
+            <section id='equipment-widget'
+                className='widget'
+                aria-labelledby='equipment-widget-heading'>
+                <h2 id='equipment-widget-heading'
+                    className='screen-reader-only'>Equipment Widget</h2>
                 <div id='equipment-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -260,13 +263,15 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                     </span>
                     {defaultProps.renderHotbar('equipment', 'utility')}
                     {/* Equipment Container */}
-                    <SimpleBar style={{ maxHeight: '36em' }}>
-                        <section className='flex-center column gap medium-gap'>
+                    <SimpleBar style={{ maxHeight: '36em' }}
+                        role='region'
+                        aria-label='Equipment panel'>
+                        <div className='flex-center column gap medium-gap'>
                             {/* Slots and Stats */}
-                            <section id='equipment-slot-and-stat'
+                            <div id='equipment-slot-and-stat'
                                 className='flex-center row gap medium-gap'>
                                 {/* Slots */}
-                                <section className='flex-center column gap medium-gap'>
+                                <div className='flex-center column gap medium-gap'>
                                     {/* Level */}
                                     <div className='aesthetic-scale scale-span flex-center column'>
                                         <span className='font medium bold'>Level {stats.level}</span>
@@ -483,7 +488,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 backgroundImage: `url(/resources/inventory/consumable.webp)`
                                             }}></button>
                                     </div>
-                                </section>
+                                </div>
                                 {/* Stats */}
                                 <table id='equipment-table-stats'
                                     className='aesthetic-scale scale-table table font'
@@ -541,7 +546,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                         </tr>
                                     </tbody>
                                 </table>
-                            </section>
+                            </div>
                             {/* Abilities */}
                             <SimpleBar className='fill-width font'
                                 style={{
@@ -557,10 +562,10 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                     <tbody id='equipment-abilities'></tbody>
                                 </table>
                             </SimpleBar>
-                        </section>
+                        </div>
                     </SimpleBar>
                     {/* View Item Popout */}
-                    <section id='equipment-popout-view-item'
+                    <div id='equipment-popout-view-item'
                         className='flex-center column gap font no-highlight'
                         onClick={() => {
                             defaultProps.playAudio(audioItemClose);
@@ -625,13 +630,13 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                         <span className='font micro transparent-normal'>Source: {items[state.item.rarity][state.item.name].source}</span>
                         <button className='button-match space-nicely space-top not-bottom'
                             onClick={(event) => unequipItem(event)}>Unequip</button>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

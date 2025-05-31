@@ -129,8 +129,11 @@ class WidgetQuote extends Component {
                 }}
                 cancel='button, span, p'
                 bounds='parent'>
-                <div id='quote-widget' 
-                    className='widget'>
+                <section id='quote-widget' 
+                    className='widget'
+                    aria-labelledby='quote-widget-heading'>
+                    <h2 id='quote-widget-heading'
+                        className='screen-reader-only'>Quote Widget</h2>
                     <div id='quote-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -209,7 +212,7 @@ class WidgetQuote extends Component {
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

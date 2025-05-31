@@ -172,8 +172,11 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             }}
             cancel='button, input, #circlebeat-game'
             bounds='parent'>
-            <div id='circlebeat-widget'
-                className='widget'>
+            <section id='circlebeat-widget'
+                className='widget'
+                aria-labelledby='circlebeat-widget-heading'>
+                <h2 id='circlebeat-widget-heading'
+                    className='screen-reader-only'>Circle Beat Widget</h2>
                 <div id='circlebeat-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -223,7 +226,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

@@ -71,8 +71,11 @@ const WidgetFacts = ({ defaultProps }) => {
             }}
             cancel='span'
             bounds='parent'>
-            <div id='facts-widget'
-                className='widget'>
+            <section id='facts-widget'
+                className='widget'
+                aria-labelledby='facts-widget-heading'>
+                <h2 id='facts-widget-heading'
+                    className='screen-reader-only'>Facts Widget</h2>
                 <div id='facts-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -84,7 +87,7 @@ const WidgetFacts = ({ defaultProps }) => {
                     </span>
                     {defaultProps.renderHotbar('facts', 'fun')}
                     {/* Facts */}
-                    <section className='aesthetic-scale scale-span flex-center column gap only-justify-content'>
+                    <div className='aesthetic-scale scale-span flex-center column gap only-justify-content'>
                         {/* Cat */}
                         <span className='font bold'>&#128008; Cat Facts</span>
                         <div className='alternating-text-color flex-center column gap'>
@@ -95,13 +98,13 @@ const WidgetFacts = ({ defaultProps }) => {
                                 })
                                 : <span>No facts</span>}
                         </div>
-                    </section>
+                    </div>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

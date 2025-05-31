@@ -342,8 +342,11 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             }}
             cancel='button, span, .slider, #minesweeper-board'
             bounds='parent'>
-            <div id='minesweeper-widget'
-                className='widget'>
+            <section id='minesweeper-widget'
+                className='widget'
+                aria-labelledby='minesweeper-widget-heading'>
+                <h2 id='minesweeper-widget-heading'
+                    className='screen-reader-only'>Minesweeper Widget</h2>
                 <div id='minesweeper-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -355,7 +358,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                     </span>
                     {defaultProps.renderHotbar('minesweeper', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Mines Left */}
                         <span className='text-animation flex-center row gap'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: 'black', className: 'global-class-name' }}>
@@ -385,14 +388,14 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Board */}
                     <div id='minesweeper-board'
                         className='flex-center column scrollable dragscroll'>
                         {renderBoard()}
                     </div>
                     {/* Controller Container */}
-                    <section id='minesweeper-container-controller'
+                    <div id='minesweeper-container-controller'
                         className='space-nicely space-top'>
                         <button className='button-match fill-width space-nicely space-bottom'
                             type='button'
@@ -439,7 +442,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                                 value={state.mines}
                                 disabled={state.disabled}/>
                         </div>
-                    </section>
+                    </div>
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none') 
                         ? <div id='minesweeper-health'
@@ -454,7 +457,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

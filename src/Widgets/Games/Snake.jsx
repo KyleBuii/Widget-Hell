@@ -652,10 +652,13 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                 defaultProps.dragStop('snake');
                 defaultProps.updatePosition('snake', 'games', data.x, data.y);
             }}
-            cancel='button, section, a'
+            cancel='button, a, .popout, #snake-display'
             bounds='parent'>
-            <div id='snake-widget'
-                className='widget'>
+            <section id='snake-widget'
+                className='widget'
+                aria-labelledby='snake-widget-heading'>
+                <h2 id='snake-widget-heading'
+                    className='screen-reader-only'>Snake Widget</h2>
                 <div id='snake-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -667,7 +670,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                     </span>
                     {defaultProps.renderHotbar('snake', 'games')}
                     {/* Information Container */}
-                    <section className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
                         {/* Gold Earned */}
                         <span className='text-animation flex-center row'>
                             <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
@@ -690,9 +693,9 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                             </IconContext.Provider>
                             {state.timer}
                         </span>
-                    </section>
+                    </div>
                     {/* Game Container */}
-                    <section id='snake-display'
+                    <div id='snake-display'
                         onKeyDown={keyDown}
                         style={{
                             width: state.size + 'em',
@@ -727,9 +730,9 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                                 </IconContext.Provider>
                             </button>
                         </div>
-                    </section>
-                    {isMobile && <section className='game-controls'>
-                        <section className='d-pad'>
+                    </div>
+                    {isMobile && <div className='game-controls'>
+                        <div className='d-pad'>
                             <button className='up'
                                 aria-label='D-pad up'
                                 onClick={() => keyDown({ keyCode: 87 })}></button>
@@ -742,20 +745,20 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                             <button className='left'
                                 aria-label='D-pad left'
                                 onClick={() => keyDown({ keyCode: 65 })}></button>
-                        </section>
-                        <section style={{ flexGrow: '1', paddingLeft: '1rem' }}>
+                        </div>
+                        <div style={{ flexGrow: '1', paddingLeft: '1rem' }}>
                             <button className='button-match button-game'
                                 onClick={() => keyDown({ keyCode: 16 })}>Dash</button>
-                        </section>
-                    </section>}
+                        </div>
+                    </div>}
                     {/* Hearts */}
                     {(gameProps.healthDisplay !== 'none') 
-                        ? <section id='snake-health'
+                        ? <div id='snake-health'
                             className='flex-center space-nicely space-top not-bottom'>
                             {gameProps.renderHearts(state.health).map((heart) => {
                                 return heart;
                             })}
-                        </section>
+                        </div>
                         : <></>}
                     {/* Settings Popout */}
                     <Draggable cancel='span, .slider, button'
@@ -767,17 +770,17 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                             defaultProps.updatePosition('snake', 'games', data.x, data.y, 'popout', 'settings');
                         }}
                         bounds={defaultProps.calculateBounds('snake-widget', 'snake-popout-settings')}>
-                        <section id='snake-popout-settings'
+                        <div id='snake-popout-settings'
                             className='popout'>
-                            <section id='snake-popout-animation-settings'
+                            <div id='snake-popout-animation-settings'
                                 className='popout-animation'>
-                                <section className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
+                                <div className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
                                     {/* Gameplay Settings */}
-                                    <section className='section-group'>
+                                    <div className='div-group'>
                                         <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
                                             <b>Gameplay</b>
                                         </span>
-                                        <section className='element-ends'>
+                                        <div className='element-ends'>
                                             <span className='font small'>
                                                 Speed
                                             </span>
@@ -788,7 +791,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                                                     <BsArrowCounterclockwise/>
                                                 </IconContext.Provider>
                                             </button>
-                                        </section>
+                                        </div>
                                         <Slider className='slider space-nicely space-top length-medium'
                                             onChange={changeSpeed}
                                             value={state.speed}
@@ -796,10 +799,10 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                                             max={130}
                                             defaultValue={130}
                                             reverse/>
-                                    </section>
-                                </section>
-                            </section>
-                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Author */}
                     {(defaultProps.values.authorNames)
@@ -820,7 +823,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                         </span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };

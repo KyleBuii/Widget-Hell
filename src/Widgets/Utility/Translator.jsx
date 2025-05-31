@@ -1057,10 +1057,13 @@ class WidgetTranslator extends Component{
                     this.props.defaultProps.dragStop('translator');
                     this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y);
                 }}
-                cancel='button, span, p, textarea, section, .select-match'
+                cancel='button, span, p, textarea, .popout, .select-match, #translator-container-image'
                 bounds='parent'>
-                <div id='translator-widget'
-                    className='widget'>
+                <section id='translator-widget'
+                    className='widget'
+                    aria-labelledby='translator-widget-heading'>
+                    <h2 id='translator-widget-heading'
+                        className='screen-reader-only'>Translator Widget</h2>
                     <div id='translator-widget-animation'
                         className='widget-animation'>
                         {/* Drag Handle */}
@@ -1071,11 +1074,11 @@ class WidgetTranslator extends Component{
                             </IconContext.Provider>
                         </span>
                         {this.props.defaultProps.renderHotbar('translator', 'utility')}
-                        <section className='flex-center row wrap'
+                        <div className='flex-center row wrap'
                             style={{
                                 flexWrap: 'wrap-reverse'
                             }}>
-                            <section id='translator-container-image'>
+                            <div id='translator-container-image'>
                                 {/* Image */}
                                 <img id='translator-image'
                                     className='no-highlight'
@@ -1125,9 +1128,9 @@ class WidgetTranslator extends Component{
                                             className='dialogue no-highlight'></div>
                                     </div>
                                     : <></>}
-                            </section>
+                            </div>
                             {/* Translator Container */}
-                            <section>
+                            <div>
                                 {/* Select */}
                                 <div className='flex-center space-nicely space-bottom'>
                                     {/* Select From */}
@@ -1181,9 +1184,14 @@ class WidgetTranslator extends Component{
                                     <div className='cut-scrollbar-corner-part-1 textarea'>
                                         <textarea className='cut-scrollbar-corner-part-2 textarea'
                                             name='translator-textarea-input'
+                                            aria-describedby='translator-input-aria-describedby'
                                             onChange={this.handleChange}
                                             value={this.state.input}></textarea>
                                     </div>
+                                    <span id='translator-input-aria-describedby'
+                                        className='screen-reader-only'>
+                                        Type text here to translate it.
+                                    </span>
                                     <div id='translator-preview-cut-corner'
                                         className='cut-scrollbar-corner-part-1 p'>
                                         <p id='translator-translated-text'
@@ -1219,8 +1227,8 @@ class WidgetTranslator extends Component{
                                     <button className='button-match fadded'
                                         onClick={this.handleRandSentence}>Random sentence</button>
                                 </div>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                         {/* Replace Popout */}
                         <Draggable cancel='input, button'
                             position={{
@@ -1231,12 +1239,12 @@ class WidgetTranslator extends Component{
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'replace');
                             }}
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'replace-popout')}>
-                            <section id='replace-popout'
+                            <div id='replace-popout'
                                 className='popout'>
-                                <section id='replace-popout-animation'
+                                <div id='replace-popout-animation'
                                     className='popout-animation'>
-                                    <section className='flex-center column space-nicely space-all length-long'>
-                                        <section className='flex-center'>
+                                    <div className='flex-center column space-nicely space-all length-long'>
+                                        <div className='flex-center'>
                                             <input className='input-typable all-side input-button-input'
                                                 name='translator-input-popout-replace-from'
                                                 type='text'
@@ -1248,14 +1256,14 @@ class WidgetTranslator extends Component{
                                                 name='translator-input-popout-replace-to'
                                                 type='text'
                                                 onChange={this.handleReplaceTo}></input>
-                                        </section>
-                                        <section className='space-nicely space-top length-medium'>
+                                        </div>
+                                        <div className='space-nicely space-top length-medium'>
                                             <button className='button-match option opt-long'
                                                 onClick={this.handleSave}>Save</button>
-                                        </section>
-                                    </section>
-                                </section>
-                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </Draggable>
                         {/* Reverse Popout */}
                         <Draggable cancel='input, button'
@@ -1267,24 +1275,24 @@ class WidgetTranslator extends Component{
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'reverse');
                             }}
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'reverse-popout')}>
-                            <section id='reverse-popout'
+                            <div id='reverse-popout'
                                 className='popout'>
-                                <section id='reverse-popout-animation'
+                                <div id='reverse-popout-animation'
                                     className='popout-animation'>
-                                    <section className='grid space-nicely space-all length-long'>
+                                    <div className='grid space-nicely space-all length-long'>
                                         <button className='button-match option opt-long'
                                             onClick={this.handleSave}>Save</button>
-                                        <section className='button-set-two flex-center row gap'>
+                                        <div className='button-set-two flex-center row gap'>
                                             <button id='reverse-popout-button-reverseWord'
                                                 className='button-match option disabled-option'
                                                 onClick={() => this.handlePressableButton('reverseWord', 'reverse')}>Word</button>
                                             <button id='reverse-popout-button-reverseSentence'
                                                 className='button-match option disabled-option'
                                                 onClick={() => this.handlePressableButton('reverseSentence', 'reverse')}>Sentence</button>
-                                        </section>
-                                    </section>
-                                </section>
-                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </Draggable>
                         {/* Case Transform Popout */}
                         <Draggable cancel='input, button'
@@ -1296,14 +1304,14 @@ class WidgetTranslator extends Component{
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'casetransform');
                             }}
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'caseTransform-popout')}>
-                            <section id='caseTransform-popout'
+                            <div id='caseTransform-popout'
                                 className='popout'>
-                                <section id='caseTransform-popout-animation'
+                                <div id='caseTransform-popout-animation'
                                     className='popout-animation'>
-                                    <section className='grid space-nicely space-all length-long'>
+                                    <div className='grid space-nicely space-all length-long'>
                                         <button className='button-match option opt-long'
                                             onClick={this.handleSave}>Save</button>
-                                        <section className='flex-center row gap'>
+                                        <div className='flex-center row gap'>
                                             <button id='caseTransform-popout-button-caseTransformLower'
                                                 className='button-match option opt-small disabled-option'
                                                 onClick={() => this.handlePressableButton('caseTransformLower', 'caseTransform')}>Lower</button>
@@ -1313,18 +1321,18 @@ class WidgetTranslator extends Component{
                                             <button id='caseTransform-popout-button-caseTransformCapitalize'
                                                 className='button-match option opt-small disabled-option'
                                                 onClick={() => this.handlePressableButton('caseTransformCapitalize', 'caseTransform')}>Capitalize</button>
-                                        </section>
-                                        <section className='flex-center row gap'>
+                                        </div>
+                                        <div className='flex-center row gap'>
                                             <button id='caseTransform-popout-button-caseTransformAlternate'
                                                 className='button-match option opt-small disabled-option'
                                                 onClick={() => this.handlePressableButton('caseTransformAlternate', 'caseTransform')}>Alternate</button>
                                             <button id='caseTransform-popout-button-caseTransformInverse'
                                                 className='button-match option opt-small disabled-option'
                                                 onClick={() => this.handlePressableButton('caseTransformInverse', 'caseTransform')}>Inverse</button>
-                                        </section>
-                                    </section>
-                                </section>
-                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </Draggable>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
@@ -1341,7 +1349,7 @@ class WidgetTranslator extends Component{
                                 </div>
                             : <></>}
                     </div>
-                </div>
+                </section>
             </Draggable>
         );
     };

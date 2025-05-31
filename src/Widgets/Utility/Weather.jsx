@@ -43,14 +43,18 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                     ...prevState,
                     input: dataSessionStorage.input
                 };
-                handleUpdate(newState.input);    
+                handleUpdate(newState.input);
                 return newState;
             });
         } else {
-            setState((prevState) => ({
-                ...prevState,
-                input: 'auto:ip'
-            }));    
+            setState((prevState) => {
+                const newState = {
+                    ...prevState,
+                    input: 'auto:ip'
+                };
+                handleUpdate(newState.input);
+                return newState;
+            });
         };
         return () => {
             let data = {
@@ -155,10 +159,13 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                 defaultProps.dragStop('weather');
                 defaultProps.updatePosition('weather', 'utility', data.x, data.y);
             }}
-            cancel='button, span, input, section'
+            cancel='button, span, input, .popout'
             bounds='parent'>
-            <div id='weather-widget'
-                className='widget'>
+            <section id='weather-widget'
+                className='widget'
+                aria-labelledby='weather-widget-heading'>
+                <h2 id='weather-widget-heading'
+                    className='screen-reader-only'>Weather Widget</h2>
                 <div id='weather-widget-animation'
                     className='widget-animation'>
                     {/* Drag Handle */}
@@ -175,9 +182,14 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                             <input className='input-match'
                                 name='weather-input-search'
                                 placeholder='Enter location'
+                                aria-labelledby='weather-input-aria-describedby'
                                 onChange={handleChange}
                                 value={state.input}>
                             </input>
+                            <span id='weather-input-aria-describedby'
+                                className='screen-reader-only'>
+                                Type the location here.
+                            </span>
                             <button id='weather-search-help-button'
                                 className='button-match inverse'
                                 aria-label='Help'
@@ -201,9 +213,9 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                         }}
                         onStop={(event, data) => defaultProps.updatePosition('weather', 'utility', data.x, data.y, 'popout', 'searchhelp')}
                         bounds={defaultProps.calculateBounds('weather-widget', 'weather-help-popout')}>
-                        <section id='weather-help-popout'
+                        <div id='weather-help-popout'
                             className='popout'>
-                            <section id='weather-help-popout-animation'
+                            <div id='weather-help-popout-animation'
                                 className='popout-animation'>
                                 <ul className='aesthetic-scale scale-li font medium'>
                                     <li>Latitude and Longitude <br/><span className='font small transparent-normal'>e.g: 48.8567,2.3508</span></li>
@@ -216,8 +228,8 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                                     <li>Auto IP lookup <span className='font small transparent-normal'>e.g: auto:ip</span></li>
                                     <li>IP address (IPv4 and IPv6 supported) <br/><span className='font small transparent-normal'>e.g: 100.0.0.1</span></li>
                                 </ul>
-                            </section>
-                        </section>
+                            </div>
+                        </div>
                     </Draggable>
                     {/* Location */}
                     <div id='weather-location'
@@ -228,7 +240,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                         <span className='font medium bold'>{state.name}, {state.region}</span>
                     </div>
                     {/* Weather Information */}
-                    <section id='weather-information'
+                    <div id='weather-information'
                         className='aesthetic-scale scale-span flex-center column gap'>
                         {/* Image */}
                         <img className='no-highlight'
@@ -307,7 +319,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                     {/* Last Updated */}
                     <span className='text-animation font micro transparent-normal'>Last updated: {state.lastUpdated}</span>
                     {/* Author */}
@@ -315,7 +327,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
                 </div>
-            </div>
+            </section>
         </Draggable>
     );
 };
