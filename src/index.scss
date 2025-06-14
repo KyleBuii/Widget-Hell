@@ -5304,6 +5304,7 @@ input[type='checkbox'], input[type='radio'] {
             right: 0.5em;
         }
     }
+
     #show-hide-widgets-popout-animation {
         width: 29rem;
         min-height: 11.8rem;
@@ -7539,10 +7540,14 @@ input:-webkit-autofill:active {
 }
 
 @media screen and (max-width: 480px) {
-    #show-hide-widgets-popout-button-utility,
-    #show-hide-widgets-popout-button-games,
-    #show-hide-widgets-popout-button-fun {
-        grid-template-columns: repeat(2, auto) !important;
+    #show-hide-widgets-popout-animation {
+        min-height: 17rem !important;
+        
+        #show-hide-widgets-popout-button-utility,
+        #show-hide-widgets-popout-button-games,
+        #show-hide-widgets-popout-button-fun {
+            grid-template-columns: repeat(2, auto) !important;
+        }
     }
 
     #equipment-widget {

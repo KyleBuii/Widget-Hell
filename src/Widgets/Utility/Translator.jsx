@@ -69,6 +69,7 @@ const optionsTranslateTo = [
             { value: 'enchantingTable', label: 'Enchanting Table' },
             { value: 'cunnyCode', label: 'Cunny Code' },
             { value: 'dayo', label: 'Dayo' },
+            { value: 'textSubstitution', label: 'Text Substitution' },
         ]
     },
     {
@@ -850,6 +851,11 @@ class WidgetTranslator extends Component{
                 stringConvertTo = this.state.convert
                     .split('')
                     .join(' ');
+                break;
+            };
+            case 'textSubstitution': {
+                stringConvertTo = this.state.convert
+                    .replace(/\blol\b/gi, 'Amusing')
                 break;
             };
             case 'uwu': {
