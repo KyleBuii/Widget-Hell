@@ -4691,7 +4691,7 @@ input[type='checkbox'], input[type='radio'] {
     font-size: 0.948em;
     background-color: white;
     box-sizing: border-box;
-    
+
 	&.textarea {
         height: 100%;
         max-width: 30em;
@@ -6059,6 +6059,7 @@ input[type='checkbox'], input[type='radio'] {
 
     #musicplayer-playlist {
         @extend .font, .small;
+        display: none;
         position: absolute;
         width: 8em;
         height: 6.7em;
@@ -6132,6 +6133,10 @@ input[type='checkbox'], input[type='radio'] {
 
     .simplebar-placeholder {
         display: none;
+    }
+
+    .simplebar-content-wrapper {
+        // display: none;
     }
 }
 
@@ -7511,11 +7516,9 @@ input:-webkit-autofill:active {
 
     #musicplayer-widget {
         #musicplayer-playlist {
-            top: -14em;
-            left: -21.2em;
-            padding: 1em;
+            right: 21.75em;
+            bottom: 19.2em;
             border-radius: 20px 20px 0 0;
-            transform: translateY(10em);
         }
 
         #musicplayer-playlist-length {

@@ -731,6 +731,7 @@ class WidgetMusicPlayer extends Component {
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
         audio.addEventListener('timeupdate', this.updateDuration);
+        
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
@@ -754,6 +755,10 @@ class WidgetMusicPlayer extends Component {
                 });
             };
         };
+
+        setTimeout(() => {
+            document.getElementById('musicplayer-playlist').style.display = 'unset';
+        }, 100);
     };
     componentWillUnmount() {
         if (!audio.paused) {
