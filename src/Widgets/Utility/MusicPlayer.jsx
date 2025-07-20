@@ -616,24 +616,7 @@ class WidgetMusicPlayer extends Component {
             seconds = `0${seconds}`;
         };
 
-        // const updatedUrls = [...this.state.urls];
-        // updatedUrls[this.state.songIndex].duration = event;
-    const { songIndex, music, urls } = this.state;
-    const totalMusic = music.length;
-
-            // Clone arrays
-    const updatedMusic = [...music];
-    const updatedUrls = [...urls];
-
-    // Update duration in the correct array
-    if (songIndex < totalMusic && updatedMusic[songIndex]) {
-        updatedMusic[songIndex].duration = event;
-    } else if (updatedUrls[songIndex - totalMusic]) {
-        updatedUrls[songIndex - totalMusic].duration = event;
-    }
-
         this.setState({
-            urls: [...updatedUrls],
             maxDuration: `${minutes}:${seconds}`,
             rawMaxDuration: event
         });
@@ -1040,12 +1023,6 @@ class WidgetMusicPlayer extends Component {
                                 })}
                             </SimpleBar>
                         </div>
-                        {/* Statistics Popout */}
-                        <section>
-                            <h3>Statistics</h3>
-                            <span>Played:</span>
-                            <span>Time:</span>
-                        </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
