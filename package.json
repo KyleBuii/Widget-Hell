@@ -6,6 +6,7 @@
   "dependencies": {
     "@fullhuman/postcss-purgecss": "^7.0.2",
     "@huggingface/inference": "^2.8.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "@tsparticles/all": "^3.5.0",
@@ -40,7 +41,7 @@
     "react-paginate": "^8.2.0",
     "react-player": "^2.16.0",
     "react-qr-code": "^2.0.15",
-    "react-redux": "^9.0.4",
+    "react-redux": "^9.2.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "react-spreadsheet": "^0.9.4",

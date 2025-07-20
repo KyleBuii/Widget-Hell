@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay, FaShuffle } from 'react-icons/fa6';
-import { IoPlayBack, IoPlayForward } from 'react-icons/io5';
+import { IoPlayBack, IoPlayForward, IoStatsChart } from 'react-icons/io5';
 import { RiPlayListFill } from 'react-icons/ri';
 import { VscClearAll } from 'react-icons/vsc';
 import ReactPlayer from 'react-player';
@@ -76,6 +76,15 @@ class WidgetMusicPlayer extends Component {
             confirmClear: false,
             loop: false,
             loopOnce: false,
+            statistics: {
+                played: 0,
+                time: {
+                    days: 0,
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0,
+                },
+            },
         };
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
@@ -297,6 +306,9 @@ class WidgetMusicPlayer extends Component {
                         elementButtonPrevious.classList.remove('musicplayer-animation-button-previous');
                     }, 300);
                 };
+                break;
+            };
+            case 'statistic': {
                 break;
             };
             case 'shuffle': {
@@ -593,9 +605,6 @@ class WidgetMusicPlayer extends Component {
         if (event) {
             minutes = Math.floor(event / 60);
             seconds = Math.floor(event % 60);
-            this.setState({
-                rawMaxDuration: event
-            });
         } else {
             minutes = Math.floor(audio.duration / 60);
             seconds = Math.floor(audio.duration % 60);
@@ -606,8 +615,27 @@ class WidgetMusicPlayer extends Component {
         if (seconds < 10) {
             seconds = `0${seconds}`;
         };
+
+        // const updatedUrls = [...this.state.urls];
+        // updatedUrls[this.state.songIndex].duration = event;
+    const { songIndex, music, urls } = this.state;
+    const totalMusic = music.length;
+
+            // Clone arrays
+    const updatedMusic = [...music];
+    const updatedUrls = [...urls];
+
+    // Update duration in the correct array
+    if (songIndex < totalMusic && updatedMusic[songIndex]) {
+        updatedMusic[songIndex].duration = event;
+    } else if (updatedUrls[songIndex - totalMusic]) {
+        updatedUrls[songIndex - totalMusic].duration = event;
+    }
+
         this.setState({
-            maxDuration: `${minutes}:${seconds}`
+            urls: [...updatedUrls],
+            maxDuration: `${minutes}:${seconds}`,
+            rawMaxDuration: event
         });
     };
     loadMusic(music) {
@@ -966,6 +994,14 @@ class WidgetMusicPlayer extends Component {
                                             <FaShuffle/>
                                         </IconContext.Provider>
                                     </button>
+                                    <button id='musicplayer-button-statistic'
+                                        className='button-match inverse'
+                                        aria-label='Statistic'
+                                        onClick={() => this.handleButton('statistic')}>
+                                        <IconContext.Provider value={{ size: '1.3em', className: 'global-class-name' }}>
+                                            <IoStatsChart/>
+                                        </IconContext.Provider>
+                                    </button>
                                     <button id='musicplayer-button-playlist'
                                         className='button-match inverse'
                                         aria-label='Playlist'
@@ -1004,6 +1040,12 @@ class WidgetMusicPlayer extends Component {
                                 })}
                             </SimpleBar>
                         </div>
+                        {/* Statistics Popout */}
+                        <section>
+                            <h3>Statistics</h3>
+                            <span>Played:</span>
+                            <span>Time:</span>
+                        </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
