@@ -37,25 +37,29 @@ class WidgetMusicPlayer extends Component {
                     name: 'Origin | Original by Kilia Kurayami',
                     artist: 'Kilia Kurayami Ch. 【EIEN Project】',
                     url: 'https://www.youtube.com/watch?v=7Rb5fxeqVxs',
-                    timePlayed: 0
+                    timePlayed: 0,
+                    duration: 229,
                 },
                 {
                     name: 'Asian Hideout - ERROR 403: paradise x paradigm',
                     artist: 'Asian Hideout',
                     url: 'https://www.youtube.com/watch?v=ymxBpO5U2KY',
-                    timePlayed: 0
+                    timePlayed: 0,
+                    duration: 213,
                 },
                 {
                     name: 'We are cool【轟はじめ/古石ビジュー】',
                     artist: 'おだまよ',
                     url: 'https://www.youtube.com/watch?v=70PIxN3XM5k',
-                    timePlayed: 0
+                    timePlayed: 0,
+                    duration: 95,
                 },
                 {
                     name: '【MV】ABOVE BELOW【hololive English -Justice- Debut Song】',
                     artist: 'hololive English',
                     url: 'https://www.youtube.com/watch?v=ilLEj-SCCn8',
-                    timePlayed: 0
+                    timePlayed: 0,
+                    duration: 201,
                 },
             ],
             name: '',
@@ -118,13 +122,15 @@ class WidgetMusicPlayer extends Component {
             const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
             const data = await result.json();
             let itemUrl;
-            data.items.forEach((item) => {
+            console.log(data);
+            data.forEach((item) => {
                 itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
                 urlsAdd.push({
                     name: (/\bDeleted video\b|\bPrivate video\b/.test(item.snippet.title)) ? itemUrl : item.snippet.title,
                     artist: item.snippet.videoOwnerChannelTitle,
                     url: itemUrl,
-                    timePlayed: 0
+                    timePlayed: 0,
+                    duration: item.duration,
                 });
             });
             if (data.nextPageToken) {
@@ -309,6 +315,12 @@ class WidgetMusicPlayer extends Component {
                 break;
             };
             case 'statistic': {
+                const elementStatisticPage = document.getElementById('musicplayer-statistics');
+                if (elementStatisticPage.checkVisibility()) {
+                    elementStatisticPage.style.display = 'none';  
+                } else {
+                    elementStatisticPage.style.display = 'block';
+                };
                 break;
             };
             case 'shuffle': {
@@ -695,6 +707,55 @@ class WidgetMusicPlayer extends Component {
         };
         timePlayed = 0;
     };
+    formatTime() {
+        const { days, hours, minutes, seconds } = this.state.statistics.time;
+        const textDays = (days !== 0) ? `${this.props.formatNumber(days, 2)} days ` : '';
+        const textHours = (hours !== 0) ? `${hours} hours ` : '';
+        const textMinutes = (minutes !== 0) ? `${minutes} minutes ` : '';
+        const textSeconds = (seconds !== 0) ? `${seconds} seconds ` : '';
+
+        return `${textDays}${textHours}${textMinutes}${textSeconds}`;
+    };
+    calculateStatistic() {
+        let newStatistic = {};
+        let totalPlayed = 0;
+        let totalTime = 0;
+
+        for (let url in this.state.urls) {
+            totalPlayed += url.timePlayed / url.duration;
+            totalTime += url.timePlayed;
+        };
+
+        const DHMS = this.convertSecondsToDHMS(totalTime);
+
+        newStatistic = {
+            played: totalPlayed,
+            time: {
+                days: DHMS.days,
+                hours: DHMS.hours,
+                minutes: DHMS.minutes,
+                seconds: DHMS.seconds,
+            },
+        };
+
+        let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+        dataLocalStorage['utility']['musicplayer'] = {
+            ...dataLocalStorage['utility']['musicplayer'],
+            statistic: { ...newStatistic },
+        };
+
+        this.setState({
+            statistic: { ...newStatistic },
+        });
+    };
+    convertSecondsToDHMS(totalSeconds) {
+        const days = Math.floor(totalSeconds / (3600 * 24));
+        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return { days, hours, minutes, seconds };
+    };
     storeData() {
         if (localStorage.getItem('widgets') !== null) {
             if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
@@ -746,6 +807,15 @@ class WidgetMusicPlayer extends Component {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
+
+            if ((new Date().getDate() === 1) || (dataMusicPlayer['statistic'] === undefined)) {
+                this.calculateStatistic();
+            } else {
+                this.setState({
+                    statistic: { ...dataMusicPlayer['statistic'] }
+                });
+            };
+
             if (dataMusicPlayer['urls'] !== undefined) {
                 this.setState({
                     urls: [...dataMusicPlayer['urls']],
@@ -794,7 +864,7 @@ class WidgetMusicPlayer extends Component {
                     this.props.defaultProps.dragStop('musicplayer');
                     this.props.defaultProps.updatePosition('musicplayer', 'utility', data.x, data.y);
                 }}
-                cancel='button, span, input, #musicplayer-disc, #musicplayer-playlist'
+                cancel='button, span, input, #musicplayer-disc, #musicplayer-playlist, #musicplayer-statistics'
                 bounds='parent'>
                 <section id='musicplayer-widget'
                     className='widget'
@@ -1023,6 +1093,24 @@ class WidgetMusicPlayer extends Component {
                                 })}
                             </SimpleBar>
                         </div>
+                        {/* Statistics Popout */}
+                        <section id='musicplayer-statistics'
+                            className='scrollable float center flex-center column only-align-items gap medium-gap'
+                            onClick={() => this.handleButton('statistic')}>
+                            <h3>Statistics</h3>
+                            <div className='flex-center column gap align-items-left'>
+                                <span>Played: {this.props.formatNumber(this.state.statistics.played, 2)}</span>
+                                <span>Time: {this.formatTime()}</span>
+                                <ul>
+                                    {this.state.urls.map((url, index) => {
+                                        return <li key={url.name}>
+                                            <span>{index + 1}. {url.name}</span>
+                                            <span>{this.props.formatNumber((url.timePlayed / url.duration), 2)}</span>
+                                        </li>
+                                    })}
+                                </ul>
+                            </div>
+                        </section>
                         {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>

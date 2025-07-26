@@ -17,6 +17,7 @@ import WidgetSetting from './Widgets/Utility/Setting.jsx';
 
 //////////////////// Widget Variables ////////////////////
 //#region
+const WidgetGuide = React.lazy(() => import('./Widgets/Guide.jsx'));
 const WidgetCharacter = React.lazy(() => import('./Widgets/Character.jsx'));
 const WidgetEquipment = React.lazy(() => import('./Widgets/Equipment.jsx'));
 const WidgetAiImageGenerator = React.lazy(() => import('./Widgets/Fun/AiImageGenerator.jsx'));
@@ -7303,6 +7304,16 @@ class Widgets extends Component {
                             disabled: false
                         }   
                     },
+                    guide: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }   
+                    },
                     imagecolorpicker: {
                         name: 'Image Color Picker',
                         active: false,
@@ -9110,7 +9121,8 @@ class Widgets extends Component {
                     case 'setting':
                     case 'inventory':
                     case 'equipment':
-                    case 'character': break;
+                    case 'character':
+                    case 'guide': break;
                     default:
                         widgets[widgetType] = {
                             ...widgets[widgetType],
@@ -9233,6 +9245,9 @@ class Widgets extends Component {
                     valueClose={this.state.values.close}
                     microIcon={microIcon}
                     smallMedIcon={smallMedIcon}/>
+                {this.state.widgets.utility.guide.active
+                    && <LazyWidget Component={WidgetGuide}
+                        defaultProps={this.generateDefaultProps('guide', 'utility')}/>}
                 {this.state.widgets.utility.character.active
                     && <LazyWidget Component={WidgetCharacter}
                         defaultProps={this.generateDefaultProps('character', 'utility')}
@@ -9302,6 +9317,7 @@ class Widgets extends Component {
                 {this.state.widgets.utility.musicplayer.active
                     && <LazyWidget Component={WidgetMusicPlayer}
                         defaultProps={this.generateDefaultProps('musicplayer', 'utility')}
+                        formatNumber={formatNumber}
                         copyToClipboard={copyToClipboard}/>}
                 {this.state.widgets.utility.qrcode.active
                     && <LazyWidget Component={WidgetQRCode}
@@ -9495,7 +9511,7 @@ class Widgets extends Component {
     };
 };
 //#region Widget template
-// import React, { memo, useState } from 'react';
+// import React, { memo } from 'react';
 // import { FaGripHorizontal } from 'react-icons/fa';
 // import { IconContext } from 'react-icons';
 // import Draggable from 'react-draggable';
@@ -9511,8 +9527,11 @@ class Widgets extends Component {
 //             }}
 //             cancel='button'
 //             bounds='parent'>
-//             <div id='[]-widget'
-//                 className='widget'>
+//             <section id='[]-widget'
+//                 className='widget'
+//                 aria-labelledby='[]-widget-heading'>
+//                 <h2 id='[]-widget-heading'
+//                     className='screen-reader-only'>[] Widget</h2>
 //                 <div id='[]-widget-animation'
 //                     className='widget-animation'>
 //                     {/* Drag Handle */}
@@ -9523,13 +9542,13 @@ class Widgets extends Component {
 //                         </IconContext.Provider>
 //                     </span>
 //                     {/* Hotbar */}
-//                     {defaultProps.renderHotbar('donutanimation', 'fun')}
+//                     {defaultProps.renderHotbar('[]', '[WIDGET TYPE]')}
 //                     {/* Author */}
 //                     {(defaultProps.values.authorNames)
 //                         ? <span className='font smaller transparent-normal author-name'>Created by [AUTHOR NAME]</span>
 //                         : <></>}
 //                 </div>
-//             </div>
+//             </section>
 //         </Draggable>
 //     );
 // };

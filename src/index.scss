@@ -87,6 +87,9 @@
     --randColor: ;
     --randColorLight: ;
     --randColorOpacity: ;
+
+    --guideSize: 12px;
+    --bookmarkIndex: 0;
 }
 
 
@@ -3543,6 +3546,157 @@ input[type='checkbox'], input[type='radio'] {
         left: -4em;
     }
 }
+
+/// Made by Przemysław Kopciara [https://codepen.io/captain_anonym0us/pen/ybVbpv]
+/// Edited by me
+.book {
+    transition: opacity 0.4s 0.2s;
+    perspective: 250vw;
+
+    .pages {
+        width: 60vw;
+        height: 44vw;
+        position: relative;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        border-radius: 4px;
+    }
+
+    .page {
+        @extend .no-highlight;
+
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        width: 30vw;
+        height: 44vw;
+        float: none;
+        clear: none;
+        margin: 0;
+        transform-origin: 0 0;
+        transition: transform 1.4s;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        background-color: #f0f0f0;
+
+        &::before {
+            content: '';
+            z-index: 2;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0);
+            transition: background 0.7s;
+        }
+
+        &:nth-child(odd) {
+            pointer-events: all;
+            transform: rotateY(0deg);
+            right: 0;
+            border-radius: 0 4px 4px 0;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 10%);
+            background-position: right top;
+            
+            &::before {
+                background: rgba(0, 0, 0, 0);
+            }
+
+            &:hover {
+                transform: rotateY(-15deg);
+
+                &::before {
+                    background: rgba(0, 0, 0, 0.03);
+                }
+            }
+        }
+
+        &:nth-child(even) {
+            pointer-events: none;
+            transform: rotateY(180deg);
+            transform-origin: 100% 0;
+            left: 0;
+            border-radius: 4px 0 0 4px;
+            border-color: black;
+            background-image: linear-gradient(to left, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 10%);
+
+            &::before {
+                background: rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        &.flipped {
+            &:nth-child(odd) {
+                pointer-events: none;
+                transform: rotateY(-180deg);
+
+                &::before {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &:nth-child(even) {
+                pointer-events: all;
+                transform: rotateY(0deg);
+
+                &:hover {
+                    transform: rotateY(15deg);
+
+                    &::before {
+                        background: rgba(0, 0, 0, 0.03);
+                    }
+                }
+
+                &::before {
+                    background: rgba(0, 0, 0, 0);
+                }
+            }
+        }
+    }
+}
+
+.page {
+    width: 30vw;
+    height: 44vw;
+    background-color: #111111;
+    float: left;
+    background: left top no-repeat;
+    background-size: cover;
+    
+    &:first-of-type, &:last-of-type {
+        background-color: var(--randColorLight);
+    }
+
+    &:nth-child(even) {
+        clear: both;
+    }
+
+    &:nth-child(odd) {
+        background-position: right top;
+    }
+}
+
+.bookmark {
+    @extend .no-highlight;
+
+    z-index: var(--bookmarkIndex);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    position: absolute;
+    top: -2rem;
+    left: 51%;
+    width: 4vw;
+    height: 30vw;
+    background-color: var(--randColor);
+    filter: brightness(0.9);
+    border: 2px solid var(--randColorLight);
+    writing-mode: sideways-lr;
+    color: var(--randColorLight);
+}
 //#endregion
 
 //#region Effects
@@ -5728,6 +5882,12 @@ input[type='checkbox'], input[type='radio'] {
     }
 }
 
+#guide-widget {
+    #guide-widget-animation {
+        padding: 0;
+    }
+}
+
 #imagecolorpicker-widget {
     input:read-only {
         cursor: pointer;
@@ -6119,6 +6279,43 @@ input[type='checkbox'], input[type='radio'] {
 	    &.musicplayer-playlist-length-show {
             visibility: visible;
             top: 8.2em;
+        }
+    }
+
+    #musicplayer-statistics {
+        @extend .no-highlight;
+        z-index: 3;
+        display: none;
+        background-color: white;
+        padding: 2rem;
+        border: 6px solid var(--randColorLight);
+        border-radius: 25px;
+        max-height: 30rem;
+        overflow-y: scroll;
+
+        h3 {
+            margin: 0;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            
+            li {
+                display: flex;
+                justify-content: space-between;
+                height: 1lh;
+
+                span:first-of-type {
+                    max-width: 18rem;
+                    width: calc(100vmin - 10rem);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    margin-right: 1.5rem;
+                }
+            }
         }
     }
 
@@ -7503,9 +7700,11 @@ input:-webkit-autofill:active {
 
     #musicplayer-widget {
         #musicplayer-playlist {
-            right: 21.75em;
-            bottom: 19.2em;
             border-radius: 20px 20px 0 0;
+
+            &.musicplayer-playlist-show {
+                transform: translate(-10.9em, -18.55em);
+            }
         }
 
         #musicplayer-playlist-length {

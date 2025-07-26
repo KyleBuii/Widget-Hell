@@ -1,8 +1,10 @@
+import { debounce } from 'lodash';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
+import { AiOutlineBook } from 'react-icons/ai';
 import { BiBriefcase, BiVolumeMute } from 'react-icons/bi';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
 import { GiAxeSword } from 'react-icons/gi';
@@ -12,7 +14,6 @@ import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import Switch from 'react-switch';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-import { debounce } from 'lodash';
 
 
 let intervalTimeBased;
@@ -189,6 +190,7 @@ class WidgetSetting extends Component {
             inventory: false,
             equipment: false,
             character: false,
+            guide: false,
             maxPageUtility: 0,
             maxPageGames: 0,
             maxPageFun: 0,
@@ -246,6 +248,7 @@ class WidgetSetting extends Component {
                 case 'inventory':
                 case 'equipment':
                 case 'character':
+                case 'guide':
                     this.setState({
                         [event.detail.element]: !this.state[event.detail.element]
                     });
@@ -297,7 +300,8 @@ class WidgetSetting extends Component {
             };
             case 'inventory':
             case 'equipment':
-            case 'character': {
+            case 'character':
+            case 'guide': {
                 let elementButton = document.getElementById(`show-hide-widgets-popout-button-${what}`);
                 this.props.showHide(what, where);
                 this.setState({
@@ -814,7 +818,8 @@ class WidgetSetting extends Component {
                     switch (i) {
                         case 'inventory':
                         case 'equipment':
-                        case 'character': {
+                        case 'character':
+                        case 'guide': {
                             let buttonRPG = document.getElementById(`show-hide-widgets-popout-button-${i}`);
                             buttonRPG.classList.remove('disabled');
                             this.setState({
@@ -983,6 +988,15 @@ class WidgetSetting extends Component {
                                                     onClick={() => this.handlePressableButton('character', 'utility')}>
                                                     <IconContext.Provider value={{ size: this.props.smallMedIcon, className: 'global-class-name' }}>
                                                         <IoBodyOutline/>
+                                                    </IconContext.Provider> 
+                                                </button>
+                                                <button id='show-hide-widgets-popout-button-guide'
+                                                    className='button-match inverse disabled'
+                                                    aria-label='Guide'
+                                                    type='button'
+                                                    onClick={() => this.handlePressableButton('guide', 'utility')}>
+                                                    <IconContext.Provider value={{ size: this.props.smallMedIcon, className: 'global-class-name' }}>
+                                                        <AiOutlineBook/>
                                                     </IconContext.Provider> 
                                                 </button>
                                                 <input className='input-typable'
