@@ -743,6 +743,7 @@ class WidgetMusicPlayer extends Component {
             ...dataLocalStorage['utility']['musicplayer'],
             statistic: { ...newStatistic },
         };
+        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 
         this.setState({
             statistic: { ...newStatistic },
