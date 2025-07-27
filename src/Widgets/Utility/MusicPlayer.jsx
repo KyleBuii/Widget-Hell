@@ -721,7 +721,7 @@ class WidgetMusicPlayer extends Component {
         let totalPlayed = 0;
         let totalTime = 0;
 
-        for (let url in this.state.urls) {
+        for (let url of this.state.urls) {
             totalPlayed += url.timePlayed / url.duration;
             totalTime += url.timePlayed;
         };
