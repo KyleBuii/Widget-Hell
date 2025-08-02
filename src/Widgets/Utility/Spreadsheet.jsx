@@ -16,6 +16,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
     const refColLabels = useRef(state.colLabels);
     const refRowLabels = useRef(state.rowLabels);
     const refData = useRef(state.data);
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         /// Load widget's data from local storage
@@ -69,6 +70,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
     useEffect(() => {
         refData.current = state.data;
     }, [state.data]);
+
     const handleData = (what) => {
         if (JSON.stringify(state.data) !== JSON.stringify(what)) {
             setState((prevState) => ({
@@ -132,6 +134,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

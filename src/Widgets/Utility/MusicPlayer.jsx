@@ -122,7 +122,6 @@ class WidgetMusicPlayer extends Component {
             const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
             const data = await result.json();
             let itemUrl;
-            console.log(data);
             data.forEach((item) => {
                 itemUrl = `https://www.youtube.com/watch?v=${item.snippet.resourceId.videoId}`;
                 urlsAdd.push({
@@ -809,7 +808,7 @@ class WidgetMusicPlayer extends Component {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
 
-            if ((new Date().getDate() === 1) || (dataMusicPlayer['statistic'] === undefined)) {
+            if ((new Date().getDate() === 1) || (dataMusicPlayer['statistic'] === undefined) || (dataMusicPlayer['statistic'] === null)) {
                 this.calculateStatistic();
             } else {
                 this.setState({

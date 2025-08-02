@@ -18,7 +18,7 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 | | Shift | Dash |
 | Simon Game | | |
 | Typing Test | | |
-| Breakout | | |
+| Breakout | Left and Right Arrow Keys/Mouse | Move |
 | Chess | | |
 | 2048 | WASD/Arrow Keys | Move |
 | Trivia | | |

@@ -89,7 +89,6 @@
     --randColorOpacity: ;
 
     --guideSize: 12px;
-    --bookmarkIndex: 0;
 }
 
 
@@ -311,7 +310,7 @@ input[type='checkbox'], input[type='radio'] {
             var(--randColorLight) 25%,
             transparent 25%);
     background-size: 100px 100px;
-    background-color: var(--ranColor);
+    background-color: var(--randColor);
 }
 
 .background-weave {
@@ -3552,7 +3551,7 @@ input[type='checkbox'], input[type='radio'] {
 .book {
     transition: opacity 0.4s 0.2s;
     perspective: 250vw;
-
+    
     .pages {
         width: 60vw;
         height: 44vw;
@@ -3560,6 +3559,19 @@ input[type='checkbox'], input[type='radio'] {
         transform-style: preserve-3d;
         backface-visibility: hidden;
         border-radius: 4px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url(/resources/singles/preview.webp);
+            background-repeat: no-repeat;
+            background-size: cover;
+            opacity: 0.2;
+        }
     }
 
     .page {
@@ -3602,14 +3614,6 @@ input[type='checkbox'], input[type='radio'] {
             &::before {
                 background: rgba(0, 0, 0, 0);
             }
-
-            &:hover {
-                transform: rotateY(-15deg);
-
-                &::before {
-                    background: rgba(0, 0, 0, 0.03);
-                }
-            }
         }
 
         &:nth-child(even) {
@@ -3621,7 +3625,7 @@ input[type='checkbox'], input[type='radio'] {
             border-color: black;
             background-image: linear-gradient(to left, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 10%);
 
-            &::before {
+            &::before:not(.invisible) {
                 background: rgba(0, 0, 0, 0.2);
             }
         }
@@ -3631,7 +3635,7 @@ input[type='checkbox'], input[type='radio'] {
                 pointer-events: none;
                 transform: rotateY(-180deg);
 
-                &::before {
+                &::before:not(.invisible) {
                     background: rgba(0, 0, 0, 0.2);
                 }
             }
@@ -3639,14 +3643,6 @@ input[type='checkbox'], input[type='radio'] {
             &:nth-child(even) {
                 pointer-events: all;
                 transform: rotateY(0deg);
-
-                &:hover {
-                    transform: rotateY(15deg);
-
-                    &::before {
-                        background: rgba(0, 0, 0, 0.03);
-                    }
-                }
 
                 &::before {
                     background: rgba(0, 0, 0, 0);
@@ -3657,12 +3653,16 @@ input[type='checkbox'], input[type='radio'] {
 }
 
 .page {
+    @extend .font, .scrollable;
+
     width: 30vw;
     height: 44vw;
     background-color: #111111;
     float: left;
     background: left top no-repeat;
     background-size: cover;
+    box-sizing: border-box;
+    padding: 1rem;
     
     &:first-of-type, &:last-of-type {
         background-color: var(--randColorLight);
@@ -3675,12 +3675,104 @@ input[type='checkbox'], input[type='radio'] {
     &:nth-child(odd) {
         background-position: right top;
     }
+
+    &.page-invisible {
+        background-color: transparent;
+        overflow: visible;
+    }
+
+    &.page-cover {
+        @extend .flex-center, .column, .gap, .large-gap;
+
+        color: var(--randColor);
+        box-shadow:
+            inset 8px 0 0 25px var(--randColorLight),
+            inset 8px 0 0 40px rgba(var(--randColorOpacity), 0.5);
+        padding: unset;
+        padding-left: 8px;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1rem;
+            height: 100%;
+            background-color: rgba(var(--randColorOpacity), 0.7);
+        }
+
+        span:first-child {
+            font-size: 2rem;
+            font-weight: bolder;
+        }
+
+        img {
+            mix-blend-mode: multiply;
+        }
+    }
+
+    &.page-title {
+        @extend .flex-center, .font, .large, .bold;
+
+        padding: 2rem;
+        text-align: center;
+    }
+
+    &.page-description {
+        @extend .flex-center, .row, .gap, .medium-gap, .only-justify-content;
+
+        > div {
+            &:first-of-type {
+                flex: 0 0 23%;
+                height: 100%;
+                background: repeating-linear-gradient(-55deg,
+                    white,
+                    white 10px,
+                    var(--randColor) 10px,
+                    var(--randColor) 20px);
+                opacity: 0.3;
+            }
+
+            &:last-of-type {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
+                ul {
+                    margin: 0;
+                    padding: 0;
+                    list-style: inside;
+                }
+            }
+        }
+    }
+
+    &.page-information {
+        display: flex;
+        flex-direction: column;
+
+        div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    &.page-table {
+        padding: unset;
+        padding-left: 1rem;
+
+        &.page-flipped {
+            padding-left: unset;
+        }
+    }
 }
 
 .bookmark {
     @extend .no-highlight;
 
-    z-index: var(--bookmarkIndex);
+    z-index: 2;
+    cursor: grab;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -3688,7 +3780,7 @@ input[type='checkbox'], input[type='radio'] {
     gap: 0.5rem;
     position: absolute;
     top: -2rem;
-    left: 51%;
+    left: 1.5rem;
     width: 4vw;
     height: 30vw;
     background-color: var(--randColor);
@@ -3696,6 +3788,15 @@ input[type='checkbox'], input[type='radio'] {
     border: 2px solid var(--randColorLight);
     writing-mode: sideways-lr;
     color: var(--randColorLight);
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    &.flipped {
+        left: unset;
+        right: 1rem;
+    }
 }
 //#endregion
 
@@ -6382,6 +6483,13 @@ input[type='checkbox'], input[type='radio'] {
         max-height: 20rem;
         width: calc(100vmin - 2.4rem);
         margin-top: 0.5rem;
+    }
+    
+    .simplebar-offset {
+        @extend .scrollable;
+
+        max-height: 20rem;
+        position: relative;
     }
 }
 
