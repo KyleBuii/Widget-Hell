@@ -803,21 +803,10 @@ class WidgetMusicPlayer extends Component {
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
         audio.addEventListener('timeupdate', this.updateDuration);
-        
+
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
-
-            if ((new Date().getDate() === 1)
-                || (dataMusicPlayer['statistic'] === undefined)
-                || (dataMusicPlayer['statistic'] === null)
-                || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))) {
-                this.calculateStatistic();
-            } else {
-                this.setState({
-                    statistic: { ...dataMusicPlayer['statistic'] }
-                });
-            };
 
             if (dataMusicPlayer['urls'] !== undefined) {
                 this.setState({
@@ -829,8 +818,19 @@ class WidgetMusicPlayer extends Component {
                         unplayedSongsMaxIndex = this.state.urls.length;
                         this.loadMusic();
                     };
+
                     if (this.state.shuffle) {
                         document.getElementById('musicplayer-button-shuffle').classList.remove('disabled');
+                    };
+
+                    if ((new Date().getDate() === 1)
+                        || !dataMusicPlayer['statistic']
+                        || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))) {
+                        this.calculateStatistic();
+                    } else {
+                        this.setState({
+                            statistic: { ...dataMusicPlayer['statistic'] }
+                        });
                     };
                 });
             } else {
