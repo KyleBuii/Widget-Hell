@@ -745,7 +745,7 @@ class WidgetMusicPlayer extends Component {
         localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 
         this.setState({
-            statistic: { ...newStatistic },
+            statistics: { ...newStatistic },
         });
     };
     convertSecondsToDHMS(totalSeconds) {
@@ -808,7 +808,10 @@ class WidgetMusicPlayer extends Component {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
 
-            if ((new Date().getDate() === 1) || (dataMusicPlayer['statistic'] === undefined) || (dataMusicPlayer['statistic'] === null)) {
+            if ((new Date().getDate() === 1)
+                || (dataMusicPlayer['statistic'] === undefined)
+                || (dataMusicPlayer['statistic'] === null)
+                || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))) {
                 this.calculateStatistic();
             } else {
                 this.setState({
@@ -845,10 +848,13 @@ class WidgetMusicPlayer extends Component {
         if (!audio.paused) {
             audio.pause();
         };
+
         this.storeData();
+
         window.removeEventListener('beforeunload', this.storeData);
         audio.removeEventListener('ended', this.ended);
         audio.removeEventListener('timeupdate', this.updateDuration);
+        
         clearTimeout(timeoutAnimationRemove);
         clearTimeout(timeoutAnimationNext);
         clearTimeout(timeoutAnimationPrevious);
