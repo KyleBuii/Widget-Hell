@@ -12,7 +12,6 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 ## **Showcase**
 ![widget hell logo](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/2048.webp)
 <p float='left'>
-    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/2048.webp' width='200' alt='2048'/>
     <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/ai-image-generator.webp' width='200' alt='ai image-generator'/>
     <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/anime-searcher.webp' width='200' alt='anime searcher'/>
     <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/calculator.webp' width='200' alt='calculator'/>
