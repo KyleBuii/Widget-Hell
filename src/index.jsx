@@ -383,6 +383,8 @@ function hexToRgb(hex) {
 function rgbToHex(rgb) {
     /// Input Format: [0, 0, 0]
     /// Return Format: #00000
+    if (rgb === undefined) return '#000000';
+
     return '#' + rgb.map((x) => {
         const hex = x.toString(16);
         return (hex.length === 1) ? '0' + hex : hex;
@@ -8933,7 +8935,6 @@ class Widgets extends Component {
         if ('maxTouchPoints' in navigator) {
             isMobile = navigator.maxTouchPoints > 0;
         };
-        console.log(localStorage.getItem('widgets'))
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let widgetsUtility = {};
