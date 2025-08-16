@@ -115,7 +115,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                                 input: calculate,
                                 lastComputation: state.input
                                     .replace(/\s/g, '')
-                                    .match(reLastComputation)[0]
+                                    .match(reLastComputation)?.[0]
                             }));                    
                         };
                     };

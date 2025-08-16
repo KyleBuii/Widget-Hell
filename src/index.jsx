@@ -7194,6 +7194,8 @@ class Widgets extends Component {
                 decoration: {value: 'default', label: 'Default'},
                 particleMute: false,
                 transcribeAudio: false,
+                noColorChange: false,
+                colorChange: [0, 0, 0],
             },
             prevPosition: {
                 prevX: 0,
@@ -7891,9 +7893,12 @@ class Widgets extends Component {
         this.renderHotbar = this.renderHotbar.bind(this);
         this.showSetting = this.showSetting.bind(this);
     };
-    randomColor(forcedColorR, forcedColorG, forcedColorB) {
+    randomColor(forcedColorR, forcedColorG, forcedColorB, bypass = false) {
+        if (this.state.values.noColorChange && !bypass) return;
+
         const r = document.documentElement;
         let randColorOpacity, randColor, randColorLight;
+
         if (forcedColorR) {
             randColorOpacity = `${forcedColorR},${forcedColorG},${forcedColorB}`;
             randColor = `rgb(${randColorOpacity})`;
@@ -7906,13 +7911,12 @@ class Widgets extends Component {
             randColor = `rgb(${randColorOpacity})`;
             randColorLight = `rgb(${colorR + 50},${colorG + 50},${colorB + 50})`;
         };
+
         r.style.setProperty('--randColor', randColor);
         r.style.setProperty('--randColorLight', randColorLight);
         r.style.setProperty('--randColorOpacity', randColorOpacity);
         color = randColor;
-        this.setState({
-            color: randColor
-        });
+
         /// Set react-select colors
         selectTheme = {
             primary: randColor,         /// Currently selected option background color
@@ -8276,6 +8280,9 @@ class Widgets extends Component {
                 break;
             case 'loot':
                 lootDisplay = value;
+                break;
+            case 'colorChange':
+                this.randomColor(value[0], value[1], value[2], true);
                 break;
             default:
                 this.updateDesign(what, value);
@@ -8926,6 +8933,7 @@ class Widgets extends Component {
         if ('maxTouchPoints' in navigator) {
             isMobile = navigator.maxTouchPoints > 0;
         };
+        console.log(localStorage.getItem('widgets'))
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let widgetsUtility = {};
@@ -8958,6 +8966,10 @@ class Widgets extends Component {
                             };
                             if (this.state.values.horror) {
                                 this.randomTimeoutHorror();
+                            };
+                            if (this.state.values.noColorChange) {
+                                const colorChangeValue = [...this.state.values.colorChange];
+                                this.randomColor(colorChangeValue[0], colorChangeValue[1], colorChangeValue[2], true);
                             };
                         });
                         /// Setting global variables

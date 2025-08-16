@@ -3404,7 +3404,7 @@ input[type='checkbox'], input[type='radio'] {
     padding: 0.2em;
     border: 1px solid var(--randColor);
     border-radius: 0px 0px 5px 5px;
-    color: white;
+    color: white !important;
     background-color: var(--randColor);
     transition-property: background-color;
     transition-duration: 0.5s;
@@ -3796,6 +3796,36 @@ input[type='checkbox'], input[type='radio'] {
     &.flipped {
         left: unset;
         right: 1rem;
+    }
+}
+
+.dots-between-text {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    span {
+        &:first-of-type {
+            flex: 0 1 auto;
+        }
+
+        &:nth-child(2) {
+            flex: 1;
+            margin: 0.6rem 0.5rem 0;
+            height: 1px;
+            background-image:
+                radial-gradient(
+                    circle,
+                    var(--randColor) 50%,
+                    transparent 51%
+                );
+            background-size: 8px 1px;
+        }
+
+        &:last-of-type {
+            flex: 0 0 auto;
+            margin-left: auto;
+        }
     }
 }
 //#endregion
@@ -6383,7 +6413,7 @@ input[type='checkbox'], input[type='radio'] {
         }
     }
 
-    #musicplayer-statistics {
+    #musicplayer-statistic {
         @extend .no-highlight;
         z-index: 3;
         display: none;

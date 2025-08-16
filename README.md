@@ -1,4 +1,4 @@
-# [**Widget Hell**](https://widget-hell.vercel.app/)
+# ![widget hell logo](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/favicon-32x32.png) [**Widget Hell**](https://widget-hell.vercel.app/)
 > Navigate the Chaos, Customize the Experience.
 
 ## **Description**
@@ -9,297 +9,37 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
 - Customizable design
 - ...and more
 
-## **Game controls**
-| Game | Control | Action |
-| --- | --- | --- |
-| Minesweeper | Left Click | Reveal a cell |
-| | Right Click | Flag/Unflag |
-| Snake | WASD/Arrow Keys | Move |
-| | Shift | Dash |
-| Simon Game | | |
-| Typing Test | | |
-| Breakout | Left and Right Arrow Keys/Mouse | Move |
-| Chess | | |
-| 2048 | WASD/Arrow Keys | Move |
-| Trivia | | |
-| Tetris | AD/Left and Right Arrow Keys | Move |
-| | W/Up Arrow Key | Rotate clockwise |
-| | S/Down Arrow Key | Soft drop |
-| | Spacebar | Hard drop |
-| | F | Reset/Start game |
-| | Shift | Hold piece |
-| Color Memory | | |
-| Rock Paper Scissor | | |
-| Bullet Hell | WASD/Arrow Keys/Mouse | Move |
-| | Shift | Slow move |
-| | Spacebar | Ability |
-| | Ctrl | Switch ability |
-
-## **Gold and EXP guide**
-| Game | Rate |
-| --- | --- |
-| Minesweeper | Equal to mines on complete |
-| Snake | Equal to food eaten |
-| Simon Game | Equal to correct guesses |
-| Typing Test | Equal to half of WPM |
-| Breakout | Equal to bricks broken |
-| Chess | Equal to pieces captured |
-| 2048 | Equal to 1/4 of score |
-| Trivia | Equal to correct guesses |
-| Tetris | Equal to 1 gold for every 1000 score |
-| Color Memory | Equal to correct guesses |
-| Rock Paper Scissor | Equal to correct guesses |
-
-## **Item rewards guide**
-### Drop rates
-| Rarity | Rate |
-| --- | --- |
-| Common | 80% |
-| Rare | 15% |
-| Exotic | 4% |
-| Meme | 1% |
-
-### Restrictions
-| Game | Requirement |
-| --- | --- |
-| Minesweeper | Every 10 mines |
-| Snake | Every 10 food eaten |
-| Simon Game | Every 7 guesses |
-| Typing Test | Every 40 wpm |
-| Breakout | Every 100 bricks destroyed |
-| Chess | Every 5 pieces captured |
-| 2048 | On getting 2048 |
-| Trivia | Every 5 correct answers |
-| Tetris | Every 5000 score |
-| Color Memory | Every 10 correct guesses |
-| Rock Paper Scissor | Every 2 correct guesses |
-
-## **Stats guide**
-| Heart | Hits |  |  |  |  |
-| --- | --- | --- | --- | --- | --- |
-| ![heart 1](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart1.webp) | 1 | ![heart 6](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart6.webp) | 25 | ![heart 11](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart11.webp) | 50 |
-| ![heart 2](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart2.webp) | 5 | ![heart 7](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart7.webp) | 30 | ![heart 12](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart12.webp) | 55 |
-| ![heart 3](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart3.webp) | 10 | ![heart 8](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart8.webp) | 35 | ![heart 13](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart13.webp) | 60 |
-| ![heart 4](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart4.webp) | 15 | ![heart 9](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart9.webp) | 40 |
-| ![heart 5](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart5.webp) | 20| ![heart 10](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/hearts/heart10.webp) | 45 |
-
-<details>
-    <summary>Breakout</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Allows the ball to bounce off the bottom for every 10 |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Bullet Hell</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Gives extra life for every 10 |
-| Mana | Increases ability hit points for every 10 |
-| Attack | Increases bullet damage relative to value |
-| Defense |  |
-| Strength | Increases bullet speed |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence | Reduces ability cooldown by <code>0.1 * (1.5)<sup>x</sup></code> for every 10 |
-| Dexterity | Increases attack rate |
-| Luck |  |
-</details>
-<details>
-    <summary>Chess</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Color Memory</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Minesweeper</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Allows tanking a mine for every 10 |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Rock Paper Scissor</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Simon Game</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Allows surviving an incorrect guess for every 10 |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Snake</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Allows tanking the wall for every 10 |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Tetris</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Trivia</summary>
-
-| Stat |  |
-| --- | --- |
-| Health | Allows a wrong guess for every 10 |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>2048</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-<details>
-    <summary>Typing Test</summary>
-
-| Stat |  |
-| --- | --- |
-| Health |  |
-| Mana |  |
-| Attack |  |
-| Defense |  |
-| Strength |  |
-| Agility |  |
-| Vitality |  |
-| Resilience |  |
-| Intelligence |  |
-| Dexterity |  |
-| Luck |  |
-</details>
-
-## **Items guide**
-<details>
-    <summary>Bullet Hell</summary>
-
-| Item | Type | Information |
-| --- | --- | --- |
-| Code of Hammurabi | Active | Creates a stone that reflects bullets |
-| Grass Block | Active | Creates a grass block that blocks bullets |
-| Rest in Peace | Active | Slashes multiple times, sending tremors through the ground and awakening skeleton hands that rise from the earth |
-| Door Knocker | Passive | Debuffs the enemy with decreased morale |
-
-</details>
+## **Showcase**
+![widget hell logo](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/2048.webp)
+<p float='left'>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/2048.webp' width='200' alt='2048'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/ai-image-generator.webp' width='200' alt='ai image-generator'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/anime-searcher.webp' width='200' alt='anime searcher'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/calculator.webp' width='200' alt='calculator'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/chess.webp' width='200' alt='chess'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/color-memory.webp' width='200' alt='color memory'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/currency-exchange.webp' width='200' alt='currency exchange'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/donut-animation.webp' width='200' alt='donut animation'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/equipment.webp' width='200' alt='equipment'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/google-translator.webp' width='200' alt='google translator'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/guide.webp' width='200' alt='guide'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/image-color-picker.webp' width='200' alt='image color-picker'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/inventory.webp' width='200' alt='inventory'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/minesweeper.webp' width='200' alt='minesweeper'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/music-player.webp' width='200' alt='music player'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/pokemon-search.webp' width='200' alt='pokemon search'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/qr-code.webp' width='200' alt='qr code'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/quote.webp' width='200' alt='quote'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/rock-paper-scissor.webp' width='200' alt='rock paper-scissor'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/setting.webp' width='200' alt='setting'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/simon-game.webp' width='200' alt='simon game'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/snake.webp' width='200' alt='snake'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/tetris.webp' width='200' alt='tetris'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/translator.webp' width='200' alt='translator'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/trivia.webp' width='200' alt='trivia'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/typing-test.webp' width='200' alt='typing test'/>
+    <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/weather.webp' width='200' alt='weather'/>
+</p>
 
 ## **Plans**
 - Allow users to create their own widgets with a focus on high customization and user-friendly simplicity

@@ -80,7 +80,7 @@ class WidgetMusicPlayer extends Component {
             confirmClear: false,
             loop: false,
             loopOnce: false,
-            statistics: {
+            statistic: {
                 played: 0,
                 time: {
                     days: 0,
@@ -314,7 +314,7 @@ class WidgetMusicPlayer extends Component {
                 break;
             };
             case 'statistic': {
-                const elementStatisticPage = document.getElementById('musicplayer-statistics');
+                const elementStatisticPage = document.getElementById('musicplayer-statistic');
                 if (elementStatisticPage.checkVisibility()) {
                     elementStatisticPage.style.display = 'none';  
                 } else {
@@ -707,7 +707,7 @@ class WidgetMusicPlayer extends Component {
         timePlayed = 0;
     };
     formatTime() {
-        const { days, hours, minutes, seconds } = this.state.statistics.time;
+        const { days, hours, minutes, seconds } = this.state.statistic.time;
         const textDays = (days !== 0) ? `${this.props.formatNumber(days, 2)} days ` : '';
         const textHours = (hours !== 0) ? `${hours} hours ` : '';
         const textMinutes = (minutes !== 0) ? `${minutes} minutes ` : '';
@@ -745,7 +745,7 @@ class WidgetMusicPlayer extends Component {
         localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 
         this.setState({
-            statistics: { ...newStatistic },
+            statistic: { ...newStatistic },
         });
     };
     convertSecondsToDHMS(totalSeconds) {
@@ -870,7 +870,7 @@ class WidgetMusicPlayer extends Component {
                     this.props.defaultProps.dragStop('musicplayer');
                     this.props.defaultProps.updatePosition('musicplayer', 'utility', data.x, data.y);
                 }}
-                cancel='button, span, input, #musicplayer-disc, #musicplayer-playlist, #musicplayer-statistics'
+                cancel='button, span, input, #musicplayer-disc, #musicplayer-playlist, #musicplayer-statistic'
                 bounds='parent'>
                 <section id='musicplayer-widget'
                     className='widget'
@@ -1099,13 +1099,13 @@ class WidgetMusicPlayer extends Component {
                                 })}
                             </SimpleBar>
                         </div>
-                        {/* Statistics Popout */}
-                        <section id='musicplayer-statistics'
+                        {/* Statistic Popout */}
+                        <section id='musicplayer-statistic'
                             className='scrollable float center flex-center column only-align-items gap medium-gap'
                             onClick={() => this.handleButton('statistic')}>
-                            <h3>Statistics</h3>
+                            <h3>Statistic</h3>
                             <div className='flex-center column gap align-items-left'>
-                                <span>Played: {this.props.formatNumber(this.state.statistics.played, 2)}</span>
+                                <span>Played: {this.props.formatNumber(this.state.statistic.played, 2)}</span>
                                 <span>Time: {this.formatTime()}</span>
                                 <ul>
                                     {this.state.urls.map((url, index) => {

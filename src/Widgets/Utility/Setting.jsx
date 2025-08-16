@@ -475,8 +475,8 @@ class WidgetSetting extends Component {
                 break;
         };
     };
-    handleColor(event) {
-        this.props.updateValue(this.props.hexToRgb(event), 'cursorTrailColor', 'values');
+    handleColor(event, what) {
+        this.props.updateValue(this.props.hexToRgb(event), what, 'values');
     };
     handleRadio(event) {
         this.props.updateValue(event.target.value, event.target.name, 'values');
@@ -1182,16 +1182,16 @@ class WidgetSetting extends Component {
                                                 value={this.state.values.screenDimmerValue}
                                                 disabled={!this.state.values.screenDimmerSlider}/>
                                             <div className='element-ends'>
+                                                <label className='font small'
+                                                    htmlFor='settings-popout-display-timeBased'>
+                                                    Change based on time
+                                                </label>
                                                 <input id='settings-popout-display-timeBased'
                                                     name='settings-input-popout-display-timeBased'
                                                     type='checkbox'
                                                     disabled={!this.state.values.screenDimmer}
                                                     onChange={(event) => this.handleCheckbox(event.target.checked, 'timeBased', 'values')}
                                                     checked={this.state.values.timeBased}/>
-                                                <label className='font small'
-                                                    htmlFor='settings-popout-display-timeBased'>
-                                                    Change based on time
-                                                </label>
                                             </div>
                                         </section>
                                         {/* Design Settings */}
@@ -1378,6 +1378,25 @@ class WidgetSetting extends Component {
                                                         }
                                                     })}/>
                                             </div>
+                                            <div className='element-ends'>
+                                                <label className='font small'
+                                                    htmlFor='settings-popout-design-no-color-change'>
+                                                    No Color Change
+                                                </label>
+                                                <input id='settings-popout-design-no-color-change'
+                                                    name='settings-input-popout-design-no-color-change'
+                                                    type='checkbox'
+                                                    onChange={(event) => this.handleCheckbox(event.target.checked, 'noColorChange', 'values')}
+                                                    checked={this.props.values.noColorChange}/>
+                                            </div>
+                                            <input id='settings-popout-design-color-change-color'
+                                                name='settings-popout-design-color-change-color'
+                                                className='color-input-match boxxed'
+                                                type='color'
+                                                defaultValue={this.props.rgbToHex(this.props.values.colorChange)}
+                                                onBlur={(event) => this.handleColor(event.target.value, 'colorChange')}
+                                                disabled={!this.props.values.noColorChange}
+                                                aria-label='Select site color'/>
                                             {/* Checkboxes */}
                                             <div className='grid col-2 spread-setting'>
                                                 {/* Shadow */}
@@ -1734,7 +1753,7 @@ class WidgetSetting extends Component {
                                                         name='settings-popout-misc-cursor-trail-color'
                                                         className='color-input-match boxxed'
                                                         type='color'
-                                                        onBlur={(event) => this.handleColor(event.target.value)}
+                                                        onBlur={(event) => this.handleColor(event.target.value, 'cursorTrailColor')}
                                                         disabled={!this.props.values.cursorTrail}
                                                         aria-label='Select cursor trail color'/>
                                                 </div>

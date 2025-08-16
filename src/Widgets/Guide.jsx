@@ -1,7 +1,7 @@
-import React, { memo, useEffect } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
+import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
 
 const information = {
     special: [
@@ -372,33 +372,398 @@ const information = {
     ],
 };
 
+const PageConstructor = memo(({ children, pageNum, pageIndex, pageClick, className = '', }) => {
+    return <div className={`page ${className}`}
+        style={{ zIndex: pageIndex }}
+        data-page-num={pageNum}
+        onClick={pageClick}>
+        {children}
+    </div>
+});
+PageConstructor.displayName = 'Page Constructor';
+const Page = ({
+    pageNum, pageIndex, pageClick,
+    type, title,
+    toc, flipped, propValues,
+    firstSection, sectionName, widgetName, widgetDescription,
+    stats, items,
+}) => {
+    switch (type) {
+        case 'cover':
+            return <PageConstructor className='page-cover'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <span>GUIDE</span>
+                <img src='/favicon-96x96.png'
+                    srcSet='
+                        /favicon-16x16.png 16w,
+                        /favicon-32x32.png 32w,
+                        /favicon-96x96.png 96w,
+                    '
+                    sizes='96px'
+                    alt='Cover art'/>
+                    {(propValues.authorNames)
+                        ? <span>KYLE BUI</span>
+                        : <></>}
+            </PageConstructor>
+        case 'title':
+            return <PageConstructor className='page-title'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                {title}
+            </PageConstructor>
+        case 'toc':
+            return <PageConstructor pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                {(toc.length !== 0)
+                    && toc.map((entry, entryIndex) => {
+                        return <div className='dots-between-text'
+                            key={`${entry.title} ${entryIndex}`}>
+                            <span>{entry.title.toUpperCase()}</span>
+                            <span></span>
+                            <span>{entry.page}</span>
+                        </div>
+                    }
+                )}
+            </PageConstructor>
+        case 'description':
+            return <PageConstructor className='page-description'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <div></div>
+                <div>
+                    <span>Web application featuring a versatile array of draggable widgets! EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more! You can display what widgets you want and move them however you will!</span>
+                    <div>
+                        <span className='font bold'>Features</span>
+                        <ul>
+                            <li>30+ widgets</li>
+                            <li>Customizable design</li>
+                            <li>...and more</li>
+                        </ul>
+                    </div>
+                </div>
+            </PageConstructor>
+        case 'bookmark':
+            return <PageConstructor className='page-invisible'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <div className={`bookmark ${flipped && 'flipped'}`}>
+                    {[...'BOOKMARK'].map((letter, index) => {
+                        return <span key={`${letter} ${index}`}>{letter}</span>
+                    })}
+                </div>
+            </PageConstructor>
+        case 'widget-info':
+            return <PageConstructor className='page-information'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                {firstSection && <span className='font large bold'>{sectionName.replace(/^./, (char) => char.toUpperCase())}</span>}
+                <span className='font medium bold'>{widgetName}</span>
+                <div>
+                    {widgetDescription.map((descr, descrIndex) => (
+                        <span key={`${widgetName} descr ${descrIndex}`}>{descr}</span>
+                    ))}
+                </div>
+            </PageConstructor>
+        case 'controls':
+            return <PageConstructor className='page-table'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <table className='table'
+                    aria-label='Controls'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Game</th>
+                            <th scope='col'>Control</th>
+                            <th scope='col'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(information.games).map((game) => {
+                            if (game.controls === undefined)
+                                return <tr key={game.name}>
+                                    <td>{game.name}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                            return game.controls.map((control, controlIndex) => {
+                                return <tr key={control.control}>
+                                    <td>{(controlIndex === 0) && game.name}</td>
+                                    <td>{control.control}</td>
+                                    <td>{control.action}</td>
+                                </tr>
+                            });
+                        })}
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'gold-exp':
+            return <PageConstructor className='page-table'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <table className='table'
+                    aria-label='Gold and EXP'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Game</th>
+                            <th scope='col'>Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(information.games).map((game) => {
+                            return <tr key={game.name}>
+                                <td>{game.name}</td>
+                                <td>{game.exp}</td>
+                            </tr>
+                        })}
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'drop-rates':
+            return <PageConstructor className='page-table'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <table className='table'
+                    aria-label='Drop Rates'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Rarity</th>
+                            <th scope='col'>Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Common</td>
+                            <td>80%</td>
+                        </tr>
+                        <tr>
+                            <td>Rare</td>
+                            <td>15%</td>
+                        </tr>
+                        <tr>
+                            <td>Exotic</td>
+                            <td>4%</td>
+                        </tr>
+                        <tr>
+                            <td>Meme</td>
+                            <td>1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'restrictions':
+            return <PageConstructor className='page-table'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <table className='table'
+                    aria-label='Restrictions'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Game</th>
+                            <th scope='col'>Requirement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(information.games).map((game) => {
+                            return <tr key={game.name}>
+                                <td>{game.name}</td>
+                                <td>{game.restriction}</td>
+                            </tr>
+                        })}
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'stats-info':
+            return <PageConstructor className='page-table'
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <table className='table'
+                    aria-label='Stats'>
+                    <thead>
+                        <tr>
+                            <th scope='col'>Heart</th>
+                            <th scope='col'>Hits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((number) => (
+                            <tr key={number}>
+                                <td>
+                                    <img src={`/resources/hearts/heart${number}.webp`}
+                                        alt={`heart ${number}`}/>
+                                </td>
+                                <td>{number * 5}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'stats':
+            return <PageConstructor className={`page-table ${flipped && 'page-flipped'}`}
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <span className='font medium bold'
+                    style={{ padding: '0.5rem' }}>{widgetName}</span>
+                <table className='table'>
+                    <thead>
+                        <tr>
+                            <td>Stat</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {['Health', 'Mana', 'Attack', 'Defense', 'Strength', 'Agility', 'Vitality', 'Resilience', 'Intelligence', 'Dexterity', 'Luck'].map((stat) => {
+                            return <tr key={`${widgetName} ${stat}`}>
+                                <td>{stat}</td>
+                                <td>{stats?.[stat.toLowerCase()]}</td>
+                            </tr>
+                        })}
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'items':
+            return <PageConstructor className={`page-table ${flipped && 'page-flipped'}`}
+                pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <span className='font medium bold'
+                    style={{ padding: '0.5rem' }}>{widgetName}</span>
+                <table className='table'>
+                    <thead>
+                        <tr>
+                            <td>Item</td>
+                            <td>Type</td>
+                            <td>Information</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(Object.entries(items).length !== 0)
+                            ? Object.entries(items).map(([itemName, itemData]) => {
+                                return <tr key={itemName}>
+                                <td>{itemName.replace(/\b\w/g, (char) => char.toUpperCase())}</td>
+                                    <td>{itemData.type.replace(/^./, (char) => char.toUpperCase())}</td>
+                                    <td>{itemData.information}</td>
+                                </tr>
+                            })
+                            : <tr key={`${widgetName} no items`}>
+                                <td style={{ opacity: 0.5, textAlign: 'center' }}
+                                    colSpan={3}>
+                                    No items
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </PageConstructor>
+        case 'spacer':
+            return <PageConstructor pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+            </PageConstructor>
+        default:
+            return <PageConstructor pageNum={pageNum}
+                pageIndex={pageIndex}
+                pageClick={pageClick}>
+                <div>Unknown page type: {type}</div>
+            </PageConstructor>
+    };
+};
+
 const WidgetGuide = ({ defaultProps }) => {
+    const [elementPages, setElementPages] = useState([]);
+
     useEffect(() => {
-        const pages = document.getElementsByClassName('page');
+        let tempPages = [];
 
-        for(var i = 0; i < pages.length; i++) {
-            let page = pages[i];
+        //#region Pages
+        tempPages.push({ type: 'cover', propValues: defaultProps.values, });
+        tempPages.push({ type: 'title',  title: 'TABLE OF CONTENTS', });
+        tempPages.push({ type: 'toc', toc: [], });
+        tempPages.push({ type: 'title',  title: 'DESCRIPTION', });
+        tempPages.push({ type: 'bookmark', });
+        tempPages.push({ type: 'bookmark', flipped: true, });
+        tempPages.push({ type: 'description', });
+        tempPages.push({ type: 'title',  title: 'WIDGETS', });
+        Object.entries(information).forEach((info) => {
+            info[1].forEach((widget, widgetIndex) => {
+                tempPages.push({
+                    type: 'widget-info',
+                    firstSection: (widgetIndex === 0),
+                    sectionName: info[0],
+                    widgetName: widget.name,
+                    widgetDescription: widget.description,
+                });
+            })
+        });
+        if ((Object.values(information).reduce((total, value) => value.length + total, 0)) % 2 === 0)
+            tempPages.push({ type: 'spacer', });
+        tempPages.push({ type: 'title',  title: 'CONTROLS', });
+        tempPages.push({ type: 'controls', });
+        tempPages.push({ type: 'title',  title: 'GOLD AND EXP', });
+        tempPages.push({ type: 'gold-exp', });
+        tempPages.push({ type: 'title',  title: 'DROP RATES', });
+        tempPages.push({ type: 'drop-rates', });
+        tempPages.push({ type: 'title',  title: 'RESTRICTIONS', });
+        tempPages.push({ type: 'restrictions', });
+        tempPages.push({ type: 'title',  title: 'STATS', });
+        tempPages.push({ type: 'stats-info', });
+        Object.values(information.games).forEach((game, gameIndex) => {
+            tempPages.push({
+                type: 'stats',
+                flipped: (gameIndex % 2 === 0),
+                widgetName: game.name,
+                stats: { ...game.stats },
+            });
+        });
+        if (Object.keys(information.games).length % 2 !== 0)
+            tempPages.push({ type: 'spacer', });
+        tempPages.push({ type: 'title',  title: 'ITEMS', });
+        Object.values(information.games).forEach((game, gameIndex) => {
+            tempPages.push({
+                type: 'items',
+                flipped: (gameIndex % 2 !== 0),
+                widgetName: game.name,
+                items: { ...game.items },
+            });
+        });
+        (Object.keys(information.games).length % 2 === 0)
+            tempPages.push({ type: 'spacer', });
+        tempPages.push({ type: 'spacer', });
 
-            if (i % 2 === 0) {
-                page.style.zIndex = (pages.length - i);
-            };
-
-            pages[i].pageNum = i + 1;
-            pages[i].onclick = (event) => handlePageClick(event);
+        for (let pageIndex = 0; pageIndex < tempPages.length; pageIndex++) {
+            const currentPage = tempPages[pageIndex];
+            if (currentPage.title === undefined) continue;
+            tempPages[2].toc.push({ title: currentPage.title || currentPage.type, page: pageIndex, });
         };
+        //#endregion
+
+        setElementPages([ ...tempPages ]);
     }, []);
 
     const handlePageClick = (event) => {
-        const page = event.currentTarget;
-        
         if (event.target.closest('.bookmark')) return;
+        
+        const page = event.currentTarget;
 
-        if (page.pageNum % 2 === 0) {
-            page.classList.remove('flipped');
-            page.previousElementSibling.classList.remove('flipped');
-        } else {
+        if (page.dataset.pageNum % 2 === 0) {
             page.classList.add('flipped');
             page.nextElementSibling.classList.add('flipped');
+        } else {
+            page.classList.remove('flipped');
+            page.previousElementSibling.classList.remove('flipped');
         };
 
         if (page.classList.contains('page-invisible')) {
@@ -406,12 +771,12 @@ const WidgetGuide = ({ defaultProps }) => {
             const previousPage = event.currentTarget.previousElementSibling.previousElementSibling;
 
             const pageTimeout = setTimeout(() => {
-                if (nextPage.pageNum % 2 === 0) {
-                    previousPage.classList.remove('flipped');
-                    previousPage.previousElementSibling.classList.remove('flipped');
-                } else {
+                if (nextPage.dataset.pageNum % 2 === 0) {
                     nextPage.classList.add('flipped');
                     nextPage.nextElementSibling.classList.add('flipped');
+                } else {
+                    previousPage.classList.remove('flipped');
+                    previousPage.previousElementSibling.classList.remove('flipped');
                 };
                 
                 clearTimeout(pageTimeout);
@@ -447,335 +812,14 @@ const WidgetGuide = ({ defaultProps }) => {
                     {/* Hotbar */}
                     {defaultProps.renderHotbar('guide', 'utility')}
                     <div className='pages'>
-                        <div className='page page-cover'>
-                            <span>GUIDE</span>
-                            <img src='/favicon-96x96.png'
-                                srcSet='
-                                    /favicon-16x16.png 16w,
-                                    /favicon-32x32.png 32w,
-                                    /favicon-96x96.png 96w,
-                                '
-                                sizes='96px'
-                                alt='Cover art'/>
-                             {(defaultProps.values.authorNames)
-                                 ? <span>KYLE BUI</span>
-                                 : <></>}
-                        </div>
-                        <div className='page page-title'>TABLE OF CONTENTS</div>
-                        <div className='page'></div>
-                        <div className='page page-title'>DESCRIPTION</div>
-                        {/* Bookmark */}
-                        <div className='page page-invisible'>
-                            <div className='bookmark'>
-                                {[...'BOOKMARK'].map((letter, index) => {
-                                    return <span key={`${letter} ${index}`}>{letter}</span>
-                                })}
-                            </div>
-                        </div>
-                        <div className='page page-invisible'>
-                            <div className='bookmark flipped'>
-                                {[...'BOOKMARK'].map((letter, index) => {
-                                    return <span key={`${letter} ${index}`}>{letter}</span>
-                                })}
-                            </div>
-                        </div>
-                        <div className='page page-description'>
-                            <div></div>
-                            <div>
-                                <span>Web application featuring a versatile array of draggable widgets! EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more! You can display what widgets you want and move them however you will!</span>
-                                <div>
-                                    <span className='font bold'>Features</span>
-                                    <ul>
-                                        <li>30+ widgets</li>
-                                        <li>Customizable design</li>
-                                        <li>...and more</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='page page-title'>WIDGETS</div>
-                        {Object.entries(information).map((info) => {
-                            return info[1].map((widget, widgetIndex) => {
-                                return <div className='page page-information'
-                                    key={`${info[0]} ${widget.name}`}>
-                                    {(widgetIndex === 0) && <span className='font large bold'>{info[0].replace(/^./, (char) => char.toUpperCase())}</span>}
-                                    <span className='font medium bold'>{widget.name}</span>
-                                    <div>
-                                        {widget.description.map((descr, descrIndex) => {
-                                            return <span key={`${widget.name} description ${descrIndex}`}>
-                                                {descr}
-                                            </span>
-                                        })}
-                                    </div>
-                                </div>
-                            })
+                        {Object.values(elementPages).map((page, pageIndex) => {
+                            return <Page key={`page ${pageIndex}`}
+                                {...page}
+                                pageNum={pageIndex}
+                                pageIndex={(pageIndex % 2 === 0) && elementPages.length - pageIndex}
+                                pageClick={handlePageClick}>
+                            </Page>
                         })}
-                        {((Object.values(information).reduce((total, value) => value.length + total, 0)) % 2 === 0) && <div className='page'></div>}
-                        <div className='page page-title'>CONTROLS</div>
-                        <div className='page page-table'>
-                            <table className='table'
-                                aria-label='Controls'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Game</th>
-                                        <th scope='col'>Control</th>
-                                        <th scope='col'>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.values(information.games).map((game) => {
-                                        if (game.controls === undefined)
-                                            return <tr key={game.name}>
-                                                <td>{game.name}</td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-
-                                        return game.controls.map((control, controlIndex) => {
-                                            return <tr key={control.control}>
-                                                <td>{(controlIndex === 0) && game.name}</td>
-                                                <td>{control.control}</td>
-                                                <td>{control.action}</td>
-                                            </tr>
-                                        });
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className='page page-title'>GOLD AND EXP</div>
-                        <div className='page page-table'>
-                            <table className='table'
-                                aria-label='Gold and EXP'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Game</th>
-                                        <th scope='col'>Rate</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.values(information.games).map((game) => {
-                                        return <tr key={game.name}>
-                                            <td>{game.name}</td>
-                                            <td>{game.exp}</td>
-                                        </tr>
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className='page page-title'>DROP RATES</div>
-                        <div className='page page-table'>
-                            <table className='table'
-                                aria-label='Drop Rates'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Rarity</th>
-                                        <th scope='col'>Rate</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Common</td>
-                                        <td>80%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Rare</td>
-                                        <td>15%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Exotic</td>
-                                        <td>4%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Meme</td>
-                                        <td>1%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className='page page-title'>RESTRICTIONS</div>
-                        <div className='page page-table'>
-                            <table className='table'
-                                aria-label='Restrictions'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Game</th>
-                                        <th scope='col'>Requirement</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.values(information.games).map((game) => {
-                                        return <tr key={game.name}>
-                                            <td>{game.name}</td>
-                                            <td>{game.restriction}</td>
-                                        </tr>
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className='page page-title'>STATS</div>
-                        <div className='page page-table'>
-                            <table className='table'
-                                aria-label='Stats'>
-                                <thead>
-                                    <tr>
-                                        <th scope='col'>Heart</th>
-                                        <th scope='col'>Hits</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart1.webp'/></td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart2.webp'/></td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart3.webp'/></td>
-                                        <td>10</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart4.webp'/></td>
-                                        <td>15</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart5.webp'/></td>
-                                        <td>20</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart6.webp'/></td>
-                                        <td>25</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart7.webp'/></td>
-                                        <td>30</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart8.webp'/></td>
-                                        <td>35</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart9.webp'/></td>
-                                        <td>40</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart10.webp'/></td>
-                                        <td>45</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart11.webp'/></td>
-                                        <td>50</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart12.webp'/></td>
-                                        <td>55</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src='/resources/hearts/heart13.webp'/></td>
-                                        <td>60</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        {Object.values(information.games).map((game, gameIndex) => {
-                            return <div className={`page page-table ${(gameIndex % 2 === 0) && 'page-flipped'}`}
-                                key={`stats ${game.name}`}>
-                                <span className='font medium bold'
-                                    style={{ padding: '0.5rem' }}>{game.name}</span>
-                                <table className='table'>
-                                    <thead>
-                                        <tr>
-                                            <td>Stat</td>
-                                            <td></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Health</td>
-                                            <td>{game.stats?.health}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mana</td>
-                                            <td>{game.stats?.mana}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Attack</td>
-                                            <td>{game.stats?.attack}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Defense</td>
-                                            <td>{game.stats?.defense}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Strength</td>
-                                            <td>{game.stats?.strength}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Agility</td>
-                                            <td>{game.stats?.agility}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Vitality</td>
-                                            <td>{game.stats?.vitality}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Resilience</td>
-                                            <td>{game.stats?.resilience}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Intelligence</td>
-                                            <td>{game.stats?.intelligence}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dexterity</td>
-                                            <td>{game.stats?.dexterity}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Luck</td>
-                                            <td>{game.stats?.luck}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        })}
-                        {(Object.keys(information.games).length % 2 !== 0) && <div className='page'></div>}
-                        <div className='page page-title'>ITEMS</div>
-                        {Object.values(information.games).map((game, gameIndex) => {
-                            return <div className={`page page-table ${(gameIndex % 2 === 0) && 'page-flipped'}`}
-                                key={`stats ${game.name}`}>
-                                <span className='font medium bold'
-                                    style={{ padding: '0.5rem' }}>{game.name}</span>
-                                <table className='table'>
-                                    <thead>
-                                        <tr>
-                                            <td>Item</td>
-                                            <td>Type</td>
-                                            <td>Information</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(game.items)
-                                            ? Object.entries(game.items).map(([itemName, itemData]) => {
-                                                return <tr key={itemName}>
-                                                <td>{itemName.replace(/\b\w/g, (char) => char.toUpperCase())}</td>
-                                                    <td>{itemData.type.replace(/^./, (char) => char.toUpperCase())}</td>
-                                                    <td>{itemData.information}</td>
-                                                </tr>
-                                            })
-                                            : <tr key={`${game.name} no items`}>
-                                                <td style={{ opacity: 0.5, textAlign: 'center' }}
-                                                    colSpan={3}>
-                                                    No items
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        })}
-                        {(Object.keys(information.games).length % 2 === 0) && <div className='page'></div>}
-                        <div className='page'></div>
                     </div>
                 </div>
             </section>
