@@ -5716,6 +5716,51 @@ input[type='checkbox'], input[type='radio'] {
             }
         }
     }
+
+    #animesearcher-widget-filters {
+        max-width: 40rem;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition-property: max-height, opacity;
+        transition-duration: 0.4s;
+
+        > div {
+            &:first-of-type {
+                > .radio-match {
+                    flex: 1 1 0;
+                    overflow: hidden;
+                    
+                    label {
+                        box-sizing: border-box;
+                        max-width: unset;
+                        width: 100%;
+
+                    }
+                }
+            }
+
+            &:nth-child(2) {
+                display: grid;
+                gap: 0.3rem;
+                grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+            }
+            
+            &:last-of-type {
+                @extend .scrollable;
+
+                display: grid;
+                gap: 0.3rem;
+                grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+                max-height: 4.6rem;
+            }
+        }
+
+        &.show {
+            max-height: 100vh;
+            opacity: 1;
+        }
+    }
 }
 
 #battery-widget {
@@ -6426,7 +6471,6 @@ input[type='checkbox'], input[type='radio'] {
 
         h3 {
             margin: 0;
-            margin-bottom: 1rem;
         }
 
         ul {
@@ -6447,6 +6491,16 @@ input[type='checkbox'], input[type='radio'] {
                     margin-right: 1.5rem;
                 }
             }
+        }
+    }
+
+    #musicplayer-statistic-title {
+        margin-bottom: 1rem;
+        align-items: flex-end;
+
+        span {
+            font-size: 0.8rem;
+            color: rgba(0, 0, 0, 0.2);
         }
     }
 

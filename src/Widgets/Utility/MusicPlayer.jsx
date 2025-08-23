@@ -23,6 +23,8 @@ let timePlayed = 0;
 let unplayedSongsIndex = [];
 let unplayedSongsMaxIndex = 0;
 let totalTimesPlayed = 0;
+let singleSongAdd = false;
+let noDurationSongs = {};
 
 class WidgetMusicPlayer extends Component {
     constructor(props) {
@@ -113,13 +115,15 @@ class WidgetMusicPlayer extends Component {
             });
         } catch (err) {
             console.error(err);
+        } finally {
+            singleSongAdd = true;
         };
     };
     async fetchYoutubePlaylist(ID, pageToken = '') {
         try {
             document.getElementById('musicplayer-input-add').classList.remove('musicplayer-animation-input-add');
             document.getElementById('musicplayer-input-add').value = '';
-            const result = await fetch(`/api/youtube?playlistId=${ID}&pageToken=${pageToken}`);
+            const result = await fetch(`/api/youtube?ids=${ID}&pageToken=${pageToken}`);
             const data = await result.json();
             let itemUrl;
             data.forEach((item) => {
@@ -152,6 +156,31 @@ class WidgetMusicPlayer extends Component {
         } finally {
             this.animationInputAdd();
         };
+    };
+    async fetchMissingDuration(urls) {
+        const newUrls = [...urls];
+
+        do {
+            try {
+                const idsParam = encodeURIComponent(JSON.stringify(Object.fromEntries(Object.entries(noDurationSongs).slice(0, 50))));
+                const result = await fetch(`/api/youtube?ids=${idsParam}&getDuration=${true}`);
+                const data = await result.json();
+
+                Object.entries(data).forEach(([key, value]) => {
+                    newUrls[key].duration = value;
+                });
+            } catch (err) {
+                console.error(err);
+            } finally {
+                if (Object.keys(noDurationSongs).length > 50) {
+                    noDurationSongs = Object.fromEntries(Object.entries(noDurationSongs).slice(50));
+                } else {
+                    noDurationSongs = {};
+                };
+            };
+        } while (Object.keys(noDurationSongs).length > 0);
+
+        return newUrls;
     };
     handleInputSubmit(link, key) {
         switch (key) {
@@ -612,7 +641,23 @@ class WidgetMusicPlayer extends Component {
         };
     };
     setMaxDuration(event) {
+        if (singleSongAdd) {
+            const newUrls = [...this.state.urls];
+            
+            newUrls[newUrls.length - 1] = {
+                ...newUrls[newUrls.length - 1],
+                duration: event,
+            };
+            
+            this.setState({
+                urls: [...newUrls]
+            });
+
+            singleSongAdd = false;
+        };
+
         let minutes, seconds;
+
         if (event) {
             minutes = Math.floor(event / 60);
             seconds = Math.floor(event % 60);
@@ -799,7 +844,7 @@ class WidgetMusicPlayer extends Component {
             dataSongsAdd.length = 0;
         };
     };
-    componentDidMount() {
+    async componentDidMount() {
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
         audio.addEventListener('timeupdate', this.updateDuration);
@@ -809,8 +854,23 @@ class WidgetMusicPlayer extends Component {
             let dataMusicPlayer = dataLocalStorage['utility']['musicplayer'];
 
             if (dataMusicPlayer['urls'] !== undefined) {
+                for (let urlIndex = 0; urlIndex < dataMusicPlayer['urls'].length; urlIndex++) {
+                    let currentUrl = dataMusicPlayer['urls'][urlIndex];
+                    if (currentUrl.duration === undefined) {
+                        noDurationSongs[urlIndex] = currentUrl.url;
+                    };
+                };
+
+                let newUrls;
+
+                if (Object.keys(noDurationSongs).length === 0) {
+                    newUrls = dataMusicPlayer['urls'];
+                } else {
+                    newUrls = await this.fetchMissingDuration(dataMusicPlayer['urls']);
+                };
+
                 this.setState({
-                    urls: [...dataMusicPlayer['urls']],
+                    urls: [...newUrls],
                     shuffle: dataMusicPlayer.shuffle
                 }, () => {
                     if (this.state.urls.length !== 0) {
@@ -825,7 +885,8 @@ class WidgetMusicPlayer extends Component {
 
                     if ((new Date().getDate() === 1)
                         || !dataMusicPlayer['statistic']
-                        || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))) {
+                        || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))
+                        || (dataMusicPlayer['statistic']['played'] === null)) {
                         this.calculateStatistic();
                     } else {
                         this.setState({
@@ -1103,13 +1164,17 @@ class WidgetMusicPlayer extends Component {
                         <section id='musicplayer-statistic'
                             className='scrollable float center flex-center column only-align-items gap medium-gap'
                             onClick={() => this.handleButton('statistic')}>
-                            <h3>Statistic</h3>
+                            <div id='musicplayer-statistic-title'
+                                className='flex-center row gap small-gap only-align-items'>
+                                <h3>Statistic</h3>
+                                <span>(Updates every start of the month)</span>
+                            </div>
                             <div className='flex-center column gap align-items-left'>
                                 <span>Played: {this.props.formatNumber(this.state.statistic.played, 2)}</span>
                                 <span>Time: {this.formatTime()}</span>
                                 <ul>
                                     {this.state.urls.map((url, index) => {
-                                        return <li key={url.name}>
+                                        return <li key={`${url.name} ${index}`}>
                                             <span>{index + 1}. {url.name}</span>
                                             <span>{this.props.formatNumber((url.timePlayed / url.duration), 2)}</span>
                                         </li>

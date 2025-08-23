@@ -7,6 +7,79 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 
+const genres = [
+    'Action', 'Adventure', 'Comedy', 'Drama', 'Ecchi',
+    'Fantasy', 'Horror', 'Mahou Shoujo', 'Mecha', 'Music',
+    'Mystery', 'Psychological', 'Romance', 'Sci-Fi',
+    'Slice of Life', 'Sports', 'Supernatural', 'Thriller',
+];
+const tags = [
+    '4-koma', 'Achromatic', 'Achronological Order', 'Acrobatics',
+    'Acting', 'Adoption', 'Advertisement', 'Afterlife', 'Age Gap',
+    'Age Regression', 'Agender', 'Agriculture', 'Airsoft',
+    'Alchemy', 'Aliens', 'Alternate Universe', 'American Football',
+    'Amnesia', 'Anachronism', 'Ancient China', 'Angels', 'Animals',
+    'Anthology', 'Anthropomorphism', 'Anti-Hero', 'Archery', 'Aromantic',
+    'Arranged Marriage', 'Artificial Intelligence', 'Asexual', 'Assassins',
+    'Astronomy', 'Athletics', 'Augmented Reality', 'Autobiographical',
+    'Aviation', 'Badminton', 'Ballet', 'Band', 'Bar', 'Baseball', 'Basketball',
+    'Battle Royale', 'Biographical', 'Bisexual', 'Blackmail', 'Board Game',
+    'Boarding School', 'Body Horror', 'Body Image', 'Body Swapping', 'Bowling',
+    'Boxing', "Boys' Love", 'Bullying', 'Butler', 'Calligraphy', 'Camping',
+    'Cannibalism', 'Card Battle', 'Cars', 'Centaur', 'CGI', 'Cheerleading',
+    'Chibi', 'Chimera', 'Chuunibyou', 'Circus', 'Class Struggle',
+    'Classic Literature', 'Classical Music', 'Clone', 'Coastal', 'Cohabitation',
+    'College', 'Coming of Age', 'Conspiracy', 'Cosmic Horror', 'Cosplay', 'Cowboys',
+    'Creature Taming', 'Crime', 'Criminal Organization', 'Crossdressing', 'Crossover',
+    'Cult', 'Cultivation', 'Curses', 'Cute Boys Doing Cute Things',
+    'Cute Girls Doing Cute Things', 'Cyberpunk', 'Cyborg', 'Cycling', 'Dancing',
+    'Death Game', 'Delinquents', 'Demons', 'Denpa', 'Desert', 'Detective', 'Dinosaurs',
+    'Disability', 'Dissociative Identities', 'Dragons', 'Drawing', 'Drugs', 'Dullahan',
+    'Dungeon', 'Dystopian', 'E-Sports', 'Eco-Horror', 'Economics', 'Educational',
+    'Elderly Protagonist', 'Elf', 'Ensemble Cast', 'Environmental', 'Episodic', 'Ero Guro',
+    'Espionage', 'Estranged Family', 'Exorcism', 'Fairy', 'Fairy Tale', 'Fake Relationship',
+    'Family Life', 'Fashion', 'Female Harem', 'Female Protagonist', 'Femboy', 'Fencing',
+    'Filmmaking', 'Firefighters', 'Fishing', 'Fitness', 'Flash', 'Food', 'Football',
+    'Foreign', 'Found Family', 'Fugitive', 'Full CGI', 'Full Color', 'Gambling', 'Gangs',
+    'Gender Bending', 'Ghost', 'Go', 'Goblin', 'Gods', 'Golf', 'Gore', 'Guns', 'Gyaru',
+    'Handball', 'Henshin', 'Heterosexual', 'Hikikomori', 'Hip-hop Music', 'Historical',
+    'Homeless', 'Horticulture', 'Ice Skating', 'Idol', 'Indigenous Cultures', 'Inn',
+    'Isekai', 'Iyashikei', 'Jazz Music', 'Josei', 'Judo', 'Kabuki', 'Kaiju', 'Karuta',
+    'Kemonomimi', 'Kids', 'Kingdom Management', 'Konbini', 'Kuudere', 'Lacrosse',
+    'Language Barrier', 'LGBTQ+ Themes', 'Long Strip', 'Lost Civilization', 'Love Triangle',
+    'Mafia', 'Magic', 'Mahjong', 'Maids', 'Makeup', 'Male Harem', 'Male Protagonist', 'Manzai',
+    'Marriage', 'Martial Arts', 'Matchmaking', 'Matriarchy', 'Medicine', 'Medieval',
+    'Memory Manipulation', 'Mermaid', 'Meta', 'Metal Music', 'Military', 'Mixed Gender Harem',
+    'Mixed Media', 'Modeling', 'Monster Boy', 'Monster Girl', 'Mopeds', 'Motorcycles',
+    'Mountaineering', 'Musical Theater', 'Mythology', 'Natural Disaster', 'Necromancy',
+    'Nekomimi', 'Ninja', 'No Dialogue', 'Noir', 'Non-fiction', 'Nudity', 'Nun', 'Office',
+    'Office Lady', 'Oiran', 'Ojou-sama', 'Orphan', 'Otaku Culture', 'Outdoor Activities',
+    'Pandemic', 'Parenthood', 'Parkour', 'Parody', 'Philosophy', 'Photography', 'Pirates',
+    'Poker', 'Police', 'Politics', 'Polyamorous', 'Post-Apocalyptic', 'POV', 'Pregnancy',
+    'Primarily Adult Cast', 'Primarily Animal Cast', 'Primarily Child Cast', 'Primarily Female Cast',
+    'Primarily Male Cast', 'Primarily Teen Cast', 'Prison', 'Proxy Battle', 'Psychosexual',
+    'Puppetry', 'Rakugo', 'Real Robot', 'Rehabilitation', 'Reincarnation', 'Religion', 'Rescue',
+    'Restaurant', 'Revenge', 'Robots', 'Rock Music', 'Rotoscoping', 'Royal Affairs', 'Rugby',
+    'Rural', 'Samurai', 'Satire', 'School', 'School Club', 'Scuba Diving', 'Seinen', 'Shapeshifting',
+    'Ships', 'Shogi', 'Shoujo', 'Shounen', 'Shrine Maiden', 'Skateboarding', 'Skeleton', 'Slapstick',
+    'Slavery', 'Snowscape', 'Software Development', 'Space', 'Space Opera', 'Spearplay', 'Steampunk',
+    'Stop Motion', 'Succubus', 'Suicide', 'Sumo', 'Super Power', 'Super Robot', 'Superhero', 'Surfing',
+    'Surreal Comedy', 'Survival', 'Swimming', 'Swordplay', 'Table Tennis', 'Tanks', 'Tanned Skin', 'Teacher',
+    "Teens' Love", 'Tennis', 'Terrorism', 'Time Loop', 'Time Manipulation', 'Time Skip', 'Tokusatsu', 'Tomboy',
+    'Torture', 'Tragedy', 'Trains', 'Transgender', 'Travel', 'Triads', 'Tsundere', 'Twins', 'Unrequited Love',
+    'Urban', 'Urban Fantasy', 'Vampire', 'Vertical Video', 'Veterinarian', 'Video Games', 'Vikings',
+    'Villainess', 'Virtual World', 'Vocal Synth', 'Volleyball', 'VTuber', 'War', 'Werewolf',
+    'Wilderness', 'Witch', 'Work', 'Wrestling', 'Writing', 'Wuxia', 'Yakuza', 'Yandere', 'Youkai',
+    'Yuri', 'Zombie',
+];
+const queryGenres = [];
+const queryTags = [];
+const queries = {
+    genre: queryGenres,
+    tag: queryTags,
+};
+let filterType = '';
+
 class WidgetAnimeSearcher extends Component {
     constructor(props) {
         super(props);
@@ -104,10 +177,56 @@ class WidgetAnimeSearcher extends Component {
         if (!image) {
             document.getElementById('animesearcher-image-uploaded').innerHTML = '';
         };
-        const queryRandom = `
-            query($page: Int){ # Define which variables will be used in the query
+
+        const queryMinimal = `
+            query(
+                $page: Int,
+                $type: MediaType,
+                $genres: [String],
+                $tags: [String],
+            ){
                 Page(page: $page, perPage: 1){
-                    media{
+                    pageInfo{
+                        lastPage
+                        total
+                        perPage
+                        currentPage
+                        hasNextPage
+                    }
+                    media(
+                        type: $type,
+                        genre_in: $genres,
+                        tag_in: $tags,
+                    ) {
+                        id
+                        title{
+                            romaji
+                            english
+                        }
+                        genres
+                        tags{
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+        const queryRandom = `
+            query(
+                $page: Int,
+                $type: MediaType,
+                $genres: [String],
+                $tags: [String],
+            ){ # Define which variables will be used in the query
+                Page(
+                    page: $page,
+                    perPage: 1,
+                ){
+                    media(
+                        type: $type,
+                        genre_in: $genres,
+                        tag_in: $tags,
+                    ){
                         title{
                             romaji
                             english
@@ -162,6 +281,9 @@ class WidgetAnimeSearcher extends Component {
                             edges{
                                 role
                                 voiceActors(language: ENGLISH){
+                                    id
+                                }
+                                node{
                                     id
                                 }
                             }
@@ -223,8 +345,14 @@ class WidgetAnimeSearcher extends Component {
             }
         `;
         const query = `
-            query($id: Int, $search: String){ # Define which variables will be used in the query
-                Media(id: $id, search: $search){ # Insert our variables into the query arguments (type: ANIME is hard-coded in the query)
+            query(
+                $id: Int,
+                $search: String,
+            ){ # Define which variables will be used in the query
+                Media(
+                    id: $id,
+                    search: $search,
+                ){ # Insert our variables into the query arguments (type: ANIME is hard-coded in the query)
                     title{
                         romaji
                         english
@@ -341,36 +469,49 @@ class WidgetAnimeSearcher extends Component {
                 }
             }
         `;
-        const variables = {};
-        (id !== null)
-            ? variables['id'] = id
-            : (name !== null)
-                ? variables['search'] = name
-                : variables['page'] = Math.ceil(Math.random() * this.state.maxAmount);
-        const url = 'https://graphql.anilist.co';
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                query: ((name === null) && (id === null))
-                    ? queryRandom
-                    : query,
-                variables: variables
-            })
+
+        const normalize = (arr) => (Array.isArray(arr) && arr.length) ? arr : undefined;
+        const normalizeType = (type) => {
+            if (!type) return undefined;
+            const uppercaseType = type.toUpperCase();
+            return (/\bANIME\b|\bMANGA\b/.test(uppercaseType)) ? uppercaseType : undefined;
         };
+        const variables = {
+            genres: normalize(queryGenres),
+            tags: normalize(queryTags),
+        };
+
+        if (id) variables['id'] = id;
+        if (name) variables['search'] = name;
+        if (filterType) variables['type'] = normalizeType(filterType);
+
+        const hasAnyFilter = Boolean(
+            variables.type || variables.genres || variables.tags
+        );
+        
         try {
             this.setState({
                 running: true,
-                linkEpisode: (image) ? this.state.linkEpisode : 0
+                linkEpisode: image ? this.state.linkEpisode : 0
             });
-            const response = await fetch(url, options);
-            const data = await response.json();
-            const dataMedia = ((name === null) && (id === null))
-                ? data.data.Page.media[0]
-                : data.data.Media;
+
+            let dataMedia;
+
+            if (id || name) {
+                const responseQuery = await this.runQuery(query, variables);
+                dataMedia = responseQuery.data.Media;
+            } else if (hasAnyFilter) {
+                const firstPage = await this.runQuery(queryMinimal, { ...variables, page: 1 });
+                const lastPage = firstPage.data.Page.pageInfo.lastPage || 1;
+                const randomPage = Math.ceil(Math.random() * lastPage);
+                const responseMinimal = await this.runQuery(queryRandom, { ...variables, page: randomPage });
+                dataMedia = responseMinimal.data.Page.media[0];
+            } else {
+                const randomPage = Math.ceil(Math.random() * this.state.maxAmount);
+                const responseRandom = await this.runQuery(queryRandom, { page: randomPage });
+                dataMedia = responseRandom.data.Page.media[0];
+            };
+
             let mediaStartDate = (new Date(`${dataMedia.startDate.month || ''} ${dataMedia.startDate.day || ''} ${dataMedia.startDate.year || ''}`)
                 .toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -383,7 +524,7 @@ class WidgetAnimeSearcher extends Component {
                     month: 'long',
                     day: 'numeric'
             }));
-            /// Check if an english voice actor exist
+
             let checkDubbed = false;
             if (dataMedia.characters.edges.length !== 0) {
                 if (dataMedia.characters.edges[0].voiceActors !== null) {
@@ -391,6 +532,7 @@ class WidgetAnimeSearcher extends Component {
                         && (dataMedia.characters.edges[0].voiceActors.length !== 0));
                 };
             };
+
             this.setState({
                 bannerImage: dataMedia.bannerImage,
                 dubbed: checkDubbed,
@@ -445,6 +587,14 @@ class WidgetAnimeSearcher extends Component {
                 running: false
             });
         };
+    };
+    async runQuery(query, variables) {
+        const res = await fetch('https://graphql.anilist.co', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ query, variables }),
+        });
+        return res.json();
     };
     async fetchMaxMedia() {
         const query = `
@@ -546,6 +696,28 @@ class WidgetAnimeSearcher extends Component {
         elementCharacterInformation.classList.toggle('animation-animesearcher-character-information');
         elementCharacter.classList.toggle('animation-image-character');
     };
+    handleFilterButton() {
+        const filterButton = document.getElementById('animesearcher-widget-filters');
+        filterButton.classList.toggle('show');
+    };
+    handleFilter(event, type) {
+        if (type === 'type') {
+            filterType = event.target.value;
+            return;
+        };
+
+        const elementButton = event.target;
+        const elementText = elementButton.textContent;
+        const queryType = queries[type];
+
+        elementButton.classList.toggle('disabled-option');
+
+        if (elementButton.classList.contains('disabled-option')) {
+            queryType.splice(queryType.indexOf(elementText), 1);
+        } else if (!queryType.includes(elementText)) {
+            queryType.push(elementText);
+        };
+    };
     storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
@@ -576,7 +748,7 @@ class WidgetAnimeSearcher extends Component {
                     this.props.defaultProps.dragStop('animesearcher');
                     this.props.defaultProps.updatePosition('animesearcher', 'utility', data.x, data.y);
                 }}
-                cancel='input, button, span, a, img, .popout, .simplebar-track, #animesearcher-information'
+                cancel='input, button, span, a, img, .popout, .simplebar-track, .radio-match, #animesearcher-information'
                 bounds='parent'>
                 <section id='animesearcher-widget'
                     className='widget'
@@ -616,7 +788,59 @@ class WidgetAnimeSearcher extends Component {
                                             disabled={this.state.running}>SPOILER</button>
                                     </div>
                                     <button className='button-match'
+                                        type='button'
                                         onClick={() => this.handleSearch()}>Search</button>
+                                </div>
+                                <button className='button-match fill-width'
+                                    onClick={this.handleFilterButton}>Filter</button>
+                                <div id='animesearcher-widget-filters'
+                                    className='flex-center column gap align-items-left fill-width'>
+                                    <div className='flex-center wrap row gap only-align-items fill-width'>
+                                        <div className='radio-match'>
+                                            <input id='animesearcher-button-any'
+                                                type='radio'
+                                                name='groupType'
+                                                value='ANY'
+                                                onClick={(event) => this.handleFilter(event, 'type')}/>
+                                            <label htmlFor='animesearcher-button-any'>Any</label>
+                                        </div>
+                                        <div className='radio-match'>
+                                            <input id='animesearcher-button-anime'
+                                                type='radio'
+                                                name='groupType'
+                                                value='ANIME'
+                                                onClick={(event) => this.handleFilter(event, 'type')}/>
+                                            <label htmlFor='animesearcher-button-anime'>Anime</label>
+                                        </div>
+                                        <div className='radio-match'>
+                                            <input id='animesearcher-button-manga'
+                                                type='radio'
+                                                name='groupType'
+                                                value='MANGA'
+                                                onClick={(event) => this.handleFilter(event, 'type')}/>
+                                            <label htmlFor='animesearcher-button-manga'>Manga</label>
+                                        </div>
+                                    </div>
+                                    <div className='fill-width'>
+                                        {genres.map((genre) => {
+                                            return <button className='button-match option disabled-option'
+                                                key={genre}
+                                                type='button'
+                                                onClick={(event) => this.handleFilter(event, 'genre')}>
+                                                {genre}
+                                            </button>
+                                        })}
+                                    </div>
+                                    <div className='fill-width'>
+                                        {tags.map((tag) => {
+                                            return <button className='button-match option disabled-option'
+                                                key={tag}
+                                                type='button'
+                                                onClick={(event) => this.handleFilter(event, 'tag')}>
+                                                {tag}
+                                            </button>
+                                        })}
+                                    </div>
                                 </div>
                                 {/* Media Information */}
                                 <SimpleBar id='animesearcher-information'

@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import React, { Component, Suspense } from 'react';
+import React, { Component, StrictMode, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
@@ -9572,10 +9572,12 @@ class Widgets extends Component {
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 root.render(
-    <div id='Base'>
-        <div id='App'
-            className='background-default'>
-            <Widgets/>
+    <StrictMode>
+        <div id='Base'>
+            <div id='App'
+                className='background-default'>
+                <Widgets/>
+            </div>
         </div>
-    </div>
+    </StrictMode>
 );
