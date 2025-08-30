@@ -5,6 +5,7 @@ export class Preloader extends Scene{
     constructor(){
         super('Preloader');
     };
+
     init(){
         /// We loaded this image in our Boot Scene, so we can display it here
         this.add.image(450, 325, 'background');
@@ -18,6 +19,7 @@ export class Preloader extends Scene{
             bar.width = 4 + (460 * progress);
         });
     };
+
     preload(){
         this.load.setPath('assets/');
         this.load.image('logo', 'logo.png');
@@ -51,6 +53,7 @@ export class Preloader extends Scene{
         this.load.image('bullet10', 'attacks/bullet10.png');
         this.load.image('bullet11', 'attacks/bullet11.png');
     };
+    
     create(){
         this.scene.start('MainMenu');
     };

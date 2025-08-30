@@ -27,9 +27,15 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             fontSmall: false
         }
     });
+
     const refTime = useRef(state.time);
     const refCharacterCount = useRef(state.characterCount);
     const refMistakesCount = useRef(state.mistakesCount);
+
+    refTime.current = state.time;
+    refCharacterCount.current = state.characterCount;
+    refMistakesCount.current = state.mistakesCount;
+
     useEffect(() => {
         const handleClick = () => {
             document.getElementById('typingtest-input-field').focus();
@@ -42,11 +48,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             clearInterval(timer);
         };
     }, []);
-    useEffect(() => {
-        refTime.current = state.time;
-        refCharacterCount.current = state.characterCount;
-        refMistakesCount.current = state.mistakesCount;
-    }, [state.time, state.characterCount, state.mistakesCount]);
+
     useEffect(() => {
         let textField = document.querySelector('#typingtest-text p');
         let characters = textField.querySelectorAll('span');
@@ -59,6 +61,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
         };
         characters[state.characterIndex]?.classList.remove('correct', 'incorrect');
     }, [state.characterIndex]);
+
     useEffect(() => {
         if (state.preset !== '') {
             handleLoadText(state.preset);
@@ -66,6 +69,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             handleLoadText();
         };
     }, [state.text, state.preset]);
+
     const handleLoadText = (what = '') => {
         let textField = document.querySelector('#typingtest-text p');
         let loadedText;
@@ -98,6 +102,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
         );
         textField.querySelectorAll('span')[0].classList.add('active');
     };
+
     const handleTyping = () => {
         let textField = document.getElementById('typingtest-text');
         let inputField = document.getElementById('typingtest-input-field');
@@ -190,6 +195,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             }));
         };
     };
+
     const gameOver = () => {
         if (state.wpm >= 40) {
             let amount = Math.floor(state.wpm / 40);
@@ -204,6 +210,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
         gameProps.updateGameValue('gold', gold);
         gameProps.updateGameValue('exp', gold);
     };
+
     const handleResetGame = (preset = '') => {
         clearInterval(timer);
         document.getElementById('typingtest-text').style.opacity = '1';
@@ -223,6 +230,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             preset: preset
         }));
     };
+
     const handlePresets = (what, amount) => {
         let chosenPreset = '';
         switch (what) {
@@ -279,6 +287,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
         };
         handleResetGame(chosenPreset);
     };
+
     const handleModifications = (what) => {
         const elementText = document.querySelector('#typingtest-text p');
         const elementButton = document.getElementById(`typingtest-modifications-button-${what}`);
@@ -300,6 +309,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
             return newState;
         });
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

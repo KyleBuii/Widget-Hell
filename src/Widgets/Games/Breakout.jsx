@@ -44,6 +44,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         maxHealth: 1,
         health: 1
     });
+
     const refPaddle = useRef(state.paddle);
     const refBricks = useRef(state.bricks);
     const refBall = useRef(state.ball);
@@ -54,6 +55,12 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         a: false,
         d: false,
     });
+
+    refPaddle.current = state.paddle;
+    refBricks.current = state.bricks;
+    refBall.current = state.ball;
+    refHighscore.current = state.highscore;
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         window.addEventListener('keydown', handleKeyDown);
@@ -105,12 +112,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             clearInterval(intervalTimer);
         };
     }, []);
-    useEffect(() => {
-        refPaddle.current = state.paddle;
-        refBricks.current = state.bricks;
-        refBall.current = state.ball;
-        refHighscore.current = state.highscore;
-    }, [state.paddle, state.bricks, state.ball, state.highscore]);
+    
     const handlePaddleMovement = (inputType, event) => {
         let elementCanvas = document.getElementById('breakout-canvas');
         let elementCanvasRect = elementCanvas.getBoundingClientRect();
@@ -134,16 +136,19 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             }));
         };
     };
+
     const handleKeyDown = (event) => {
         if (event.key.match(/ArrowLeft|ArrowRight|a|d/)) {
             refKeyPressed.current[event.key] = true;
         };
     };
+    
     const handleKeyUp = (event) => {
         if (event.key.match(/ArrowLeft|ArrowRight|a|d/)) {
             refKeyPressed.current[event.key] = false;
         };
     };
+
     const keyboardMovePaddle = () => {
         let elementCanvas = document.getElementById('breakout-canvas');
         let newX = refPaddle.current.x;
@@ -165,6 +170,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             }
         }));
     };
+
     const drawPaddle = () => {
         let elementCanvas = document.getElementById('breakout-canvas');
         let ctx = elementCanvas.getContext('2d');
@@ -207,6 +213,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             };
         };
     };
+
     const hitDetection = () => {
         for (let c = 0; c < state.brick.column; c++) {
             for (let r = 0; r < state.brick.row; r++) {
@@ -230,6 +237,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             };
         };
     };
+
     const moveBall = () => {
         let elementCanvas = document.getElementById('breakout-canvas');
         /// Detect left and right walls
@@ -270,6 +278,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             }
         }));
     };
+
     const generateBricks = () => {
         let randomPattern = Math.floor(Math.random() * patterns.length);
         let patternString = patterns[randomPattern].replace(/\s/g, '');
@@ -317,6 +326,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             count: newBrickCount
         }));
     };
+
     const calculateHealth = () => {
         if (gameProps.stats.health < 10) {
             return 1;
@@ -324,6 +334,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             return Math.floor(gameProps.stats.health / 10);
         };
     };
+
     const start = () => {
         dx = 2;
         dy = -2;
@@ -350,6 +361,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         }, 1000);
         document.getElementById('breakout-overlay-gameover').style.visibility = 'hidden';
     };
+
     const playing = () => {
         keyboardMovePaddle();
         drawPaddle();
@@ -358,6 +370,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         hitDetection();
         moveBall();
     };
+
     const gameOver = () => {
         clearInterval(intervalGame);
         clearInterval(intervalTimer);
@@ -374,6 +387,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
         gameProps.updateGameValue('exp', state.goldEarned);
         document.getElementById('breakout-overlay-gameover').style.visibility = 'visible';
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -384,6 +398,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

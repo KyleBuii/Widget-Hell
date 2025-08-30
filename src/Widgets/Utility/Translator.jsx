@@ -124,6 +124,7 @@ class WidgetTranslator extends Component{
         this.handleCunnyCodeAronaDrag = this.handleCunnyCodeAronaDrag.bind(this);
         this.handleCunnyCodeAronaDragging = this.handleCunnyCodeAronaDragging.bind(this);
     };
+
     async handleCopy() {
         try {
             let clipboardStatus = await this.props.copyToClipboard(this.state.converted);
@@ -142,6 +143,7 @@ class WidgetTranslator extends Component{
             console.error(err);
         };
     };
+
     handleChange(event) {
         if (event.target.value !== ' ') {
             this.setState({
@@ -173,6 +175,7 @@ class WidgetTranslator extends Component{
             default: break;
         };
     };
+
     handleCunnyCode(type, subtype, subsubtype) {
         let elementDialogue = document.getElementById('translator-cunny-code-arona-dialogue');
         let elementImage = document.getElementById('translator-image');
@@ -191,6 +194,7 @@ class WidgetTranslator extends Component{
         elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
         elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.webp`;
     };
+
     handleCunnyCodeAronaTouch(where) {
         let elementImage = document.getElementById('translator-image');
         elementImage.style.animation = 'unset';
@@ -220,6 +224,7 @@ class WidgetTranslator extends Component{
             default: break;
         };
     };
+
     handleCunnyCodeAronaDrag(action, event) {
         let elementImage = document.getElementById('translator-image');
         let elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
@@ -263,6 +268,7 @@ class WidgetTranslator extends Component{
                 break;
         };
     };
+
     handleCunnyCodeAronaDragging(event) {
         const elementImageContainer = document.getElementById('translator-container-image').getBoundingClientRect();
         const elementImage = document.getElementById('translator-image');
@@ -280,6 +286,7 @@ class WidgetTranslator extends Component{
             elementImageAdditions.style.setProperty('top', `${event.clientY - elementImageContainer.top + 108}px`, 'important');
         };
     };
+    
     /// Handles 'word-break' for unbreakable strings
     handleWordBreak() {
         const translatedText = document.getElementById('translator-translated-text');
@@ -294,6 +301,7 @@ class WidgetTranslator extends Component{
                 break;
         };
     };
+
     /// Handles special stuff for options (author, images, dialogue)
     handleBackground(swap) {
         let toAuthor, toAuthorLink;
@@ -327,6 +335,7 @@ class WidgetTranslator extends Component{
             authorLink: toAuthorLink
         });
     };
+
     /// Handles the 'from' language select
     handleFrom(event) {
         this.setState({
@@ -341,6 +350,7 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
+
     /// Handles the 'to' language select
     handleTo(event) {
         let popoutAnimation;
@@ -367,6 +377,7 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
+
     /// Swaps 'from' language and 'to' language
     handleSwap() {
         if (this.state.from.value !== this.state.to.value) {
@@ -385,6 +396,7 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
+
     /// Saves 'converted' text into 'input' field
     handleSave() {
         this.setState(prevState => ({
@@ -394,9 +406,11 @@ class WidgetTranslator extends Component{
             this.convertToText();
         });
     };
+
     handleTalk() {
         this.props.talk(this.state.converted);
     };
+
     /// Handles 'replace' from 'translator-translate-to'
     handleReplaceFrom(event) {
         this.setState({
@@ -407,6 +421,7 @@ class WidgetTranslator extends Component{
             };
         });
     };
+
     handleReplaceTo(event) {
         this.setState({
             replaceTo: event.target.value
@@ -416,6 +431,7 @@ class WidgetTranslator extends Component{
             };
         });
     };
+
     /// Handles all buttons that are pressable (opacity: 0.5 on click)
     handlePressableButton(what, popout) {
         const popoutButton = document.getElementById(`${popout}-popout-button-${what}`);
@@ -426,6 +442,7 @@ class WidgetTranslator extends Component{
             this.convertToText();
         });
     };
+
     /// Handles random sentence button
     handleRandSentence() {
         this.setState({
@@ -437,6 +454,7 @@ class WidgetTranslator extends Component{
             speechSynthesis.cancel();
         };
     };
+
     /// Convert the 'from' language to english
     convertFromText(swap) {
         let stringConvertFrom = '';
@@ -558,6 +576,7 @@ class WidgetTranslator extends Component{
             this.convertToText(swap);
         });
     };
+    
     /// Convert english to the 'to' language
     convertToText(swap) {
         let stringConvertTo = '';
@@ -1013,6 +1032,7 @@ class WidgetTranslator extends Component{
             converted: stringConvertTo
         });
     };
+
     componentDidMount() {
         /// Sort the 'translate-to' optgroups options alphabetically
         this.props.sortSelect(optionsTranslateFrom);
@@ -1040,6 +1060,7 @@ class WidgetTranslator extends Component{
             });
         };
     };
+
     componentWillUnmount() {
         let data = {
             'from': this.state.from,
@@ -1054,6 +1075,7 @@ class WidgetTranslator extends Component{
         document.removeEventListener('mousemove', this.handleCunnyCodeAronaDragging);
         document.removeEventListener('mouseup', this.handleCunnyCodeAronaDrag);
     };
+    
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

@@ -5,6 +5,7 @@ import React, { memo, useEffect, useState } from 'react';
 function Particle(props) {
     const [particleEngine, setParticleEngine] = useState(false);
     const [particleOptions, setParticleOptions] = useState({});
+
     useEffect(() => {
         if (particleEngine) return;
         initParticlesEngine(async (engine) => {
@@ -13,6 +14,7 @@ function Particle(props) {
             setParticleEngine(true);
         });
     }, []);
+
     useEffect(() => {
         /// Handles mute
         setParticleOptions({
@@ -23,6 +25,7 @@ function Particle(props) {
             }
         });
     }, [props.mute, particleEngine]);
+
     useEffect(() => {
         /// Handles choices
         switch (props.choice?.value) {
@@ -961,6 +964,7 @@ function Particle(props) {
                 break;
         };
     }, [props.choice]);
+    
     return (
         <div>
             {particleEngine && <Particles options={particleOptions}/>}

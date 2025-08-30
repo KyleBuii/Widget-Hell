@@ -7,17 +7,20 @@ import { PhaserGame } from './Game/PhaserGame';
 
 const WidgetGrindshot = ({ defaultProps, gameProps }) => {
     const phaserRef = useRef(null);
+
     const changeScene = () => {
         const scene = phaserRef.current.scene;
         if (scene) {
             scene.changeScene();
         }; 
     };
+
     const currentScene = (scene) => {
         if (scene.scene.key === 'Game') {
             EventBus.emit('data', gameProps.stats);
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

@@ -34,10 +34,17 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
         maxHealth: 1,
         health: 1
     });
+
     const refState = useRef({
         highscore: state.highscore,
         speed: state.speed
     });
+
+    refState.current = {
+        highscore: state.highscore,
+        speed: state.speed    
+    };
+
     useEffect(() => {
         document.getElementById('simongame-overlay-gameover').style.visibility = 'visible';
         window.addEventListener('beforeunload', storeData);
@@ -65,12 +72,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             clearTimeout(timeoutDelay);    
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            highscore: state.highscore,
-            speed: state.speed    
-        };
-    }, [state.highscore, state.speed]);
+
     useEffect(() => {
         if(state.clickCounter === state.score){
             setState((prevState) => ({
@@ -80,14 +82,17 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             randomPath();
         };
     }, [state.clickCounter]);
+    
     useEffect(() => {
         if (state.health <= 0) gameover();
     }, [state.health]);
+
     const delay = async (time) => {
         return await new Promise((resolve) => {
             timeoutDelay = setTimeout(resolve, time)
         });
     };
+
     const randomPath = async () => {
         colorsPath.push(randomColor());
         setState((prevState) => ({
@@ -97,6 +102,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
         }));
         await showPath(colorsPath);
     };
+
     const showPath = async (path) => {
         for (let color of path) {
             let currentColor = document.getElementById(`simongame-color-${color}`);
@@ -110,6 +116,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             pathGenerating: false
         }));
     };
+
     const handleColorClick = async (event) => {
         if (state.pathGenerating) return false;
         if (event.target.id === `simongame-color-${colorsPath[state.clickCounter]}`) {
@@ -128,12 +135,14 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             }));    
         };
     };
+
     const handleColorKeyDown = (event) => {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             handleColorClick(event);
         };
     };
+
     const handlePressableButton = () => {
         const buttonSettings = document.getElementById('simongame-button-settings');
         const popoutSettings = document.getElementById('simongame-popout-settings');
@@ -153,6 +162,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             popoutSettings.style.visibility = 'hidden';
         };
     };
+
     const handleSetting = (what, action, value) => {
         switch (what) {
             case 'speed':
@@ -175,10 +185,12 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             default: break;
         };
     };
+
     const randomColor = () => {
         let colorsKeys = Object.keys(colors);
         return colorsKeys[Math.floor(Math.random() * colorsKeys.length)];
     };
+
     const start = () => {
         if (state.settings === true) {
             setState((prevState) => ({
@@ -208,6 +220,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             }));    
         }, 1000);
     };
+
     const gameover = () => {
         clearInterval(intervalTimer);
         if (state.score >= 7) {
@@ -225,6 +238,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
         }));
         document.getElementById('simongame-overlay-gameover').style.visibility = 'visible';
     };
+
     const calculateHealth = () => {
         if (gameProps.stats.health < 10) {
             return 1;
@@ -232,6 +246,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             return Math.floor(gameProps.stats.health / 10);
         };
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -243,6 +258,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

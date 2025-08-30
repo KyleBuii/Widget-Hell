@@ -36,6 +36,7 @@ export class Score extends Scene {
         this.score = 0;
         this.index = 1;
     };
+
     create() {
         if (this.objects.length !== 0) {
             this.objects.forEach((object) => object.destroy());
@@ -68,10 +69,12 @@ export class Score extends Scene {
             this.createScoreBoard();
         });
     };
+
     createContainers() {
         this.add.rectangle(WIDTH / 3, 660, 314, 274, 0x000000);
         this.add.rectangle(WIDTH / 3, 660, 300, 260, 0xffffff);
     };
+
     createSongDetail() {
         this.objects = [
             ...this.objects,
@@ -91,6 +94,7 @@ export class Score extends Scene {
             }).setOrigin(0),
         ];
     };
+
     createScoreBoard() {
         const grade = this.calculateGrade(this.score);
         this.objects = [
@@ -143,6 +147,7 @@ export class Score extends Scene {
             }),
         });
     };
+
     calculateGrade(score) {
         const maxScore = this.calculateTotalNotes() * 100;
         const percent = (score / maxScore) * 100;
@@ -156,6 +161,7 @@ export class Score extends Scene {
         else if (percent >= 50) return 'E';
         else return 'F';
     };
+
     calculateTotalNotes() {
         return Object.values(this.noteCount).reduce((sum, value) => sum + value, 0);
     };

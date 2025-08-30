@@ -15,11 +15,13 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
         goldEarned: 0,
         timer: 0
     });
+
     useEffect(() => {
         return () => {
             clearInterval(intervalTimer);
         };
     }, []);
+
     const handleKeyDown = (event) => {
         if (state.board.hasWon() || state.board.hasLost()) {
             gameOver();
@@ -59,6 +61,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
             }));
         };
     };
+
     const gameOver = () => {
         document.getElementById('twentyfortyeight-overlay-gameover').style.visibility = 'visible';
         intervalTimer = clearInterval(intervalTimer);
@@ -73,6 +76,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
             gameProps.randomItem(1);
         };
     };
+
     const resetGame = () => {
         document.getElementById('twentyfortyeight-overlay-gameover').style.visibility = 'hidden';
         intervalTimer = clearInterval(intervalTimer);
@@ -83,6 +87,7 @@ const Widget2048 = ({ defaultProps, gameProps, isMobile }) => {
             timer: 0
         }));
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -270,15 +275,18 @@ class Tile{
         this.mergedInto = null;
         this.id = this.id++ || 0;
     };
+
     moveTo (row, column) {
         this.oldRow = this.row;
         this.oldColumn = this.column;
         this.row = row;
         this.column = column;
     };
+
     isNew () {
         return this.oldRow === -1 && !this.mergedInto;
     };
+
     hasMoved () {
         return (
             ((this.fromRow() !== -1)
@@ -287,15 +295,19 @@ class Tile{
                 || this.mergedInto
         );
     };
+
     fromRow () {
         return this.mergedInto ? this.row : this.oldRow;
     };
+
     fromColumn () {
         return this.mergedInto ? this.column : this.oldColumn;
     };
+
     toRow () {
         return this.mergedInto ? this.mergedInto.row : this.row;
     };
+
     toColumn () {
         return this.mergedInto ? this.mergedInto.column : this.column;
     };
@@ -323,11 +335,13 @@ class Board{
         this.addRandomTile();
         this.setPositions();
     };
+
     addTile (args) {
         let res = new Tile(args);
         this.tiles.push(res);
         return res;
     };
+
     moveLeft () {
         let hasChanged = false;
         for (let row = 0; row < this.size; row++) {
@@ -355,6 +369,7 @@ class Board{
         };
         return hasChanged;
     };
+
     setPositions () {
         this.cells.forEach((row, rowIndex) => {
             row.forEach((tile, columnIndex) => {
@@ -366,6 +381,7 @@ class Board{
             });
         });
     };
+
     addRandomTile () {
         let emptyCells = [];
         for (let r = 0; r < this.size; r++) {
@@ -380,6 +396,7 @@ class Board{
         let newValue = (Math.random() < this.fourProbability) ? 4 : 2;
         this.cells[cell.r][cell.c] = this.addTile(newValue);
     };
+
     move (direction) {
         /// 0 -> left, 1 -> up, 2 -> right, 3 -> down
         this.clearOldTiles();
@@ -396,15 +413,18 @@ class Board{
         this.setPositions();
         return this;
     };
+
     clearOldTiles () {
         this.tiles = this.tiles.filter((tile) => tile.markForDeletion === false);
         this.tiles.forEach((tile) => {
             tile.markForDeletion = true;
         });
-    }
+    };
+
     hasWon () {
         return this.won;
     };
+
     hasLost () {
         let canMove = false;
         for (let row = 0; row < this.size; row++) {

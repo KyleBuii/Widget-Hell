@@ -42,6 +42,7 @@ export class GameScreen extends Scene {
         this.stopSpawning = false;
         this.nextNoteTime = 0;
     };
+
     create() {
         this.createAnims();
         this.createBar();
@@ -105,6 +106,7 @@ export class GameScreen extends Scene {
             callbackScope: this,
         });
     };
+
     update(time, delta) {
         if (!this.gameStarted || this.stopSpawning) return;
 
@@ -138,20 +140,24 @@ export class GameScreen extends Scene {
             };
         };
     };
+
     convertTime(time) {
         let minutesAndSeconds = time.split(':');
         let totalMilliseconds = (minutesAndSeconds[0] * 60000) + (minutesAndSeconds[1] * 1000);
         return totalMilliseconds;
     };
+
     randomPattern() {
         this.pattern = Phaser.Utils.Array.GetRandom(patterns);
     };
+
     createBar() {
         this.bar = this.add.rectangle(300, barYPosition, WIDTH, 20, 0xff0000);
         this.hitArea = this.add.rectangle(300, barYPosition, WIDTH, 40)
             .setInteractive()
             .on('pointerdown', (pointer) => this.createHit(pointer));
     };
+
     createOutOfBoundsBar() {
         this.outOfBoundsBar = this.add.rectangle(300, HEIGHT + (noteSize * 2), WIDTH, 1)
             .setVisible(true);
@@ -163,6 +169,7 @@ export class GameScreen extends Scene {
             };
         });
     };
+
     createHit({ x, y }) {
         const hit = this.add.sprite(x, y, 'hit-atlas', 0)
             .setScale(2);
@@ -229,6 +236,7 @@ export class GameScreen extends Scene {
             hitSubeffect.destroy();
         });
     };
+
     createAnims() {
         this.anims.create({
             key: 'hit',
@@ -257,6 +265,7 @@ class Notes extends Phaser.Physics.Arcade.Group {
             this.newNote();
         };
     };
+
     spawn(x, y, velocity) {
         let note = this.getFirstDead(false);
         if (!note) {
@@ -264,6 +273,7 @@ class Notes extends Phaser.Physics.Arcade.Group {
         };
         note.drop(x, y, velocity);
     };
+
     newNote() {
         const note = new Note(this.scene, -100, -100);
         this.add(note);
@@ -281,12 +291,14 @@ class Note extends Phaser.GameObjects.Ellipse {
         this.body.setVelocityY(0);
         this.body.setAllowGravity(false);
     };
+
     drop(x, y, velocity) {
         this.setPosition(x, y);
         this.setActive(true);
         this.setVisible(true);
         this.body.setVelocityY(velocity);
     };
+
     hide() {
         this.setPosition(-100, -100);
         this.setActive(false);

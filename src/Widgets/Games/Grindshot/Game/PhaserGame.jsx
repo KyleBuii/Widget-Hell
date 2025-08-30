@@ -7,6 +7,7 @@ import StartGame from './main';
 /// The React component that initializes the Phaser Game and serve like a bridge between React and Phaser
 export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref){
     const game = useRef();
+
     /// Create the game inside a useLayoutEffect hook to avoid the game being created outside the DOM
     useLayoutEffect(() => {
         if(game.current === undefined){
@@ -25,6 +26,7 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
             };
         };
     }, [ref]);
+
     useEffect(() => {
         EventBus.on('current-scene-ready', (currentScene) => {
             if(currentActiveScene instanceof Function){
@@ -36,7 +38,8 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
             EventBus.removeListener('current-scene-ready');
         };
     }, [currentActiveScene, ref]);
-    return(
+    
+    return (
         <div id="grindshot-game"></div>
     );
 });

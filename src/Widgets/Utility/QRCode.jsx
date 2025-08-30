@@ -27,18 +27,21 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
         backgroundColor: 'white',
         foregroundColor: 'black'
     });
+
     const handleChange = (what, where) => {
         setState((prevState) => ({
             ...prevState,
             [where]: what
         }));
     };
+
     const handleColorPicker = (event, where) => {
         setState((prevState) => ({
             ...prevState,
             [`${where}Color`]: event.target.value
         }));
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

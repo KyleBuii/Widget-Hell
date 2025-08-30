@@ -47,6 +47,7 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
             window.removeEventListener('unequip item', removeItem);    
         };
     }, []);
+
     const addItem = (event) => {
         let lowerCaseRegex = new RegExp(`\\s|[${punctuation}]`, 'g');
         let modifiedName = event.detail.name.toLowerCase().replaceAll(lowerCaseRegex, '');
@@ -68,6 +69,7 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
         equipmentImage.draggable = false;
         equipmentElement.appendChild(equipmentImage);
     };
+
     const removeItem = (event) => {
         let equipmentElement;
         if (event.detail.side) {
@@ -77,6 +79,7 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
         };
         equipmentElement.innerHTML = '';
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

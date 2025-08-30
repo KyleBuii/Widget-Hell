@@ -13,27 +13,32 @@ class Cursor extends Component {
         this.addPoint = this.addPoint.bind(this);
         this.setSize = this.setSize.bind(this);
     };
+
     distance(a, b) {
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         return Math.sqrt(dx * dx + dy * dy);
     };
+
     midPoint(a, b) {
         const mx = a.x + (b.x - a.x) * 0.5;
         const my = a.y + (b.y - a.y) * 0.5;
         return new Point(mx, my);
     };
+
     angle(a, b) {
         const dx = a.x - b.x;
         const dy = a.y - b.y;
         return Math.atan2(dy, dx);
     };
+
     addPoint({ clientX, clientY }) {
         flipNext = !flipNext;
         const canvas = this.canvas.current;
         const point = new Point(clientX - canvas.offsetLeft, clientY - canvas.offsetTop, 0, flipNext);
         points.push(point);
     };
+
     animatePoints() {
         const canvas = this.canvas.current;
         const ctx = canvas.getContext('2d');
@@ -100,11 +105,13 @@ class Cursor extends Component {
             };
         };
     };
+
     setSize() {
         let elementCanvas = document.getElementById('cursor-canvas');
         elementCanvas.height = document.body.clientHeight;
         elementCanvas.width = document.body.clientWidth;
     };
+
     componentDidMount() {
         this.setSize();
         window.addEventListener('resize', this.setSize);
@@ -115,11 +122,13 @@ class Cursor extends Component {
             }, 1000 / 60);
         };
     };
+
     componentWillUnmount() {
         clearInterval(intervalLoop);
         window.removeEventListener('resize', this.setSize);
         document.removeEventListener('mousemove', this.addPoint);
     };
+    
     render() {
         return (
             <canvas id='cursor-canvas'

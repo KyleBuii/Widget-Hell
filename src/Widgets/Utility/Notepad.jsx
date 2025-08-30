@@ -8,7 +8,11 @@ import { MdFormatColorText } from 'react-icons/md';
 
 const WidgetNotepad = ({ defaultProps }) => {
     const [text, setText] = useState('');
+
     const refText = useRef(text);
+
+    refText.current = text;
+
     useEffect(() => {
         /// Populate font size section
         let sectionFontSize = document.getElementById('notepad-section-font-size');
@@ -36,12 +40,11 @@ const WidgetNotepad = ({ defaultProps }) => {
             storeData();
         };
     }, []);
-    useEffect(() => {
-        refText.current = text;
-    }, [text]);
+
     const handleChange = (event) => {
         setText(event.target.value);
     };
+
     const handleButton = (where, what = null) => {
         let element = document.getElementById(`notepad-button-${where}`);
         if (where === 'superscript') {
@@ -57,9 +60,11 @@ const WidgetNotepad = ({ defaultProps }) => {
         element.classList.toggle('inversed-active');
         handleText(where, what);
     };
+
     const handleText = (where, what = null) => {
         document.execCommand(where, false, what);
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -70,6 +75,7 @@ const WidgetNotepad = ({ defaultProps }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

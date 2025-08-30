@@ -8,6 +8,7 @@ const WidgetFacts = ({ defaultProps }) => {
     const [state, setState] = useState({
         cat: []
     });
+
     useEffect(() => {
         const dateLocalStorage = JSON.parse(localStorage.getItem('date'));
         const currentDate = new Date().getDate();
@@ -25,9 +26,11 @@ const WidgetFacts = ({ defaultProps }) => {
             }));
         };
     }, []);
+
     useEffect(() => {
         storeData();
     }, [state.cat]);
+
     const fetchFacts = async () => {
         try {
             const urlCat = 'https://cat-fact.herokuapp.com/facts';
@@ -45,6 +48,7 @@ const WidgetFacts = ({ defaultProps }) => {
             console.error(err);
         };
     };
+
     const storeData = () => {
         let data = {};
         let keysFacts = Object.keys(state);
@@ -61,6 +65,7 @@ const WidgetFacts = ({ defaultProps }) => {
         };
         sessionStorage.setItem('facts', JSON.stringify(data));
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

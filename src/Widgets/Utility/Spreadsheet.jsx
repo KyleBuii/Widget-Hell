@@ -13,9 +13,14 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
         rowLabels: [1, 2, 3, 4, 5, 6, 7, 8],
         data: []
     });
+
     const refColLabels = useRef(state.colLabels);
     const refRowLabels = useRef(state.rowLabels);
     const refData = useRef(state.data);
+
+    refColLabels.current = state.colLabels;
+    refRowLabels.current = state.rowLabels;
+    refData.current = state.data;
 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
@@ -61,15 +66,6 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
             storeData();
         };
     }, []);
-    useEffect(() => {
-        refColLabels.current = state.colLabels;
-    }, [state.colLabels]);
-    useEffect(() => {
-        refRowLabels.current = state.rowLabels;
-    }, [state.rowLabels]);
-    useEffect(() => {
-        refData.current = state.data;
-    }, [state.data]);
 
     const handleData = (what) => {
         if (JSON.stringify(state.data) !== JSON.stringify(what)) {
@@ -79,6 +75,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
             }));
         };
     };
+
     const handleButton = (what) => {
         switch (what) {
             case 'addColumn': {
@@ -118,10 +115,12 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
             default: { break; };
         };
     };
+
     const getNextKeyCode = (keyCode) => {
         if (keyCode + 1 > 90) return 65;
         return keyCode + 1;
     };
+    
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));

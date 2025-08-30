@@ -45,6 +45,7 @@ class WidgetTimeConversion extends Component {
             timezone: {}
         };
     };
+
     handleChange(where, what) {
         switch (where) {
             case 'date':
@@ -70,6 +71,7 @@ class WidgetTimeConversion extends Component {
             default: break;
         };
     };
+
     handleButton(what) {
         switch (what) {
             case '12hr':
@@ -87,6 +89,7 @@ class WidgetTimeConversion extends Component {
             default: break;
         };
     };
+
     updateDate(event, what) {
         switch (what) {
             case 'month': {
@@ -197,6 +200,7 @@ class WidgetTimeConversion extends Component {
             };
         }
     };
+
     componentDidMount() {
         /// Default values
         /// Set current date and time as default
@@ -223,12 +227,14 @@ class WidgetTimeConversion extends Component {
         };
         this.props.sortSelect(optionsTimzones);
     };
+
     componentWillUnmount() {
         let data = {
             'timezone': this.state.timezone
         };
         sessionStorage.setItem('timeconversion', JSON.stringify(data));
     };
+
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

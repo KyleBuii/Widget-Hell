@@ -31,10 +31,17 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
         to: {},
         running: false
     });
+
     const refState = useRef({
         from: state.from,
         to: state.to
     });
+
+    refState.current = {
+        from: state.from,
+        to: state.to
+    };
+
     useEffect(() => {
         /// Populate select with 'languages' array
         for (let curr = 0; curr < languages.length; curr+=2) {
@@ -68,12 +75,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             clearTimeout(timeoutCopy);
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            from: state.from,
-            to: state.to    
-        };
-    }, [state.from, state.to]);
+
     const handleTranslate = async () => {
         if (state.input !== '') {
             const url = 'https://translate281.p.rapidapi.com/';
@@ -114,6 +116,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             };
         };
     };
+
     const handleChange = (event) => {
         setState((prevState) => ({
             ...prevState,
@@ -123,6 +126,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             speechSynthesis.cancel();
         };
     };
+
     const handleFrom = (event) => {
         setState((prevState) => ({
             ...prevState,
@@ -132,6 +136,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             speechSynthesis.cancel();
         };
     };
+
     const handleTo = (event) => {
         setState((prevState) => ({
             ...prevState,
@@ -141,6 +146,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             speechSynthesis.cancel();
         };
     };
+
     const handleSwap = () => {
         if (state.from.value !== state.to.value) {
             randomColor();
@@ -155,6 +161,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             speechSynthesis.cancel();
         };
     };
+
     const handleRandSentence = () => {
         setState((prevState) => ({
             ...prevState,
@@ -165,9 +172,11 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             speechSynthesis.cancel();
         };
     };
+
     const handleTalk = () => {
         talk(state.converted);
     };
+
     const handleCopy = () => {
         copyToClipboard(state.converted);
         let elementTranslatedText = document.getElementById('googletranslator-translated-text');
@@ -176,6 +185,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
             elementTranslatedText.style.textShadow = 'unset';
         }, 400);
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

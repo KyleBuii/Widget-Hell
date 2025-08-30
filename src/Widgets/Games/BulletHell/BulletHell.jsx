@@ -8,21 +8,25 @@ import { PhaserGame } from './Game/PhaserGame';
 
 const WidgetBulletHell = ({ defaultProps, gameProps }) => {
     const phaserRef = useRef(null);
+
     useEffect(() => {
         window.addEventListener('keydown', handleKeydown);
         return () => {
             window.removeEventListener('keydown', handleKeydown);
         };
     }, []);
+
     const handleKeydown = (event) => {
         if (/87|65|83|68|37|38|39|40|16|17|32/.test(event.keyCode)) event.preventDefault();
     };
+
     const changeScene = () => {
         const scene = phaserRef.current.scene;
         if (scene) {
             scene.changeScene();
         };
     };
+
     const currentScene = (scene) => {
         if (scene.scene.key === 'Game') {
             EventBus.emit('data', {
@@ -31,6 +35,7 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
             });
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

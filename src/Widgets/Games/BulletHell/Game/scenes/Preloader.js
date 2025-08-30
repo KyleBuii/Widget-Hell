@@ -5,6 +5,7 @@ export class Preloader extends Scene{
     constructor(){
         super('Preloader');
     };
+
     init(){
         this.add.image(300, 425, 'background');
         this.add.rectangle(300, 425, 468, 32).setStrokeStyle(1, 0xffffff);
@@ -13,6 +14,7 @@ export class Preloader extends Scene{
             bar.width = 4 + (462 * progress);
         });
     };
+
     preload(){
         this.load.setPath('assets/bullethell/');
         /// Menu
@@ -42,6 +44,7 @@ export class Preloader extends Scene{
         this.load.image('bullet10', 'attacks/bullet10.png');
         this.load.image('bullet11', 'attacks/bullet11.png');
     };
+    
     create(){
         this.scene.start('MainMenu');
     };

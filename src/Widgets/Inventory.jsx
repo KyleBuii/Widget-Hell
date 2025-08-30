@@ -33,6 +33,7 @@ class WidgetInventory extends Component {
         this.addItem = this.addItem.bind(this);
         this.updateInventory = this.updateInventory.bind(this);
     };
+
     viewItem(item) {
         this.props.defaultProps.playAudio(audioItemOpen);
         document.getElementById('inventory-popout-view-item').style.visibility = 'visible';
@@ -40,6 +41,7 @@ class WidgetInventory extends Component {
             item: item
         });
     };
+
     equipItem(event, name, rarity, slot, whatSide) {
         event.stopPropagation();
         if (/ring|bracelet|necklace/.test(slot)) {
@@ -69,6 +71,7 @@ class WidgetInventory extends Component {
         };
         document.getElementById('inventory-popout-view-item').style.visibility = 'hidden';
     };
+
     addItem(event) {
         let newItemCounter = 0;
         let newItemNames = [...this.state.items];
@@ -116,6 +119,7 @@ class WidgetInventory extends Component {
             };
         });
     };
+
     /// Fills inventory to be 16x16 with empty slots
     fillInventory(inventory) {
         let slots = [];
@@ -134,6 +138,7 @@ class WidgetInventory extends Component {
             pageMax: pageMax
         });
     };
+
     /// Fills inventory with items
     updateInventory() {
         let slots = [];
@@ -151,6 +156,7 @@ class WidgetInventory extends Component {
         };
         this.fillInventory(slots);
     };
+
     handlePages(direction) {
         if ((direction === 'left')
             && (this.state.page !== 0)) {
@@ -167,6 +173,7 @@ class WidgetInventory extends Component {
             });
         };
     };
+
     componentDidMount() {
         window.addEventListener('new item', this.addItem);
         if (this.props.inventory.length === 0) {
@@ -195,9 +202,11 @@ class WidgetInventory extends Component {
             });
         };
     };
+
     componentWillUnmount() {
         window.removeEventListener('new item', this.addItem);
     };
+    
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

@@ -24,6 +24,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
         started: false,
         gameover: true
     });
+
     useEffect(() => {
         return () => {
             clearInterval(intervalTimer);
@@ -32,9 +33,11 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             seenColorsImage.length = 0;
         };
     }, []);
+
     useEffect(() => {
         if (!state.gameover) resetButtons();
     }, [state.gameover]);
+
     const fetchRandomColor = async () => {
         /// 70% - Seen Color | 30% - New color
         const randomChoice = Math.random();
@@ -67,6 +70,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             };
         };
     };
+
     const handleNew = () => {
         if (seenColorsHex.indexOf(state.color) === -1) {
             seenColorsHex.push(state.color);
@@ -85,6 +89,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             gameover();
         };
     };
+
     const handleSeen = () => {
         if (seenColorsHex.indexOf(state.color) === -1) {
             document.getElementById('colormemory-button-new')
@@ -100,6 +105,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             }));
         };
     };
+
     const start = () => {
         intervalTimer = setInterval(() => {
             setState((prevState) => ({
@@ -121,6 +127,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
         seenColorsImage = [];
         fetchRandomColor();
     };
+
     const resetButtons = () => {
         const buttonNew = document.getElementById('colormemory-button-new');
         const buttonSeen = document.getElementById('colormemory-button-seen');
@@ -132,6 +139,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             buttonSeen.classList.remove('button-correct');   
         };
     };
+
     const gameover = () => {
         clearInterval(intervalTimer);
         setState((prevState) => ({
@@ -147,16 +155,19 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
             gameProps.randomItem(amount);
         };
     };
+
     const colorClick = (hex) => {
         let colorRgb = hexToRgb(`#${hex}`);
         randomColor(colorRgb[0], colorRgb[1], colorRgb[2]);
     };
+
     const handleColorKeyDown = (index, event) => {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             colorClick(seenColorsHex[index]);
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

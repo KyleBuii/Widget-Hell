@@ -141,6 +141,7 @@ class WidgetAnimeSearcher extends Component {
             chapters: 0,
         };
     };
+
     async fetchImage(link) {
         const urlTrace = `https://api.trace.moe/search?cutBorders&url=${encodeURIComponent(link)}`;
         try {
@@ -165,6 +166,7 @@ class WidgetAnimeSearcher extends Component {
             console.error(err);
         };
     };
+
     async fetchMedia(name = null, id = null, image = false) {
         /// Clear existing animations
         if (this.state.characters.length !== 0) {
@@ -588,6 +590,7 @@ class WidgetAnimeSearcher extends Component {
             });
         };
     };
+
     async runQuery(query, variables) {
         const res = await fetch('https://graphql.anilist.co', {
             method: 'POST',
@@ -596,6 +599,7 @@ class WidgetAnimeSearcher extends Component {
         });
         return res.json();
     };
+
     async fetchMaxMedia() {
         const query = `
             query{
@@ -632,11 +636,13 @@ class WidgetAnimeSearcher extends Component {
             console.error(err);
         };
     };
+
     handleKeyDown(event) {
         if (event.key === 'Enter') {
             this.handleSearch();
         };
     };
+
     handleSearch() {
         const inputSearch = document.getElementById('animesearcher-input-search');
         const elementImageUploaded = document.getElementById('animesearcher-image-uploaded');
@@ -672,12 +678,14 @@ class WidgetAnimeSearcher extends Component {
         };
         inputSearch.value = '';
     };
+
     handleButtonSpoiler() {
         this.setState({
             spoiler: !this.state.spoiler
         });
         document.getElementById('animesearcher-button-spoiler').classList.toggle('disabled');
     };
+
     characterClick(index) {
         const elementCharacter = document.getElementById(`animesearcher-character-${(index !== undefined) ? index : this.state.characterIndex}`);
         const elementCharacterInformation = document.getElementById('animesearcher-character-information');
@@ -696,10 +704,12 @@ class WidgetAnimeSearcher extends Component {
         elementCharacterInformation.classList.toggle('animation-animesearcher-character-information');
         elementCharacter.classList.toggle('animation-image-character');
     };
+
     handleFilterButton() {
         const filterButton = document.getElementById('animesearcher-widget-filters');
         filterButton.classList.toggle('show');
     };
+
     handleFilter(event, type) {
         if (type === 'type') {
             filterType = event.target.value;
@@ -718,9 +728,11 @@ class WidgetAnimeSearcher extends Component {
             queryType.push(elementText);
         };
     };
+
     storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
+
     componentDidMount() {
         const dateLocalStorage = JSON.parse(localStorage.getItem('date'));
         const currentDate = new Date().getDate();
@@ -739,6 +751,7 @@ class WidgetAnimeSearcher extends Component {
             }));
         };
     };
+    
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
@@ -794,7 +807,7 @@ class WidgetAnimeSearcher extends Component {
                                 <button className='button-match fill-width'
                                     onClick={this.handleFilterButton}>Filter</button>
                                 <div id='animesearcher-widget-filters'
-                                    className='flex-center column gap align-items-left fill-width'>
+                                    className='collapsible flex-center column gap align-items-left fill-width'>
                                     <div className='flex-center wrap row gap only-align-items fill-width'>
                                         <div className='radio-match'>
                                             <input id='animesearcher-button-any'

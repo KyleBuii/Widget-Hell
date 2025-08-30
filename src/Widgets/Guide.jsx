@@ -35,6 +35,7 @@ const information = {
                 'Providing an image URl will perform a reverse search to find the most related anime or manga that matches it',
                 'Provides a SPOILER button to show/hide potential information that could spoil the searched media',
                 'Pressing the search button with no input will provide a random media',
+                'Pressing the filter button will display filters',
                 'Pressing the title of the media will copy it to the clipboard',
                 'Pressing an item under relations or recommendations if applicable, will provide information to the clicked item, overriding the currently searched media',
                 'Pressing an item under characters will provide a popup of information for that character',
@@ -57,6 +58,11 @@ const information = {
         { name: 'Currency Converter',
             description: [
                 'Widget for converting currency',
+            ],
+        },
+        { name: 'Daily Planner',
+            description: [
+                'Widget for planning',
             ],
         },
         { name: 'Google Translator',

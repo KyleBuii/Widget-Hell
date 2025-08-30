@@ -4,9 +4,11 @@ import { Scene } from 'phaser';
 
 export class MainMenu extends Scene{
     logoTween;
+    
     constructor(){
         super('MainMenu');
     };
+
     create(){
         this.add.image(450, 325, 'background');
         this.logo = this.add.image(450, 200, 'logo').setDepth(100);
@@ -19,6 +21,7 @@ export class MainMenu extends Scene{
         this.input.on('pointerdown', this.changeScene, this);
         EventBus.emit('current-scene-ready', this);
     };
+
     changeScene(){
         if(this.logoTween){
             this.logoTween.stop();
@@ -26,6 +29,7 @@ export class MainMenu extends Scene{
         };
         this.scene.start('Game');
     };
+    
     moveLogo(reactCallback){
         if(this.logoTween){
             if(this.logoTween.isPlaying()){

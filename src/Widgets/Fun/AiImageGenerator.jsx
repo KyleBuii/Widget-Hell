@@ -38,11 +38,19 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
         image: '',
         running: false
     });
+
     const refState = useRef({
         prompt: state.prompt,
         negative: state.negative,
         model: state.model
     });
+
+    refState.current = {
+        prompt: state.prompt,
+        negative: state.negative,
+        model: state.model    
+    };
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         if (localStorage.getItem('widgets') !== null) {
@@ -63,13 +71,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
             storeData();    
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            prompt: state.prompt,
-            negative: state.negative,
-            model: state.model    
-        };
-    }, [state.prompt, state.negative, state.model]);
+    
     const generateImage = async () => {
         if (!state.running) {
             try {
@@ -120,28 +122,33 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
             };
         };
     };
+
     const handleButtonHelp = () => {
         let popoutAnimation = document.getElementById('aiimagegenerator-popout-animation-help');
         defaultProps.showHidePopout(popoutAnimation, !popoutAnimation.checkVisibility({ visibilityProperty: true })); 
     };
+
     const handleInput = (what, event) => {
         setState((prevState) => ({
             ...prevState,
             [what]: event.target.value
         }));
     };
+
     const handleSelect = (event) => {
         setState((prevState) => ({
             ...prevState,
             model: event
         }));
     };
+
     const downloadImage = () => {
         const elementA = document.createElement('a');
         elementA.href = state.image;
         elementA.download = 'Image.jpg';
         elementA.click();
     };
+
     const storeData = () => {
         if ((refState.current.prompt !== '' || refState.current.negative !== '')
             && localStorage.getItem('widgets') !== null) {
@@ -154,6 +161,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

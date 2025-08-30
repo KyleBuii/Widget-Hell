@@ -13,16 +13,19 @@ class WidgetURLShortner extends Component{
         };
         this.handleInput = this.handleInput.bind(this);
     };
+
     handleInput(event){
         this.setState({
             input: event.target.value
         });
     };
+
     async shortenLink(){
         if(this.state.input !== ""){
             // const elementURL = document.getElementById("urlshortner-url");
         };
     };
+    
     render(){
         return(
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

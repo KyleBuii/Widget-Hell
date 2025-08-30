@@ -28,6 +28,7 @@ export class SongSelect extends Scene {
             date: 'January 0, 0000'
         }];
     };
+
     create() {
         this.add.image(WIDTH / 2, HEIGHT / 2, 'background');
         this.currentDepth = 1;
@@ -42,6 +43,7 @@ export class SongSelect extends Scene {
 
         EventBus.emit('song select ready');
     };
+
     createDiscs(discs) {
         discs.forEach((disc, index) => {
             const videoID = disc.url.match(/watch\?v=(.*)/)[1];
@@ -85,6 +87,7 @@ export class SongSelect extends Scene {
 
         this.load.start();
     };
+    
     createDiscAdd(x, y) {
         const disc = this.add.container(x, y);
         disc.add(this.add.circle(0, 0, WIDTH / 4, 0x000000));
@@ -100,6 +103,7 @@ export class SongSelect extends Scene {
         disc.add(this.add.circle(0, 0, 50, 0x000000));
         disc.add(this.add.circle(0, 0, 44, bgColor));
     };
+
     createContainers() {
         /// Info
         this.add.rectangle(WIDTH / 4.3, 150, WIDTH / 2.4, HEIGHT / 5, 0x000000);
@@ -108,6 +112,7 @@ export class SongSelect extends Scene {
         this.add.rectangle(WIDTH / 4.3, 445, WIDTH / 2.4, 385, 0x000000);
         this.add.rectangle(WIDTH / 4.3, 445, WIDTH / 2.55, 370, 0xffffff);
     };
+
     createDiscInfo() {
         if (this.discInfo) {
             this.discInfo.destroy(true);
@@ -119,6 +124,7 @@ export class SongSelect extends Scene {
             align: 'center'
         }).setOrigin(0.5, 0.5);
     };
+
     createDiscScore() {
         if (this.discContainerScore) {
             this.discContainerScore.destroy(true);
@@ -135,6 +141,7 @@ export class SongSelect extends Scene {
             this.discContainerScore.add(textScore);
         };
     };
+
     createPlayButton() {
         this.add.rectangle(WIDTH / 4.3, 670, WIDTH / 2.4, 35, 0x000000);
         this.add.rectangle(WIDTH / 4.3, 670, WIDTH / 2.55, 20, 0xffffff)
@@ -160,6 +167,7 @@ export class SongSelect extends Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5, 0.5);
     };
+
     addSong(song) {
         const newDiscIndex = this.discs.length;
         const imageKey = `disc_image_${newDiscIndex + 1}`;
@@ -174,6 +182,7 @@ export class SongSelect extends Scene {
             this.createAndPlaceDisc(song, newDiscIndex, imageKey);
         };
     };
+
     createAndPlaceDisc(song, index, image) {
         this.discs.push(
             new Disc(
@@ -215,12 +224,14 @@ export class SongSelect extends Scene {
         this.createDiscInfo();
         this.createDiscScore();
     };
+
     truncateText(text, maxLength) {
         if (text.length > maxLength) {
             return `${text.substring(0, maxLength - 3)}...`;
         };
         return text;
     };
+
     getAllScores() {
         return this.discs.map((disc, index) => ({
             index,
@@ -244,6 +255,7 @@ class Disc {
         this.scores = scores;
         this.disc = this.createDisc();
     };
+
     createDisc() {
         if (this.disc) {
             this.disc.destroy(true);
@@ -258,6 +270,7 @@ class Disc {
         disc.add(this.scene.add.circle(this.x, this.y, 44, bgColor));
         return disc;
     };
+
     handleDiscClick() {
         this.scene.discName = this.name;
         this.scene.discAuthor = this.author;
@@ -286,6 +299,7 @@ class Disc {
         this.scene.children.moveBelow(this.scene.discs[visibleIndices[0]].disc, this.scene.discs[visibleIndices[1]].disc);
         this.scene.children.moveBelow(this.scene.discs[visibleIndices[4]].disc, this.scene.discs[visibleIndices[3]].disc);
     };
+
     changeDiscInformation(number, URL, image, name, author, time, BPM, scores) {
         this.number = number;
         this.url = URL;
@@ -297,11 +311,13 @@ class Disc {
         this.scores = scores;
         this.disc = this.createDisc();
     };
+
     moveDisc(x, y) {
         this.x = x;
         this.y = y;
         this.disc.setPosition(x, y);
     };
+
     addScore(newScore) {
         this.scores.push(newScore);
         this.scene.createDiscScore();

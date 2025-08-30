@@ -4,9 +4,11 @@ import { Scene } from 'phaser';
 
 export class MainMenu extends Scene{
     logoTween;
+
     constructor(){
         super('MainMenu');
     };
+
     create(){
         this.add.image(300, 425, 'background');
         this.logo = this.add.text(55, 200, 'Circle Beat', {
@@ -28,6 +30,7 @@ export class MainMenu extends Scene{
         this.input.on('pointerdown', this.changeScene, this);
         EventBus.emit('current-scene-ready', this);
     };
+
     changeScene(){
         if(this.logoTween){
             this.logoTween.stop();
@@ -35,6 +38,7 @@ export class MainMenu extends Scene{
         };
         this.scene.start('SongSelect');
     };
+    
     moveLogo(reactCallback){
         if(this.logoTween){
             if(this.logoTween.isPlaying()){

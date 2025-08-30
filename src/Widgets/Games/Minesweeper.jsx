@@ -24,11 +24,13 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         maxHealth: 1,
         health: 1
     });
+
     const refState = useRef({
         mines: state.mines,
         width: state.width,
         height: state.health
     });
+
     useEffect(() => {
         let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
         let localStorageMinesweeper = dataLocalStorage['games']['minesweeper'];
@@ -64,6 +66,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             clearInterval(intervalTimer);
         };
     }, []);
+
     useEffect(() => {
         refState.current = {
             mines: state.mines,
@@ -72,9 +75,11 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         restartBoard();
     }, [state.mines, state.width, state.height]);
+    
     useEffect(() => {
         if (state.health <= 0) gameOver();
     }, [state.health]);
+
     const handleLeftClick = (y, x) => {
         if (!state.started) {
             setState((prevState) => ({
@@ -105,6 +110,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         checkVictory();
         setState((prevState) => ({ ...prevState }));
     };
+
     const handleRightClick = (e, y, x) => {
         e.preventDefault();
         let grid = state.grid;
@@ -122,6 +128,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             minesLeft: minesLeft,
         }));
     };
+
     const handleSlider = (what, value) => {
         if (what === 'height' || what === 'width') {
             setState((prevState) => ({
@@ -145,6 +152,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             }));    
         };
     };
+
     const createBoard = (click = null) => {
         let grid = [];
         let rows = state.width;
@@ -160,6 +168,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         return grid;
     };
+
     const randomMines = (amount, columns, rows, starter = null) => {
         let minesArray = [];
         let limit = columns * rows;
@@ -173,6 +182,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         return minesArray;
     };
+
     const addCell = (grid, cell) => {
         let y = grid.length - 1;
         let x = grid[y].length;
@@ -187,6 +197,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         grid[y].push(cell);
     };
+
     const getNeighbours = (grid, y, x) => {
         let neighbours = [];
         let currentRow = grid[y];
@@ -206,6 +217,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         return neighbours;
     };
+
     const revealBoard = () => {
         for (let row of state.grid) {
             for (let cell of row) {
@@ -214,6 +226,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         };
         setState((prevState) => ({ ...prevState }));
     };
+
     const restartBoard = () => {
         setState((prevState) => ({
             ...prevState,
@@ -227,6 +240,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
         }));
         clearInterval(intervalTimer);
     };
+
     const revealEmptyNeighbours = (grid, y, x) => {
         let neighbours = [...getNeighbours(grid, y, x)];
         grid[y][x].isFlagged = false;
@@ -243,12 +257,14 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             neighbourCell.isRevealed = true;
         };
     };
+
     const checkVictory = () => {
         let revealed = getRevealed();
         if (revealed >= state.height * state.width - state.mines) {
             gameOver('win');
         };
     };
+
     const getRevealed = () => {
         return state.grid
             .reduce((r, v) => {
@@ -258,6 +274,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             .map((v) => v.isRevealed)
             .filter((v) => !!v).length;
     };
+
     const gameOver = (type) => {
         revealBoard();
         clearInterval(intervalTimer);
@@ -278,6 +295,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             gameProps.updateGameValue('exp', state.mines);
         };
     };
+
     const calculateHealth = () => {
         if (gameProps.stats.health < 10) {
             return 1;
@@ -285,6 +303,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             return Math.floor(gameProps.stats.health / 10);
         };
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -297,6 +316,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     const renderBoard = () => {
         return state.grid.map((row, i) => {
             let rowCells = row.map((cell, i) => {
@@ -332,6 +352,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                 className='flex-center row'>{rowCells}</div>;
         });
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -473,6 +494,7 @@ class Cell {
         this.isUnknown = false;
         this.isClicked = false;
     };
+    
     get isEmpty () {
         return (this.n === 0 && !this.isMine);
     };

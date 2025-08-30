@@ -45,6 +45,7 @@ const WidgetAnimeSearcher = React.lazy(() => import('./Widgets/Utility/AnimeSear
 const WidgetBattery = React.lazy(() => import('./Widgets/Utility/Battery.jsx'));
 const WidgetCalculator = React.lazy(() => import('./Widgets/Utility/Calculator.jsx'));
 const WidgetCurrencyConverter = React.lazy(() => import('./Widgets/Utility/CurrencyConverter.jsx'));
+const WidgetDailyPlanner = React.lazy(() => import('./Widgets/Utility/DailyPlanner.jsx'));
 const WidgetGoogleTranslator = React.lazy(() => import('./Widgets/Utility/GoogleTranslator.jsx'));
 const WidgetImageColorPicker = React.lazy(() => import('./Widgets/Utility/ImageColorPicker.jsx'));
 const WidgetMusicPlayer = React.lazy(() => import('./Widgets/Utility/MusicPlayer.jsx'));
@@ -655,6 +656,7 @@ const sentences = [
     , `Gardevoir is literally one of the most fuckable pokemon there are, you're just mad because you're in denial. Let's start with fact now, Gardevoir is 5'3', this is not only the perfect height, but it means they can also have enough height to be able to do anything you want. While being 5'3', Gardevoir is also only 103LBs, so, theyre lite enough to pick up and have an all around good time. So, these are facts, not only this, but Gardevoir, LITERALLY, does not feel the pull of gravity, while also distorting dimensions. So, not only does this mean that Gardevoir can do anything they want ignoring gravity, but they are literally capable of making a pocket dimension in which yall can fuck in. These are all facts. Continuing with these facts, Gardevoir is telepathic and feels a strong emotion connection to their trainer, so, they will know before you that you're horny, she literally has it locked down and in the know before you're even aware of it, this only means that they are are able to serve their trainer in every way possible. So, these are just the facts on Gardevoir, but let's go even deeper so I can prove to you how Gardevoir is literally the most fuckable pokemon there is: Gardevoir can learn double team, so, now you get to fuck two of them. Gardevoir can learn charm, so, you thought you were horny before, but now it's compounded on itself. Finally, Gardevoir can learn mean look, combining this with double team, means not only do you get a tsundere on your dick, but also a submissive one. It's the best of both worlds. Gardevoir is literally the most fuckable pokemon there is and all of these are facts that yall are too afraid to realize.`
     , `You are once again in the Soul Stream. Before you, Nao is giggling to herself. Greetings, Milletian! Heehee. I heard a great joke from one of your compatriots the other day. Would you like to hear it? Thrilled to see Nao so happy, you nod. Wonderful! Follow me! With a flash, you are transported to Tir Chonaill. Nao points you towards a new tavern, the paint on the sign still fresh. The sign is a subtle joke. The shop is called 'Sneed's Feed & Seed', where feed and seed both end in the sound '-eed', thus rhyming with the names of the owner, Sneed. The sign says that the shop was 'Formerly Chuck's', implying that the two words beginning with 'F' and 'S' would have ended with '-uck', rhyming wth 'Chuck'. So, when Chuck owned the shop, it would have been called 'Chuck's Feeduck and Seeduck'.`
     , 'You make jumps to buy a house, you make jumps to get food. But more importantly, you make jumps to know the truth.'
+    , 'WHAT PART OF "no loot no attack" DO YOU NOT FUCKING UNDERSTAND?!? WHOEVER STOLE THE UNNATURAL INSTINCT: give it back to us or we are kicking EVERYONE and submitting a report to GGG. you have 30 seconds. we have video recording and will find out who stole it.'
 ];
 const sentencesHorror = [
     'Hello',
@@ -7287,6 +7289,17 @@ class Widgets extends Component {
                             disabled: false
                         }
                     },
+                    dailyplanner: {
+                        name: 'Daily Planner',
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                     equipment: {
                         active: false,
                         position: {
@@ -7895,6 +7908,7 @@ class Widgets extends Component {
         this.renderHotbar = this.renderHotbar.bind(this);
         this.showSetting = this.showSetting.bind(this);
     };
+
     randomColor(forcedColorR, forcedColorG, forcedColorB, bypass = false) {
         if (this.state.values.noColorChange && !bypass) return;
 
@@ -7930,6 +7944,7 @@ class Widgets extends Component {
             neutral80: randColor        /// Placeholder text color
         };
     };    
+
     handleShowHide(what, where) {
         if (this.state.widgets[where][what].active === false) {
             this.randomColor();
@@ -7979,6 +7994,7 @@ class Widgets extends Component {
             speechSynthesis.cancel();
         };
     };
+
     handleShowHidePopout(popout, visible, button, inverse) {
         if (visible) {
             let elementSelects = popout.querySelectorAll('.select-match');
@@ -8059,6 +8075,7 @@ class Widgets extends Component {
             };   
         };
     };
+
     handleAnimation(what, where, hide = false) {
         let e = document.getElementById(`${what}-widget-animation`);
         let elementSelects = e.querySelectorAll('.select-match');
@@ -8126,6 +8143,7 @@ class Widgets extends Component {
             });
         };
     };
+
     handleHotbar(element, what, where) {
         switch (what) {
             case 'fullscreen': {
@@ -8205,12 +8223,14 @@ class Widgets extends Component {
             default: { break; };
         };
     };
+
     handleMouseMove(event) {
         window.mouse = {
             x: event.clientX,
             y: event.clientY
         };
     };
+
     updateStickers(mutateType, stickerName, stickerImage) {
         switch (mutateType) {
             case 'add': {
@@ -8240,6 +8260,7 @@ class Widgets extends Component {
             };
         };
     };
+
     updateDesign(what, value, where) {
         let widget, popout, combine;
         if (where !== undefined) {
@@ -8269,6 +8290,7 @@ class Widgets extends Component {
             default: break;
         };
     };
+
     updateValue(value, what, type) {
         switch (what) {
             case 'customBorder':
@@ -8308,6 +8330,7 @@ class Widgets extends Component {
             };
         });
     };
+
     updateCustomBorder(what, value) {
         let widget, popout, widgetAll;
         if (what !== undefined && what !== '') {
@@ -8330,6 +8353,7 @@ class Widgets extends Component {
             };
         };
     };
+
     updateDecoration(what, value) {
         let widget, popout, widgetAll;
         if (what !== undefined && what !== '') {
@@ -8395,6 +8419,7 @@ class Widgets extends Component {
             };
         };
     };
+
     randomTimeoutText() {
         if (this.state.values.randomText && (timeoutText === undefined)) {
             let randomNumber = Math.random() * 60000 + 5000;
@@ -8405,6 +8430,7 @@ class Widgets extends Component {
             }, randomNumber);
         };
     };
+
     randomTextAnimation() {
         if (widgetsTextActive.length > 0) {
             let randomTextAnimation = textAnimations[Math.floor(Math.random() * textAnimations.length)];
@@ -8415,6 +8441,7 @@ class Widgets extends Component {
             });
         };
     };
+
     randomTimeoutHorror() {
         /// Creating a shadow image
         let randomNumber = Math.random() * 1200000 + 300000;
@@ -8463,6 +8490,7 @@ class Widgets extends Component {
             };
         }, randomNumber);
     };
+
     updateWidgetsActive(what, where) {
         switch (where) {
             case 'utility':
@@ -8477,6 +8505,7 @@ class Widgets extends Component {
             default: break;
         };
     };
+
     updatePosition(what, where, xNew, yNew, type, name) {
         switch (type) {
             case 'popout':
@@ -8520,11 +8549,13 @@ class Widgets extends Component {
                 break;
         };
     };
+
     addGoldBag(event) {
         this.setState({
             gold: this.state.gold + event.detail
         });
     };
+
     addItem(event) {
         let newArray = [...this.state.inventory];
         for (let item of event.detail) {
@@ -8554,6 +8585,7 @@ class Widgets extends Component {
             });
         };
     };
+
     equipItem(event) {
         const itemData = {
             'name': event.detail.name,
@@ -8613,6 +8645,7 @@ class Widgets extends Component {
             };
         };
     };
+
     updateGameValue(what, value) {
         switch (what) {
             case 'equipment':
@@ -8665,6 +8698,7 @@ class Widgets extends Component {
             default: break;
         };
     };
+    
     calculateMaxExp() {
         const equationMaxExp = this.state.stats.level * 100 * 1.25;
         this.setState({
@@ -8674,6 +8708,7 @@ class Widgets extends Component {
             }
         });
     };
+
     talk(text) {
         if (text !== '') {
             if (speechSynthesis.speaking) {
@@ -8687,6 +8722,7 @@ class Widgets extends Component {
             };
         };
     };
+
     playAudio(audio) {
         let duplicateAudio = audio.cloneNode();
         duplicateAudio.play();
@@ -8716,6 +8752,7 @@ class Widgets extends Component {
             }, 2000);
         };
     };
+
     getTranscribedAudio(audio) {
         let transcribedAudio = '';
         switch (audio) {
@@ -8747,6 +8784,7 @@ class Widgets extends Component {
         };
         return transcribedAudio;
     };
+
     updateGlobalValue(what, value) {
         switch (what) {
             case 'hour':
@@ -8755,6 +8793,7 @@ class Widgets extends Component {
             default: break;
         };
     };
+
     showSetting() {
         const elementSetting = document.getElementById('settings-widget');
         const elementButtonSetting = document.getElementById('widget-button-setting');
@@ -8769,6 +8808,7 @@ class Widgets extends Component {
             elementButtonSetting.classList.add('button-setting-active');
         };
     };
+
     renderHotbar(widget, type) {
         return <div id={`${widget}-hotbar`}
             className='hotbar'>
@@ -8802,6 +8842,7 @@ class Widgets extends Component {
                 : <></>}
         </div>
     };
+
     generateDefaultProps(widget, type) {
         let defaultProps = {
             position: {
@@ -8827,6 +8868,7 @@ class Widgets extends Component {
         };
         return defaultProps;
     };
+
     storeData() {
         let data = {
             utility: {},
@@ -8926,6 +8968,7 @@ class Widgets extends Component {
         localStorage.setItem('stats', JSON.stringify(this.state.stats));
         localStorage.setItem('abilities', JSON.stringify(this.state.abilities));
     };
+
     componentDidMount() {
         this.randomColor();
         window.addEventListener('beforeunload', this.storeData);
@@ -9106,6 +9149,7 @@ class Widgets extends Component {
             voices = window.speechSynthesis.getVoices();
         }, { once: true });
     };
+
     componentWillUnmount() {
         window.removeEventListener('beforeunload', this.storeData);
         window.removeEventListener('new item', this.addItem);
@@ -9114,6 +9158,7 @@ class Widgets extends Component {
         clearTimeout(timeoutText);
         clearInterval(intervalHorror);
     };
+    
     render() {
         const gameProps = {
             gold: this.state.gold,
@@ -9310,6 +9355,9 @@ class Widgets extends Component {
                         selectTheme={selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         randomColor={this.randomColor}/>}
+                {this.state.widgets.utility.dailyplanner.active
+                    && <LazyWidget Component={WidgetDailyPlanner}
+                        defaultProps={this.generateDefaultProps('dailyplanner', 'utility')}/>}
                 {this.state.widgets.utility.googletranslator.active
                     && <LazyWidget Component={WidgetGoogleTranslator}
                         defaultProps={this.generateDefaultProps('googletranslator', 'utility')}

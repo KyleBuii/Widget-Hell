@@ -5,10 +5,10 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaMinus, FaPlus, FaRegCirclePause, FaRegCirclePlay, FaShuffle } from 'react-icons/fa6';
 import { IoPlayBack, IoPlayForward, IoStatsChart } from 'react-icons/io5';
 import { RiPlayListFill } from 'react-icons/ri';
+import { TbRepeat, TbRepeatOnce } from 'react-icons/tb';
 import { VscClearAll } from 'react-icons/vsc';
 import ReactPlayer from 'react-player';
 import SimpleBar from 'simplebar-react';
-import { TbRepeat, TbRepeatOnce } from 'react-icons/tb';
 
 
 const audio = new Audio();
@@ -98,6 +98,7 @@ class WidgetMusicPlayer extends Component {
         this.updateDuration = this.updateDuration.bind(this);
         this.storeData = this.storeData.bind(this);
     };
+
     async fetchURLData(URL) {
         try {
             const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
@@ -119,6 +120,7 @@ class WidgetMusicPlayer extends Component {
             singleSongAdd = true;
         };
     };
+
     async fetchYoutubePlaylist(ID, pageToken = '') {
         try {
             document.getElementById('musicplayer-input-add').classList.remove('musicplayer-animation-input-add');
@@ -157,6 +159,7 @@ class WidgetMusicPlayer extends Component {
             this.animationInputAdd();
         };
     };
+
     async fetchMissingDuration(urls) {
         const newUrls = [...urls];
 
@@ -182,6 +185,7 @@ class WidgetMusicPlayer extends Component {
 
         return newUrls;
     };
+
     handleInputSubmit(link, key) {
         switch (key) {
             case 'Enter':
@@ -218,6 +222,7 @@ class WidgetMusicPlayer extends Component {
             default: break;
         };
     };
+
     handleButton(type) {
         let combineArrays = [...this.state.music, ...this.state.urls];
         switch (type) {
@@ -432,6 +437,7 @@ class WidgetMusicPlayer extends Component {
             default: { break; };
         };
     };
+
     handleNextMusic() {
         if (this.state.shuffle) {
             if (previousShuffleNextSong !== -1) {
@@ -456,6 +462,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
+
     handlePreviousMusic() {
         if (this.state.shuffle) {
             previousShuffleNextSong = activePlaylistItem;
@@ -470,6 +477,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
+
     handleSeeking({ event, what }) {
         /// Default is onChange
         switch (what) {
@@ -491,6 +499,7 @@ class WidgetMusicPlayer extends Component {
                 break;
         };
     };
+
     handlePlaylist(index, element) {
         if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
         this.loadMusic(index);
@@ -500,12 +509,14 @@ class WidgetMusicPlayer extends Component {
         activePlaylistItem = element.target;
         element.target.classList.add('musicplayer-playlist-active');
     };
+
     playlistHandleKeyDown(index, event) {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             this.handlePlaylist(index, event);
         };
     };
+
     handlePlayerReady() {
         const player = document.getElementById('musicplayer-player');
         const iframe = player?.querySelector('iframe');
@@ -513,12 +524,14 @@ class WidgetMusicPlayer extends Component {
             iframe.setAttribute('tabindex', '-1');
         };
     };
+
     handleBlur() {
         document.getElementById('musicplayer-input-add')
             .classList.remove('musicplayer-animation-input-add');
         document.getElementById('musicplayer-button-add')
             .classList.remove('musicplayer-animation-button-add');
     };
+
     ended() {
         this.saveDataMusic(this.state.name);
         this.setState({
@@ -539,6 +552,7 @@ class WidgetMusicPlayer extends Component {
 
         this.handleNextMusic();
     };
+
     clearMusic() {
         this.setState({
             name: '',
@@ -555,6 +569,7 @@ class WidgetMusicPlayer extends Component {
             playerVisibility: 'hidden'
         });
     };
+
     discSwitch() {
         let elementDisc = document.getElementById('musicplayer-disc');
         let elementPlayer = document.getElementById('musicplayer-player');
@@ -575,12 +590,14 @@ class WidgetMusicPlayer extends Component {
             elementPlayer.classList.remove('musicplayer-player-medium');
         };
     };
+
     discHandleKeyDown(event) {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             this.discSwitch();
         };
     };
+
     animationInputAdd() {
         let elementDetails = document.getElementById('musicplayer-details');
         elementDetails.classList.add('musicplayer-animation-add-details');
@@ -588,6 +605,7 @@ class WidgetMusicPlayer extends Component {
             elementDetails.classList.remove('musicplayer-animation-add-details');
         }, 400);
     };
+
     toggleMusic() {
         let combineArrays = [...this.state.music, ...this.state.urls];
         if (combineArrays.length !== 0) {
@@ -616,6 +634,7 @@ class WidgetMusicPlayer extends Component {
             });
         };
     };
+
     updateDuration(event) {
         if (!this.state.seeking) {
             let minutes, seconds;
@@ -640,6 +659,7 @@ class WidgetMusicPlayer extends Component {
             timePlayed += 1;
         };
     };
+
     setMaxDuration(event) {
         if (singleSongAdd) {
             const newUrls = [...this.state.urls];
@@ -677,6 +697,7 @@ class WidgetMusicPlayer extends Component {
             rawMaxDuration: event
         });
     };
+
     loadMusic(music) {
         let combineArrays = [...this.state.music, ...this.state.urls];
         let musicIndex;
@@ -736,6 +757,7 @@ class WidgetMusicPlayer extends Component {
             };
         };
     };
+
     saveDataMusic(music) {
         let dataSong = dataSongsAdd.find((song) => song.name === music);
         if (dataSong !== undefined) {
@@ -751,6 +773,7 @@ class WidgetMusicPlayer extends Component {
         };
         timePlayed = 0;
     };
+
     formatTime() {
         const { days, hours, minutes, seconds } = this.state.statistic.time;
         const textDays = (days !== 0) ? `${this.props.formatNumber(days, 2)} days ` : '';
@@ -760,6 +783,7 @@ class WidgetMusicPlayer extends Component {
 
         return `${textDays}${textHours}${textMinutes}${textSeconds}`;
     };
+
     calculateStatistic() {
         let newStatistic = {};
         let totalPlayed = 0;
@@ -793,6 +817,7 @@ class WidgetMusicPlayer extends Component {
             statistic: { ...newStatistic },
         });
     };
+
     convertSecondsToDHMS(totalSeconds) {
         const days = Math.floor(totalSeconds / (3600 * 24));
         const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
@@ -801,6 +826,7 @@ class WidgetMusicPlayer extends Component {
 
         return { days, hours, minutes, seconds };
     };
+
     storeData() {
         if (localStorage.getItem('widgets') !== null) {
             if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
@@ -844,6 +870,7 @@ class WidgetMusicPlayer extends Component {
             dataSongsAdd.length = 0;
         };
     };
+
     async componentDidMount() {
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
@@ -905,6 +932,7 @@ class WidgetMusicPlayer extends Component {
             document.getElementById('musicplayer-playlist').style.display = 'unset';
         }, 100);
     };
+
     componentWillUnmount() {
         if (!audio.paused) {
             audio.pause();
@@ -922,6 +950,7 @@ class WidgetMusicPlayer extends Component {
         clearTimeout(timeoutPlaylistClear);
         clearTimeout(timeoutPlaylistPanel);
     };
+    
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
@@ -1162,7 +1191,7 @@ class WidgetMusicPlayer extends Component {
                         </div>
                         {/* Statistic Popout */}
                         <section id='musicplayer-statistic'
-                            className='scrollable float center flex-center column only-align-items gap medium-gap'
+                            className='font scrollable float center flex-center column only-align-items gap medium-gap'
                             onClick={() => this.handleButton('statistic')}>
                             <div id='musicplayer-statistic-title'
                                 className='flex-center row gap small-gap only-align-items'>

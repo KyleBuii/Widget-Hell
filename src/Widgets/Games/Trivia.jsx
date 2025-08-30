@@ -59,6 +59,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
         maxHealth: 1,
         health: 1
     });
+
     useEffect(() => {
         document.getElementById('trivia-overlay-customize').style.display = 'block';
         /// Populate category options
@@ -94,12 +95,14 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             health: calculateMaxHealth
         }));
     }, []);
+
     useEffect(() => {
         clearInterval(intervalTimer);
         if (JSON.stringify(sessionStorage.getItem('trivia')) !== state.sessionToken) {
             sessionStorage.setItem('trivia', state.sessionToken);
         };
     }, [state.sessionToken]);
+
     const fetchTrivia = async () => {
         if (state.amount !== '') {
             try {
@@ -175,6 +178,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             document.getElementById('trivia-overlay-customize').style.display = 'block';
         };
     };
+
     const handleNumber = (event) => {
         if (event.target.value === '') {
             setState((prevState) => ({
@@ -198,12 +202,14 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             }));
         };
     };
+
     const handleSelect = (selectType, event) => {
         setState((prevState) => ({
             ...prevState,
             [selectType]: event
         }));
     };
+
     const handleChoice = (choice, index) => {
         if (choice === state.correctChoices[state.questionCount]) {
             let gold;
@@ -241,6 +247,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             buttonChoice.className += ' button-incorrect';
         };
     };
+
     const gameOver = () => {
         let indexButtonCorrect = state.choices[state.questionCount].indexOf(state.correctChoices[state.questionCount]);
         document.getElementById(`trivia-button-${indexButtonCorrect}`).className += ' button-correct';
@@ -256,6 +263,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
     };
+
     const resetGame = () => {
         document.getElementById('trivia-overlay-customize').style.display = 'block';
         setState((prevState) => ({
@@ -272,12 +280,14 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
         }));
         resetButtons();
     };
+
     const handleResetKeyDown = (event) => {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             resetGame();
         };
     };
+
     const resetButtons = () => {
         for (let i = 0; i < document.getElementById('trivia-choices').children.length; i++) {
             let buttonChoice = document.getElementById(`trivia-button-${i}`);
@@ -290,6 +300,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             buttonChoice.classList.remove('disabled-option');
         };
     };
+
     const calculateHealth = () => {
         if (gameProps.stats.health < 10) {
             return 1;
@@ -297,6 +308,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
             return Math.floor(gameProps.stats.health / 10);
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

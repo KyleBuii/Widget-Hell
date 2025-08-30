@@ -18,11 +18,13 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
         choicePlayer: 'rock',
         choiceComputer: 'rock'
     });
+
     useEffect(() => {
         return () => {
             clearInterval(intervalTimer);
         };
     }, []);
+
     const changeChoice = (side, choice) => {
         let elementChoice = document.getElementById(`rockpaperscissor-choice-${side}`);
         elementChoice.src = `/resources/rockpaperscissor/${choice}.webp`;
@@ -35,6 +37,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
             [`choice${side.replace(/^./, (char) => char.toUpperCase())}`]: choice
         }));
     };
+
     const begin = () => {
         if (intervalTimer === undefined) {
             intervalTimer = setInterval(() => {
@@ -76,6 +79,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
         let elementMessage = document.getElementById('rockpaperscissor-message');
         elementMessage.innerText = message;
     };
+
     const gameover = () => {
         intervalTimer = clearInterval(intervalTimer);
         setState((prevState) => ({
@@ -90,6 +94,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
         gameProps.updateGameValue('gold', state.score);
         gameProps.updateGameValue('exp', state.score);
     };
+
     const restart = () => {
         setState((prevState) => ({
             ...prevState,
@@ -104,6 +109,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
         let elementMessage = document.getElementById('rockpaperscissor-message');
         elementMessage.innerText = '';
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

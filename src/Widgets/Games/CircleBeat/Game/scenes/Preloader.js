@@ -5,6 +5,7 @@ export class Preloader extends Scene{
     constructor(){
         super('Preloader');
     };
+
     init(){
         this.add.image(300, 425, 'background');
         this.add.rectangle(300, 425, 468, 32).setStrokeStyle(1, 0xffffff);
@@ -13,6 +14,7 @@ export class Preloader extends Scene{
             bar.width = 4 + (462 * progress);
         });
     };
+
     preload(){
         this.load.setPath('resources/circlebeat/');
 
@@ -26,6 +28,7 @@ export class Preloader extends Scene{
 
         this.load.plugin('rexcirclemaskimageplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexcirclemaskimageplugin.min.js', true);
     };
+    
     create(){
         this.scene.start('MainMenu');
     };

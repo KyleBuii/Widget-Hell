@@ -6,6 +6,7 @@ export class GameOver extends Scene{
     constructor(){
         super('GameOver');
     };
+
     create(){
         this.cameras.main.setBackgroundColor(0xff0000);
         this.add.image(400, 300, 'background').setAlpha(0.5);
@@ -17,6 +18,7 @@ export class GameOver extends Scene{
         this.input.on('pointerdown', this.changeScene, this);
         EventBus.emit('current-scene-ready', this);
     };
+    
     changeScene(){
         this.scene.start('GameScreen');
     };

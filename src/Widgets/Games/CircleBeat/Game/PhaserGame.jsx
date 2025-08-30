@@ -6,6 +6,7 @@ import StartGame from './main';
 
 export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene }, ref){
     const game = useRef();
+
     useLayoutEffect(() => {
         if(game.current === undefined){
             game.current = StartGame("circlebeat-game");
@@ -23,6 +24,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
             };
         };
     }, [ref]);
+
     useEffect(() => {
         EventBus.on('current-scene-ready', (currentScene) => {
             if(currentActiveScene instanceof Function){
@@ -34,6 +36,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
             EventBus.removeListener('current-scene-ready');
         };
     }, [currentActiveScene, ref]);
+    
     return(
         <div id="circlebeat-game"></div>
     );

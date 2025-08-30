@@ -17,6 +17,7 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
         incrementA: 0.07,
         incrementB: 0.03
     });
+
     useEffect(() => {
         const intervalDraw = setInterval(drawAsciiFrame, 50);
         setMargin();
@@ -24,15 +25,18 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
             clearInterval(intervalDraw);
         };
     }, [state]);
+
     useEffect(() => {
         setMargin();
     }, []);
+
     const handleSlider = (what, value) => {
         setState((prevState) => ({
             ...prevState,
             [what]: value
         }));
     };
+
     const drawAsciiFrame = () => {
         let b = []; /// Acii characters
         let z = []; /// Depth values
@@ -80,6 +84,7 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
         /// Update html element with the ascii frame
         document.getElementById('donutanimation-donut').innerText = b.join('');
     };
+
     const randomValue = (what, min, max) => {
         let random = Math.random() * max + min;
         if (what === 'height' || what === 'width') random = Math.floor(random);
@@ -88,10 +93,12 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
             [what]: random
         }));
     };
+
     const setMargin = () => {
         let elementDonut = document.getElementById('donutanimation-donut');
         elementDonut.style.marginBottom = `${state.height + 34}em`;
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

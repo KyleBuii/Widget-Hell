@@ -10,6 +10,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
         percentage: 0,
         charging: false
     });
+
     useEffect(() => {
         updateBattery();
         navigator.getBattery().then((batteryInformation) => {
@@ -23,6 +24,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
             });    
         };
     }, []);
+
     const updateBattery = () => {
         let batteryLiquid = document.getElementById('battery-liquid');
         navigator.getBattery().then((batteryInformation) => {
@@ -50,6 +52,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
             };
         });
     };
+
     const updateCharging = () => {
         navigator.getBattery().then((batteryInformation) => {
             setState((prevState) => ({
@@ -58,6 +61,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
             }));
         });
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

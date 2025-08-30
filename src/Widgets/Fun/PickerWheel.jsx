@@ -23,10 +23,17 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
         finished: true,
         maxSpeed: 0
     });
+
     const refState = useRef({
         segments: state.segments,
         segmentsColor: state.segmentsColor
     });
+
+    refState.current = {
+        segments: state.segments,
+        segmentsColor: state.segmentsColor
+    };
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         if (localStorage.getItem('widgets') !== null) {
@@ -47,15 +54,11 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             clearInterval(intervalSpin);
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            segments: state.segments,
-            segmentsColor: state.segmentsColor    
-        };
-    }, [state.segments, state.segmentsColor]);
+
     useEffect(() => {
         draw();
     }, [color, state.segments]);
+
     useEffect(() => {
         if(!state.finished){
             duration = 0;
@@ -69,6 +72,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             document.getElementById('pickerwheel-overlay-winner').style.visibility = 'visible';
         };
     }, [state.finished]);
+
     const handleClick = (what) => {
         let elementInput = document.getElementById('pickerwheel-input');
         let inputValue = elementInput.value;
@@ -101,6 +105,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             default: break;
         };
     };
+
     const handleKeyDown = (key) => {
         let elementInput = document.getElementById('pickerwheel-input');
         if (key === 'Enter') {
@@ -108,6 +113,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             elementInput.value = '';
         };
     };
+
     const handleAdd = (value) => {
         if (value !== '') {
             let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -118,9 +124,11 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             }));
         };
     };
+
     const handleOverlay = () => {
         document.getElementById('pickerwheel-overlay-winner').style.visibility = 'hidden';
     };
+
     const spin = () => {
         if (!intervalSpin && state.segments.length) {
             defaultProps.playAudio(audioSpin);
@@ -131,6 +139,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             }));
         };
     };
+
     const onTimerTick = () => {
         let upDuration = state.segments.length * 500;
         let downDuration = state.segments.length * 700;
@@ -160,6 +169,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             angleCurrent -= Math.PI * 2;
         };
     };
+
     const draw = () => {
         let canvas = document.getElementById('pickerwheel-canvas-wheel');
         let ctx = canvas.getContext('2d');
@@ -239,6 +249,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
         ctx.fill();
         //#endregion
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -250,6 +261,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

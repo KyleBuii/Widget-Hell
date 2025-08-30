@@ -21,6 +21,7 @@ class WidgetQuote extends Component {
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
     };
+
     handleNewQuote() {
         const randQuote = Math.floor(Math.random() * this.props.quotes.length);
         const randQuoteAuthor = (this.props.quotes[randQuote]['author'] === '') ? 'Anon' : this.props.quotes[randQuote]['author'];
@@ -41,6 +42,7 @@ class WidgetQuote extends Component {
             speechSynthesis.cancel();
         };
     };
+
     handleButton(what) {
         switch (what) {
             case 'copy': {
@@ -69,11 +71,13 @@ class WidgetQuote extends Component {
             default: { break; };
         };
     };
+
     handleSlider(value) {
         this.setState({
             total: value
         });
     };
+
     handleSliderBlur() {
         let elementSliderTotal = document.getElementById('quote-slider-total');
         elementSliderTotal.classList.remove('animation-quote-slider-total');          
@@ -81,6 +85,7 @@ class WidgetQuote extends Component {
             this.loadFallingImage();
         };
     };
+
     loadFallingImage() {
         if (this.state.total !== 0) {
             let fallingImage = new Image();
@@ -101,23 +106,28 @@ class WidgetQuote extends Component {
             clearInterval(intervalLoop);   
         };
     };
+
     loop() {
         this.clear();
         this.state.falling.forEach((falling) => falling.animate());
     };
+
     clear() {
         const canvas = document.getElementById('quote-canvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
+
     componentDidMount() {
         this.handleNewQuote();
         this.loadFallingImage();
     };
+
     componentWillUnmount() {
         clearTimeout(timeoutCopy);
         clearInterval(intervalLoop);
     };
+    
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
@@ -233,6 +243,7 @@ class Falling {
         this.ySpeed = 1 + Math.random() * 1;
         this.flipSpeed = Math.random() * 0.03;
     };
+
     draw() {
         const canvas = document.getElementById('quote-canvas');
         const ctx = canvas.getContext('2d');
@@ -252,6 +263,7 @@ class Falling {
             this.h * (0.8 + (Math.abs(Math.sin(this.flip)) / 5))
         );
     };
+
     animate() {
         this.x += this.xSpeed;
         this.y += this.ySpeed;

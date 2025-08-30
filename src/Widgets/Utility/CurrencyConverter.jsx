@@ -23,10 +23,17 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
         result: '?',
         running: false
     });
+
     const refState = useRef({
         from: state.from,
         to: state.to
     });
+
+    refState.current = {
+        from: state.from,
+        to: state.to    
+    };
+
     useEffect(() => {
         if (sessionStorage.getItem('currencyconverter') !== null) {
             let dataSessionStorage = JSON.parse(sessionStorage.getItem('currencyconverter'));
@@ -51,12 +58,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             clearTimeout(timeoutTextShadow);    
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            from: state.from,
-            to: state.to    
-        };
-    }, [state.from, state.to]);
+
     const fetchExchangeRate = async () => {
         if (state.from.value !== state.to.value
             && /^\d*\.?\d*$/.test(state.input)) {
@@ -101,6 +103,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             }));
         };
     };
+
     const handleInput = (event) => {
         if (event.target.value !== 'e') {
             setState((prevState) => ({
@@ -111,6 +114,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             }));
         };
     };
+
     const handleSwap = () => {
         if (state.from.value !== state.to.value) {
             randomColor();
@@ -124,6 +128,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             }));
         };
     };
+
     const handleSelect = (what, event) => {
         setState((prevState) => ({
             ...prevState,
@@ -132,6 +137,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
             result: (state.result !== '?') ? '?' : state.result
         }));
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

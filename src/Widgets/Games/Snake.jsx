@@ -100,6 +100,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
         maxHealth: 1,
         health: 1
     });
+
     const refState = useRef({
         direction: state.direction,
         snake: state.snake,
@@ -115,6 +116,23 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
         highscore: state.highscore,
         speed: state.speed
     });
+
+    refState.current = {
+        direction: state.direction,
+        snake: state.snake,
+        step: state.step,
+        food: state.food,
+        foodType: state.foodType,
+        foodDelay: state.foodDelay,
+        debrisLeft: state.debrisLeft,
+        debrisTop: state.debrisTop,
+        debrisRight: state.debrisRight,
+        debrisBottom: state.debrisBottom,
+        size: state.size,
+        highscore: state.highscore,
+        speed: state.speed    
+    };
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         window.addEventListener('resize', calculateSize);
@@ -143,29 +161,14 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             storeData();    
         };
     }, []);
-    useEffect(() => {
-        refState.current = {
-            direction: state.direction,
-            snake: state.snake,
-            step: state.step,
-            food: state.food,
-            foodType: state.foodType,
-            foodDelay: state.foodDelay,
-            debrisLeft: state.debrisLeft,
-            debrisTop: state.debrisTop,
-            debrisRight: state.debrisRight,
-            debrisBottom: state.debrisBottom,
-            size: state.size,
-            highscore: state.highscore,
-            speed: state.speed    
-        };
-    }, [state.direction, state.snake, state.step, state.food, state.foodType, state.foodDelay, state.debrisLeft, state.debrisBottom, state.debrisRight, state.debrisTop, state.size, state.highscore, state.speed]);
+    
     useEffect(() => {
         if (state.timer === 1) spawnDebris('left');
         if (state.timer === 4) spawnDebris('top');  
         if (state.timer === 8) spawnDebris('right');  
         if (state.timer === 13) spawnDebris('bottom');  
     }, [state.timer]);
+    
     useEffect(() => {
         if (state.health <= 0) {
             endGame()
@@ -175,6 +178,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             }, 500);
         };
     }, [state.health]);
+    
     useEffect(() => {
         const overlay = document.getElementById('snake-overlay');
         if (state.status === 1) {
@@ -183,6 +187,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             overlay.style.visibility = 'visible';
         };
     }, [state.status]);
+
     /// Randomly place a random snake food
     const moveFood = () => {
         const x = parseInt(Math.random() * numCells);
@@ -198,6 +203,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                 : 0
         }));
     };
+
     const keyDown = ({ keyCode }) => {
         if (state.status !== 0 || state.status !== 2) {
             const re = new RegExp('\\b83|40|87|38|68|39|65|37\\b');
@@ -236,6 +242,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             };
         };
     };
+
     const spawnDebris = (where) => {
         let randomPosition;
         let randomDebris = debris[Math.floor(Math.random() * debris.length)];
@@ -284,6 +291,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             default: break;
         };
     };
+
     /// Move snake, food, debris, eating food
     const loop = () => {
         const newSnake = [];
@@ -422,12 +430,14 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             checkIfAteFood(newSnake);
         };
     };
+
     const takeDamage = () => {
         setState((prevState) => ({
             ...prevState,
             health: prevState.health - 1
         }));
     };
+
     const checkIfAteFood = (newSnake) => {
         if (!shallowEquals(newSnake[0], refState.current.food)) return;
         /// Snake gets longer
@@ -488,6 +498,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
         };
         moveFood();
     };
+
     /// Is the cell's position inside the grid?
     const isValid = (cell) => {
         return (
@@ -497,6 +508,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             cell[1] < numCells
         );
     };
+
     const doesntOverlap = (snake) => {
         return (
             snake.slice(1).filter(c => {
@@ -504,6 +516,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             }).length === 0
         );
     };
+
     const startGame = () => {
         if (state.settings === true) {
             setState((prevState) => ({
@@ -532,6 +545,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
         }));
         document.getElementById('snake-display').focus();
     };
+
     const endGame = () => {
         removeTimers();
         if ((state.snake.length - 1) >= 10) {
@@ -548,6 +562,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                 : state.highscore
         }));
     };
+
     const removeTimers = () => {
         if (moveSnakeInterval) {
             clearInterval(moveSnakeInterval);
@@ -559,18 +574,21 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
         clearTimeout(timeoutDebrisBottom);
         timeoutInvulnerabilityFrames = clearTimeout(timeoutInvulnerabilityFrames);
     };
+
     const changeSpeed = (value) => {
         setState((prevState) => ({
             ...prevState,
             speed: value
         }));
     };
+
     const resetSpeed = () => {
         setState((prevState) => ({
             ...prevState,
             speed: 130
         }));
     };
+
     /// Handles all pressable buttons (opacity: 0.5 on click)
     const handlePressableButton = (what) => {
         switch (what) {
@@ -587,6 +605,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             default: { break; };
         };
     };
+
     const calculateHealth = () => {
         if (gameProps.stats.health < 10) {
             return 1;
@@ -594,6 +613,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             return Math.floor(gameProps.stats.health / 10);
         };
     };
+
     const calculateSize = () => {
         let calculateSize;
         if (window.innerWidth > 507) {
@@ -606,6 +626,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             size: calculateSize
         }));
     };
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -617,6 +638,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     /// Each cell should be approximately 0.9375em wide, so calculate how many we need
     numCells = Math.floor(state.size / 0.9375);
     const cellSize = state.size / numCells;
@@ -644,6 +666,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
             );
         });
     });
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

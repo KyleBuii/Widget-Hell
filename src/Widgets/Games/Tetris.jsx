@@ -18,8 +18,13 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 		goldEarned: 0,
 		timer: 0
 	});
+
 	const refGameover = useRef(state.gameOver);
 	const refHighscore = useRef(state.highscore);
+
+	refGameover.current = state.gameOver;
+	refHighscore.current = state.highscore;
+
 	useEffect(() => {
 		window.addEventListener('beforeunload', storeData);
         initialize();
@@ -43,10 +48,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			storeData();	
 		};
 	}, []);
-	useEffect(() => {
-		refGameover.current = state.gameOver;
-		refHighscore.current = state.highscore;
-	}, [state.gameOver, state.highscore]);
+
     const handleKeyDown = (event) => {
         if (/38|87|37|65|39|68|40|83|32|70|16/.test(event.keyCode)) {
 			let key = event.keyCode || event.which;
@@ -91,6 +93,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			};
 		};
     };
+
 	const initialize = () => {
 		/// Initialize the page object
 		Page.Initialize();
@@ -98,6 +101,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 		/// Initialize the GM object
 		GM.Initialize();
 	};
+
 	const resetGame = () => {
 		initialize();
 		GM.IsAlive = true;
@@ -115,6 +119,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			}));	
 		}, 1000);
 	};
+
 	const loop = () => {
 		if (!refGameover.current) {
 			/// Always update Page
@@ -127,6 +132,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			};
 		};
 	};
+
 	const gameOver = () => {
 		clearInterval(intervalLoop);
 		clearInterval(intervalTimer);
@@ -145,6 +151,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			goldEarned: gold
 		}));
 	};
+
 	const storeData = () => {
 		if (localStorage.getItem('widgets') !== null) {
 			let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -153,6 +160,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 			localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 		};
 	};
+	
 	return (
 		<Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
 			disabled={defaultProps.dragDisabled}

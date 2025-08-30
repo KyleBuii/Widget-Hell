@@ -12,6 +12,7 @@ const clamp = (value, min = 0, max = 100 ) => {
 const adjust = (value, fromMin, fromMax, toMin, toMax) => {
 	return round(toMin + (toMax - toMin) * (value - fromMin) / (fromMax - fromMin));
 };
+
 let springRotate = { x: 0, y: 0 };
 let springGlare = { x: 50, y: 50, o: 0 };
 let springBackground = { x: 50, y: 50 };
@@ -38,6 +39,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
         previousValue: '',
         running: false
     });
+
     useEffect(() => {
         let inputPokemonSearch = document.getElementById('pokemonsearch-input-search');
         inputPokemonSearch.addEventListener('keydown', handleKeyPress);
@@ -48,9 +50,11 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             clearTimeout(timeoutReset);    
         };
     }, []);
+
     useEffect(() => {
         fetchPokemon(state.searched);
     }, [state.searched, state.shiny, state.flipped]);
+
     const fetchPokemon = async (what) => {
         try {
             setState((prevState) => ({
@@ -139,6 +143,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             }));
         };
     };
+
     const handleButton = (what) => {
         switch (what) {
             case 'search': {
@@ -174,6 +179,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             default: { break; };
         };
     };
+
     const handleButtonPressable = (what) => {
         const popoutButton = document.getElementById(`pokemonsearch-popout-setting-button-${what}`);
         popoutButton.style.opacity = (state[what] === false) ? '1' : '0.5';
@@ -182,6 +188,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             [what]: !prevState[what]
         }));
     };
+
     const handleRadioPressable = (what) => {
         let currentValue = what.target.value;
         let value = '';
@@ -213,6 +220,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             r.style.setProperty('--cosmosbg', `${cosmosPosition.x}px ${cosmosPosition.y}px`);    
         };
     };
+
     const handleInteract = (e) => {
         const $el = e.target;
         const rect = $el.getBoundingClientRect();
@@ -260,6 +268,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
         r.style.setProperty('--background-x', `${springBackground.x}%`);
         r.style.setProperty('--background-y', `${springBackground.y}%`);
     };
+
     const handleInteractEnd = (e, delay = 500) => {
         timeoutReset = setTimeout(() => {
             springRotate = { x: 0, y: 0 };
@@ -285,6 +294,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             r.style.setProperty('--background-y', `${springBackground.y}%`);
         }, delay);
     };
+
     const handleKeyPress = (event) => {
         const buttonPokemonSearch = document.getElementById('pokemonsearch-button-search');
         switch (event.key) {
@@ -297,6 +307,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
             default: break;
         };
     };
+
     const showExtraInformation = () => {
         const elementExtraInformation = document.getElementById('pokemonsearch-extra-information');
         const buttonExtraInformation = document.getElementById('pokemonsearch-button-extra-information');
@@ -305,8 +316,9 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
         }else{
             buttonExtraInformation.innerText = 'Collapse Information';
         };
-        elementExtraInformation.classList.toggle('animation-table');
+        elementExtraInformation.classList.toggle('show');
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -445,38 +457,40 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                         <button id='pokemonsearch-button-extra-information'
                             className='button-expand'
                             onClick={() => showExtraInformation()}>Collapse Information</button>
-                        <table id='pokemonsearch-extra-information'
-                            className='aesthetic-scale scale-table table font'
-                            aria-label='Pokemon stats'>
-                            <thead>
-                                <tr>
-                                    <th scope='col'>Base</th>
-                                    <th scope='col'>Stats</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Attack:</td>
-                                    <td className='text-animation'>{state.attack}</td>
-                                </tr>
-                                <tr>
-                                    <td>Defense:</td>
-                                    <td className='text-animation'>{state.defense}</td>
-                                </tr>
-                                <tr>
-                                    <td>Sp. Attack:</td>
-                                    <td className='text-animation'>{state.specialAttack}</td>
-                                </tr>
-                                <tr>
-                                    <td>Sp. Defense:</td>
-                                    <td className='text-animation'>{state.specialDefense}</td>
-                                </tr>
-                                <tr>
-                                    <td>Speed:</td>
-                                    <td className='text-animation'>{state.speed}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div id='pokemonsearch-extra-information'
+                            className='collapsible'>
+                            <table className='aesthetic-scale scale-table table font'
+                                aria-label='Pokemon stats'>
+                                <thead>
+                                    <tr>
+                                        <th scope='col'>Base</th>
+                                        <th scope='col'>Stats</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Attack:</td>
+                                        <td className='text-animation'>{state.attack}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense:</td>
+                                        <td className='text-animation'>{state.defense}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sp. Attack:</td>
+                                        <td className='text-animation'>{state.specialAttack}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sp. Defense:</td>
+                                        <td className='text-animation'>{state.specialDefense}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Speed:</td>
+                                        <td className='text-animation'>{state.speed}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     {/* Settings Popout */}
                     <Draggable cancel='button, .radio-match'

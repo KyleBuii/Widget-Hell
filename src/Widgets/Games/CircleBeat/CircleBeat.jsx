@@ -48,8 +48,10 @@ const WidgetCircleBeat = ({ defaultProps }) => {
     const [url, setUrl] = useState('https://www.youtube.com/watch?v=JyVCWlSPp0g');
     const [playing, setPlaying] = useState(false);
     const [pendingUrl, setPendingUrl] = useState(false);
+    
     const phaserRef = useRef(null);
     const playerRef = useRef(null);
+
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
 
@@ -76,6 +78,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             storeData();
         };
     }, []);
+
     const storeData = () => {
         if (localStorage.getItem('widgets') !== null) {
             const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -97,23 +100,28 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
     };
+
     const handlePlay = () => {
         playerRef.current.seekTo(0);
         setPlaying(true);
     };
+
     const handleDiscClick = (disc) => {
         const addPopout = document.getElementById('circlebeat-add');
         addPopout.style.display = 'none';
         setUrl(disc);
         setPlaying(true);
     };
+
     const handlePlayerReady = () => {
         playerRef.current.seekTo(30);
     };
+
     const handlePlayerEnd = () => {
         EventBus.emit('play end');
         setPlaying(false);
     };
+
     const handleAdd = (event) => {
         event.preventDefault();
         const userInputs = document.getElementsByClassName('input-game');
@@ -122,6 +130,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             setUrl(userInputs[0].value);
         };
     };
+
     const handlePlayerDuration = (duration) => {
         if (pendingUrl) {
             const userInputs = document.getElementsByClassName('input-game');
@@ -134,6 +143,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             addPopout.style.display = 'none';    
         };
     };
+
     const fetchURLData = async (URL, duration, BPM) => {
         try {
             const url = `https://noembed.com/embed?dataType=json&url=${URL}`;
@@ -157,11 +167,13 @@ const WidgetCircleBeat = ({ defaultProps }) => {
             console.error(err);
         };
     };
+
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;    
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

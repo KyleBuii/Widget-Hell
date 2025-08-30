@@ -33,7 +33,11 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
         gustKPH: '',
         running: false
     });
+
     const refInput = useRef(state.input);
+
+    refInput.current = state.input;
+
     useEffect(() => {
         /// If a value exists in session storage, load it
         if (sessionStorage.getItem('weather') !== null) {
@@ -64,15 +68,14 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
             clearTimeout(timeoutTextShadow);    
         };
     }, []);
-    useEffect(() => {
-        refInput.current = state.input;
-    }, [state.input]);
+
     const handleChange = (event) => {
         setState((prevState) => ({
             ...prevState,
             input: event.target.value
         }));
     };
+
     const handlePressableButton = (what) => {
         let popoutAnimation = document.getElementById(`weather-${what}-popout-animation`);
         setState((prevState) => ({
@@ -81,6 +84,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
         }));
         defaultProps.showHidePopout(popoutAnimation, !state[what]);
     };
+
     const handleUpdate = async (location) => {
         if (location !== '') {
             const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${location}`;
@@ -151,6 +155,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
             };
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

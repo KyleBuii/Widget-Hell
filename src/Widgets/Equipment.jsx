@@ -36,6 +36,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
         item: { name: 'Creampuff', rarity: 'rare', slot: 'hidden' },
         abilities: []
     });
+
     useEffect(() => {
         audioItemOpen.volume = 0.5;
         audioItemClose.volume = 0.5;
@@ -92,9 +93,11 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             window.removeEventListener('equip item', updateEquipment);
         };
     }, []);
+
     useEffect(() => {
         updateAbilities();
     }, [abilities]);
+
     const viewItem = (item) => {
         defaultProps.playAudio(audioItemOpen);
         document.getElementById('equipment-popout-view-item').style.visibility = 'visible';
@@ -103,6 +106,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             item: item
         }));
     };
+
     const unequipItem = (event) => {
         event.stopPropagation();
         defaultProps.playAudio(audioItemUnequip);
@@ -152,6 +156,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
         removeStats(state.item);
         document.getElementById('equipment-popout-view-item').style.visibility = 'hidden';
     };
+
     const updateEquipment = (event) => {
         const itemData = {
             'name': event.detail.name,
@@ -192,6 +197,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             };
         };
     };
+
     const removeStats = (itemData) => {
         let item = items[itemData.rarity][itemData.name];
         let newAbilities;
@@ -213,6 +219,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             updateGameValue('stats', newStats);
         };
     };
+
     const updateAbilities = () => {
         let elementAbilities = document.getElementById('equipment-abilities');
         if (abilities.length === 0) {
@@ -237,6 +244,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             };
         };
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

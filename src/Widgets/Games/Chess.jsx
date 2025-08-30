@@ -27,12 +27,14 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         capturedWhitePiecesCount: 0,
         gameover: false
     });
+
     useEffect(() => {
         return () => {
             clearInterval(intervalTimer);
             clearTimeout(timeoutRandomMove);    
         };
     }, []);
+
     const onSquareClick = (square) => {
         if (!state.gameover) {
             setState((prevState) => ({
@@ -131,6 +133,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
             };
         };
     };
+
     const onPromotionPieceSelect = (piece) => {
         /// If no piece passed then user has cancelled dialog, don't make move and reset
         if (piece) {
@@ -156,6 +159,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         }));
         return true;
     };
+
     const onSquareRightClick = (square) => {
         const colour = 'rgba(0, 0, 255, 0.4)';
         setState((prevState) => ({
@@ -168,6 +172,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
             }
         }));
     };
+
     const handleButton = (what) => {
         switch (what) {
             case 'reset': {
@@ -217,6 +222,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         clearTimeout(timeoutRandomMove);
         setState((prevState) => ({ ...prevState }));
     };
+
     const getMoveOptions = (square) => {
         const moves = state.game.moves({
             square,
@@ -249,6 +255,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         }));
         return true;
     };
+
     const randomMove = () => {
         const possibleMoves = state.game.moves();
         const randomIndex = Math.floor(Math.random() * possibleMoves.length);
@@ -263,6 +270,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         };
         state.game.move(possibleMoves[randomIndex]);
     };
+
     const updateData = (move) => {
         let gold = 1;
         if (move.captured === 'q' || move.captured === 'k') {
@@ -285,6 +293,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
             elementCapturedPiecesBlack.appendChild(elementImage);
         };
     };
+
     const gameOver = () => {
         clearInterval(intervalTimer);
         setState((prevState) => ({
@@ -298,6 +307,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

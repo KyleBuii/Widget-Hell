@@ -19,7 +19,9 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
         expandInput: false,
         lastComputation: ''
     });
+
     const refMemory = useRef(state.memory);
+
     useEffect(() => {
         const inputField = document.getElementById('calculator-input-field');
         inputField.addEventListener('keydown', handleKeypress);
@@ -44,16 +46,19 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
             clearTimeout(timeoutTextShadow);
         };
     }, []);
+
     useEffect(() => {
         refMemory.current = state.memory;
         updateLabelMemory();
     }, [state.memory]);
+
     const handleChange = (event) => {
         setState((prevState) => ({
             ...prevState,
             input: event.target.value
         }));
     };
+
     const handleClick = (event, where) => {
         switch (event.target.value) {
             case 'number':
@@ -314,6 +319,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
             expandInputPopout.scrollTop = expandInputPopout.scrollHeight;
         }
     };
+
     const handleDelete = () => {
         setState((prevState) => ({
             ...prevState,
@@ -321,6 +327,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
         }));
         document.getElementById('calculator-button-memory-container').innerHTML = '';
     };
+
     const handlePressableButton = (what) => {
         let button = document.getElementById(`calculator-button-${what}`);
         let popoutAnimation = document.getElementById(`calculator-${what}-popout-animation`);
@@ -331,6 +338,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
         }));
         defaultProps.showHidePopout(popoutAnimation, !state[whatState], button, true);
     };
+
     const handleKeypress = (event) => {
         const buttonEqual = document.getElementById('calculator-button-equal');
         const reWords = new RegExp('\\bUNDEF\\b|\\bInfinity\\b|\\bNaN\\b');
@@ -357,10 +365,12 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
             default: break;
         };
     };
+
     const handleCopy = () => {
         copyToClipboard(state.input)
         handleAnimations('copy');
     };
+
     const handleAnimations = (what) => {
         let elementTranslatedText = document.getElementById('calculator-input-field');
         switch (what) {
@@ -403,6 +413,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
             default: break;
         };
     };
+
     const createLabelMemory = (what, index) => {
         let divLabel = document.createElement('div');
         let divButtons = document.createElement('div');
@@ -449,12 +460,14 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
         divLabel.appendChild(divButtons);
         document.getElementById('calculator-button-memory-container').appendChild(divLabel);
     };
+    
     const updateLabelMemory = () => {
         document.getElementById('calculator-button-memory-container').innerHTML = '';
         state.memory.forEach((value, index) => {
             createLabelMemory(value, index);    
         });
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}

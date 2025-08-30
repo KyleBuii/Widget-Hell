@@ -19,6 +19,7 @@ class WidgetImageColorPicker extends Component {
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleMouseLeave = this.handleMouseLeave.bind(this);
     };
+
     handleColorChange(event) {
         if (this.state.colorPicking) {
             const elementColor = document.getElementById('imagecolorpicker-color');
@@ -30,6 +31,7 @@ class WidgetImageColorPicker extends Component {
             });
         };
     };
+
     handleColorClick() {
         let numbers = this.state.rgb.replace(/rgb\(-?([0-9]+),[\s-]*?([0-9]+),[\s-]*?([0-9]+)\)/, '$1 $2 $3');
         if (numbers !== '') {
@@ -37,6 +39,7 @@ class WidgetImageColorPicker extends Component {
             this.props.randomColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
         };
     };
+
     handleMouseMove() {
         if (!this.state.colorPicking) {
             this.setState({
@@ -51,11 +54,13 @@ class WidgetImageColorPicker extends Component {
             });
         };
     };
+
     handleMouseLeave() {
         this.setState({
             colorPicking: false
         });
     };
+
     getImage(where, event) {
         const elementImageContainer = document.getElementById('imagecolorpicker-image');
         switch (where) {
@@ -98,16 +103,19 @@ class WidgetImageColorPicker extends Component {
             default: { break; };
         };
     };
+
     handleFileKeyDown(event) {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             document.getElementById('imagecolorpicker-uploaded-file').click();
         };
     };
+
     renderColorPicker({ onClick }) {
         return <button id='imagecolorpicker-eye-dropper-button'
             onClick={onClick}></button>
     };
+
     render() {
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

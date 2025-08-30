@@ -12,6 +12,7 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             };
         };
     }, []);
+
     const handleFile = () => {
         const elementInput = document.getElementById('sticker-file');
         if (elementInput.files.length !== 0) {
@@ -40,12 +41,14 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             reader.fileName = elementInput.files[0].name;
         };
     };
+
     const handleFileKeyDown = (event) => {
         if (event.code.match(/Space|Enter/)) {
             event.preventDefault();
             document.getElementById('sticker-file').click();
         };
     };
+
     const handlePosition = (childIndex, coordinate, event) => {
         const elementWidgetContainer = document.getElementById('widget-container');
         let maxSize = elementWidgetContainer.getBoundingClientRect();
@@ -68,6 +71,7 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             };
         };
     };
+
     const createPositionEditor = (fileName, image) => {
         const elementWidgetContainer = document.getElementById('widget-container');
         const elementStickersContainer = document.getElementById('sticker-stickers');
@@ -119,6 +123,7 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
         };
         elementStickersContainer.append(elementName, elementInputX, elementInputY, elementDelete);
     };
+    
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
