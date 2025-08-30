@@ -27,13 +27,14 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataDailyPlanner = dataLocalStorage['utility']['dailyplanner'];
+            let dailyPlannerCells = dataDailyPlanner?.['cells'];
 
-            if (now.getDay() === 1) {
-                createNewCells();
-            } else if (dataDailyPlanner['cells'] !== undefined) {                
-                setCells(dataDailyPlanner['cells']);
-            } else {
+            if (now.getDay() === 1
+                || !dailyPlannerCells
+                || dailyPlannerCells.length === 0) {
                 createNewCells(now);
+            } else {
+                setCells(dailyPlannerCells);
             };
 
             setMonth(monthName);
