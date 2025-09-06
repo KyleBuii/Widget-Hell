@@ -2849,6 +2849,10 @@ input[type='checkbox'], input[type='radio'] {
     transition-property: background-color, box-shadow;
     transition-duration: 0.3s;
 
+    .scrollable {
+        overflow-y: unset;
+    }
+
     > span {
         display: flex;
         align-items: center;
@@ -2886,6 +2890,17 @@ input[type='checkbox'], input[type='radio'] {
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
     line-height: 1;
+    transition-property: background-color box-shadow;
+    transition-duration: 0.3s;
+
+    &:hover {
+        background-color: rgba(var(--randColorOpacity), 0.8);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.8);
+    }
 }
 //#endregion
 
@@ -6030,8 +6045,25 @@ input[type='checkbox'], input[type='radio'] {
         padding: 0;
     }
 
-    #dailyplanner-add-popout {
+    .dailyplanner-add-popout {
+        @extend .flex-center, .column, .gap, .medium-gap;
         padding: 1rem;
+    }
+
+    .dailyplanner-view-popout {
+        @extend .font, .flex-center, .column, .gap, .only-justify-content;
+        padding: 1rem;
+        min-width: 10rem;
+        max-width: 15rem;
+
+        span {
+            transition: box-shadow 0.3s;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.8);
+            }
+        }
     }
 }
 
@@ -7244,6 +7276,13 @@ input[type='checkbox'], input[type='radio'] {
                 }
             }
         }
+    }
+
+    .typingtest-settings {
+        @extend .collapsible;
+
+        max-height: 2rem;
+        opacity: 1;
     }
 }
 //#endregion

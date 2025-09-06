@@ -386,8 +386,11 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                             }}>Try Again</button>
                     </div>
                     {/* Settings */}
-                    <div className='flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top'
+                    <div className='typingtest-settings flex-center column only-flex gap medium-gap section-group group-large space-nicely space-top'
                         style={{ width: 'unset' }}>
+                        <span className='font bold large-medium flex-center'
+                            style={{ cursor: 'pointer' }}
+                            onClick={(event) => event.target.parentElement.classList.toggle('show')}>Settings</span>
                         {/* Presets */}
                         <div className='flex-center column'>
                             <span className='font medium bold line bellow'>Presets</span>

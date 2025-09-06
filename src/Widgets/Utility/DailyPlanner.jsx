@@ -5,13 +5,16 @@ import Draggable from 'react-draggable';
 
 
 const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-let clickedCellIndex;
+let maxLength = 9;
+let clickedCellIndex, clickedPlanIndex;
 
 const WidgetDailyPlanner = ({ defaultProps }) => {
     const [month, setMonth] = useState('January');
     const [cells, setCells] = useState([]);
     const [inputPlan, setInputPlan] = useState('');
     const [inputAbbr, setInputAbbr] = useState('');
+    const [planAbbr, setPlanAbbr] = useState('');
+    const [planDesc, setPlanDesc] = useState('');
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
@@ -91,22 +94,50 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         };
     };
 
-    const handleCellClick = (cellIndex) => {
-        handlePopout('visible');
+    const handlePlanClick = (event, cellIndex, planIndex) => {
+        event.stopPropagation();
 
         clickedCellIndex = cellIndex;
+        clickedPlanIndex = planIndex;
+
+        const clickedPlan = cells[cellIndex].plans[planIndex];
+
+        setPlanAbbr(clickedPlan.abbr);
+        setPlanDesc(clickedPlan.plan);
+
+        handlePopout('view', 'visible', cellIndex, planIndex);
+    };
+
+    const handleCellClick = (cellIndex) => {
+        handlePopout('add', 'visible', cellIndex);
+
+        clickedCellIndex = cellIndex;
+    };
+
+    const handlePopout = (type, value, cellIndex = 0, planIndex = 0) => {
+        const elementPopout = document.querySelector(`.dailyplanner-${type}-popout`);
+        elementPopout.style.visibility = value;
+
+        if (value === 'hidden') return;
+
+        const otherPopout = document.querySelector(`.dailyplanner-${(type === 'add') ? 'view' : 'add'}-popout`);
+        if (otherPopout.checkVisibility()) otherPopout.style.visibility = 'hidden';
 
         const elementCell = refElementCells.current[cellIndex];
-        const elementPopout = document.getElementById('dailyplanner-add-popout');
-        const rectElementCell = elementCell.getBoundingClientRect();
+        const elementPlan = elementCell.querySelector('div').children[planIndex];
+        const rectElement = ((type === 'add') ? elementCell : elementPlan).getBoundingClientRect();
         const elementCalendar = document.getElementById('dailyplanner-widget-animation').getBoundingClientRect();
 
-        const x = rectElementCell.left + (rectElementCell.width / 2) - elementCalendar.left;
-        const y = rectElementCell.bottom - elementCalendar.top;
+        const x = rectElement.left + (rectElement.width / 2) - elementCalendar.left;
+        let y = rectElement.bottom - elementCalendar.top;
+
+        if (type === 'add') {
+            document.querySelector('#dailyplanner-input-plan input').focus();
+        } else {
+            y += 25;
+        };
 
         elementPopout.style.transform = `translate(${x}px, ${y}px) translate(-50%, 0)`;
-
-        document.querySelector('#dailyplanner-input-plan input').focus();
     };
 
     const handleCellKeyDown = (event, cellIndex) => {
@@ -115,7 +146,7 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
             handleCellClick(cellIndex);
         };
     };
-    
+
     const handleButtonAdd = () => {
         const elementInputPlan = document.getElementById('dailyplanner-input-plan');
         const elementInputAbbr = document.getElementById('dailyplanner-input-abbr');
@@ -126,38 +157,45 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
             return;
         };
 
-        handlePopout('hidden');
+        handlePopout('add', 'hidden');
 
-        const cell = cells[clickedCellIndex];
+        const newCells = [...refCells.current];
+        const cell = newCells[clickedCellIndex];
         const newPlan = {
             plan: inputPlan,
             abbr: inputAbbr,
         };
         cell.plans = [...(cell.plans || []), newPlan];
 
+        setCells(newCells);
         setInputPlan('');
         setInputAbbr('');
     };
 
-    const handleSideButton = (type) => {
+    const handleButton = (type, value) => {
         const elementFocused = document.activeElement.name;
 
-        if ((type !== 'close') && !elementFocused) return;
+        if ((type === 'add') && (value !== 'close') && !elementFocused) return;
 
         const setter = (elementFocused === 'plan') ? setInputPlan : setInputAbbr;
+        const currentValue = (elementFocused === 'plan') ? inputPlan : inputAbbr;
         const actions = {
-            close: () => handlePopout('hidden'),
+            close: () => handlePopout(type, 'hidden'),
             clear: () => setter(''),
-            caps:  () => setter(inputPlan.toUpperCase()),
-            lower: () => setter(inputPlan.toLowerCase()),
+            caps:  () => setter(currentValue.toUpperCase()),
+            lower: () => setter(currentValue.toLowerCase()),
+
+            delete: () => {
+                const newCells = [...cells];
+                newCells[clickedCellIndex]['plans'].splice(clickedPlanIndex, 1);
+
+                setCells(newCells);
+
+                document.querySelector('.dailyplanner-view-popout').style.visibility = 'hidden';
+            },
         };
 
-        actions[type]?.();
-    };
-
-    const handlePopout = (type) => {
-        const popoutAddPlan = document.getElementById('dailyplanner-add-popout');
-        popoutAddPlan.style.visibility = type;
+        actions[value]?.();
     };
 
     const handleInput = (value, type) => {
@@ -170,6 +208,26 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
 
         map[type].set(value);
         document.getElementById(map[type].id).classList.remove('input-incorrect');
+    };
+
+    const handleEdit = (type, event) => {
+        const newCells = [...cells];
+        newCells[clickedCellIndex]['plans'][clickedPlanIndex][type] = event.currentTarget.innerText;
+
+        setCells(newCells);
+    };
+
+    const handleEditInput = (type, event) => {
+        const text = event.currentTarget.innerText;
+        const selection = window.getSelection();
+        const rangeLength = selection.toString().length;
+
+        if ((type === 'abbr')
+            && (text.length >= maxLength)
+            && (rangeLength === 0)
+        ) {
+            event.preventDefault();
+        };
     };
 
     return (
@@ -204,7 +262,7 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
                         })}
                         {cells.map((cell, cellIndex) => {
                             return <div ref={(element) => refElementCells.current[cellIndex] = element}
-                                className={`calendar-cell ${cell.classes} flex-center column only-justify-content`}
+                                className={`calendar-cell ${cell?.classes || ''} flex-center column only-justify-content`}
                                 role='button'
                                 onClick={() => handleCellClick(cellIndex)}
                                 onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
@@ -215,7 +273,10 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
                                     style={{ margin: '0.3rem' }}>
                                     {cell.plans?.map((plan, planIndex) => {
                                         return <div className='calendar-plan'
-                                            key={`plan ${planIndex} ${plan.abbr}`}>
+                                            role='button'
+                                            onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
+                                            key={`plan ${planIndex} ${plan.abbr}`}
+                                            tabIndex={0}>
                                             <span>{plan.abbr}</span>
                                         </div>
                                     })}
@@ -223,49 +284,70 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
                             </div>
                         })}
                     </div>
+                    {/* Add Plan Popout */}
                     <div className='popout'>
-                        <div id='dailyplanner-add-popout'
-                            className='dialogue popout-animation flex-center row gap medium-gap'>
-                            <div className='flex-center column gap medium-gap'>
-                                <fieldset id='dailyplanner-input-plan'
-                                    className='input-fieldset'>
-                                    <legend>Plan</legend>
-                                    <input value={inputPlan}
-                                        name='plan'
-                                        type='text'
-                                        onChange={(event) => handleInput(event.target.value, 'plan')}/>
-                                </fieldset>
-                                <fieldset id='dailyplanner-input-abbr'
-                                    className='input-fieldset'>
-                                    <legend>Abbreviation</legend>
-                                    <input value={inputAbbr}
-                                        name='abbr'
-                                        type='text'
-                                        maxLength={9}
-                                        onChange={(event) => handleInput(event.target.value, 'abbr')}/>
-                                </fieldset>
-                                <button className='button-match fill-width'
-                                    type='button'
-                                    onClick={handleButtonAdd}>Add</button>
-                            </div>
-                            <div className='flex-center column'
+                        <div className='popout-animation dialogue dailyplanner-add-popout'>
+                            <fieldset id='dailyplanner-input-plan'
+                                className='input-fieldset'>
+                                <legend>Plan</legend>
+                                <input value={inputPlan}
+                                    name='plan'
+                                    type='text'
+                                    autoComplete='off'
+                                    onChange={(event) => handleInput(event.target.value, 'plan')}/>
+                            </fieldset>
+                            <fieldset id='dailyplanner-input-abbr'
+                                className='input-fieldset'>
+                                <legend>Abbreviation</legend>
+                                <input value={inputAbbr}
+                                    name='abbr'
+                                    type='text'
+                                    maxLength={maxLength}
+                                    autoComplete='off'
+                                    onChange={(event) => handleInput(event.target.value, 'abbr')}/>
+                            </fieldset>
+                            <div className='flex-center row'
                                 style={{ gap: '0.5rem' }}>
                                 <button className='button-match fill-width'
                                     type='button'
                                     onMouseDown={(event) => event.preventDefault()}
-                                    onClick={() => handleSideButton('close')}>Close</button>
+                                    onClick={() => handleButton('add', 'close')}>Close</button>
                                 <button className='button-match fill-width'
                                     type='button'
                                     onMouseDown={(event) => event.preventDefault()}
-                                    onClick={() => handleSideButton('clear')}>Clear</button>
+                                    onClick={() => handleButton('add', 'caps')}>Caps</button>
                                 <button className='button-match fill-width'
                                     type='button'
                                     onMouseDown={(event) => event.preventDefault()}
-                                    onClick={() => handleSideButton('caps')}>Caps</button>
+                                    onClick={() => handleButton('add', 'lower')}>Lower</button>
                                 <button className='button-match fill-width'
                                     type='button'
                                     onMouseDown={(event) => event.preventDefault()}
-                                    onClick={() => handleSideButton('lower')}>Lower</button>
+                                    onClick={() => handleButton('add', 'clear')}>Clear</button>
+                            </div>
+                            <button className='button-match fill-width'
+                                type='button'
+                                onClick={handleButtonAdd}>Add</button>
+                        </div>
+                    </div>
+                    {/* View Plan Popout */}
+                    <div className='popout'>
+                        <div className='popout-animation dialogue dailyplanner-view-popout'>
+                            <span className='font bold large'
+                                contentEditable
+                                suppressContentEditableWarning
+                                onBeforeInput={(event) => handleEditInput('abbr', event)}
+                                onBlur={(event) => handleEdit('abbr', event)}>{planAbbr}</span>
+                            <span contentEditable
+                                suppressContentEditableWarning
+                                onBeforeInput={(event) => handleEditInput('plan', event)}
+                                onBlur={(event) => handleEdit('plan', event)}>{planDesc}</span>
+                            <div className='grid col-50-50'
+                                style={{ marginTop: '0.6rem' }}>
+                                <button className='button-match'
+                                    onClick={() => handleButton('view', 'close')}>Close</button>
+                                <button className='button-match'
+                                    onClick={() => handleButton('view', 'delete')}>Delete</button>
                             </div>
                         </div>
                     </div>
