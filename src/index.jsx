@@ -9357,7 +9357,10 @@ class Widgets extends Component {
                         randomColor={this.randomColor}/>}
                 {this.state.widgets.utility.dailyplanner.active
                     && <LazyWidget Component={WidgetDailyPlanner}
-                        defaultProps={this.generateDefaultProps('dailyplanner', 'utility')}/>}
+                        defaultProps={this.generateDefaultProps('dailyplanner', 'utility')}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={selectTheme}
+                        menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.utility.googletranslator.active
                     && <LazyWidget Component={WidgetGoogleTranslator}
                         defaultProps={this.generateDefaultProps('googletranslator', 'utility')}

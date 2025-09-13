@@ -63,6 +63,7 @@ const information = {
         { name: 'Daily Planner',
             description: [
                 'Widget for planning',
+                'Pressing the same cell or plan will close it',
             ],
         },
         { name: 'Google Translator',

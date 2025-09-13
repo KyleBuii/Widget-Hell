@@ -1,23 +1,34 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import Select from 'react-select';
 
 
+const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const optionsMonth = [
+    {
+        label: 'Months',
+        options: []
+    }
+];
 const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 let maxLength = 9;
+let isPopoutOpen = false;
 let clickedCellIndex, clickedPlanIndex;
 
-const WidgetDailyPlanner = ({ defaultProps }) => {
+const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar, selectTheme }) => {
     const [month, setMonth] = useState('January');
     const [cells, setCells] = useState([]);
     const [inputPlan, setInputPlan] = useState('');
     const [inputAbbr, setInputAbbr] = useState('');
     const [planAbbr, setPlanAbbr] = useState('');
     const [planDesc, setPlanDesc] = useState('');
+    const [futurePlans, setFuturePlans] = useState([]);
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
+    const refIsHolding = useRef(false);
 
     refCells.current = cells;
 
@@ -25,23 +36,24 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         window.addEventListener('beforeunload', storeData);
 
         const now = new Date();
-        const monthName = now.toLocaleString('en-US', { month: 'long' });
 
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let dataDailyPlanner = dataLocalStorage['utility']['dailyplanner'];
             let dailyPlannerCells = dataDailyPlanner?.['cells'];
+            let dailyPlannerMonth = dataDailyPlanner?.['month'];
 
-            if (now.getDay() === 1
+            if (dailyPlannerMonth !== now.getMonth()
                 || !dailyPlannerCells
                 || dailyPlannerCells.length === 0) {
                 createNewCells(now);
             } else {
                 setCells(dailyPlannerCells);
+                setMonth(monthLabels[dailyPlannerMonth]);
             };
-
-            setMonth(monthName);
         };
+
+        populateSelect();
 
         return () => {
             window.removeEventListener('beforeunload', storeData);
@@ -51,6 +63,8 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
     }, []);
 
     const createNewCells = (date) => {
+        const monthName = date.toLocaleString('en-US', { month: 'long' });
+
         const year = date.getFullYear();
         const monthIndex = date.getMonth();
 
@@ -80,6 +94,28 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         refElementCells.current = newCells.map((_, index) => refElementCells.current[index] || null);
 
         setCells(newCells);
+        setMonth(monthName);
+
+        if (localStorage.getItem('widgets') !== null) {
+            let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+            dataLocalStorage['utility']['dailyplanner'] = {
+                ...dataLocalStorage['utility']['dailyplanner'],
+                month: date.getMonth(),
+            };
+
+            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+        };
+    };
+
+    const populateSelect = () => {
+        const selectOptions = optionsMonth[0]['options'];
+
+        for (let month in monthLabels) {
+            selectOptions.push({
+                label: monthLabels[month],
+                value: month
+            });
+        };
     };
 
     const storeData = () => {
@@ -97,21 +133,45 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
     const handlePlanClick = (event, cellIndex, planIndex) => {
         event.stopPropagation();
 
-        clickedCellIndex = cellIndex;
-        clickedPlanIndex = planIndex;
+        if (refIsHolding.current) {
+            refIsHolding.current = false;
+            return;
+        };
 
-        const clickedPlan = cells[cellIndex].plans[planIndex];
+        if ((clickedPlanIndex === planIndex) && (clickedCellIndex === cellIndex)) {
+            isPopoutOpen = !isPopoutOpen;
+        } else {
+            clickedPlanIndex = planIndex;
+            clickedCellIndex = cellIndex;
+            isPopoutOpen = true;
 
-        setPlanAbbr(clickedPlan.abbr);
-        setPlanDesc(clickedPlan.plan);
+            const clickedPlan = cells[cellIndex].plans[planIndex];
+            setPlanAbbr(clickedPlan.abbr);
+            setPlanDesc(clickedPlan.plan);
+        };
 
-        handlePopout('view', 'visible', cellIndex, planIndex);
+        handlePopout(
+            'view',
+            isPopoutOpen ? 'visible' : 'hidden',
+            cellIndex,
+            planIndex
+        );
     };
 
     const handleCellClick = (cellIndex) => {
-        handlePopout('add', 'visible', cellIndex);
+        if ((clickedCellIndex === cellIndex) && (clickedPlanIndex === null)) {
+            isPopoutOpen = !isPopoutOpen;
+        } else {
+            clickedCellIndex = cellIndex;
+            clickedPlanIndex = null;
+            isPopoutOpen = true;
+        };
 
-        clickedCellIndex = cellIndex;
+        handlePopout(
+            'add',
+            isPopoutOpen ? 'visible' : 'hidden',
+            cellIndex
+        );
     };
 
     const handlePopout = (type, value, cellIndex = 0, planIndex = 0) => {
@@ -180,7 +240,10 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         const setter = (elementFocused === 'plan') ? setInputPlan : setInputAbbr;
         const currentValue = (elementFocused === 'plan') ? inputPlan : inputAbbr;
         const actions = {
-            close: () => handlePopout(type, 'hidden'),
+            close: () => {
+                handlePopout(type, 'hidden');
+                isPopoutOpen = !isPopoutOpen;
+            },
             clear: () => setter(''),
             caps:  () => setter(currentValue.toUpperCase()),
             lower: () => setter(currentValue.toLowerCase()),
@@ -230,6 +293,34 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
         };
     };
 
+    const markPlan = (event, isCompleted = true) => {
+        const plan = event.currentTarget;
+
+        const onAnimationEnd = () => {
+            plan.classList.remove('holding');
+            plan.classList.toggle('completed');
+            plan.removeEventListener('animationend', onAnimationEnd);
+            refIsHolding.current = true;
+        };
+
+        if (isCompleted) {
+            plan.classList.add('holding');
+            plan.addEventListener('animationend', onAnimationEnd);
+        } else {
+            plan.classList.remove('holding');
+            plan.removeEventListener('animationend', onAnimationEnd);
+        };
+    };
+
+    const handleButtonAddPlan = () => {
+        const elementSidePanelButtons = document.querySelector('.dailyplanner-side-panel-buttons');
+        elementSidePanelButtons.classList.toggle('show');
+    };
+
+    const addFuturePlan = () => {
+
+    };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -238,7 +329,7 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
                 defaultProps.dragStop('dailyplanner');
                 defaultProps.updatePosition('dailyplanner', 'utility', data.x, data.y);
             }}
-            cancel='button, .popout, .calendar-cell'
+            cancel='button, input, .popout, .calendar-cell, .select-match'
             bounds='parent'>
             <section id='dailyplanner-widget'
                 className='widget'
@@ -254,35 +345,84 @@ const WidgetDailyPlanner = ({ defaultProps }) => {
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
-                    <div className='calendar'>
-                        <span className='calendar-month'>{month}</span>
-                        {weekLabels.map((week) => {
-                            return <span className='calendar-label'
-                                key={week}>{week}</span>
-                        })}
-                        {cells.map((cell, cellIndex) => {
-                            return <div ref={(element) => refElementCells.current[cellIndex] = element}
-                                className={`calendar-cell ${cell?.classes || ''} flex-center column only-justify-content`}
-                                role='button'
-                                onClick={() => handleCellClick(cellIndex)}
-                                onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
-                                key={`cell ${cellIndex}`}
-                                tabIndex={0}>
-                                <span>{cell.day}</span>
-                                <div className='scrollable flex-center column only-align-items gap'
-                                    style={{ margin: '0.3rem' }}>
-                                    {cell.plans?.map((plan, planIndex) => {
-                                        return <div className='calendar-plan'
-                                            role='button'
-                                            onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
-                                            key={`plan ${planIndex} ${plan.abbr}`}
-                                            tabIndex={0}>
-                                            <span>{plan.abbr}</span>
-                                        </div>
-                                    })}
+                    <div className='flex-center row'
+                        style={{ alignItems: 'flex-end' }}>
+                        <div className='calendar'>
+                            <span className='calendar-month'>{month}</span>
+                            {weekLabels.map((week) => {
+                                return <span className='calendar-label'
+                                    key={week}>{week}</span>
+                            })}
+                            {cells.map((cell, cellIndex) => {
+                                return <div ref={(element) => refElementCells.current[cellIndex] = element}
+                                    className={`calendar-cell ${cell?.classes || ''} flex-center column only-justify-content`}
+                                    role='button'
+                                    onClick={() => handleCellClick(cellIndex)}
+                                    onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
+                                    key={`cell ${cellIndex}`}
+                                    tabIndex={0}>
+                                    <span>{cell.day}</span>
+                                    <div className='scrollable flex-center column only-align-items gap'
+                                        style={{ margin: '0.3rem' }}>
+                                        {cell.plans?.map((plan, planIndex) => {
+                                            return <div className='calendar-plan'
+                                                role='button'
+                                                onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
+                                                onMouseDown={(event) => markPlan(event)}
+                                                onMouseUp={(event) => markPlan(event, false)}
+                                                key={`plan ${planIndex} ${plan.abbr}`}
+                                                tabIndex={0}>
+                                                <span>{plan.abbr}</span>
+                                            </div>
+                                        })}
+                                    </div>
+                                </div>
+                            })}
+                        </div>
+                        {/* Side Panel */}
+                        <div className='dailyplanner-side-panel'>
+                            <span className='dailyplanner-side-panel-button'>Future Plans</span>
+                            <div className='dailyplanner-side-panel-plans'>
+                                {[...Array(10).keys()].map((val) => {
+                                    return <div className='calendar-plan'
+                                        key={val}>
+                                        <span>Test</span>
+                                    </div>
+                                })}
+                            </div>
+                            <div className='flex-center column gap'>
+                                <div className='dailyplanner-side-panel-buttons'>
+                                    <div className='grid col-50-50'>
+                                        <Select className='select-match'
+                                            defaultValue={optionsMonth[0]['options'][0]}
+                                            options={optionsMonth}
+                                            formatGroupLabel={formatGroupLabel}
+                                            components={{
+                                                MenuList: menuListScrollbar
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    ...selectTheme
+                                                }
+                                            })}/>
+                                        <input className='input-match'
+                                            type='number'
+                                            placeholder='Day'/>
+                                    </div>
+                                    <input className='input-match fill-width'
+                                        placeholder='Plan'/>
+                                    <input className='input-match fill-width'
+                                        placeholder='Abbreviation'/>
+                                </div>
+                                <div className='fill-width'
+                                    style={{ paddingTop: '1rem' }}>
+                                    <button className='button-match fill-width'
+                                        onClick={handleButtonAddPlan}>Add Plan</button>
                                 </div>
                             </div>
-                        })}
+                        </div>
                     </div>
                     {/* Add Plan Popout */}
                     <div className='popout'>

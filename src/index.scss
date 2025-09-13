@@ -2892,6 +2892,7 @@ input[type='checkbox'], input[type='radio'] {
     line-height: 1;
     transition-property: background-color box-shadow;
     transition-duration: 0.3s;
+    animation: none;
 
     &:hover {
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -2900,6 +2901,14 @@ input[type='checkbox'], input[type='radio'] {
     &:focus-visible {
         outline: none;
         box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.8);
+    }
+
+    &.holding {
+        animation: planComplete 1s linear forwards;
+    }
+
+    &.completed {
+        opacity: 0.3;
     }
 }
 //#endregion
@@ -4359,7 +4368,7 @@ input[type='checkbox'], input[type='radio'] {
     }
     
 	&.col-50-50 {
-        grid-template-columns: repeat(2, 50%);
+        grid-template-columns: repeat(2, 1fr);
     }
     
 	&.col-2 {
@@ -4568,14 +4577,14 @@ input[type='checkbox'], input[type='radio'] {
     width: 100%;
     
 	&.above {
-        padding-top: 1em;
-        margin-top: 1em;
+        padding-top: 1rem;
+        margin-top: 1rem;
         border-top: 2px solid rgba(var(--randColorOpacity), 0.08);
     }
     
 	&.bellow {
-        padding-bottom: 0.5em;
-        margin-bottom: 1em;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
         border-bottom: 2px solid rgba(var(--randColorOpacity), 0.08);
     }
 }
@@ -6063,6 +6072,42 @@ input[type='checkbox'], input[type='radio'] {
                 outline: none;
                 box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.8);
             }
+        }
+    }
+
+    .dailyplanner-side-panel-button {
+        @extend .font, .bold, .large, .line, .bellow;
+    }
+
+    .dailyplanner-side-panel {
+        @extend .flex-center, .column, .only-align-items;
+        position: fixed;
+        right: 0;
+        height: 588px;
+        background-color: white;
+        padding: 1rem;
+        line-height: 1lh;
+        box-sizing: border-box;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: opacity 0.3s;
+        
+        &.show {
+            opacity: 1;
+        }
+    }
+
+    .dailyplanner-side-panel-plans {
+        @extend .scrollable, .flex-center, .column, .gap, .only-align-items, .fill-width;
+        height: 100%;
+    }
+    
+    .dailyplanner-side-panel-buttons {
+        @extend .collapsible, .flex-center, .column, .gap, .small-gap, .fill-width, .line, .above;
+        opacity: 1;
+
+        &:not(.show) {
+            padding-top: 0;
         }
     }
 }
@@ -7838,6 +7883,11 @@ input[type='checkbox'], input[type='radio'] {
 	0%, 100% {
 		transform: translate(0, 0) rotate(0);
 	}
+}
+
+@keyframes planComplete {
+    0%   { scale: 1; }
+    100% { scale: 0.8; }
 }
 
 //#region Text
