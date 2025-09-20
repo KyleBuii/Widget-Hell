@@ -6,15 +6,10 @@ import Select from 'react-select';
 
 
 const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const optionsMonth = [
-    {
-        label: 'Months',
-        options: []
-    }
-];
 const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 let maxLength = 9;
 let isPopoutOpen = false;
+let isPopoutFutureOpen = false;
 let clickedCellIndex, clickedPlanIndex;
 
 const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar, selectTheme }) => {
@@ -24,18 +19,41 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
     const [inputAbbr, setInputAbbr] = useState('');
     const [planAbbr, setPlanAbbr] = useState('');
     const [planDesc, setPlanDesc] = useState('');
-    const [futurePlans, setFuturePlans] = useState([]);
+    const [futurePlanMonth, setFuturePlanMonth] = useState(null);
+    const [futurePlanDay, setFuturePlanDay] = useState(0);
+    const [futurePlanAbbr, setFuturePlanAbbr] = useState('');
+    const [futurePlanDesc, setFuturePlanDesc] = useState('');
+    const [inputFuturePlanMonth, setInputFuturePlanMonth] = useState(null);
+    const [inputFuturePlanDay, setInputFuturePlanDay] = useState(1);
+    const [inputFuturePlanAbbr, setInputFuturePlanAbbr] = useState('');
+    const [inputFuturePlanDesc, setInputFuturePlanDesc] = useState('');
+    const [futurePlans, setFuturePlans] = useState({});
+    const [optionsMonth, setOptionsMonth] = useState([
+        {
+            label: 'Months',
+            options: []
+        }
+    ]);
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
     const refIsHolding = useRef(false);
+    const refSidePanel = useRef(null);
+    const refSelectMonth = useRef(null);
+    const refFuturePlan = useRef(null);
+    const refFuturePlans = useRef(futurePlans);
+    const refInputFuturePlanDay = useRef(null);
+    const refInputFuturePlanAbbr = useRef(null);
+    const refInputFuturePlanDesc = useRef(null);
 
     refCells.current = cells;
+    refFuturePlans.current = futurePlans;
 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
 
         const now = new Date();
+        const nowMonth = now.getMonth();
 
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -43,7 +61,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             let dailyPlannerCells = dataDailyPlanner?.['cells'];
             let dailyPlannerMonth = dataDailyPlanner?.['month'];
 
-            if (dailyPlannerMonth !== now.getMonth()
+            if (dailyPlannerMonth !== nowMonth
                 || !dailyPlannerCells
                 || dailyPlannerCells.length === 0) {
                 createNewCells(now);
@@ -51,9 +69,15 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                 setCells(dailyPlannerCells);
                 setMonth(monthLabels[dailyPlannerMonth]);
             };
+
+            if (dataDailyPlanner['futurePlans']) {
+                setFuturePlans(dataDailyPlanner['futurePlans']);
+            };
         };
 
-        populateSelect();
+        populateSelect(nowMonth);
+
+        setInputFuturePlanMonth(optionsMonth[0]['options'][nowMonth + 1]);
 
         return () => {
             window.removeEventListener('beforeunload', storeData);
@@ -107,15 +131,19 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         };
     };
 
-    const populateSelect = () => {
-        const selectOptions = optionsMonth[0]['options'];
+    const populateSelect = (currentMonth) => {
+        const copyOptions = [...optionsMonth];
+        const selectOptions = copyOptions[0]['options'];
 
-        for (let month in monthLabels) {
+        for (let monthIndex in monthLabels) {
             selectOptions.push({
-                label: monthLabels[month],
-                value: month
+                label: monthLabels[monthIndex],
+                value: monthIndex,
+                isDisabled: (monthIndex <= currentMonth) ? true : false,
             });
         };
+
+        setOptionsMonth(copyOptions);
     };
 
     const storeData = () => {
@@ -124,6 +152,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             dataLocalStorage['utility']['dailyplanner'] = {
                 ...dataLocalStorage['utility']['dailyplanner'],
                 cells: [...refCells.current],
+                futurePlans: {...refFuturePlans.current},
             };
 
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
@@ -312,13 +341,102 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         };
     };
 
-    const handleButtonAddPlan = () => {
-        const elementSidePanelButtons = document.querySelector('.dailyplanner-side-panel-buttons');
-        elementSidePanelButtons.classList.toggle('show');
+    const handleButtonFuturePlan = (event) => {
+        const elementSidePanel = refSidePanel.current;
+        const elementButton = event.currentTarget;
+        const elementPopout = refFuturePlan.current;
+
+        if (elementSidePanel.checkVisibility()) {
+            elementPopout.style.visibility = 'hidden';
+            isPopoutFutureOpen = false;
+        };
+
+        elementButton.classList.toggle('show');
+        elementSidePanel.classList.toggle('show');
+    };
+    
+    const handleFuturePlanClick = (event, abbr, plan, month, day) => {
+        if (isPopoutFutureOpen && (futurePlanAbbr === abbr) && (futurePlanDesc === plan) && (futurePlanMonth === month) && (futurePlanDay === day)) {
+            refFuturePlan.current.style.visibility = 'hidden';
+            isPopoutFutureOpen = false;
+            return;
+        };
+
+        refFuturePlan.current.style.visibility = 'visible';
+
+        isPopoutFutureOpen = true;
+
+        setFuturePlanAbbr(abbr);
+        setFuturePlanDesc(plan);
+        setFuturePlanMonth(month);
+        setFuturePlanDay(day);
+
+        const elementPlan = event.currentTarget.getBoundingClientRect();
+        const elementCalendar = document.getElementById('dailyplanner-widget-animation').getBoundingClientRect();
+
+        const x = elementPlan.left + (elementPlan.width / 2) - elementCalendar.left;
+        let y = elementPlan.bottom - elementCalendar.top + 20;
+
+        refFuturePlan.current.style.transform = `translate(${x}px, ${y}px) translate(-50%, 0)`;
     };
 
-    const addFuturePlan = () => {
+    const handleButtonsFuturePlan = (what) => {
+        const actions = {
+            show: () => {
+                const elementSidePanelButtons = document.querySelector('.dailyplanner-side-panel-buttons');
+                elementSidePanelButtons.classList.toggle('show');
+            },
+            add: () => {
+                const elementInputDay = refInputFuturePlanDay.current;
+                const elementInputDesc = refInputFuturePlanDesc.current;
+                const elementInputAbbr = refInputFuturePlanAbbr.current;
 
+                if (!inputFuturePlanDay
+                    || !inputFuturePlanDesc
+                    || !inputFuturePlanAbbr
+                ) {
+                    if (!inputFuturePlanDay || inputFuturePlanDay < 1) elementInputDay.classList.add('input-incorrect');
+                    if (!inputFuturePlanDesc) elementInputDesc.classList.add('input-incorrect');
+                    if (!inputFuturePlanAbbr) elementInputAbbr.classList.add('input-incorrect');
+                    return;
+                };
+
+                const newFuturePlans = {
+                    ...futurePlans
+                };
+                const monthLabel = monthLabels[inputFuturePlanMonth.value];
+
+                newFuturePlans[monthLabel] = [
+                    ...(newFuturePlans[monthLabel] || []),
+                    {
+                        plan: inputFuturePlanDesc,
+                        abbr: inputFuturePlanAbbr,
+                        month: inputFuturePlanMonth,
+                        day: inputFuturePlanDay,   
+                    }
+                ];
+
+                setFuturePlans(newFuturePlans);
+            },
+            close: () => {
+                refFuturePlan.current.style.visibility = 'hidden';
+                isPopoutFutureOpen = false;
+            },
+            delete: () => {},
+        };
+
+        actions[what]?.();
+    };
+
+    const handleInputFuturePlan = (event, what) => {
+        const value = event.target.value;
+        const setter = {
+            day: setInputFuturePlanDay,
+            desc: setInputFuturePlanDesc,
+            abbr: setInputFuturePlanAbbr,
+        };
+
+        setter[what]?.(value);
     };
 
     return (
@@ -329,7 +447,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                 defaultProps.dragStop('dailyplanner');
                 defaultProps.updatePosition('dailyplanner', 'utility', data.x, data.y);
             }}
-            cancel='button, input, .popout, .calendar-cell, .select-match'
+            cancel='button, input, .popout, .calendar-cell, .select-match, .dailyplanner-side-panel, .dailyplanner-side-panel-button'
             bounds='parent'>
             <section id='dailyplanner-widget'
                 className='widget'
@@ -380,21 +498,37 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                             })}
                         </div>
                         {/* Side Panel */}
-                        <div className='dailyplanner-side-panel'>
-                            <span className='dailyplanner-side-panel-button'>Future Plans</span>
+                        <span className='dailyplanner-side-panel-button'
+                            role='button'
+                            onClick={(event) => handleButtonFuturePlan(event)}>Future Plans</span>
+                        <div ref={refSidePanel}
+                            className='dailyplanner-side-panel'>
                             <div className='dailyplanner-side-panel-plans'>
-                                {[...Array(10).keys()].map((val) => {
-                                    return <div className='calendar-plan'
-                                        key={val}>
-                                        <span>Test</span>
+                                {Object.entries(futurePlans).map((month) => {
+                                    return <div className='fill-width'
+                                        key={month[0]}>
+                                        <span className='font transparent-bold'>{month[0]}</span>
+                                        <div className='flex-center column gap'
+                                            style={{ marginTop: '0.2rem' }}>
+                                            {month[1].map((plan, planIndex) => {
+                                                return <div className='calendar-plan'
+                                                    onClick={(event) => handleFuturePlanClick(event, plan.abbr, plan.plan, plan.month, plan.day)}
+                                                    role='button'
+                                                    key={`${plan.plan} ${plan.month} ${plan.day} ${planIndex}`}
+                                                    tabIndex={0}>
+                                                    <span>{plan.abbr}</span>
+                                                </div>
+                                            })}
+                                        </div>
                                     </div>
                                 })}
                             </div>
                             <div className='flex-center column gap'>
                                 <div className='dailyplanner-side-panel-buttons'>
                                     <div className='grid col-50-50'>
-                                        <Select className='select-match'
-                                            defaultValue={optionsMonth[0]['options'][0]}
+                                        <Select ref={refSelectMonth}
+                                            className='select-match'
+                                            value={inputFuturePlanMonth}
                                             options={optionsMonth}
                                             formatGroupLabel={formatGroupLabel}
                                             components={{
@@ -406,20 +540,38 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                                     ...theme.colors,
                                                     ...selectTheme
                                                 }
-                                            })}/>
-                                        <input className='input-match'
+                                            })}
+                                            onChange={setInputFuturePlanMonth}/>
+                                        <input ref={refInputFuturePlanDay}
+                                            className='input-match'
+                                            style={{ maxWidth: '6.3rem' }}
+                                            value={inputFuturePlanDay}
                                             type='number'
-                                            placeholder='Day'/>
+                                            min={1}
+                                            max={20}
+                                            placeholder='Day'
+                                            onChange={(event) => handleInputFuturePlan(event, 'day')}/>
                                     </div>
-                                    <input className='input-match fill-width'
-                                        placeholder='Plan'/>
-                                    <input className='input-match fill-width'
-                                        placeholder='Abbreviation'/>
+                                    <input ref={refInputFuturePlanDesc}
+                                        className='input-match fill-width'
+                                        type='text'
+                                        value={inputFuturePlanDesc}
+                                        placeholder='Plan'
+                                        onChange={(event) => handleInputFuturePlan(event, 'desc')}/>
+                                    <input ref={refInputFuturePlanAbbr}
+                                        className='input-match fill-width'
+                                        type='text'
+                                        value={inputFuturePlanAbbr}
+                                        maxLength={maxLength}
+                                        placeholder='Abbreviation'
+                                        onChange={(event) => handleInputFuturePlan(event, 'abbr')}/>
+                                    <button className='button-match fill-width'
+                                        onClick={() => handleButtonsFuturePlan('add')}>Add</button>
                                 </div>
                                 <div className='fill-width'
                                     style={{ paddingTop: '1rem' }}>
                                     <button className='button-match fill-width'
-                                        onClick={handleButtonAddPlan}>Add Plan</button>
+                                        onClick={() => handleButtonsFuturePlan('show')}>Add Plan</button>
                                 </div>
                             </div>
                         </div>
@@ -488,6 +640,39 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                     onClick={() => handleButton('view', 'close')}>Close</button>
                                 <button className='button-match'
                                     onClick={() => handleButton('view', 'delete')}>Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    {/* View Future Plan Popout */}
+                    <div ref={refFuturePlan}
+                        className='popout'>
+                        <div className='popout-animation dialogue dailyplanner-view-future-popout'>
+                            <div className='font small transparent-bold flex-center row only-align-items'>
+                                <span contentEditable
+                                    suppressContentEditableWarning
+                                    onBeforeInput={(event) => handleEditInput('abbr', event)}
+                                    onBlur={(event) => handleEdit('abbr', event)}>{futurePlanMonth?.value}</span>
+                                <span>&nbsp;/&nbsp;</span>
+                                <span contentEditable
+                                    suppressContentEditableWarning
+                                    onBeforeInput={(event) => handleEditInput('abbr', event)}
+                                    onBlur={(event) => handleEdit('abbr', event)}>{futurePlanDay}</span>
+                            </div>
+                            <span className='font bold large'
+                                contentEditable
+                                suppressContentEditableWarning
+                                onBeforeInput={(event) => handleEditInput('abbr', event)}
+                                onBlur={(event) => handleEdit('abbr', event)}>{futurePlanAbbr}</span>
+                            <span contentEditable
+                                suppressContentEditableWarning
+                                onBeforeInput={(event) => handleEditInput('plan', event)}
+                                onBlur={(event) => handleEdit('plan', event)}>{futurePlanDesc}</span>
+                            <div className='grid col-50-50'
+                                style={{ marginTop: '0.6rem' }}>
+                                <button className='button-match'
+                                    onClick={() => handleButtonsFuturePlan('close')}>Close</button>
+                                <button className='button-match'
+                                    onClick={() => handleButtonsFuturePlan('delete')}>Delete</button>
                             </div>
                         </div>
                     </div>

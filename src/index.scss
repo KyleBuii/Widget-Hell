@@ -2882,6 +2882,7 @@ input[type='checkbox'], input[type='radio'] {
 
 .calendar-plan {
     @extend .flex-center;
+    cursor: pointer;
     width: 100%;
     box-sizing: border-box;
     color: white;
@@ -4872,6 +4873,7 @@ input[type='checkbox'], input[type='radio'] {
     border-radius: 5px;
     padding-left: 0.8em;
     color: var(--randColorLight);
+    transition: border-color 0.3s;
 
     &::placeholder {
         color: rgba(var(--randColorOpacity), 0.4);
@@ -4890,6 +4892,10 @@ input[type='checkbox'], input[type='radio'] {
         border: none;
         padding: unset;
     }
+
+    &.input-incorrect {
+        border-color: #cb3439;
+    }
 }
 
 .select-match {
@@ -4897,6 +4903,11 @@ input[type='checkbox'], input[type='radio'] {
     color: var(--randColor);
     font-size: 0.75em;
     width: 100%;
+
+    [aria-disabled='true'] {
+        cursor: not-allowed;
+        background-color: lightgray;
+    }
 }
 
 .radio-match {
@@ -6074,13 +6085,55 @@ input[type='checkbox'], input[type='radio'] {
             }
         }
     }
+    
+    .dailyplanner-view-future-popout {
+        @extend .font, .flex-center, .column, .gap, .only-justify-content;
+        padding: 1rem;
+        min-width: 10rem;
+        max-width: 15rem;
+
+        span {
+            transition: box-shadow 0.3s;
+
+            &:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(0, 85, 255, 0.8);
+            }
+        }
+    }
 
     .dailyplanner-side-panel-button {
-        @extend .font, .bold, .large, .line, .bellow;
+        @extend .font, .bold, .large, .no-highlight;
+        z-index: 1;
+        cursor: pointer;
+        position: fixed;
+        top: 8.5rem;
+        right: -10.6rem;
+        padding: 0.5rem 4rem;
+        line-height: 1lh;
+        rotate: 90deg;
+        /// Made by Temani Afif (https://css-shape.com/pencil/)
+        background:
+            linear-gradient(90deg,#e7e7e7 30%,#fe668c 0) 100%/50px 100% no-repeat, 
+            conic-gradient(from 55deg at left,#fee7b3,#0000 1deg 69deg,#fee7b3 70deg) 100% 8px/calc(100% - 40px) 16px repeat-y, 
+            linear-gradient(#0003 50%,#0000 0) 100% 8px/calc(100% - 41px) 32px repeat-y, 
+            linear-gradient(90deg,#2b2026 15px,#fee7b3 16px 40px,#fecc2b 0);
+        clip-path: polygon(0 50%,42px 0,100% 0,100% 100%,42px 100%);
+        border-radius: 0 10px 10px 0;
+        transition-property: rotate, top, right;
+        transition-duration: 0.3s;
+        
+        &.show {
+            top: 1.5rem;
+            right: -15.1rem;
+            rotate: unset;
+            background: unset;
+        }
     }
 
     .dailyplanner-side-panel {
         @extend .flex-center, .column, .only-align-items;
+        visibility: hidden;
         position: fixed;
         right: 0;
         height: 588px;
@@ -6091,23 +6144,35 @@ input[type='checkbox'], input[type='radio'] {
         opacity: 0;
         transform: translateX(100%);
         transition: opacity 0.3s;
-        
+
         &.show {
+            visibility: visible;
             opacity: 1;
         }
     }
 
     .dailyplanner-side-panel-plans {
-        @extend .scrollable, .flex-center, .column, .gap, .only-align-items, .fill-width;
+        @extend .no-highlight, .scrollable, .flex-center, .column, .gap, .only-align-items, .fill-width, .line, .above;
         height: 100%;
+        margin-top: 1.8rem;
+        padding: 0rem 0.5rem;
     }
     
     .dailyplanner-side-panel-buttons {
         @extend .collapsible, .flex-center, .column, .gap, .small-gap, .fill-width, .line, .above;
         opacity: 1;
-
+        margin-top: 0.5rem;
+        
         &:not(.show) {
             padding-top: 0;
+        }
+
+        &.show {
+            overflow: visible;
+        }
+
+        .select-match {
+            width: 7.25rem;
         }
     }
 }
