@@ -448,7 +448,6 @@ const textAnimations = [
 const languages = ['Afrikaans', 'af', 'Albanian', 'sq', 'Amharic', 'am', 'Arabic', 'ar', 'Armenian', 'hy', 'Assamese', 'as', 'Azerbaijani (Latin)', 'az', 'Bangla', 'bn', 'Bashkir', 'ba', 'Basque', 'eu', 'Bosnian (Latin)', 'bs', 'Bulgarian', 'bg', 'Cantonese (Traditional)', 'yue', 'Catalan', 'ca', 'Chinese (Literary)', 'lzh', 'Chinese Simplified', 'zh-Hans', 'Chinese Traditional', 'zh-Hant', 'Croatian', 'hr', 'Czech', 'cs', 'Danish', 'da', 'Dari', 'prs', 'Divehi', 'dv', 'Dutch', 'nl', 'English', 'en', 'Estonian', 'et', 'Faroese', 'fo', 'Fijian', 'fj', 'Filipino', 'fil', 'Finnish', 'fi', 'French', 'fr', 'French (Canada)', 'fr-ca', 'Galician', 'gl', 'Georgian', 'ka', 'German', 'de', 'Greek', 'el', 'Gujarati', 'gu', 'Haitian Creole', 'ht', 'Hebrew', 'he', 'Hindi', 'hi', 'Hmong Daw (Latin)', 'mww', 'Hungarian', 'hu', 'Icelandic', 'is', 'Indonesian', 'id', 'Inuinnaqtun', 'ikt', 'Inuktitut', 'iu', 'Inuktitut (Latin)', 'iu-Latn', 'Irish', 'ga', 'Italian', 'it', 'Japanese', 'ja', 'Kannada', 'kn', 'Kazakh', 'kk', 'Khmer', 'km', 'Klingon', 'tlh-Latn', 'Klingon (plqaD)', 'tlh-Piqd', 'Korean', 'ko', 'Kurdish (Central)', 'ku', 'Kurdish (Northern)', 'kmr', 'Kyrgyz (Cyrillic)', 'ky', 'Lao', 'lo', 'Latvian', 'lv', 'Lithuanian', 'lt', 'Macedonian', 'mk', 'Malagasy', 'mg', 'Malay (Latin)', 'ms', 'Malayalam', 'ml', 'Maltese', 'mt', 'Maori', 'mi', 'Marathi', 'mr', 'Mongolian (Cyrillic)', 'mn-Cyrl', 'Mongolian (Traditional)', 'mn-Mong', 'Myanmar', 'my', 'Nepali', 'ne', 'Norwegian', 'nb', 'Odia', 'or', 'Pashto', 'ps', 'Persian', 'fa', 'Polish', 'pl', 'Portuguese (Brazil)', 'pt', 'Portuguese (Portugal)', 'pt-pt', 'Punjabi', 'pa', 'Queretaro Otomi', 'otq', 'Romanian', 'ro', 'Russian', 'ru', 'Samoan (Latin)', 'sm', 'Serbian (Cyrillic)', 'sr-Cyrl', 'Serbian (Latin)', 'sr-Latn', 'Slovak', 'sk', 'Slovenian', 'sl', 'Somali (Arabic)', 'so', 'Spanish', 'es', 'Swahili (Latin)', 'sw', 'Swedish', 'sv', 'Tahitian', 'ty', 'Tamil', 'ta', 'Tatar (Latin)', 'tt', 'Telugu', 'te', 'Thai', 'th', 'Tibetan', 'bo', 'Tigrinya', 'ti', 'Tongan', 'to', 'Turkish', 'tr', 'Turkmen (Latin)', 'tk', 'Ukrainian', 'uk', 'Upper Sorbian', 'hsb', 'Urdu', 'ur', 'Uyghur (Arabic)', 'ug', 'Uzbek (Latin)', 'uz', 'Vietnamese', 'vi', 'Welsh', 'cy', 'Yucatec Maya', 'yua', 'Zulu', 'zu'];
 const moneyConversions = ['AED', 'AE', 'AFN', 'AF', 'XCD', 'AG', 'ALL', 'AL', 'AMD', 'AM', 'ANG', 'AN', 'AOA', 'AO', 'AQD', 'AQ', 'ARS', 'AR', 'AUD', 'AU', 'AZN', 'AZ', 'BAM', 'BA', 'BBD', 'BB', 'BDT', 'BD', 'XOF', 'BE', 'BGN', 'BG', 'BHD', 'BH', 'BIF', 'BI', 'BMD', 'BM', 'BND', 'BN', 'BOB', 'BO', 'BRL', 'BR', 'BSD', 'BS', 'NOK', 'BV', 'BWP', 'BW', 'BYR', 'BY', 'BZD', 'BZ', 'CAD', 'CA', 'CDF', 'CD', 'XAF', 'CF', 'CHF', 'CH', 'CLP', 'CL', 'CNY', 'CN', 'COP', 'CO', 'CRC', 'CR', 'CUP', 'CU', 'CVE', 'CV', 'CYP', 'CY', 'CZK', 'CZ', 'DJF', 'DJ', 'DKK', 'DK', 'DOP', 'DO', 'DZD', 'DZ', 'ECS', 'EC', 'EEK', 'EE', 'EGP', 'EG', 'ETB', 'ET', 'EUR', 'FR', 'FJD', 'FJ', 'FKP', 'FK', 'GBP', 'GB', 'GEL', 'GE', 'GGP', 'GG', 'GHS', 'GH', 'GIP', 'GI', 'GMD', 'GM', 'GNF', 'GN', 'GTQ', 'GT', 'GYD', 'GY', 'HKD', 'HK', 'HNL', 'HN', 'HRK', 'HR', 'HTG', 'HT', 'HUF', 'HU', 'IDR', 'ID', 'ILS', 'IL', 'INR', 'IN', 'IQD', 'IQ', 'IRR', 'IR', 'ISK', 'IS', 'JMD', 'JM', 'JOD', 'JO', 'JPY', 'JP', 'KES', 'KE', 'KGS', 'KG', 'KHR', 'KH', 'KMF', 'KM', 'KPW', 'KP', 'KRW', 'KR', 'KWD', 'KW', 'KYD', 'KY', 'KZT', 'KZ', 'LAK', 'LA', 'LBP', 'LB', 'LKR', 'LK', 'LRD', 'LR', 'LSL', 'LS', 'LTL', 'LT', 'LVL', 'LV', 'LYD', 'LY', 'MAD', 'MA', 'MDL', 'MD', 'MGA', 'MG', 'MKD', 'MK', 'MMK', 'MM', 'MNT', 'MN', 'MOP', 'MO', 'MRO', 'MR', 'MTL', 'MT', 'MUR', 'MU', 'MVR', 'MV', 'MWK', 'MW', 'MXN', 'MX', 'MYR', 'MY', 'MZN', 'MZ', 'NAD', 'NA', 'XPF', 'NC', 'NGN', 'NG', 'NIO', 'NI', 'NPR', 'NP', 'NZD', 'NZ', 'OMR', 'OM', 'PAB', 'PA', 'PEN', 'PE', 'PGK', 'PG', 'PHP', 'PH', 'PKR', 'PK', 'PLN', 'PL', 'PYG', 'PY', 'QAR', 'QA', 'RON', 'RO', 'RSD', 'RS', 'RUB', 'RU', 'RWF', 'RW', 'SAR', 'SA', 'SBD', 'SB', 'SCR', 'SC', 'SDG', 'SD', 'SEK', 'SE', 'SGD', 'SG', 'SKK', 'SK', 'SLL', 'SL', 'SOS', 'SO', 'SRD', 'SR', 'STD', 'ST', 'SVC', 'SV', 'SYP', 'SY', 'SZL', 'SZ', 'THB', 'TH', 'TJS', 'TJ', 'TMT', 'TM', 'TND', 'TN', 'TOP', 'TO', 'TRY', 'TR', 'TTD', 'TT', 'TWD', 'TW', 'TZS', 'TZ', 'UAH', 'UA', 'UGX', 'UG', 'USD', 'US', 'UYU', 'UY', 'UZS', 'UZ', 'VEF', 'VE', 'VND', 'VN', 'VUV', 'VU', 'YER', 'YE', 'ZAR', 'ZA', 'ZMK', 'ZM', 'ZWD', 'ZW'];
 const quotes = [
-    //#region
     {
         quote: "You all have a little bit of 'I want to save the world' in you, that's why you're here, in college. I want you to know that it's okay if you only save one person, and it's okay if that person is you."
         , author: 'Some college professor'
@@ -589,7 +588,6 @@ const quotes = [
         quote: "Once you've accepted your flaws, no one can use them against you."
         , author: 'George R.R. Martin'
     },
-    //#endregion
     {
         quote: 'Yet it is far better to light the candle than to curse the darkness.'
         , author: 'W. L. Watkinson'
@@ -605,7 +603,27 @@ const quotes = [
     {
         quote: 'It takes only one step to overcome your fears. You just need to take one step forward. The rest will come naturally.'
         , author: 'Vincent Adenka'
-    }
+    },
+    {
+        quote: 'Worrying does not take away tomorrows troubles, it takes away todays peace.'
+        , author: ''
+    },
+    {
+        quote: 'When people talk about traveling to the past, they worry about radically changing the present by doing something small, but barely anyone in the present really thinks that they can radically change the future by doing something small.'
+        , author: ''
+    },
+    {
+        quote: 'The secret is there is not secret. Consistency over intensity. Progress over perfection. Fundamentals over fads. Over and over again.'
+        , author: ''
+    },
+    {
+        quote: "Stop waiting to feel ready. Ready is not a feeling. It's a decision"
+        , author: ''
+    },
+    {
+        quote: "You should enjoy the little things. Because one day, you'll look back and realize they were big things."
+        , author: ''
+    },
 ];
 const sentences = [
     'My mum (82F) told me (12M) to do the dishes (16) but I (12M) was too busy playing Fortnite (3 kills) so I (12M) grabbed my controller (DualShock 4) and threw it at her (138kph). She fucking died, and I (12M) went to prison (18 years). While in prison I (12M) incited several riots (3) and assumed leadership of a gang responsible for smuggling drugs (cocaine) into the country. I (12M) also ordered the assassination of several celebrities (Michael Jackson, Elvis Presley and Jeffrey Epstein) and planned a terrorist attack (9/11).'
@@ -7157,8 +7175,16 @@ const selectHideGroupMenuList = (props) => {
     return <SimpleBar style={{ maxHeight: 210 }}>{props.children}</SimpleBar>;    
 };
 const menuListScrollbar = (props) => {
-    return(
-        <SimpleBar style={{ maxHeight: 210 }}>{props.children}</SimpleBar>
+    const { innerRef, innerProps, children } = props;
+
+    return (
+        <SimpleBar style={{ maxHeight: 210 }}
+            scrollableNodeProps={{
+                ...innerProps,
+                ref: innerRef,
+            }}>
+            {children}
+        </SimpleBar>
     );
 };
 //#endregion
