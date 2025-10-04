@@ -2,7 +2,7 @@ import DOMPurify from 'dompurify';
 import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
-import { FaGripHorizontal } from 'react-icons/fa';
+import { FaBars, FaGripHorizontal } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -83,6 +83,9 @@ let filterType = '';
 class WidgetAnimeSearcher extends Component {
     constructor(props) {
         super(props);
+
+        this.refMultipleSearches = React.createRef();
+
         this.state = {
             running: false,
             spoiler: false,
@@ -91,54 +94,58 @@ class WidgetAnimeSearcher extends Component {
             linkEpisode: 0,
             linkDuration: '',
             linkSimilarity: 0,
-            bannerImage: '',
-            dubbed: false,
-            charactersRole: [{
-                role: ''
-            }],
-            characters: [{
-                age: '',
-                bloodType: null,
-                dateOfBirth: {year: null, month: null, day: null},
-                description: '',
-                favourites: 0,
-                gender: '',
-                image: {large: ''},
-                name: {full: '', alternative: [], alternativeSpoiler: []}
-            }],
             previousCharacterIndex: 0,
             characterIndex: 0,
-            coverImageColor: '',
-            coverImageLink: '',
-            description: '',
-            duration: 0,
-            startDate: '',
-            endDate: '',
-            episodes: 0,
-            externalLinks: [],
-            favorites: 0,
-            format: '',
-            genres: [],
-            adult: false,
-            meanScore: 0,
-            popularity: 0,
-            rankingsRated: 0,
-            rankingsPopular: 0,
-            recommendations: [],
-            relations: [],
-            season: '',
-            seasonYear: 0,
-            source: '',
-            status: '',
-            streamingEpisodes: [],
-            studios: [],
-            synonyms: [],
-            tags: [],
-            titleEnglish: '',
-            titleNative: '',
-            titleRomaji: '',
-            volumes: 0,
-            chapters: 0,
+            searchAmount: 1,
+            media: [{
+                bannerImage: '',
+                dubbed: false,
+                charactersRole: [{
+                    role: ''
+                }],
+                characters: [{
+                    age: '',
+                    bloodType: null,
+                    dateOfBirth: {year: null, month: null, day: null},
+                    description: '',
+                    favourites: 0,
+                    gender: '',
+                    image: {large: ''},
+                    name: {full: '', alternative: [], alternativeSpoiler: []}
+                }],
+                coverImageColor: '',
+                coverImageLink: '',
+                description: '',
+                duration: 0,
+                startDate: '',
+                endDate: '',
+                episodes: 0,
+                externalLinks: [],
+                favorites: 0,
+                format: '',
+                genres: [],
+                adult: false,
+                meanScore: 0,
+                popularity: 0,
+                rankingsRated: 0,
+                rankingsPopular: 0,
+                recommendations: [],
+                relations: [],
+                season: '',
+                seasonYear: 0,
+                source: '',
+                status: '',
+                streamingEpisodes: [],
+                studios: [],
+                synonyms: [],
+                tags: [],
+                titleEnglish: '',
+                titleNative: '',
+                titleRomaji: '',
+                volumes: 0,
+                chapters: 0,
+            }],
+            currentMedia: 0,
         };
     };
 
@@ -168,8 +175,10 @@ class WidgetAnimeSearcher extends Component {
     };
 
     async fetchMedia(name = null, id = null, image = false) {
+        this.refMultipleSearches.current.style.display = (this.state.searchAmount === 1 || id || name) ? 'none' : 'flex';
+
         /// Clear existing animations
-        if (this.state.characters.length !== 0) {
+        if (this.state.media[this.state.currentMedia].characters.length !== 0) {
             const elementCharacter = document.getElementById(`animesearcher-character-${this.state.characterIndex}`);
             const elementCharacterInformation = document.getElementById('animesearcher-character-information');
             elementCharacter.classList.remove('animation-image-character');
@@ -186,8 +195,11 @@ class WidgetAnimeSearcher extends Component {
                 $type: MediaType,
                 $genres: [String],
                 $tags: [String],
-            ){
-                Page(page: $page, perPage: 1){
+            ) {
+                Page(
+                    page: $page,
+                    perPage: 1
+                ) {
                     pageInfo{
                         lastPage
                         total
@@ -498,89 +510,104 @@ class WidgetAnimeSearcher extends Component {
             });
 
             let dataMedia;
+            let newMedia = [];
 
-            if (id || name) {
-                const responseQuery = await this.runQuery(query, variables);
-                dataMedia = responseQuery.data.Media;
-            } else if (hasAnyFilter) {
-                const firstPage = await this.runQuery(queryMinimal, { ...variables, page: 1 });
-                const lastPage = firstPage.data.Page.pageInfo.lastPage || 1;
-                const randomPage = Math.ceil(Math.random() * lastPage);
-                const responseMinimal = await this.runQuery(queryRandom, { ...variables, page: randomPage });
-                dataMedia = responseMinimal.data.Page.media[0];
-            } else {
-                const randomPage = Math.ceil(Math.random() * this.state.maxAmount);
-                const responseRandom = await this.runQuery(queryRandom, { page: randomPage });
-                dataMedia = responseRandom.data.Page.media[0];
+            for (let searches = 0; searches < this.state.searchAmount; searches++) {
+                if (id || name) {
+                    const responseQuery = await this.runQuery(query, variables);
+                    dataMedia = responseQuery.data.Media;
+                } else if (hasAnyFilter) {
+                    const firstPage = await this.runQuery(queryMinimal, { ...variables, page: 1 });
+                    const lastPage = firstPage.data.Page.pageInfo.lastPage || 1;
+                    const randomPage = Math.ceil(Math.random() * lastPage);
+                    const responseMinimal = await this.runQuery(queryRandom, { ...variables, page: randomPage });
+                    dataMedia = responseMinimal.data.Page.media[0];
+                } else {
+                    const randomPage = Math.ceil(Math.random() * this.state.maxAmount);
+                    const responseRandom = await this.runQuery(queryRandom, { page: randomPage });
+                    dataMedia = responseRandom.data.Page.media[0];
+                };
+
+                let mediaStartDate = (new Date(`${dataMedia.startDate.month || ''} ${dataMedia.startDate.day || ''} ${dataMedia.startDate.year || ''}`)
+                    .toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                }));
+                let mediaEndDate = (new Date(`${dataMedia.endDate.month || ''} ${dataMedia.endDate.day || ''} ${dataMedia.endDate.year || ''}`)
+                    .toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                }));
+
+                let checkDubbed = false;
+                if (dataMedia.characters.edges.length !== 0) {
+                    if (dataMedia.characters.edges[0].voiceActors !== null) {
+                        checkDubbed = ((dataMedia.format !== 'MANGA')
+                            && (dataMedia.characters.edges[0].voiceActors.length !== 0));
+                    };
+                };
+
+                newMedia.push({
+                    bannerImage: dataMedia.bannerImage,
+                    dubbed: checkDubbed,
+                    charactersRole: dataMedia.characters.edges,
+                    characters: dataMedia.characters.nodes,
+                    coverImageColor: dataMedia.coverImage.color,
+                    coverImageLink: dataMedia.coverImage.extraLarge,
+                    description: dataMedia.description,
+                    duration: dataMedia.duration,
+                    startDate: (mediaStartDate !== 'Invalid Date')
+                        ? mediaStartDate
+                        : '?',
+                    endDate: (mediaEndDate !== 'Invalid Date')
+                        ? mediaEndDate
+                        : '?',
+                    episodes: dataMedia.episodes,
+                    externalLinks: dataMedia.externalLinks,
+                    favorites: dataMedia.favourites,
+                    format: dataMedia.format,
+                    genres: dataMedia.genres,
+                    adult: dataMedia.isAdult,
+                    meanScore: dataMedia.meanScore,
+                    popularity: dataMedia.popularity,
+                    rankingsRated: ((dataMedia.rankings.length !== 0)
+                        && (dataMedia.rankings[0].allTime))
+                        ? dataMedia.rankings[0].rank
+                        : 0,
+                    rankingsPopular: ((dataMedia.rankings.length > 1)
+                        && (dataMedia.rankings[1].allTime))
+                        ? dataMedia.rankings[1].rank
+                        : 0,
+                    recommendations: dataMedia.recommendations.nodes,
+                    relations: dataMedia.relations.nodes,
+                    season: dataMedia.season,
+                    seasonYear: dataMedia.seasonYear,
+                    source: dataMedia.source,
+                    status: dataMedia.status,
+                    streamingEpisodes: dataMedia.streamingEpisodes,
+                    studios: dataMedia.studios.nodes,
+                    synonyms: dataMedia.synonyms,
+                    tags: dataMedia.tags,
+                    titleEnglish: dataMedia.title.english,
+                    titleNative: dataMedia.title.native,
+                    titleRomaji: dataMedia.title.romaji,
+                    volumes: dataMedia.volumes,
+                    chapters: dataMedia.chapters
+                });
+
+                if (id || name) break;
             };
 
-            let mediaStartDate = (new Date(`${dataMedia.startDate.month || ''} ${dataMedia.startDate.day || ''} ${dataMedia.startDate.year || ''}`)
-                .toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-            }));
-            let mediaEndDate = (new Date(`${dataMedia.endDate.month || ''} ${dataMedia.endDate.day || ''} ${dataMedia.endDate.year || ''}`)
-                .toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-            }));
-
-            let checkDubbed = false;
-            if (dataMedia.characters.edges.length !== 0) {
-                if (dataMedia.characters.edges[0].voiceActors !== null) {
-                    checkDubbed = ((dataMedia.format !== 'MANGA')
-                        && (dataMedia.characters.edges[0].voiceActors.length !== 0));
-                };
+            if (id || name) {
+                let tempMedia = [...this.state.media];
+                tempMedia[this.state.currentMedia] = newMedia[0];
+                newMedia = [...tempMedia];
             };
 
             this.setState({
-                bannerImage: dataMedia.bannerImage,
-                dubbed: checkDubbed,
-                charactersRole: dataMedia.characters.edges,
-                characters: dataMedia.characters.nodes,
-                coverImageColor: dataMedia.coverImage.color,
-                coverImageLink: dataMedia.coverImage.extraLarge,
-                description: dataMedia.description,
-                duration: dataMedia.duration,
-                startDate: (mediaStartDate !== 'Invalid Date')
-                    ? mediaStartDate
-                    : '?',
-                endDate: (mediaEndDate !== 'Invalid Date')
-                    ? mediaEndDate
-                    : '?',
-                episodes: dataMedia.episodes,
-                externalLinks: dataMedia.externalLinks,
-                favorites: dataMedia.favourites,
-                format: dataMedia.format,
-                genres: dataMedia.genres,
-                adult: dataMedia.isAdult,
-                meanScore: dataMedia.meanScore,
-                popularity: dataMedia.popularity,
-                rankingsRated: ((dataMedia.rankings.length !== 0)
-                    && (dataMedia.rankings[0].allTime))
-                    ? dataMedia.rankings[0].rank
-                    : 0,
-                rankingsPopular: ((dataMedia.rankings.length > 1)
-                    && (dataMedia.rankings[1].allTime))
-                    ? dataMedia.rankings[1].rank
-                    : 0,
-                recommendations: dataMedia.recommendations.nodes,
-                relations: dataMedia.relations.nodes,
-                season: dataMedia.season,
-                seasonYear: dataMedia.seasonYear,
-                source: dataMedia.source,
-                status: dataMedia.status,
-                streamingEpisodes: dataMedia.streamingEpisodes,
-                studios: dataMedia.studios.nodes,
-                synonyms: dataMedia.synonyms,
-                tags: dataMedia.tags,
-                titleEnglish: dataMedia.title.english,
-                titleNative: dataMedia.title.native,
-                titleRomaji: dataMedia.title.romaji,
-                volumes: dataMedia.volumes,
-                chapters: dataMedia.chapters
+                media: [...newMedia]
             });
         } catch (err) {
             console.error(err);
@@ -729,6 +756,24 @@ class WidgetAnimeSearcher extends Component {
         };
     };
 
+    handleAmountButton() {
+        this.setState({
+            searchAmount: (this.state.searchAmount % 3) + 1
+        });
+    };
+
+    handleSearchClick(index) {
+        this.refMultipleSearches.current.style.display = 'none';
+
+        this.setState({
+            currentMedia: index
+        });
+    };
+
+    toggleSearches() {
+        this.refMultipleSearches.current.style.display = (this.refMultipleSearches.current.checkVisibility()) ? 'none' : 'flex';
+    };
+
     storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
@@ -736,6 +781,7 @@ class WidgetAnimeSearcher extends Component {
     componentDidMount() {
         const dateLocalStorage = JSON.parse(localStorage.getItem('date'));
         const currentDate = new Date().getDate();
+
         if ((sessionStorage.getItem('animesearcher') !== null)
             && (dateLocalStorage['animesearcher'] === currentDate)) {
             this.setState({
@@ -750,9 +796,13 @@ class WidgetAnimeSearcher extends Component {
                 'animesearcher': currentDate
             }));
         };
+
+        this.refMultipleSearches.current.style.display = 'none';
     };
     
     render() {
+        const currentItem = this.state.media[this.state.currentMedia];
+
         return (
             <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
@@ -800,6 +850,8 @@ class WidgetAnimeSearcher extends Component {
                                             onClick={() => this.handleButtonSpoiler()}
                                             disabled={this.state.running}>SPOILER</button>
                                     </div>
+                                    <button className='button-match'
+                                        onClick={() => this.handleAmountButton()}>{this.state.searchAmount}x</button>
                                     <button className='button-match'
                                         type='button'
                                         onClick={() => this.handleSearch()}>Search</button>
@@ -855,6 +907,8 @@ class WidgetAnimeSearcher extends Component {
                                         })}
                                     </div>
                                 </div>
+                                <button className='button-match fill-width'
+                                    onClick={() => this.toggleSearches()}>Show Searches</button>
                                 {/* Media Information */}
                                 <SimpleBar id='animesearcher-information'
                                     className='font'
@@ -880,9 +934,9 @@ class WidgetAnimeSearcher extends Component {
                                     {/* Banner Image */}
                                     <img id='animesearcher-image-banner'
                                         style={{
-                                            boxShadow: `0px 0px 10px ${this.state.coverImageColor}`
+                                            boxShadow: `0px 0px 10px ${currentItem?.coverImageColor}`
                                         }}
-                                        src={this.state.bannerImage || '/resources/singles/animebackground.webp'}
+                                        src={currentItem.bannerImage || '/resources/singles/animebackground.webp'}
                                         draggable='false'
                                         alt='banner'
                                         loading='lazy'
@@ -895,13 +949,13 @@ class WidgetAnimeSearcher extends Component {
                                             <img id='animesearcher-image-cover'
                                                 className='image-cover'
                                                 style={{
-                                                    boxShadow: `0px 0px 6px ${this.state.coverImageColor}`
+                                                    boxShadow: `0px 0px 6px ${currentItem.coverImageColor}`
                                                 }}
                                                 onClick={() => {
                                                     document.getElementById('animesearcher-image-cover')
                                                         .classList.toggle('animation-image-cover');
                                                 }}
-                                                src={this.state.coverImageLink}
+                                                src={currentItem.coverImageLink}
                                                 draggable='false'
                                                 alt='cover'
                                                 loading='lazy'
@@ -915,46 +969,46 @@ class WidgetAnimeSearcher extends Component {
                                                 <div className='flex-center column only-justify-content gap'>
                                                     <span>Type</span>
                                                     <span>
-                                                        {(this.state.format === 'TV')
+                                                        {(currentItem.format === 'TV')
                                                             ? 'TV'
-                                                            : this.state.format.charAt(0) + this.state.format.substring(1).toLowerCase()
+                                                            : currentItem.format.charAt(0) + currentItem.format.substring(1).toLowerCase()
                                                                 .replace(/_(.)/, (char) => ' ' + char.charAt(1).toUpperCase())}
                                                     </span>
                                                 </div>
                                                 {/* Episodes / Volumes */}
                                                 <div className='flex-center column only-justify-content gap'>
-                                                    <span>{(this.state.episodes) ? 'Episodes' : 'Volumes'}</span>
-                                                    <span>{(this.state.episodes) ? this.state.episodes : this.state.volumes}</span>
+                                                    <span>{(currentItem.episodes) ? 'Episodes' : 'Volumes'}</span>
+                                                    <span>{(currentItem.episodes) ? currentItem.episodes : currentItem.volumes}</span>
                                                 </div>
                                                 {/* Duration / Chapters */}
                                                 <div className='flex-center column only-justify-content gap'>
-                                                    <span>{(this.state.duration) ? 'Duration' : 'Chapters'}</span>
-                                                    <span>{(this.state.duration) ? `${this.state.duration} mins` : this.state.chapters || '?'}</span>
+                                                    <span>{(currentItem.duration) ? 'Duration' : 'Chapters'}</span>
+                                                    <span>{(currentItem.duration) ? `${currentItem.duration} mins` : currentItem.chapters || '?'}</span>
                                                 </div>
                                                 {/* Status */}
                                                 <div className='flex-center column only-justify-content gap'>
                                                     <span>Status</span>
-                                                    <span>{this.state.status.charAt(0) + this.state.status.substring(1).toLowerCase()}</span>
+                                                    <span>{currentItem.status.charAt(0) + currentItem.status.substring(1).toLowerCase()}</span>
                                                 </div>
                                                 {/* Aired */}
                                                 <div className='flex-center column only-justify-content gap'>
                                                     <span>Aired</span>
-                                                    <span>{this.state.startDate} to {this.state.endDate}</span>
+                                                    <span>{currentItem.startDate} to {currentItem.endDate}</span>
                                                 </div>
                                                 {/* Season */}
-                                                {(this.state.season)
+                                                {(currentItem.season)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Season</span>
-                                                        <span>{this.state.season.charAt(0) + this.state.season.substring(1).toLowerCase()} {this.state.seasonYear}</span>
+                                                        <span>{currentItem.season.charAt(0) + currentItem.season.substring(1).toLowerCase()} {currentItem.seasonYear}</span>
                                                     </div>
                                                     : <></>}
                                                 {/* Studios */}
-                                                {(this.state.studios.length !== 0)
+                                                {(currentItem.studios.length !== 0)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Studios</span>
                                                         <div className='font transparent-normal flex-center column gap only-justify-content'>
-                                                            {this.state.studios.map((studio) => {
-                                                                return <span key={studio.name}
+                                                            {currentItem.studios.map((studio, studioIndex) => {
+                                                                return <span key={`${studioIndex} ${studio.name}`}
                                                                     className='no-alternating-text-color'>
                                                                     {studio.name}
                                                                 </span>;
@@ -963,20 +1017,20 @@ class WidgetAnimeSearcher extends Component {
                                                     </div>
                                                     : <></>}
                                                 {/* Source */}
-                                                {(this.state.source)
+                                                {(currentItem.source)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Source</span>
-                                                        <span>{this.state.source.charAt(0) + this.state.source.substring(1).toLowerCase()
+                                                        <span>{currentItem.source.charAt(0) + currentItem.source.substring(1).toLowerCase()
                                                             .replace(/_(.)/, (char) => ' ' + char.charAt(1).toUpperCase())}</span>
                                                     </div>
                                                     : <></>}
                                                 {/* Genres */}
-                                                {(this.state.genres.length !== 0)
+                                                {(currentItem.genres.length !== 0)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Genres</span>
                                                         <div className='font transparent-normal flex-center column gap only-justify-content'>
-                                                            {this.state.genres.map((genre) => {
-                                                                return <span key={genre}
+                                                            {currentItem.genres.map((genre, genreIndex) => {
+                                                                return <span key={`${genreIndex} ${genre}`}
                                                                     className='no-alternating-text-color'>
                                                                     {genre}
                                                                 </span>;
@@ -985,16 +1039,16 @@ class WidgetAnimeSearcher extends Component {
                                                     </div>
                                                     : <></>}
                                                 {/* Tags */}
-                                                {(this.state.tags.length !== 0)
+                                                {(currentItem.tags.length !== 0)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Tags</span>
                                                         <div id='animesearcher-tags'
                                                             className='font transparent-normal flex-center column gap only-justify-content'>
-                                                            {this.state.tags.map((tag) => {
+                                                            {currentItem.tags.map((tag, tagIndex) => {
                                                                 if (((tag.isGeneralSpoiler === false) && (tag.isMediaSpoiler === false))
                                                                     || (this.state.spoiler && (tag.isGeneralSpoiler || tag.isMediaSpoiler))){
                                                                     return <div className='element-ends'
-                                                                        key={tag.name}>
+                                                                        key={`${tagIndex} ${tag.name}`}>
                                                                         <span className={`${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''} no-alternating-text-color`}>
                                                                             {tag.name}
                                                                         </span>
@@ -1009,11 +1063,11 @@ class WidgetAnimeSearcher extends Component {
                                                     </div>
                                                     : <></>}
                                                 {/* External Sources */}
-                                                {(this.state.externalLinks.length !== 0)
+                                                {(currentItem.externalLinks.length !== 0)
                                                     ? <div className='flex-center column only-justify-content gap'>
                                                         <span>Resources</span>
                                                         <div id='animesearcher-external-sources'>
-                                                            {this.state.externalLinks.map((link, index) => {
+                                                            {currentItem.externalLinks.map((link, index) => {
                                                                 return <button className='button-match'
                                                                     key={`button-${link.site}-${index}`}
                                                                     onClick={() => {
@@ -1041,59 +1095,60 @@ class WidgetAnimeSearcher extends Component {
                                             <div className='element-ends'>
                                                 <div className='text-animation flex-center column gap align-items-left'>
                                                     <span className='aesthetic-scale scale-self origin-left flex-center row gap font bold medium'>
-                                                        <span onClick={() => {
-                                                            this.props.copyToClipboard(this.state.titleEnglish || this.state.titleRomaji);
-                                                        }}>
-                                                            {this.state.titleEnglish || this.state.titleRomaji}
+                                                        <span style={{ cursor: 'pointer' }}
+                                                            onClick={() => {
+                                                                this.props.copyToClipboard(currentItem.titleEnglish || currentItem.titleRomaji);
+                                                            }}>
+                                                            {currentItem.titleEnglish || currentItem.titleRomaji}
                                                         </span>
-                                                        {(this.state.adult)
+                                                        {(currentItem.adult)
                                                             ? <span className='text-tag adult-tag'>R18</span>
                                                             : <></>}
-                                                        {(this.state.dubbed)
+                                                        {(currentItem.dubbed)
                                                             ? <span className='text-tag'>DUB</span>
                                                             : <></>}
                                                     </span>
                                                     <span className='aesthetic-scale scale-self origin-left font transparent-bold small'>
-                                                        {((this.state.titleEnglish !== null) && (this.state.titleNative !== null))
-                                                            ? `${this.state.titleRomaji}, ${this.state.titleNative}`
-                                                            : this.state.titleRomaji}
+                                                        {((currentItem.titleEnglish !== null) && (currentItem.titleNative !== null))
+                                                            ? `${currentItem.titleRomaji}, ${currentItem.titleNative}`
+                                                            : currentItem.titleRomaji}
                                                     </span>
                                                 </div>
-                                                <span className='text-animation font large bold'>{this.state.meanScore}%</span>
+                                                <span className='text-animation font large bold'>{currentItem.meanScore}%</span>
                                             </div>
                                             {/* Statistics */}
                                             <div className='aesthetic-scale scale-span element-ends'>
                                                 <div className='text-animation flex-center column gap align-items-left'>
                                                     <span>Ranked</span>
-                                                    <span>{(this.state.rankingsRated === 0) ? 'N/A' : `#${this.state.rankingsRated}`}</span>
+                                                    <span>{(currentItem.rankingsRated === 0) ? 'N/A' : `#${currentItem.rankingsRated}`}</span>
                                                 </div>
                                                 <div className='text-animation flex-center column gap align-items-left'>
                                                     <span>Popularity</span>
-                                                    <span>{(this.state.rankingsPopular === 0) ? 'N/A' : `#${this.state.rankingsPopular}`}</span>
+                                                    <span>{(currentItem.rankingsPopular === 0) ? 'N/A' : `#${currentItem.rankingsPopular}`}</span>
                                                 </div>
                                                 <div className='text-animation flex-center column gap align-items-left'>
                                                     <span>Members</span>
-                                                    <span>{this.state.popularity}</span>
+                                                    <span>{currentItem.popularity}</span>
                                                 </div>
                                                 <div className='text-animation flex-center column gap align-items-left'>
                                                     <span>Favorites</span>
-                                                    <span>{this.state.favorites}</span>
+                                                    <span>{currentItem.favorites}</span>
                                                 </div>
                                             </div>
                                             {/* Description */}
                                             <span className='text-animation'
                                                 dangerouslySetInnerHTML={{
-                                                    __html: DOMPurify.sanitize(this.state.description)
+                                                    __html: DOMPurify.sanitize(currentItem.description)
                                                 }}></span>
                                             {/* Relations */}
-                                            {(this.state.relations.length !== 0)
+                                            {(currentItem.relations.length !== 0)
                                                 ? <span className='font bold small'>Relations</span>
                                                 : <></>}
-                                            {(this.state.relations.length !== 0)
+                                            {(currentItem.relations.length !== 0)
                                                 ? <SimpleBar id='animesearcher-relations'
                                                     role='list'
                                                     aria-label='Related Media'>
-                                                    {this.state.relations.map((relation, index) => {
+                                                    {currentItem.relations.map((relation, index) => {
                                                         return <div className='character flex-center column'
                                                             key={`relation-${index}`}
                                                             role='listitem'> 
@@ -1115,14 +1170,14 @@ class WidgetAnimeSearcher extends Component {
                                                 </SimpleBar>
                                                 : <></>}
                                             {/* Characters */}
-                                            {(this.state.characters.length !== 0)
+                                            {(currentItem.characters.length !== 0)
                                                 ? <span className='font bold small'>Characters</span>
                                                 : <></>}
-                                            {(this.state.characters.length !== 0)
+                                            {(currentItem.characters.length !== 0)
                                                 ? <SimpleBar id='animesearcher-characters'
                                                     role='list'
                                                     aria-label='Character List'>
-                                                    {this.state.characters.map((character, index) => {
+                                                    {currentItem.characters.map((character, index) => {
                                                         return <div className='character flex-center column'
                                                             key={`character-${index}`}
                                                             role='listitem'>
@@ -1135,14 +1190,14 @@ class WidgetAnimeSearcher extends Component {
                                                                 loading='lazy'
                                                                 decoding='async'/>
                                                             <span className='font small text-boxed anime-searcher-normal'>
-                                                                {this.state.charactersRole[index].role.charAt(0) + this.state.charactersRole[index].role.substring(1).toLowerCase()}
+                                                                {currentItem.charactersRole[index].role.charAt(0) + currentItem.charactersRole[index].role.substring(1).toLowerCase()}
                                                             </span>
                                                         </div>
                                                     })}
                                                 </SimpleBar>
                                                 : <></>}
                                             {/* Character Information */}
-                                            {(this.state.characters.length !== 0)
+                                            {(currentItem.characters.length !== 0)
                                                 ? <SimpleBar id='animesearcher-character-information'
                                                     className='popout box dimmed no-highlight'
                                                     onClick={() => {
@@ -1152,8 +1207,8 @@ class WidgetAnimeSearcher extends Component {
                                                     aria-label='Character information panel'>
                                                     {/* Image */}
                                                     <img className='image-character large-image'
-                                                        src={this.state.characters[this.state.characterIndex]?.image.large}
-                                                        alt={`character ${this.state.characters[this.state.characterIndex].name?.full}`}
+                                                        src={currentItem.characters[this.state.characterIndex]?.image.large}
+                                                        alt={`character ${currentItem.characters[this.state.characterIndex]?.name?.full}`}
                                                         loading='lazy'
                                                         decoding='async'/>
                                                     {/* Information */}
@@ -1162,12 +1217,12 @@ class WidgetAnimeSearcher extends Component {
                                                         <div className='flex-center column gap only-justify-content'>
                                                             <span className='link-match font bold medium'
                                                                 onClick={() => {
-                                                                    this.props.copyToClipboard(this.state.characters[this.state.characterIndex].name.full);
-                                                                }}>{this.state.characters[this.state.characterIndex].name.full}</span>
-                                                            {(this.state.characters[this.state.characterIndex].name.alternative.length !== 0)
+                                                                    this.props.copyToClipboard(currentItem.characters[this.state.characterIndex].name.full);
+                                                                }}>{currentItem.characters[this.state.characterIndex].name.full}</span>
+                                                            {(currentItem.characters[this.state.characterIndex].name.alternative.length !== 0)
                                                                 ? <div className='flex-center row gap only-align-items font transparent-bold small'>
-                                                                    {this.state.characters[this.state.characterIndex].name.alternative.map((name, index) => {
-                                                                        if (index !== (this.state.characters[this.state.characterIndex].name.alternative.length - 1)){
+                                                                    {currentItem.characters[this.state.characterIndex].name.alternative.map((name, index) => {
+                                                                        if (index !== (currentItem.characters[this.state.characterIndex].name.alternative.length - 1)){
                                                                             return `${name}, `;
                                                                         } else {
                                                                             return `${name}`;
@@ -1175,10 +1230,10 @@ class WidgetAnimeSearcher extends Component {
                                                                     })}
                                                                 </div>
                                                                 : <></>}
-                                                            {(this.state.spoiler && (this.state.characters[this.state.characterIndex].name.alternativeSpoiler.length !== 0))
+                                                            {(currentItem.spoiler && (currentItem.characters[this.state.characterIndex].name.alternativeSpoiler.length !== 0))
                                                                 ? <div className='flex-center row gap only-align-items font spoiler bold small'>
-                                                                    {this.state.characters[this.state.characterIndex].name.alternativeSpoiler.map((name, index) => {
-                                                                        if (index !== (this.state.characters[this.state.characterIndex].name.alternativeSpoiler.length - 1)){
+                                                                    {currentItem.characters[this.state.characterIndex].name.alternativeSpoiler.map((name, index) => {
+                                                                        if (index !== (currentItem.characters[this.state.characterIndex].name.alternativeSpoiler.length - 1)){
                                                                             return `${name}, `;
                                                                         } else {
                                                                             return `${name}`;
@@ -1188,24 +1243,24 @@ class WidgetAnimeSearcher extends Component {
                                                                 : <></>}
                                                         </div>
                                                         {/* Gender */}
-                                                        {(this.state.characters[this.state.characterIndex].gender)
+                                                        {(currentItem.characters[this.state.characterIndex].gender)
                                                             ? <div className='flex-center row gap'>
                                                                 <span>Gender:</span>
-                                                                <span>{this.state.characters[this.state.characterIndex].gender}</span>
+                                                                <span>{currentItem.characters[this.state.characterIndex].gender}</span>
                                                             </div>
                                                             : <></>}
                                                         {/* Age */}
-                                                        {(this.state.characters[this.state.characterIndex].age)
+                                                        {(currentItem.characters[this.state.characterIndex].age)
                                                             ? <div className='flex-center row gap'>
                                                                 <span>Age:</span>
-                                                                <span>{this.state.characters[this.state.characterIndex].age}</span>
+                                                                <span>{currentItem.characters[this.state.characterIndex].age}</span>
                                                             </div>
                                                             : <></>}
                                                         {/* Date of Birth */}
-                                                        {(this.state.characters[this.state.characterIndex].dateOfBirth.year || this.state.characters[this.state.characterIndex].dateOfBirth.month || this.state.characters[this.state.characterIndex].dateOfBirth.day)
+                                                        {(currentItem.characters[this.state.characterIndex].dateOfBirth.year || currentItem.characters[this.state.characterIndex].dateOfBirth.month || currentItem.characters[this.state.characterIndex].dateOfBirth.day)
                                                             ? <div className='flex-center row gap'>
                                                                 <span>Date of Birth:</span>
-                                                                <span>{(new Date(`${this.state.characters[this.state.characterIndex].dateOfBirth.year} ${this.state.characters[this.state.characterIndex].dateOfBirth.month} ${this.state.characters[this.state.characterIndex].dateOfBirth.day}`))
+                                                                <span>{(new Date(`${currentItem.characters[this.state.characterIndex].dateOfBirth.year} ${currentItem.characters[this.state.characterIndex].dateOfBirth.month} ${currentItem.characters[this.state.characterIndex].dateOfBirth.day}`))
                                                                     .toLocaleDateString('en-US', {
                                                                         year: 'numeric',
                                                                         month: 'long',
@@ -1214,37 +1269,37 @@ class WidgetAnimeSearcher extends Component {
                                                             </div>
                                                             : <></>}
                                                         {/* Blood Type */}
-                                                        {(this.state.characters[this.state.characterIndex].bloodType)
+                                                        {(currentItem.characters[this.state.characterIndex].bloodType)
                                                             ? <div className='flex-center row gap'>
                                                                 <span>Blood Type:</span>
-                                                                <span>{this.state.characters[this.state.characterIndex].bloodType}</span>
+                                                                <span>{currentItem.characters[this.state.characterIndex].bloodType}</span>
                                                             </div>
                                                             : <></>}
                                                         {/* Description */}
-                                                        {(this.state.characters[this.state.characterIndex].description)
+                                                        {(currentItem.characters[this.state.characterIndex].description)
                                                             ? <span dangerouslySetInnerHTML={{
-                                                                __html: DOMPurify.sanitize(this.state.characters[this.state.characterIndex].description)
+                                                                __html: DOMPurify.sanitize(currentItem.characters[this.state.characterIndex].description)
                                                             }}></span>
                                                             : 'N/A'}
                                                         {/* Favorites */}
-                                                        {(this.state.characters[this.state.characterIndex].favourites)
+                                                        {(currentItem.characters[this.state.characterIndex].favourites)
                                                             ? <div className='flex-center row gap'>
                                                                 <span>Favorites:</span>
-                                                                <span>{this.state.characters[this.state.characterIndex].favourites}</span>
+                                                                <span>{currentItem.characters[this.state.characterIndex].favourites}</span>
                                                             </div>
                                                             : <></>}
                                                     </div>
                                                 </SimpleBar>
                                                 : <></>}
                                             {/* Streaming Episodes */}
-                                            {(this.state.streamingEpisodes.length !== 0)
+                                            {(currentItem.streamingEpisodes.length !== 0)
                                                 ? <span className='font bold small'>Episode Videos</span>
                                                 : <></>}
-                                            {(this.state.streamingEpisodes.length !== 0)
+                                            {(currentItem.streamingEpisodes.length !== 0)
                                                 ? <SimpleBar id='animesearcher-streaming-episodes'
                                                     role='list'
                                                     aria-label='Streaming Episodes'>
-                                                    {this.state.streamingEpisodes.map((episode, index) => {
+                                                    {currentItem.streamingEpisodes.map((episode, index) => {
                                                         return <div className='character flex-center column'
                                                             key={`episode-${index}`}
                                                             role='listitem'>
@@ -1266,14 +1321,14 @@ class WidgetAnimeSearcher extends Component {
                                                 </SimpleBar>
                                                 : <></>}
                                             {/* Recommendations */}
-                                            {(this.state.recommendations.length !== 0)
+                                            {(currentItem.recommendations.length !== 0)
                                                 ? <span className='font bold small'>Recommendations</span>
                                                 : <></>}
-                                            {(this.state.recommendations.length !== 0)
+                                            {(currentItem.recommendations.length !== 0)
                                                 ? <SimpleBar id='animesearcher-recommendations'
                                                     role='list'
                                                     aria-label='Recommended Media'>
-                                                    {this.state.recommendations.map((recommendation, index) => {
+                                                    {currentItem.recommendations.map((recommendation, index) => {
                                                         return <div className='character flex-center column'
                                                             key={`recommendation-${index}`}
                                                             role='listitem'>
@@ -1297,6 +1352,97 @@ class WidgetAnimeSearcher extends Component {
                                         </section>
                                     </div>
                                 </SimpleBar>
+                                {/* Searches Information */}
+                                <div ref={this.refMultipleSearches}
+                                    className='animesearcher-searches'>
+                                    {this.state.media.map((data, dataIndex) => {
+                                        return <div className='animesearcher-search'
+                                            style={{ '--animeSearcherCoverColor': data.coverImageColor || 'var(--randColorLight)' }}
+                                            key={data.id ?? dataIndex}>
+                                            <img src={data.coverImageLink}
+                                                draggable='false'
+                                                alt='cover'
+                                                loading='lazy'
+                                                decoding='async'
+                                                onClick={() => this.handleSearchClick(dataIndex)}/>
+                                            <div>
+                                                <div className='flex-center row gap'>
+                                                    <span className='text-tag'>
+                                                        {(data.format === 'TV')
+                                                            ? 'TV'
+                                                            : data.format.charAt(0) + data.format.substring(1).toLowerCase()
+                                                                .replace(/_(.)/, (char) => ' ' + char.charAt(1).toUpperCase())}
+                                                    </span>
+                                                    {(data.adult)
+                                                        ? <span className='text-tag adult-tag'>R18</span>
+                                                        : <></>}
+                                                    {(data.dubbed)
+                                                        ? <span className='text-tag'>DUB</span>
+                                                        : <></>}
+                                                </div>
+                                                <span className='aesthetic-scale scale-self origin-left flex-center row gap font bold medium'
+                                                    style={{ cursor: 'pointer', textAlign: 'center' }}>
+                                                    <span onClick={() => {
+                                                        this.props.copyToClipboard(data.titleEnglish || data.titleRomaji);
+                                                    }}>
+                                                        {data.titleEnglish || data.titleRomaji}
+                                                    </span>
+                                                </span>
+                                                <span className='aesthetic-scale scale-self origin-left font transparent-bold small'>
+                                                    {((data.titleEnglish !== null) && (data.titleNative !== null))
+                                                        ? `${data.titleRomaji}, ${data.titleNative}`
+                                                        : data.titleRomaji}
+                                                </span>
+                                                <div style={{ width: '100%' }}>
+                                                    <span className='text-animation'
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: DOMPurify.sanitize(data.description)
+                                                        }}></span>
+                                                    <div className='flex-center column only-justify-content gap medium-gap'>
+                                                        {/* Genres */}
+                                                        {(data.genres.length !== 0)
+                                                            ? <div className='flex-center column only-justify-content gap'>
+                                                                <span>Genres</span>
+                                                                <div className='font transparent-normal flex-center column gap only-justify-content'>
+                                                                    {data.genres.map((genre) => {
+                                                                        return <span key={`${dataIndex} ${genre}`}
+                                                                            className='no-alternating-text-color'>
+                                                                            {genre}
+                                                                        </span>;
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            : <></>}
+                                                        {/* Tags */}
+                                                        {(data.tags.length !== 0)
+                                                            ? <div className='flex-center column only-justify-content gap'>
+                                                                <span>Tags</span>
+                                                                <div id='animesearcher-tags'
+                                                                    className='font transparent-normal flex-center column gap only-justify-content'>
+                                                                    {data.tags.map((tag) => {
+                                                                        if (((tag.isGeneralSpoiler === false) && (tag.isMediaSpoiler === false))
+                                                                            || (data.spoiler && (tag.isGeneralSpoiler || tag.isMediaSpoiler))){
+                                                                            return <div className='element-ends'
+                                                                                key={`${dataIndex} ${tag.name}`}>
+                                                                                <span className={`${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''} no-alternating-text-color`}>
+                                                                                    {tag.name}
+                                                                                </span>
+                                                                                <span className={`${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''} no-alternating-text-color`}>
+                                                                                    {tag.rank}%
+                                                                                </span>
+                                                                            </div>
+                                                                        };
+                                                                        return '';
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            : <></>}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    })}
+                                </div>
                             </div>
                         </div>
                         {/* Author */}

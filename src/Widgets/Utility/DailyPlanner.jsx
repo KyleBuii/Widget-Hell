@@ -10,7 +10,7 @@ const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
 let maxLength = 9;
 let isPopoutOpen = false;
 let isPopoutFutureOpen = false;
-let clickedCellIndex, clickedPlanIndex;
+let clickedCellIndex, clickedPlanIndex, clickedFutureMonth, clickedFuturePlanIndex;
 
 const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar, selectTheme }) => {
     const [month, setMonth] = useState('January');
@@ -61,6 +61,11 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             let dailyPlannerCells = dataDailyPlanner?.['cells'];
             let dailyPlannerMonth = dataDailyPlanner?.['month'];
 
+            if (dataDailyPlanner['futurePlans']) {
+                setFuturePlans(dataDailyPlanner['futurePlans']);
+                refFuturePlans.current = dataDailyPlanner['futurePlans'];
+            };
+
             if (dailyPlannerMonth !== nowMonth
                 || !dailyPlannerCells
                 || dailyPlannerCells.length === 0) {
@@ -68,10 +73,6 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             } else {
                 setCells(dailyPlannerCells);
                 setMonth(monthLabels[dailyPlannerMonth]);
-            };
-
-            if (dataDailyPlanner['futurePlans']) {
-                setFuturePlans(dataDailyPlanner['futurePlans']);
             };
         };
 
@@ -117,7 +118,6 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
 
         refElementCells.current = newCells.map((_, index) => refElementCells.current[index] || null);
 
-        setCells(newCells);
         setMonth(monthName);
 
         if (localStorage.getItem('widgets') !== null) {
@@ -129,6 +129,33 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
 
             localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
         };
+
+        let keysFuturePlans = Object.keys(refFuturePlans.current);
+
+        if (keysFuturePlans.length !== 0) {
+            for (let futureMonth of keysFuturePlans) {
+                if (futureMonth === monthName) {
+                    let plans = refFuturePlans.current[futureMonth];
+
+                    for (let plan of plans) {
+                        const newPlan = {
+                            plan: plan.plan,
+                            abbr: plan.abbr,
+                        };
+                        const cellIndex = (prevDays.length - 1) + plan.day;
+
+                        newCells[cellIndex].plans = [...(newCells[cellIndex].plans || []), newPlan];
+                    };
+
+                    setFuturePlans((prev) => {
+                        const { [futureMonth]: _, ...rest } = prev;
+                        return rest;
+                    });
+                };
+            };
+        };
+
+        setCells(newCells);
     };
 
     const populateSelect = (currentMonth) => {
@@ -254,7 +281,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             plan: inputPlan,
             abbr: inputAbbr,
         };
-        cell.plans = [...(cell.plans || []), newPlan];
+        cell.plans = [newPlan, ...(cell.plans || [])];
 
         setCells(newCells);
         setInputPlan('');
@@ -322,17 +349,29 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         };
     };
 
-    const markPlan = (event, isCompleted = true) => {
+    const markPlan = (event, cellIndex, planIndex, isPressing = true) => {
         const plan = event.currentTarget;
 
         const onAnimationEnd = () => {
             plan.classList.remove('holding');
-            plan.classList.toggle('completed');
             plan.removeEventListener('animationend', onAnimationEnd);
             refIsHolding.current = true;
+
+            const newCells = [...cells];
+            const selectedCell = newCells[cellIndex];
+            const isCompleted = selectedCell.plans[planIndex].completed;
+            selectedCell.plans[planIndex].completed = !isCompleted;
+
+            if (isCompleted) {
+                selectedCell.plans.unshift(selectedCell.plans.splice(planIndex, 1)[0]);
+            } else {   
+                selectedCell.plans.push(selectedCell.plans.splice(planIndex, 1)[0]);
+            };
+
+            setCells(newCells);
         };
 
-        if (isCompleted) {
+        if (isPressing) {
             plan.classList.add('holding');
             plan.addEventListener('animationend', onAnimationEnd);
         } else {
@@ -365,6 +404,8 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         refFuturePlan.current.style.visibility = 'visible';
 
         isPopoutFutureOpen = true;
+        clickedFutureMonth = month.label;
+        clickedFuturePlanIndex = Array.prototype.indexOf.call(event.target.parentNode.children, event.target);
 
         setFuturePlanAbbr(abbr);
         setFuturePlanDesc(plan);
@@ -422,7 +463,19 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                 refFuturePlan.current.style.visibility = 'hidden';
                 isPopoutFutureOpen = false;
             },
-            delete: () => {},
+            delete: () => {
+                const newFuturePlans = { ...futurePlans };
+
+                if (newFuturePlans[clickedFutureMonth].length === 1) {
+                    delete newFuturePlans[clickedFutureMonth];
+                } else {
+                    newFuturePlans[clickedFutureMonth].splice(clickedFuturePlanIndex, 1);
+                };
+
+                actions.close();
+
+                setFuturePlans(newFuturePlans);
+            },
         };
 
         actions[what]?.();
@@ -430,13 +483,23 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
 
     const handleInputFuturePlan = (event, what) => {
         const value = event.target.value;
-        const setter = {
-            day: setInputFuturePlanDay,
-            desc: setInputFuturePlanDesc,
-            abbr: setInputFuturePlanAbbr,
+        const inputBindings = {
+            day: {
+                setter: setInputFuturePlanDay,
+                element: refInputFuturePlanDay,
+            },
+            desc: {
+                setter: setInputFuturePlanDesc,
+                element: refInputFuturePlanDesc,
+            },
+            abbr: {
+                setter: setInputFuturePlanAbbr,
+                element: refInputFuturePlanAbbr,
+            },
         };
 
-        setter[what]?.(value);
+        inputBindings[what]?.setter(value);
+        inputBindings[what]?.element.current.classList.remove('input-incorrect');
     };
 
     return (
@@ -483,11 +546,11 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                     <div className='scrollable flex-center column only-align-items gap'
                                         style={{ margin: '0.3rem' }}>
                                         {cell.plans?.map((plan, planIndex) => {
-                                            return <div className='calendar-plan'
+                                            return <div className={`calendar-plan ${plan.completed && 'completed'}`}
                                                 role='button'
                                                 onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
-                                                onMouseDown={(event) => markPlan(event)}
-                                                onMouseUp={(event) => markPlan(event, false)}
+                                                onMouseDown={(event) => markPlan(event, cellIndex, planIndex)}
+                                                onMouseUp={(event) => markPlan(event, cellIndex, planIndex, false)}
                                                 key={`plan ${planIndex} ${plan.abbr}`}
                                                 tabIndex={0}>
                                                 <span>{plan.abbr}</span>

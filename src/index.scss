@@ -89,6 +89,8 @@
     --randColorOpacity: ;
 
     --guideSize: 12px;
+
+    --animeSearcherCoverColor: ;
 }
 
 
@@ -2830,11 +2832,11 @@ input[type='checkbox'], input[type='radio'] {
     padding: 0.2rem;
 
     &:nth-child(2) {
-        border-radius: 5px 0px;
+        border-radius: 5px 0px 0px;
     }
     
     &:last-of-type {
-        border-radius: 0px 5px;
+        border-radius: 0px 5px 0px 0px;
     }
 }
 
@@ -2848,10 +2850,6 @@ input[type='checkbox'], input[type='radio'] {
     border: 1px solid var(--randColorLight);
     transition-property: background-color, box-shadow;
     transition-duration: 0.3s;
-
-    .scrollable {
-        overflow-y: unset;
-    }
 
     > span {
         display: flex;
@@ -2901,7 +2899,7 @@ input[type='checkbox'], input[type='radio'] {
 
     &:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 85, 255, 0.8);
+        box-shadow: inset 0 0 0 4px rgba(0, 85, 255, 0.8);
     }
 
     &.holding {
@@ -5861,6 +5859,7 @@ input[type='checkbox'], input[type='radio'] {
 
     #animesearcher-widget-filters {
         max-width: 40rem;
+        margin-top: -0.3rem;
 
         > div {
             &:first-of-type {
@@ -5890,6 +5889,77 @@ input[type='checkbox'], input[type='radio'] {
                 gap: 0.3rem;
                 grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
                 max-height: 4.6rem;
+            }
+        }
+
+        &.show {
+            margin-top: unset
+        }
+    }
+
+    .animesearcher-searches {
+        @extend .font;
+        z-index: 1;
+        display: flex;
+        position: fixed;
+        bottom: 1.7rem;
+        max-width: 40em;
+        width: calc(100vmin - 3.3em);
+        max-height: 34rem;
+        height: 100%;
+    }
+
+    .animesearcher-search {
+        @extend .flex-center, .column, .scrollable;
+        position: relative;
+        flex: 1;
+        justify-content: flex-start;
+        background-color: var(--animeSearcherCoverColor, var(--randColorLight));
+
+        img {
+            cursor: pointer;
+            width: 100%;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-size: cover;
+                    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 80%);
+                    mask-repeat: no-repeat;
+                    mask-size: cover;
+
+            &:hover {
+                mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+            }
+        }
+
+        > div {
+            @extend .flex-center, .column, .gap;
+            z-index: 1;
+            margin: -5rem 0rem;
+            transition: margin 0.3s;
+            padding: 1rem;
+        }
+
+        &::after {
+            pointer-events: none;
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 30%,
+                var(--animeSearcherCoverColor, var(--randColorLight)) 100%
+            );
+            transition: opacity 0.3s;
+            opacity: 1;
+        }
+
+        &:has(img:hover) {
+            > div {
+                margin: 1rem 0rem;
+            }
+
+            &::after {
+                opacity: 0;
             }
         }
     }
@@ -6148,6 +6218,10 @@ input[type='checkbox'], input[type='radio'] {
         &.show {
             visibility: visible;
             opacity: 1;
+        }
+
+        .calendar-plan {
+            transition: none;
         }
     }
 
