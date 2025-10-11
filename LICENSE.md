@@ -24,6 +24,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Hit Sound](https://pixabay.com/sound-effects/clap-10-36723/) by Pixabay
 - **Currency Converter**
     - [Hundred Dollar Bill](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by PublicDomainPictures
+- **Daily Planner**
+    - [Pumpkin](https://opengameart.org/content/pumpkin) by codeinfernogames
 - **Equipment**
     - Equipment Slots by [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) [Crawl Tiles](http://code.google.com/p/crawl-tiles/) [Cheshire](https://jeevo.itch.io/dungeoneering-eq-icon-pack) [Craftpix](https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/) [7Soul](https://opengameart.org/content/98-pixel-art-rpg-icons) [Alex's Assets](https://alexs-assets.itch.io/16x16-rpg-item-pack)
 - **Grindshot**

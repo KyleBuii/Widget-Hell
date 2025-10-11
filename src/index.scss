@@ -2842,6 +2842,7 @@ input[type='checkbox'], input[type='radio'] {
 
 .calendar-cell {
     cursor: pointer;
+    position: relative;
     justify-content: flex-start !important;
     color: var(--randColor);
     width: 6rem;
@@ -2879,19 +2880,22 @@ input[type='checkbox'], input[type='radio'] {
 }
 
 .calendar-plan {
-    @extend .flex-center;
     cursor: pointer;
     width: 100%;
     box-sizing: border-box;
+    text-align: center;
     color: white;
     background-color: var(--randColorLight);
     border-radius: 25px;
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
     line-height: 1;
-    transition-property: background-color box-shadow;
+    transition-property: background-color box-shadow filter;
     transition-duration: 0.3s;
     animation: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
         background-color: rgba(var(--randColorOpacity), 0.8);
@@ -2909,6 +2913,62 @@ input[type='checkbox'], input[type='radio'] {
     &.completed {
         opacity: 0.3;
     }
+
+    &.holiday {
+        &:hover {
+            filter: brightness(0.85);
+        }
+    }
+
+    //#region Holidays
+    /// January
+    &.new-years-day { background-color: #00b7ff; }
+    &.martin-luther-king-jr-day { background-color: #2e2e2e; }
+
+    /// February
+    &.valentines-day { background-color: #ff4d6d; }
+    &.lincolns-birthday { background-color: #555; }
+    &.washingtons-birthday { background-color: #3b82f6; }
+
+    /// March
+    &.st-patricks-day { background-color: #00a86b; }
+
+    /// April
+    &.april-fools-day { background-color: #ff9800; }
+    &.good-friday { background-color: #6a0dad; }
+    &.earth-day { background-color: #4caf50; }
+    &.arbor-day { background-color: #2e7d32; }
+
+    /// May
+    &.mothers-day { background-color: #e91e63; }
+    &.truman-day { background-color: #1976d2; }
+    &.memorial-day { background-color: #b71c1c; }
+
+    /// June
+    &.fathers-day { background-color: #1e88e5; }
+    &.juneteenth-national-independence-day { background-color: #009688; }
+
+    /// July
+    &.independence-day { background-color: #d32f2f; }
+
+    /// September
+    &.labor-day { background-color: #607d8b; }
+
+    /// October
+    &.indigenous-peoples-day { background-color: #8d6e63; }
+    &.halloween { background-color: #ff6f00; }
+
+    /// November
+    &.veterans-day { background-color: #455a64; }
+    &.thanksgiving-day { background-color: #ff9800; }
+    &.black-friday { background-color: #000; }
+
+    /// December
+    &.cyber-monday { background-color: #00bcd4; }
+    &.christmas-eve { background-color: #43a047; }
+    &.christmas-day { background-color: #c62828; }
+    &.new-years-eve { background-color: #9c27b0; }
+    //#endregion
 }
 //#endregion
 
@@ -6133,6 +6193,22 @@ input[type='checkbox'], input[type='radio'] {
 #dailyplanner-widget {
     #dailyplanner-widget-animation {
         padding: 0;
+    }
+
+    .dailyplanner-particle {
+        display: none;
+        pointer-events: none;
+        z-index: 1;
+        position: absolute;
+        height: 6rem;
+        width: 6rem;
+
+        img {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            max-height: 32px;
+        }
     }
 
     .dailyplanner-add-popout {

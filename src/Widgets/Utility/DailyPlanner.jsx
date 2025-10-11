@@ -7,12 +7,43 @@ import Select from 'react-select';
 
 const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const otherHolidays = {
+    '2': {
+        '14': "Valentine's Day"
+    },
+    '3': {
+        '17': "St. Patrick's Day"
+    },
+    '4': {
+        '1': "April Fools' Day",
+        '22': 'Earth Day',
+        '25': 'Arbor Day'
+    },
+    '5': {
+        '11': "Mother's Day"
+    },
+    '6': {
+        '15': "Father's Day"
+    },
+    '10': {
+        '31': 'Halloween'
+    },
+    '11': {
+        '28': 'Black Friday'
+    },
+    '12': {
+        '1': 'Cyber Monday',
+        '24': 'Christmas Eve',
+        '31': "New Year's Eve"
+    }
+};
 let maxLength = 9;
 let isPopoutOpen = false;
 let isPopoutFutureOpen = false;
-let clickedCellIndex, clickedPlanIndex, clickedFutureMonth, clickedFuturePlanIndex;
+let leaveTimeout, clickedCellIndex, clickedPlanIndex, clickedFutureMonth, clickedFuturePlanIndex;
 
 const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar, selectTheme }) => {
+    const [currentDay, setCurrentDay] = useState(0);
     const [month, setMonth] = useState('January');
     const [cells, setCells] = useState([]);
     const [inputPlan, setInputPlan] = useState('');
@@ -34,6 +65,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             options: []
         }
     ]);
+    const [hoveredHoliday, setHoveredHoliday] = useState('');
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
@@ -45,6 +77,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
     const refInputFuturePlanDay = useRef(null);
     const refInputFuturePlanAbbr = useRef(null);
     const refInputFuturePlanDesc = useRef(null);
+    const refElementParticle = useRef(null);
 
     refCells.current = cells;
     refFuturePlans.current = futurePlans;
@@ -77,17 +110,19 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         };
 
         populateSelect(nowMonth);
-
+        setCurrentDay(now.getDate());
         setInputFuturePlanMonth(optionsMonth[0]['options'][nowMonth + 1]);
 
         return () => {
             window.removeEventListener('beforeunload', storeData);
 
+            clearTimeout(leaveTimeout);
+
             storeData();
         };
     }, []);
 
-    const createNewCells = (date) => {
+    const createNewCells = async (date) => {
         const monthName = date.toLocaleString('en-US', { month: 'long' });
 
         const year = date.getFullYear();
@@ -114,21 +149,57 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             })
         );
 
+        if (localStorage.getItem('widgets') !== null) {
+            const year = date.getFullYear();
+            const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+            let dataHolidays = dataLocalStorage['utility']['dailyplanner']['holidays'];
+
+            if (dataHolidays?.[0] === year) {
+                dataHolidays = dataHolidays[1];
+            } else {
+                try {
+                    const url = `https://date.nager.at/api/v3/PublicHolidays/${year}/US`;
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    const newResult = { ...otherHolidays };
+
+                    result.forEach((holiday) => {
+                        const [year, month, day] = holiday.date.split('-').map(Number);
+                        newResult[month] = {
+                            ...newResult[month],
+                            [day]: holiday.localName
+                        };
+                    });
+
+                    dataHolidays = newResult;
+
+                    if (localStorage.getItem('widgets') !== null) {
+                        let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+                        dataLocalStorage['utility']['dailyplanner'] = {
+                            ...dataLocalStorage['utility']['dailyplanner'],
+                            month: date.getMonth(),
+                            holidays: [year, newResult],
+                        };
+
+                        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+                    };
+                } catch(err) {
+                    console.error(err);
+                };
+            };
+
+            Object.entries(dataHolidays[monthIndex + 1]).forEach(([day, name]) => {
+                const index = day - 1;
+                currentDays[index].holidays = [
+                    ...(currentDays[index].holidays || []),
+                    name
+                ];
+            });
+        };
+
         const newCells = [...prevDays, ...currentDays, ...nextDays];
 
         refElementCells.current = newCells.map((_, index) => refElementCells.current[index] || null);
-
-        setMonth(monthName);
-
-        if (localStorage.getItem('widgets') !== null) {
-            let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-            dataLocalStorage['utility']['dailyplanner'] = {
-                ...dataLocalStorage['utility']['dailyplanner'],
-                month: date.getMonth(),
-            };
-
-            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
-        };
 
         let keysFuturePlans = Object.keys(refFuturePlans.current);
 
@@ -155,6 +226,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
             };
         };
 
+        setMonth(monthName);
         setCells(newCells);
     };
 
@@ -240,7 +312,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         if (otherPopout.checkVisibility()) otherPopout.style.visibility = 'hidden';
 
         const elementCell = refElementCells.current[cellIndex];
-        const elementPlan = elementCell.querySelector('div').children[planIndex];
+        const elementPlan = elementCell.querySelector('.calendar-plan:not(.holiday)')?.children[planIndex];
         const rectElement = ((type === 'add') ? elementCell : elementPlan).getBoundingClientRect();
         const elementCalendar = document.getElementById('dailyplanner-widget-animation').getBoundingClientRect();
 
@@ -274,6 +346,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         };
 
         handlePopout('add', 'hidden');
+        isPopoutOpen = false;
 
         const newCells = [...refCells.current];
         const cell = newCells[clickedCellIndex];
@@ -502,6 +575,38 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         inputBindings[what]?.element.current.classList.remove('input-incorrect');
     };
 
+    const handlePopoutKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleButtonAdd();
+        };
+    };
+
+    const handleHolidayMouseEnter = (event) => {
+        clearTimeout(leaveTimeout);
+
+        refElementParticle.current.style.display = 'unset';
+
+        const hoveredElement = event.currentTarget;
+
+        if (hoveredHoliday === hoveredElement.innerText) return;
+
+        setHoveredHoliday(hoveredElement.innerText);
+
+        const container = document.getElementById('dailyplanner-widget-animation').getBoundingClientRect();
+        const elementHovered = hoveredElement.getBoundingClientRect();
+
+        const relativeX = elementHovered.left - container.left + (elementHovered.width / 2);
+        const relativeY = elementHovered.top - container.top + (elementHovered.height / 2);
+
+        refElementParticle.current.style.transform = `translate(${relativeX}px, ${relativeY}px) translate(-50%, -50%)`;
+    };
+
+    const handleHolidayMouseLeave = () => {
+        leaveTimeout = setTimeout(() => {
+            refElementParticle.current.style.display = 'none';
+        }, 100);
+    };
+
     return (
         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -526,6 +631,17 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <div ref={refElementParticle}
+                        className='dailyplanner-particle'>
+                        <img src={`/resources/dailyplanner/${
+                            hoveredHoliday.toLowerCase()
+                                .replace(/\s+/g, '-')
+                                .replace(/[^a-z0-9-]/g, '')
+                            }.webp`}
+                            alt='particle'
+                            loading='lazy'
+                            decoding='async'/>
+                    </div>
                     <div className='flex-center row'
                         style={{ alignItems: 'flex-end' }}>
                         <div className='calendar'>
@@ -543,8 +659,26 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                     key={`cell ${cellIndex}`}
                                     tabIndex={0}>
                                     <span>{cell.day}</span>
+                                    {((currentDay === cell.day) && (!cell?.classes))
+                                        && <span className='text-tag'
+                                            style={{ position: 'absolute', right: 0 }}>Today
+                                        </span>}
                                     <div className='scrollable flex-center column only-align-items gap'
                                         style={{ margin: '0.3rem' }}>
+                                        {cell.holidays?.map((holiday, holidayIndex) => {
+                                            return <div className={`calendar-plan holiday ${holiday
+                                                    .toLowerCase()
+                                                    .replace(/[^a-z0-9]+/g, '-')
+                                                    .replace(/^-+|-+$/g, '')}`}
+                                                role='button'
+                                                onClick={(event) => event.stopPropagation()}
+                                                onMouseEnter={handleHolidayMouseEnter}
+                                                onMouseLeave={handleHolidayMouseLeave}
+                                                key={`holiday ${holidayIndex} ${holiday}`}
+                                                tabIndex={0}>
+                                                <span>{holiday}</span>
+                                            </div>
+                                        })}
                                         {cell.plans?.map((plan, planIndex) => {
                                             return <div className={`calendar-plan ${plan.completed && 'completed'}`}
                                                 role='button'
@@ -640,7 +774,8 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                         </div>
                     </div>
                     {/* Add Plan Popout */}
-                    <div className='popout'>
+                    <div className='popout'
+                        onKeyDown={(event) => handlePopoutKeyDown(event)}>
                         <div className='popout-animation dialogue dailyplanner-add-popout'>
                             <fieldset id='dailyplanner-input-plan'
                                 className='input-fieldset'>
