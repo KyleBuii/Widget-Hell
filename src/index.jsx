@@ -55,6 +55,8 @@ const WidgetSpreadsheet = React.lazy(() => import('./Widgets/Utility/Spreadsheet
 const WidgetTimeConversion = React.lazy(() => import('./Widgets/Utility/TimeConversion.jsx'));
 const WidgetTranslator = React.lazy(() => import('./Widgets/Utility/Translator.jsx'));
 const WidgetWeather = React.lazy(() => import('./Widgets/Utility/Weather.jsx'));
+const WidgetMotivation = React.lazy(() => import('./Widgets/Utility/Motivation.jsx'));
+const WidgetIceberg = React.lazy(() => import('./Widgets/Fun/Iceberg.jsx'));
 //#endregion
 
 
@@ -7092,6 +7094,122 @@ const rps = {
         'wolf': 'tames',
     },
 };
+const motivationVideos = [
+    'oth36uDKiD8', 'o3JHNmCud1Q', 'nrFcPe4FixA', 'PATNQ5J2vcw',
+    '56vtZsQgAF0', 'KxGRhd_iWuE',
+];
+const icebergData = {
+    /// Entry Template
+    /// '': {
+    ///     image: '',
+    ///     information: [],
+    ///     source: [],
+    /// },
+    'scary signs': [
+        { /// Level 1 - Common Warnings
+            'Prevent Your Death!': {
+                image: '/scary-signs/prevent-your-death.webp',
+                source: ["Eagle's Nest Cave - Spring Hill, FL 34613"],
+            },
+            'Percy Priest Lake': {
+                image: '/scary-signs/percy-priest-lake.webp',
+                source: ['Percy Priest Lake - Nashville, TN 37214'],
+            },
+        },
+        { /// Level 2 - Restricted & Observed
+            'White Mountain Trail Sign': {
+                image: '/scary-signs/white-mountain-trail-sign.webp',
+                source: ['White Mountain National Forest - 71 White Mountain Dr, Campton, NH 03223'],
+            },
+            'Emergency Siren': {
+                image: '/scary-signs/emergency-siren.webp',
+                source: ['Salem Nuclear Power Plant - Lower Alloways Creek, NJ'],
+            },
+        },
+        { /// Level 3 - Dangerous Nature & Cryptic Warnings
+            'Lava Falls': {
+                image: '/scary-signs/lava-falls.webp',
+                source: ['Grand Canyon National Park - Arizona'],
+            },
+            'Wall or Ceiling?': {
+                image: '/scary-signs/wall-or-ceiling.webp',
+                source: ['Hospital'],
+            },
+            'The Drowning Machine': {
+                image: '/scary-signs/the-drowning-machine.webp',
+                source: ['Low-head Dams'],
+            },
+            'Stinging Tree': {
+                image: '/scary-signs/stinging-tree.webp',
+                source: ['North Queensland - Australia'],
+            },
+        },
+        { /// Level 4 - Folklore & Cursed Areas
+            'Live Bombs': {
+                image: '/scary-signs/live-bombs.webp',
+                source: ['West Virgina Hiking Trails'],
+            },
+            'Lava Bench': {
+                image: '/scary-signs/lava-bench.webp',
+                source: ["Island of Hawai'i - Hawaii"],
+            },
+            'Do Not Ski Alone': {
+                image: '/scary-signs/do-not-ski-alone.webp',
+                source: ['Killington Resort - Killington, VT 05751'],
+            },
+            'Fire Danger': {
+                image: '/scary-signs/fire-danger.webp',
+                source: ['Australia'],
+            },
+        },
+        { /// Level 5 - Psychological & Absurd
+            'Deadly Manure': {
+                image: '/scary-signs/deadly-manure.webp',
+                source: ['Treatment Stations'],
+            },
+            'Do You Know Where the Bears Are?': {
+                image: '/scary-signs/do-you-know-where-the-bears-are.webp',
+                source: ['Yorkshire Wildlife Park - Hurst Ln, Doncaster DN9 3QY, United Kingdom'],
+            },
+            'Waving Children': {
+                image: '/scary-signs/waving-children.webp',
+                source: ['Eden Nature Park - 2CVW+C3J, Toril, Davao City, Davao del Sur, Philippines'],
+            },
+            'WARNING': {
+                image: '/scary-signs/WARNING.webp',
+                source: [''],
+            },
+        },
+        { /// Level 6 - Horror & Sentient Messages
+            'NEVER OPEN THIS DOOR': {
+                image: '/scary-signs/NEVER-OPEN-THIS-DOOR.webp',
+                source: ['Fast Foods'],
+            },
+            "Please Don't Kill Us": {
+                image: '/scary-signs/please-dont-kill-us.webp',
+                source: ['Construction Sites - South Africa'],
+            },
+        },
+        { /// Level 7 - Existential & Reality-Breaking
+            'Crying is Not an Emergency': {
+                image: '/scary-signs/crying-is-not-an-emergency.webp',
+                source: ['Parks'],
+            },
+            'Border Patrol Button': {
+                image: '/scary-signs/crying-is-not-an-emergency.webp',
+                source: ['Mexico Deserts'],
+            },
+            'Do Not Dig': {
+                image: '/scary-signs/do-not-dig.webp',
+                source: ['Willow Springs - Illinois'],
+            },
+            'These Plants Can Kill': {
+                image: '/scary-signs/these-plants-can-kill.webp',
+                source: ['The Alnwick Garden - Denwick Lane, Alnwick NE66 1FJ, United Kingdom'],
+            },
+        },
+    ],
+};
 //#endregion
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
@@ -7125,7 +7243,6 @@ const formatGroupLabel = (data) => (
         </span>
     </div>
 );
-let selectTheme = {};
 const selectStyleSmall = {
     control: (base) => ({
         ...base,
@@ -7197,6 +7314,7 @@ class Widgets extends Component {
         super(props);
         this.state = {
             developer: false,
+            selectTheme: {},
             values: {
                 animation: {value: 'default', label: 'Default'},
                 customBorder: {value: 'default', label: 'Default'},
@@ -7369,6 +7487,17 @@ class Widgets extends Component {
                         }
                     },
                     inventory: {
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
+                    motivation: {
+                        name: 'Motivation',
                         active: false,
                         position: {
                             x: 0,
@@ -7720,6 +7849,17 @@ class Widgets extends Component {
                             disabled: false
                         }
                     },
+                    iceberg: {
+                        name: 'Iceberg',
+                        active: false,
+                        position: {
+                            x: 0,
+                            y: 0
+                        },
+                        drag: {
+                            disabled: false
+                        }
+                    },
                     pickerwheel: {
                         name: 'Picker Wheel',
                         active: false,
@@ -7960,15 +8100,17 @@ class Widgets extends Component {
         color = randColor;
 
         /// Set react-select colors
-        selectTheme = {
-            primary: randColor,         /// Currently selected option background color
-            primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
-            neutral20: randColor,       /// Border color of select
-            neutral30: randColorLight,  /// Hover border color
-            neutral40: randColorLight,  /// Hover arrow color
-            neutral60: randColorLight,  /// Active arrow color
-            neutral80: randColor        /// Placeholder text color
-        };
+        this.setState({
+            selectTheme: {
+                primary: randColor,         /// Currently selected option background color
+                primary25: `rgba(${randColorOpacity}, 0.3)`,    /// Hover option background color
+                neutral20: randColor,       /// Border color of select
+                neutral30: randColorLight,  /// Hover border color
+                neutral40: randColorLight,  /// Hover arrow color
+                neutral60: randColorLight,  /// Active arrow color
+                neutral80: randColor        /// Placeholder text color
+            }
+        });
     };    
 
     handleShowHide(what, where) {
@@ -9199,6 +9341,7 @@ class Widgets extends Component {
         };
         let widgets = {};
         let widgetActiveVariables = {};
+
         for (let widgetType of Object.keys(this.state.widgets)) {
             for (let widget of Object.keys(this.state.widgets[widgetType])) {
                 switch (widget) {
@@ -9219,6 +9362,7 @@ class Widgets extends Component {
                 };
             };
         };
+
         return (
             <div id='widget-container'
                 onMouseMove={(event) => this.handleMouseMove(event)}>
@@ -9304,7 +9448,7 @@ class Widgets extends Component {
                     tricks={tricks}
                     randomColor={this.randomColor}
                     formatGroupLabel={formatGroupLabel}
-                    selectTheme={selectTheme}
+                    selectTheme={this.state.selectTheme}
                     selectStyleSmall={selectStyleSmall}
                     menuListScrollbar={menuListScrollbar}
                     customBorderValue={this.state.values.customBorder}
@@ -9378,14 +9522,14 @@ class Widgets extends Component {
                         defaultProps={this.generateDefaultProps('currencyconverter', 'utility')}
                         moneyConversions={moneyConversions}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         randomColor={this.randomColor}/>}
                 {this.state.widgets.utility.dailyplanner.active
                     && <LazyWidget Component={WidgetDailyPlanner}
                         defaultProps={this.generateDefaultProps('dailyplanner', 'utility')}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.utility.googletranslator.active
                     && <LazyWidget Component={WidgetGoogleTranslator}
@@ -9396,7 +9540,7 @@ class Widgets extends Component {
                         languages={languages}
                         talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}/>}
                 {this.state.widgets.utility.imagecolorpicker.active
@@ -9404,6 +9548,10 @@ class Widgets extends Component {
                         defaultProps={this.generateDefaultProps('imagecolorpicker', 'utility')}
                         copyToClipboard={copyToClipboard}
                         randomColor={this.randomColor}/>}
+                {this.state.widgets.utility.motivation.active
+                    && <LazyWidget Component={WidgetMotivation}
+                        defaultProps={this.generateDefaultProps('motivation', 'utility')}
+                        motivationVideos={motivationVideos}/>}
                 {this.state.widgets.utility.musicplayer.active
                     && <LazyWidget Component={WidgetMusicPlayer}
                         defaultProps={this.generateDefaultProps('musicplayer', 'utility')}
@@ -9413,7 +9561,7 @@ class Widgets extends Component {
                     && <LazyWidget Component={WidgetQRCode}
                         defaultProps={this.generateDefaultProps('qrcode', 'utility')}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.quote.active
                     && <LazyWidget Component={WidgetQuote}
@@ -9426,14 +9574,14 @@ class Widgets extends Component {
                         defaultProps={this.generateDefaultProps('spreadsheet', 'utility')}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         smallMedIcon={smallMedIcon}/>}
                 {this.state.widgets.utility.timeconversion.active
                     && <LazyWidget Component={WidgetTimeConversion}
                         defaultProps={this.generateDefaultProps('timeconversion', 'utility')}
                         sortSelect={sortSelect}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.utility.translator.active
                     && <LazyWidget Component={WidgetTranslator}
@@ -9462,7 +9610,7 @@ class Widgets extends Component {
                         punctuation={punctuation}
                         talk={this.talk}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         selectHideGroupHeading={selectHideGroupHeading}
                         selectHideGroupMenuList={selectHideGroupMenuList}
                         updateGlobalValue={this.updateGlobalValue}
@@ -9477,7 +9625,7 @@ class Widgets extends Component {
                         defaultProps={this.generateDefaultProps('notepad', 'utility')}
                         formatGroupLabel={formatGroupLabel}
                         selectStyleSmall={selectStyleSmall}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         smallMedIcon={smallMedIcon}/>} */}
                 {/* {this.state.widgets.utility.urlshortner.active
                     && <LazyWidget Component={WidgetURLShortner}
@@ -9546,7 +9694,7 @@ class Widgets extends Component {
                         defaultProps={this.generateDefaultProps('trivia', 'games')}
                         gameProps={gameProps}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         sortSelect={sortSelect}
                         menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.games.twentyfortyeight.active
@@ -9570,7 +9718,7 @@ class Widgets extends Component {
                     && <LazyWidget Component={WidgetAiImageGenerator}
                         defaultProps={this.generateDefaultProps('aiimagegenerator', 'fun')}
                         formatGroupLabel={formatGroupLabel}
-                        selectTheme={selectTheme}
+                        selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}
                         smallIcon={smallIcon}
                         smallMedIcon={smallMedIcon}/>}
@@ -9580,6 +9728,10 @@ class Widgets extends Component {
                 {this.state.widgets.fun.facts.active
                     && <LazyWidget Component={WidgetFacts}
                         defaultProps={this.generateDefaultProps('facts', 'fun')}/>}
+                {this.state.widgets.fun.iceberg.active
+                    && <LazyWidget Component={WidgetIceberg}
+                        defaultProps={this.generateDefaultProps('iceberg', 'fun')}
+                        icebergData={icebergData}/>}
                 {this.state.widgets.fun.pickerwheel.active
                     && <LazyWidget Component={WidgetPickerWheel}
                         defaultProps={this.generateDefaultProps('pickerwheel', 'fun')}

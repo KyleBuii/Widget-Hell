@@ -25,7 +25,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - **Currency Converter**
     - [Hundred Dollar Bill](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by PublicDomainPictures
 - **Daily Planner**
-    - [Pumpkin](https://opengameart.org/content/pumpkin) by codeinfernogames
+    - [New Years Day: Fireworks](https://pixabay.com/gifs/fireworks-celebration-pyrotechnics-9582/) by Placidplace
 - **Equipment**
     - Equipment Slots by [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) [Crawl Tiles](http://code.google.com/p/crawl-tiles/) [Cheshire](https://jeevo.itch.io/dungeoneering-eq-icon-pack) [Craftpix](https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/) [7Soul](https://opengameart.org/content/98-pixel-art-rpg-icons) [Alex's Assets](https://alexs-assets.itch.io/16x16-rpg-item-pack)
 - **Grindshot**
@@ -35,6 +35,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Player](https://opengameart.org/content/blue-grass) by pboop
     - [Tiny Battle](https://opengameart.org/content/tiny-battle) by Kenny
     - [Tiny Ski](https://opengameart.org/content/tiny-ski) by Kenny
+- **Iceberg**
+    - [Iceberg Template](https://www.reddit.com/r/IcebergCharts/comments/nlw92j/i_made_an_iceberg_template_that_just_keeps_on) by InRidiculam
 - **Items**
     - [Door Knocker Item Image](https://www.deviantart.com/theguardiantempest/art/Doorknocker-Custom-371217359) by TheGuardianTempest
 - **Misc**

@@ -584,7 +584,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
     const handleHolidayMouseEnter = (event) => {
         clearTimeout(leaveTimeout);
 
-        refElementParticle.current.style.display = 'unset';
+        refElementParticle.current.classList.toggle('show');
 
         const hoveredElement = event.currentTarget;
 
@@ -596,14 +596,14 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
         const elementHovered = hoveredElement.getBoundingClientRect();
 
         const relativeX = elementHovered.left - container.left + (elementHovered.width / 2);
-        const relativeY = elementHovered.top - container.top + (elementHovered.height / 2);
+        const relativeY = elementHovered.top - container.top + (elementHovered.height / 2) + 10;
 
         refElementParticle.current.style.transform = `translate(${relativeX}px, ${relativeY}px) translate(-50%, -50%)`;
     };
 
     const handleHolidayMouseLeave = () => {
         leaveTimeout = setTimeout(() => {
-            refElementParticle.current.style.display = 'none';
+            refElementParticle.current.classList.toggle('show');
         }, 100);
     };
 
@@ -639,6 +639,18 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                 .replace(/[^a-z0-9-]/g, '')
                             }.webp`}
                             alt='particle'
+                            onError={(event) => event.target.style.display = 'none'}
+                            onLoad={(event) => event.target.style.display = 'block'}
+                            loading='lazy'
+                            decoding='async'/>
+                        <img src={`/resources/dailyplanner/${
+                            hoveredHoliday.toLowerCase()
+                                .replace(/\s+/g, '-')
+                                .replace(/[^a-z0-9-]/g, '')
+                            }-additional.gif`}
+                            alt='particle gif'
+                            onError={(event) => event.target.style.display = 'none'}
+                            onLoad={(event) => event.target.style.display = 'block'}
                             loading='lazy'
                             decoding='async'/>
                     </div>
