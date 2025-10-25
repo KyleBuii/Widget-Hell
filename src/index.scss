@@ -979,7 +979,7 @@ input[type='checkbox'], input[type='radio'] {
     font-weight: bold;
     background-color: rgba(var(--randColorOpacity), 0.1);
     border: 1px solid rgba(var(--randColorOpacity), 0.2);
-    transition-property: background display;
+    transition-property: background, display;
     transition-duration: 0.2s;
 
     &:hover {
@@ -2890,7 +2890,7 @@ input[type='checkbox'], input[type='radio'] {
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
     line-height: 1;
-    transition-property: background-color box-shadow filter;
+    transition-property: background-color, box-shadow, filter;
     transition-duration: 0.3s;
     animation: none;
     white-space: nowrap;
@@ -3187,7 +3187,7 @@ input[type='checkbox'], input[type='radio'] {
 .table {
     width: 100%;
     border-collapse: collapse;
-    transition-property: visibility height;
+    transition-property: visibility, height;
     transition-duration: 2s;
 
     td, th {
@@ -3606,7 +3606,7 @@ input[type='checkbox'], input[type='radio'] {
     max-height: 256px;
     max-width: 195px;
     border-radius: 10px;
-    transition-property: scale left;
+    transition-property: scale, left;
     transition-duration: 0.3s;
     will-change: scale;
 
@@ -3630,7 +3630,7 @@ input[type='checkbox'], input[type='radio'] {
     max-height: 128px;
     border: 1px solid var(--randColor);
     border-radius: 5px 5px 0px 0px;
-    transition-property: max-height border;
+    transition-property: max-height, border;
     transition-duration: 1s;
     
 	&.animation-image-character {
@@ -5899,7 +5899,7 @@ input[type='checkbox'], input[type='radio'] {
             padding: 1em;
             scale: 0;
             transform-origin: top left;
-            transition-property: height width;
+            transition-property: height, width;
             transition-duration: 1.5s;
             
 	        &.animation-animesearcher-character-information {
@@ -6648,7 +6648,7 @@ input[type='checkbox'], input[type='radio'] {
         top: -78px;
         left: -78px;
         pointer-events: none;
-        transition-property: top left;
+        transition-property: top, left;
         transition-duration: 2s;
         
 	    &.musicplayer-player-small {
@@ -6674,7 +6674,7 @@ input[type='checkbox'], input[type='radio'] {
         background-color: var(--randColor);
         color: #b9b9b9;
         padding: 0.5em 1em 0em 10em;
-        transition-property: text-shadow background-color;
+        transition-property: text-shadow, background-color;
         transition-duration: 0.5s;
 
         #musicplayer-name {
@@ -6756,7 +6756,7 @@ input[type='checkbox'], input[type='radio'] {
             visibility: hidden;
             height: 0;
             padding: 0;
-            transition-property: height width padding;
+            transition-property: height, width, padding;
             transition-duration: 1s;
             
 	        &.musicplayer-animation-input-add {
@@ -6827,7 +6827,7 @@ input[type='checkbox'], input[type='radio'] {
         padding: 1em 1em 1em 2em;
         border-radius: 0 25px 25px 0;
         transform: translateX(0);
-        transition-property: transform right;
+        transition-property: transform, right;
         transition-duration: 0.5s;
 
         section {
@@ -6880,7 +6880,7 @@ input[type='checkbox'], input[type='radio'] {
         background-color: var(--randColorLight);
         color: white;
         border-radius: 10px 10px 0px 0px;
-        transition-property: top visibility;
+        transition-property: top, visibility;
         transition-duration: 0.5s;
         
 	    &.musicplayer-playlist-length-show {
@@ -6982,7 +6982,7 @@ input[type='checkbox'], input[type='radio'] {
     #quote-slider-total {
         visibility: hidden;
         width: 0;
-        transition-property: width visibility;
+        transition-property: width, visibility;
         transition-duration: 1.2s;
         
 	    &.animation-quote-slider-total {
@@ -7631,7 +7631,7 @@ input[type='checkbox'], input[type='radio'] {
         position: relative;
         max-width: 35rem;
         max-height: 53.6rem;
-        border-radius: 20px;
+        border-radius: 0px 0px 20px 20px;
         
         img {
             display: block;
@@ -7640,7 +7640,6 @@ input[type='checkbox'], input[type='radio'] {
     }
 
     .iceberg-levels {
-        pointer-events: none;
         display: flex;
         flex-direction: column;
         gap: 0.35rem;
@@ -7648,57 +7647,79 @@ input[type='checkbox'], input[type='radio'] {
         top: 0;
         left: 0;
         width: 100%;
+    }
 
-        > div {
-            height: 7.1rem;
+    .iceberg-level {
+        @extend .scrollable, .flex-center, .only-align-items, .align-items-left, .gap, .small-gap, .wrap;
+        height: 7.1rem;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        align-content: flex-start;
 
-            &:nth-child(14) {
-                height: 6.7rem;
-            }
+        &:nth-child(14) {
+            height: 6.7rem;
+        }
 
-            &:nth-child(6) {
-                height: 6.75rem;
-            }
+        &:nth-child(6) {
+            height: 6.75rem;
+        }
 
-            &:nth-child(18) {
-                height: 7rem;
-            }
+        &:nth-child(18) {
+            height: 7rem;
+        }
 
-            &:nth-child(12), &:nth-child(7), &:nth-child(8), &:nth-child(13), &:nth-child(19) {
-                height: 7.2rem;
-            }
+        &:nth-child(12), &:nth-child(7), &:nth-child(8), &:nth-child(13), &:nth-child(19) {
+            height: 7.2rem;
+        }
 
-            &:nth-child(12) {
-                height: 7.3rem;
-            }
+        &:nth-child(12) {
+            height: 7.3rem;
+        }
 
-            &:nth-child(16) {
-                height: 7.4rem;
-            }
+        &:nth-child(16) {
+            height: 7.4rem;
+        }
 
-            &:nth-child(4) {
-                height: 7.45rem;
-            }
+        &:nth-child(4) {
+            height: 7.45rem;
+        }
 
-            &:nth-child(5) {
-                height: 7.5rem;
-            }
+        &:nth-child(5) {
+            height: 7.5rem;
+        }
 
-            &:nth-child(15) {
-                height: 7.6rem;
-            }
+        &:nth-child(15) {
+            height: 7.6rem;
+        }
 
-            &:nth-child(9), &:nth-child(11) {
-                height: 7.88rem;
-            }
+        &:nth-child(9), &:nth-child(11) {
+            height: 7.88rem;
+        }
 
-            &:nth-child(3) {
-                height: 8.35rem;
-            }
+        &:nth-child(3) {
+            height: 8.35rem;
+        }
 
-            &:nth-child(17) {
-                height: 8.4rem;
-            }
+        &:nth-child(17) {
+            height: 8.4rem;
+        }
+    }
+
+    .iceberg-view-item-popout-animation {
+        @extend .scrollable, .flex-center, .only-align-items, .column, .gap;
+        visibility: visible;
+        padding: 1rem;
+        max-height: 40rem;
+        
+        img {
+            display: inline-block;
+            max-width: 25rem;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 0;
         }
     }
 }

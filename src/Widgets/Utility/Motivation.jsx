@@ -36,7 +36,7 @@ const WidgetMotivation = ({ defaultProps, motivationVideos }) => {
                 className='widget'
                 aria-labelledby='motivation-widget-heading'>
                 <h2 id='motivation-widget-heading'
-                    className='screen-reader-only'>motivation Widget</h2>
+                    className='screen-reader-only'>Motivation Widget</h2>
                 <div id='motivation-widget-animation'
                     className='widget-animation custom-shape'>
                     {/* Drag Handle */}

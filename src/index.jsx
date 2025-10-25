@@ -626,6 +626,10 @@ const quotes = [
         quote: "You should enjoy the little things. Because one day, you'll look back and realize they were big things."
         , author: ''
     },
+    {
+        quote: "Get yourself a bestie that'll call you a hundred and fifty five times, until you wake up."
+        , author: 'Hellme'
+    },
 ];
 const sentences = [
     'My mum (82F) told me (12M) to do the dishes (16) but I (12M) was too busy playing Fortnite (3 kills) so I (12M) grabbed my controller (DualShock 4) and threw it at her (138kph). She fucking died, and I (12M) went to prison (18 years). While in prison I (12M) incited several riots (3) and assumed leadership of a gang responsible for smuggling drugs (cocaine) into the country. I (12M) also ordered the assassination of several celebrities (Michael Jackson, Elvis Presley and Jeffrey Epstein) and planned a terrorist attack (9/11).'
@@ -7098,118 +7102,7 @@ const motivationVideos = [
     'oth36uDKiD8', 'o3JHNmCud1Q', 'nrFcPe4FixA', 'PATNQ5J2vcw',
     '56vtZsQgAF0', 'KxGRhd_iWuE',
 ];
-const icebergData = {
-    /// Entry Template
-    /// '': {
-    ///     image: '',
-    ///     information: [],
-    ///     source: [],
-    /// },
-    'scary signs': [
-        { /// Level 1 - Common Warnings
-            'Prevent Your Death!': {
-                image: '/scary-signs/prevent-your-death.webp',
-                source: ["Eagle's Nest Cave - Spring Hill, FL 34613"],
-            },
-            'Percy Priest Lake': {
-                image: '/scary-signs/percy-priest-lake.webp',
-                source: ['Percy Priest Lake - Nashville, TN 37214'],
-            },
-        },
-        { /// Level 2 - Restricted & Observed
-            'White Mountain Trail Sign': {
-                image: '/scary-signs/white-mountain-trail-sign.webp',
-                source: ['White Mountain National Forest - 71 White Mountain Dr, Campton, NH 03223'],
-            },
-            'Emergency Siren': {
-                image: '/scary-signs/emergency-siren.webp',
-                source: ['Salem Nuclear Power Plant - Lower Alloways Creek, NJ'],
-            },
-        },
-        { /// Level 3 - Dangerous Nature & Cryptic Warnings
-            'Lava Falls': {
-                image: '/scary-signs/lava-falls.webp',
-                source: ['Grand Canyon National Park - Arizona'],
-            },
-            'Wall or Ceiling?': {
-                image: '/scary-signs/wall-or-ceiling.webp',
-                source: ['Hospital'],
-            },
-            'The Drowning Machine': {
-                image: '/scary-signs/the-drowning-machine.webp',
-                source: ['Low-head Dams'],
-            },
-            'Stinging Tree': {
-                image: '/scary-signs/stinging-tree.webp',
-                source: ['North Queensland - Australia'],
-            },
-        },
-        { /// Level 4 - Folklore & Cursed Areas
-            'Live Bombs': {
-                image: '/scary-signs/live-bombs.webp',
-                source: ['West Virgina Hiking Trails'],
-            },
-            'Lava Bench': {
-                image: '/scary-signs/lava-bench.webp',
-                source: ["Island of Hawai'i - Hawaii"],
-            },
-            'Do Not Ski Alone': {
-                image: '/scary-signs/do-not-ski-alone.webp',
-                source: ['Killington Resort - Killington, VT 05751'],
-            },
-            'Fire Danger': {
-                image: '/scary-signs/fire-danger.webp',
-                source: ['Australia'],
-            },
-        },
-        { /// Level 5 - Psychological & Absurd
-            'Deadly Manure': {
-                image: '/scary-signs/deadly-manure.webp',
-                source: ['Treatment Stations'],
-            },
-            'Do You Know Where the Bears Are?': {
-                image: '/scary-signs/do-you-know-where-the-bears-are.webp',
-                source: ['Yorkshire Wildlife Park - Hurst Ln, Doncaster DN9 3QY, United Kingdom'],
-            },
-            'Waving Children': {
-                image: '/scary-signs/waving-children.webp',
-                source: ['Eden Nature Park - 2CVW+C3J, Toril, Davao City, Davao del Sur, Philippines'],
-            },
-            'WARNING': {
-                image: '/scary-signs/WARNING.webp',
-                source: [''],
-            },
-        },
-        { /// Level 6 - Horror & Sentient Messages
-            'NEVER OPEN THIS DOOR': {
-                image: '/scary-signs/NEVER-OPEN-THIS-DOOR.webp',
-                source: ['Fast Foods'],
-            },
-            "Please Don't Kill Us": {
-                image: '/scary-signs/please-dont-kill-us.webp',
-                source: ['Construction Sites - South Africa'],
-            },
-        },
-        { /// Level 7 - Existential & Reality-Breaking
-            'Crying is Not an Emergency': {
-                image: '/scary-signs/crying-is-not-an-emergency.webp',
-                source: ['Parks'],
-            },
-            'Border Patrol Button': {
-                image: '/scary-signs/crying-is-not-an-emergency.webp',
-                source: ['Mexico Deserts'],
-            },
-            'Do Not Dig': {
-                image: '/scary-signs/do-not-dig.webp',
-                source: ['Willow Springs - Illinois'],
-            },
-            'These Plants Can Kill': {
-                image: '/scary-signs/these-plants-can-kill.webp',
-                source: ['The Alnwick Garden - Denwick Lane, Alnwick NE66 1FJ, United Kingdom'],
-            },
-        },
-    ],
-};
+const icebergData = await fetch('/data/iceberg.json').then((response) => response.json());
 //#endregion
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
@@ -7855,6 +7748,14 @@ class Widgets extends Component {
                         position: {
                             x: 0,
                             y: 0
+                        },
+                        popouts: {
+                            viewItem: {
+                                position: {
+                                    x: 560,
+                                    y: 0
+                                }
+                            }
                         },
                         drag: {
                             disabled: false
@@ -9731,7 +9632,10 @@ class Widgets extends Component {
                 {this.state.widgets.fun.iceberg.active
                     && <LazyWidget Component={WidgetIceberg}
                         defaultProps={this.generateDefaultProps('iceberg', 'fun')}
-                        icebergData={icebergData}/>}
+                        icebergData={icebergData}
+                        formatGroupLabel={formatGroupLabel}
+                        selectTheme={this.state.selectTheme}
+                        menuListScrollbar={menuListScrollbar}/>}
                 {this.state.widgets.fun.pickerwheel.active
                     && <LazyWidget Component={WidgetPickerWheel}
                         defaultProps={this.generateDefaultProps('pickerwheel', 'fun')}
@@ -9758,7 +9662,7 @@ class Widgets extends Component {
 // import { IconContext } from 'react-icons';
 // import Draggable from 'react-draggable';
 
-// const Widget[] = ({ defaultProps }) => {
+// const Widget[WIDGET NAME] = ({ defaultProps }) => {
 //     return (
 //         <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
 //             disabled={defaultProps.dragDisabled}
@@ -9773,7 +9677,7 @@ class Widgets extends Component {
 //                 className='widget'
 //                 aria-labelledby='[]-widget-heading'>
 //                 <h2 id='[]-widget-heading'
-//                     className='screen-reader-only'>[] Widget</h2>
+//                     className='screen-reader-only'>[WIDGET NAME] Widget</h2>
 //                 <div id='[]-widget-animation'
 //                     className='widget-animation'>
 //                     {/* Drag Handle */}

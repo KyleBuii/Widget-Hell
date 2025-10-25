@@ -78,6 +78,11 @@ const information = {
                 'Widget for getting a desired color in an image',
             ],
         },
+        { name: 'Motivation',
+            description: [
+                'Widget for getting motivated',
+            ],
+        },
         { name: 'Music Player',
             description: [
                 'Widget for playing music in the form of a youtube or soundcloud URL',
@@ -359,6 +364,12 @@ const information = {
         { name: 'Facts',
             description: [
                 'Widget for viewing facts',
+            ],
+        },
+        { name: 'Iceberg',
+            description: [
+                'Widget for viewing an iceberg meme',
+                'Getting Rickrolled means there are multiple sources',
             ],
         },
         { name: 'Picker Wheel',
