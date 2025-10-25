@@ -7102,7 +7102,6 @@ const motivationVideos = [
     'oth36uDKiD8', 'o3JHNmCud1Q', 'nrFcPe4FixA', 'PATNQ5J2vcw',
     '56vtZsQgAF0', 'KxGRhd_iWuE',
 ];
-const icebergData = await fetch('/data/iceberg.json').then((response) => response.json());
 //#endregion
 const widgetsUtilityActive = [];
 const widgetsGamesActive = [];
@@ -7954,7 +7953,8 @@ class Widgets extends Component {
                 dexterity: 1,
                 luck: 1
             },
-            abilities: []
+            abilities: [],
+            icebergData: {},
         };
         this.randomColor = this.randomColor.bind(this);
         this.handleShowHide = this.handleShowHide.bind(this);
@@ -9038,15 +9038,18 @@ class Widgets extends Component {
         localStorage.setItem('abilities', JSON.stringify(this.state.abilities));
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.randomColor();
+
         window.addEventListener('beforeunload', this.storeData);
         window.addEventListener('new item', this.addItem);
         window.addEventListener('gold bag', this.addGoldBag);
         window.addEventListener('equip item', this.equipItem);
+
         if ('maxTouchPoints' in navigator) {
             isMobile = navigator.maxTouchPoints > 0;
         };
+
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let widgetsUtility = {};
@@ -9213,10 +9216,19 @@ class Widgets extends Component {
         if (localStorage.getItem('name') !== null) {
             window.username = JSON.parse(localStorage.getItem('name'));
         };
+
         voices = window.speechSynthesis.getVoices();
         speechSynthesis.addEventListener('voiceschanged', () => {
             voices = window.speechSynthesis.getVoices();
         }, { once: true });
+
+        try {
+            const response = await fetch('/data/iceberg.json');
+            const data = await response.json();
+            this.setState({ icebergData: data });
+        } catch (error) {
+            console.error('Failed to load iceberg data:', error);
+        };
     };
 
     componentWillUnmount() {
@@ -9632,7 +9644,7 @@ class Widgets extends Component {
                 {this.state.widgets.fun.iceberg.active
                     && <LazyWidget Component={WidgetIceberg}
                         defaultProps={this.generateDefaultProps('iceberg', 'fun')}
-                        icebergData={icebergData}
+                        icebergData={this.state.icebergData}
                         formatGroupLabel={formatGroupLabel}
                         selectTheme={this.state.selectTheme}
                         menuListScrollbar={menuListScrollbar}/>}
