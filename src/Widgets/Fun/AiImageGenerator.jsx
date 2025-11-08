@@ -7,24 +7,11 @@ import { FaRegCircleQuestion } from 'react-icons/fa6';
 import Select from 'react-select';
 
 
-const hf = new HfInference(import.meta.env.VITE_AI_IMAGE_GENERATOR_ACCESS_TOKEN);
 const optionsModel = [
     {
-        label: "Models",
+        label: 'Models',
         options: [
-            {label: "SD-XL 1.0-base", value: "stabilityai/stable-diffusion-xl-base-1.0"},
-            {label: "Stable Diffusion v1-4", value: "CompVis/stable-diffusion-v1-4"},
-            {label: "Openjourney v4", value: "prompthero/openjourney-v4"},
-            {label: "Stable Diffusion 2-1 Realistic", value: "friedrichor/stable-diffusion-2-1-realistic"},
-            {label: "RealVisXL V4.0", value: "SG161222/RealVisXL_V4.0"},
-            {label: "Dream Shaper v7 LCM", value: "SimianLuo/LCM_Dreamshaper_v7"},
-            {label: "Dream Shaper", value: "Lykon/DreamShaper"},
-            {label: "ColoringBook-Redmond V2", value: "artificialguybr/ColoringBookRedmond-V2"},
-            {label: "Animagine XL 3.1", value: "cagliostrolab/animagine-xl-3.1"},
-            {label: "Latent Consistency Model (LCM) LoRA: SDXL", value: "latent-consistency/lcm-lora-sdxl"},
-            {label: "CuteCartoon-Redmond V2", value: "artificialguybr/CuteCartoonRedmond-V2"},
-            {label: "NSFW-gen-v2", value: "UnfilteredAI/NSFW-gen-v2"},
-            {label: "Pixel Art XL", value: "nerijs/pixel-art-xl"},
+            { label: 'SD-XL 1.0-base', value: 'stabilityai/stable-diffusion-xl-base-1.0' },
         ]
     }
 ];
@@ -73,53 +60,49 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
     }, []);
     
     const generateImage = async () => {
-        if (!state.running) {
-            try {
-                setState((prevState) => ({
-                    ...prevState,
-                    running: true
-                }));
-                
-                const randomNumber = Math.floor(Math.random() * 10000 + 1);
-                const result = await hf.textToImage({
-                    inputs: `${state.prompt} ${randomNumber}`,
-                    model: state.model.value,
-                    parameters: {
-                        negative_prompt: state.negative
-                    }
-                });
-                const imageURL = URL.createObjectURL(result);
+        if (state.running) return;
+        
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                running: true
+            }));
+            
+            const randomNumber = Math.floor(Math.random() * 10000 + 1);
+            const url = `/api/aiImageGenerator?randomNumber=${randomNumber}&prompt=${state.prompt}&model=${state.model.value}&negative=${state.negative}`;
+            const imageData = await fetch(url);
+            const blob = await imageData.blob();
+            const imageUrl = URL.createObjectURL(blob);
 
-                const elementImage = document.createElement('img');
-                const elementImagesContainer = document.getElementById('aiimagegenerator-images');
-                elementImagesContainer.innerHTML = '';
-                elementImage.src = imageURL;
-                elementImage.alt = 'generated art';
-                elementImage.loading = 'lazy';
-                elementImage.decoding = 'async';
-                elementImage.draggable = false;
-                elementImage.style.height = `${state.size}px`;
-                elementImage.style.width = `${state.size}px"`;
-                elementImagesContainer.appendChild(elementImage);
+            const elementImage = document.createElement('img');
+            const elementImagesContainer = document.getElementById('aiimagegenerator-images');
+            elementImagesContainer.innerHTML = '';
+            elementImage.src = imageUrl;
+            elementImage.alt = 'generated art';
+            elementImage.loading = 'lazy';
+            elementImage.decoding = 'async';
+            elementImage.draggable = false;
+            elementImage.style.height = `${state.size}px`;
+            elementImage.style.width = `${state.size}px"`;
+            elementImagesContainer.appendChild(elementImage);
 
-                setState((prevState) => ({
-                    ...prevState,
-                    image: imageURL
-                }));
+            setState((prevState) => ({
+                ...prevState,
+                image: imageUrl
+            }));
 
-                document.getElementById('aiimagegenerator-button-download').style.visibility = 'visible';
-            } catch(err) {
-                console.error(err)
-                setState((prevState) => ({
-                    ...prevState,
-                    running: false
-                }));
-            } finally {
-                setState((prevState) => ({
-                    ...prevState,
-                    running: false
-                }))
-            };
+            document.getElementById('aiimagegenerator-button-download').style.visibility = 'visible';
+        } catch(err) {
+            console.error(err)
+            setState((prevState) => ({
+                ...prevState,
+                running: false
+            }));
+        } finally {
+            setState((prevState) => ({
+                ...prevState,
+                running: false
+            }))
         };
     };
 

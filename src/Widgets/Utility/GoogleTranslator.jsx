@@ -78,36 +78,32 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
 
     const handleTranslate = async () => {
         if (state.input !== '') {
-            const url = 'https://translate281.p.rapidapi.com/';
-            const data = new FormData();
-            data.append('text', state.input);
-            data.append('from', state.from.value);
-            data.append('to', state.to.value);
-            const options = {
-                method: 'POST',
-                headers: {
-                    'X-RapidAPI-Key': import.meta.env.VITE_TRANSLATOR_API_KEY,
-                    'X-RapidAPI-Host': import.meta.env.VITE_TRANSLATOR_API_HOST
-                },
-                body: data      
+            const data = {
+                text: state.input,
+                from: state.from.value,
+                to: state.to.value
             };
+
             try {
                 setState((prevState) => ({
                     ...prevState,
                     running: true
-                }));        
-                const response = await fetch(url, options);
+                }));
+
+                const url = `/api/googleTranslator?data=${JSON.stringify(data)}`;
+                const response = await fetch(url);
                 const result = await response.json();
+                
                 setState((prevState) => ({
                     ...prevState,
                     converted: result.response
-                }));        
+                }));
             } catch (err) {
                 setState((prevState) => ({
                     ...prevState,
                     converted: err,
                     running: false
-                }));        
+                }));
             } finally {
                 setState((prevState) => ({
                     ...prevState,

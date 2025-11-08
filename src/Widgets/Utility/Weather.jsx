@@ -86,73 +86,69 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
     };
 
     const handleUpdate = async (location) => {
-        if (location !== '') {
-            const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${location}`;
-            const options = {
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': import.meta.env.VITE_WEATHER_API_KEY,
-                    'X-RapidAPI-Host': import.meta.env.VITE_WEATHER_API_HOST
-                }
+        if (location === '') return;
+
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                running: true
+            }));
+
+            const url = `/api/weather?location=${location}`;
+            const response = await fetch(url);
+            const result = await response.json();
+            
+            let dateLastUpdated = new Date(result.current.last_updated);
+            let dateOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
             };
-            try {
-                setState((prevState) => ({
-                    ...prevState,
-                    running: true
-                }));        
-                const response = await fetch(url, options);
-                const result = await response.json();
-                let dateLastUpdated = new Date(result.current.last_updated);
-                let dateOptions = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                };
-                setState((prevState) => ({
-                    ...prevState,
-                    name: result.location.name,
-                    region: result.location.region,
-                    localTime: result.location.localtime,
-                    lastUpdated: dateLastUpdated.toLocaleString('en-US', dateOptions),
-                    tempC: result.current.temp_c,
-                    tempF: result.current.temp_f,
-                    feelsLikeC: result.current.feelslike_c,
-                    feelsLikeF: result.current.feelslike_f,
-                    weatherCondition: result.current.condition.text,
-                    weatherIcon: result.current.condition.icon,
-                    windMPH: result.current.wind_mph,
-                    windKPH: result.current.wind_kph,
-                    windDirection: result.current.wind_degree,
-                    humidity: result.current.humidity,
-                    percipitationMm: result.current.precip_mm,
-                    percipitationIn: result.current.precip_in,
-                    gustMPH: result.current.gust_mph,
-                    gustKPH: result.current.gust_kph
-                }));        
-            } catch (err) {
-                setState((prevState) => ({
-                    ...prevState,
-                    input: 'N/A',
-                    running: false
-                }));        
-            } finally {
-                setState((prevState) => ({
-                    ...prevState,
-                    running: false
-                }));        
-                let elementWeatherLocation = document.getElementById('weather-location');
-                let elementWeatherInformation = document.getElementById('weather-information');
-                elementWeatherLocation.style.textShadow = '0px 0px 10px var(--randColorLight)';
-                elementWeatherInformation.style.textShadow = '0px 0px 10px var(--randColorLight)';
-                timeoutTextShadow = setTimeout(() => {
-                    elementWeatherLocation.style.textShadow = 'unset';
-                    elementWeatherInformation.style.textShadow = 'unset';
-                }, 400);
-            };
+
+            setState((prevState) => ({
+                ...prevState,
+                name: result.location.name,
+                region: result.location.region,
+                localTime: result.location.localtime,
+                lastUpdated: dateLastUpdated.toLocaleString('en-US', dateOptions),
+                tempC: result.current.temp_c,
+                tempF: result.current.temp_f,
+                feelsLikeC: result.current.feelslike_c,
+                feelsLikeF: result.current.feelslike_f,
+                weatherCondition: result.current.condition.text,
+                weatherIcon: result.current.condition.icon,
+                windMPH: result.current.wind_mph,
+                windKPH: result.current.wind_kph,
+                windDirection: result.current.wind_degree,
+                humidity: result.current.humidity,
+                percipitationMm: result.current.precip_mm,
+                percipitationIn: result.current.precip_in,
+                gustMPH: result.current.gust_mph,
+                gustKPH: result.current.gust_kph
+            }));        
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                input: 'N/A',
+                running: false
+            }));        
+        } finally {
+            setState((prevState) => ({
+                ...prevState,
+                running: false
+            }));        
+            let elementWeatherLocation = document.getElementById('weather-location');
+            let elementWeatherInformation = document.getElementById('weather-information');
+            elementWeatherLocation.style.textShadow = '0px 0px 10px var(--randColorLight)';
+            elementWeatherInformation.style.textShadow = '0px 0px 10px var(--randColorLight)';
+            timeoutTextShadow = setTimeout(() => {
+                elementWeatherLocation.style.textShadow = 'unset';
+                elementWeatherInformation.style.textShadow = 'unset';
+            }, 400);
         };
     };
     
