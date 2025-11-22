@@ -18,6 +18,8 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 let intervalTimeBased;
 let timeoutTrick;
+let previousCursor = null;
+
 const optionsAnimation = [
     {
         label: 'Animations',
@@ -163,6 +165,7 @@ const optionsCursor = [
             { value: 'delicatepink', label: 'Delicate Pink' },
             { value: 'cutesquid', label: 'Cute Squid' },
             { value: 'cutekoicarp', label: 'Cute Koi Carp' },
+            { value: 'reimu', label: 'Reimu' },
         ]
     }
 ];
@@ -629,13 +632,15 @@ class WidgetSetting extends Component {
 
     updateCursor(what) {
         if (what.value === 'default') {
-            document.body.classList.remove('cursor-unset');
-            document.body.classList.remove('cursor-custom');
+            document.body.classList.remove('cursor-unset', 'cursor-custom');
         } else {
-            document.body.classList.add('cursor-unset');
-            document.body.classList.add('cursor-custom');
+            document.body.classList.remove(previousCursor);
+            document.body.classList.add('cursor-unset', 'cursor-custom', what.value);
+
             document.documentElement.style.setProperty('--cursorDefault', `url(/resources/cursor/${what.value}/${what.value}-default.webp)`);
             document.documentElement.style.setProperty('--cursorHover', `url(/resources/cursor/${what.value}/${what.value}-hover.webp)`);
+
+            previousCursor = what.value;
         };
     };
 
