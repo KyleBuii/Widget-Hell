@@ -1862,7 +1862,7 @@ class WidgetSetting extends Component {
                                                                 ...this.props.selectTheme
                                                             }
                                                         })}
-                                                        isDisabled={this.state.values.cursor.value === 'default'}/>
+                                                        isDisabled={this.state.values.cursor?.value === 'default'}/>
                                                 </div>
                                                 {/* Cursor Trail */}
                                                 <div className='element-ends'>

@@ -1677,12 +1677,12 @@ class Widgets extends Component {
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 root.render(
-    // <StrictMode>
+    <StrictMode>
         <div id='Base'>
             <div id='App'
                 className='background-default'>
                 <Widgets/>
             </div>
         </div>
-    // </StrictMode>
+    </StrictMode>
 );
