@@ -8,7 +8,7 @@ import { TbMoneybag } from 'react-icons/tb';
 import DOMPurify from 'dompurify';
 import { memo } from 'react';
 import SimpleBar from 'simplebar-react';
-
+import { classStack, dataLoaded, decorationValue, getData } from '../data';
 
 const regexItemsLeftAndRight = /bracelet|wrist|glove|ring|hidden|boot/;
 const audioItemOpen = new Audio('/resources/audio/switch_006.wav');
@@ -17,12 +17,14 @@ const audioPageClick = new Audio('/resources/audio/magnet_on_reduced.wav');
 const audioItemEquip = new Audio('/resources/audio/cloth_inventory.wav');
 const audioItemEquipJewelry = new Audio('/resources/audio/ring_inventory.wav');
 const audioItemEquipConsumable = new Audio('/resources/audio/bite_small.wav');
+let items = {};
 
 class WidgetInventory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            item: { name: 'Creampuff', rarity: 'rare' },
+            // item: { name: 'Creampuff', rarity: 'rare' },
+            item: {},
             items: [],
             countAll: 0,
             countItem: 0,
@@ -44,6 +46,7 @@ class WidgetInventory extends Component {
 
     equipItem(event, name, rarity, slot, whatSide) {
         event.stopPropagation();
+
         if (/ring|bracelet|necklace/.test(slot)) {
             this.props.defaultProps.playAudio(audioItemEquipJewelry);
         } else if (/consumable/.test(slot)) {
@@ -51,24 +54,12 @@ class WidgetInventory extends Component {
         } else {
             this.props.defaultProps.playAudio(audioItemEquip);
         };
-        if (whatSide) {
-            window.dispatchEvent(new CustomEvent('equip item', {
-                'detail': {
-                    'slot': slot,
-                    'name': name,
-                    'rarity': rarity,
-                    'side': whatSide
-                }
-            }));
-        } else {
-            window.dispatchEvent(new CustomEvent('equip item', {
-                'detail': {
-                    'slot': slot,
-                    'name': name,
-                    'rarity': rarity
-                }
-            }));
-        };
+
+        const detail = { slot, name, rarity };
+        if (whatSide) detail.side = whatSide;
+
+        window.dispatchEvent(new CustomEvent('equip item', { detail }));
+
         document.getElementById('inventory-popout-view-item').style.visibility = 'hidden';
     };
 
@@ -76,6 +67,7 @@ class WidgetInventory extends Component {
         let newItemCounter = 0;
         let newItemNames = [...this.state.items];
         let arrayItemSlots = [...this.state.inventorySlots];
+
         for (let i = 0; i < event.detail.length; i++) {
             /// If item doesn't exist
             if (!newItemNames.includes(event.detail[i].name)) {
@@ -84,7 +76,7 @@ class WidgetInventory extends Component {
                         aria-label={`Item ${event.detail[i].name}`}
                         onClick={() => this.viewItem(event.detail[i])}
                         style={{
-                            backgroundImage: `url(${this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
+                            backgroundImage: `url(${items[event.detail[i].rarity][event.detail[i].name].image})`
                         }}>
                         <div className='item-count'>1</div>
                     </button>
@@ -101,7 +93,7 @@ class WidgetInventory extends Component {
                         aria-label={`Item ${event.detail[i].name}`}
                         onClick={() => this.viewItem(event.detail[i])}
                         style={{
-                            backgroundImage: `url(${this.props.items[event.detail[i].rarity][event.detail[i].name].image})`
+                            backgroundImage: `url(${items[event.detail[i].rarity][event.detail[i].name].image})`
                         }}>
                         <div className='item-count'>{parseFloat(arrayItemSlots[itemButtonIndex].props.children.props.children) + 1}</div>
                     </button>
@@ -144,13 +136,13 @@ class WidgetInventory extends Component {
         let slots = [];
         for (let i = 0; i < this.state.countItem; i++) {
             slots[i] = (
-                <button id={`item-${this.props.inventory[i].name}`}
-                    aria-label={`Item ${this.props.inventory[i].name}`}
-                    onClick={() => this.viewItem(this.props.inventory[i])}
+                <button id={`item-${this.props.parentRef.state.inventory[i].name}`}
+                    aria-label={`Item ${this.props.parentRef.state.inventory[i].name}`}
+                    onClick={() => this.viewItem(this.props.parentRef.state.inventory[i])}
                     style={{
-                        backgroundImage: `url(${this.props.items[this.props.inventory[i].rarity][this.props.inventory[i].name]?.image})`
+                        backgroundImage: `url(${items[this.props.parentRef.state.inventory[i].rarity][this.props.parentRef.state.inventory[i].name]?.image})`
                     }}>
-                    <div className='item-count'>{this.props.inventory[i].count}</div>
+                    <div className='item-count'>{this.props.parentRef.state.inventory[i].count}</div>
                 </button>
             );
         };
@@ -176,7 +168,7 @@ class WidgetInventory extends Component {
 
     componentDidMount() {
         window.addEventListener('new item', this.addItem);
-        if (this.props.inventory.length === 0) {
+        if (this.props.parentRef.state.inventory.length === 0) {
             let slots = new Array(16);
             for (let i = 0; i < 16; i++) {
                 slots[i] = (
@@ -189,16 +181,19 @@ class WidgetInventory extends Component {
         } else {
             let counter = 0;
             let itemNames = [];
-            this.props.inventory.forEach((item) => {
+            this.props.parentRef.state.inventory.forEach((item) => {
                 counter += item.count;
                 itemNames.push(item.name);
             });
             this.setState({
                 items: [...itemNames],
                 countAll: counter,
-                countItem: this.props.inventory.length
+                countItem: this.props.parentRef.state.inventory.length
             }, () => {
-                this.updateInventory();
+                dataLoaded.then(() => {
+                    items = getData('items');
+                    this.updateInventory();
+                });
             });
         };
     };
@@ -209,7 +204,7 @@ class WidgetInventory extends Component {
     
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('inventory')}
                 onStop={(event, data) => {
@@ -224,19 +219,23 @@ class WidgetInventory extends Component {
                     <h2 id='inventory-widget-heading'
                         className='screen-reader-only'>Inventory Widget</h2>
                     <div id='inventory-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='inventory-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('inventory', 'utility')}
-                        {/* Author */}
-                        {(this.props.defaultProps.values.authorNames)
-                            ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
-                            : <></>}
                         {/* Inventory */}
                         <div className='flex-center column gap medium-gap'>
                             {/* Inventory Slots */}
@@ -323,7 +322,7 @@ class WidgetInventory extends Component {
                             }}>
                             <span className='font bold large-medium'>{this.state.item.name}</span>
                             <div className='flex-center row gap medium-gap space-nicely space-all'>
-                                <img src={this.props.items[this.state.item.rarity][this.state.item.name]?.image}
+                                <img src={items[this.state.item.rarity]?.[this.state.item.name]?.image}
                                     alt='viewed inventory item'
                                     loading='lazy'
                                     decoding='async'/>
@@ -333,31 +332,31 @@ class WidgetInventory extends Component {
                                         <tbody>
                                             <tr>
                                                 <td scope='row'>Rarity:</td>
-                                                <td>{this.state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
+                                                <td>{this.state.item.rarity?.replace(/^./, (char) => char.toUpperCase())}</td>
                                             </tr>
                                             <tr>
                                                 <td scope='row'>Slot:</td>
-                                                <td>{this.props.items[this.state.item.rarity][this.state.item.name]?.slot
+                                                <td>{items[this.state.item.rarity]?.[this.state.item.name]?.slot
                                                     .replace(/^./, (char) => char.toUpperCase())
                                                     .replace(/[0-9]/, '')}</td>
                                             </tr>
-                                            {(/stat|both/.test(this.props.items[this.state.item.rarity][this.state.item.name]?.type))
-                                                ? Object.keys(this.props.items[this.state.item.rarity][this.state.item.name]?.stats)
+                                            {(/stat|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
+                                                ? Object.keys(items[this.state.item.rarity]?.[this.state.item.name]?.stats)
                                                     .map((value, index) => {
                                                         return <tr key={`row-stat-${index}`}>
                                                             <td scope='row'>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
                                                             <td>
-                                                                {(Math.sign(this.props.items[this.state.item.rarity][this.state.item.name].stats[value]) === -1)
+                                                                {(Math.sign(items[this.state.item.rarity]?.[this.state.item.name].stats[value]) === -1)
                                                                     ? ''
                                                                     : '+'}
-                                                                {this.props.items[this.state.item.rarity][this.state.item.name].stats[value]}
+                                                                {items[this.state.item.rarity]?.[this.state.item.name].stats[value]}
                                                             </td>
                                                         </tr>
                                                     })
                                                 : <></>}
-                                            {(/ability|both/.test(this.props.items[this.state.item.rarity][this.state.item.name]?.type))
+                                            {(/ability|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
                                                 ? <tr>
-                                                    <td colSpan={2}>{this.props.items[this.state.item.rarity][this.state.item.name].information}</td>
+                                                    <td colSpan={2}>{items[this.state.item.rarity]?.[this.state.item.name].information}</td>
                                                 </tr>
                                                 : <></>}
                                         </tbody>
@@ -365,24 +364,24 @@ class WidgetInventory extends Component {
                                 </SimpleBar>
                             </div>
                             <span dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(this.props.items[this.state.item.rarity][this.state.item.name]?.description)
+                                __html: DOMPurify.sanitize(items[this.state.item.rarity]?.[this.state.item.name]?.description)
                             }}></span>
-                            {(this.props.items[this.state.item.rarity][this.state.item.name]?.requirement)
+                            {(items[this.state.item.rarity]?.[this.state.item.name]?.requirement)
                                 ? <span className='font micro'
                                     style={{
                                         color: 'red',
                                         opacity: '0.5'
-                                    }}>Requirement: {this.props.items[this.state.item.rarity][this.state.item.name]?.requirement}</span>
+                                    }}>Requirement: {items[this.state.item.rarity]?.[this.state.item.name]?.requirement}</span>
                                 : <></>}
-                            <span className='font micro transparent-normal'>Source: {this.props.items[this.state.item.rarity][this.state.item.name]?.source}</span>
-                            {(regexItemsLeftAndRight.test(this.props.items[this.state.item.rarity][this.state.item.name]?.slot))
+                            <span className='font micro transparent-normal'>Source: {items[this.state.item.rarity]?.[this.state.item.name]?.source}</span>
+                            {(regexItemsLeftAndRight.test(items[this.state.item.rarity]?.[this.state.item.name]?.slot))
                                 ? <div className='flex-center row gap'>
                                     <button className='button-match space-nicely space-top not-bottom'
                                         onClick={(event) => this.equipItem(
                                             event,
                                             this.state.item.name,
                                             this.state.item.rarity,
-                                            this.props.items[this.state.item.rarity][this.state.item.name].slot,
+                                            items[this.state.item.rarity]?.[this.state.item.name].slot,
                                             'left'
                                         )}>Equip Left</button>
                                     <button className='button-match space-nicely space-top not-bottom'
@@ -390,7 +389,7 @@ class WidgetInventory extends Component {
                                             event,
                                             this.state.item.name,
                                             this.state.item.rarity,
-                                            this.props.items[this.state.item.rarity][this.state.item.name].slot,
+                                            items[this.state.item.rarity]?.[this.state.item.name].slot,
                                             'right'
                                         )}>Equip Right</button>
                                 </div>
@@ -399,9 +398,12 @@ class WidgetInventory extends Component {
                                         event,
                                         this.state.item.name,
                                         this.state.item.rarity,
-                                        this.props.items[this.state.item.rarity][this.state.item.name].slot
+                                        items[this.state.item.rarity]?.[this.state.item.name].slot
                                     )}>Equip</button>}
                         </div>
+                        {(this.props.defaultProps.values.authorNames)
+                            ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
+                            : <></>}
                     </div>
                 </section>
             </Draggable>

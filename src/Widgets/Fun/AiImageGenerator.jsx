@@ -1,11 +1,11 @@
-import { HfInference } from '@huggingface/inference';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaDownload, FaGripHorizontal } from 'react-icons/fa';
 import { FaRegCircleQuestion } from 'react-icons/fa6';
 import Select from 'react-select';
-
+import { classStack, decorationValue, smallIcon, smallMedIcon } from '../../data';
+import { formatGroupLabel, menuListScrollbar } from '../../helpers';
 
 const optionsModel = [
     {
@@ -16,7 +16,7 @@ const optionsModel = [
     }
 ];
 
-const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, menuListScrollbar, smallIcon, smallMedIcon }) => {
+const WidgetAiImageGenerator = ({ defaultProps, parentRef }) => {
     const [state, setState] = useState({
         prompt: '',
         negative: '',
@@ -146,7 +146,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('aiimagegenerator')}
             onStop={(event, data) => {
@@ -161,14 +161,22 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                 <h2 id='aiimagegenerator-widget-heading'
                     className='screen-reader-only'>Ai Image Generator Widget</h2>
                 <div id='aiimagegenerator-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='aiimagegenerator-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: "global-class-name" }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('aiimagegenerator', 'fun')}
                     <div className='flex-center column gap small-gap'>
                         {/* Inputs */}
@@ -221,7 +229,7 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    ...selectTheme
+                                    ...parentRef.state.selectTheme
                                 }
                             })}/>
                         {/* Generate Button */}
@@ -243,17 +251,14 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                         </button>
                     </div>
                     {/* Prompt Help Popout */}
-                    <Draggable cancel='li'
-                        position={{
-                            x: defaultProps.popouts.prompthelp.position.x,
-                            y: defaultProps.popouts.prompthelp.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.prompthelp.position.x, y: defaultProps.popouts.prompthelp.position.y }}
                         onStop={(event, data) => defaultProps.updatePosition('aiimagegenerator', 'fun', data.x, data.y, 'popout', 'prompthelp')}
+                        cancel='li'
                         bounds={defaultProps.calculateBounds('aiimagegenerator-widget', 'aiimagegenerator-popout-help')}>
                         <div id='aiimagegenerator-popout-help'
                             className='popout'>
                             <div id='aiimagegenerator-popout-animation-help'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <ul className='aesthetic-scale scale-li font medium'>
                                     <li>[ ] - De-emphasizes a tag</li>
                                     <li>&#123; &#125; - Emphasizes a tag</li>
@@ -261,7 +266,6 @@ const WidgetAiImageGenerator = ({ defaultProps, formatGroupLabel, selectTheme, m
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

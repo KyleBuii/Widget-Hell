@@ -3,9 +3,9 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { RiBattery2ChargeLine } from 'react-icons/ri';
+import { classStack, decorationValue, smallMedIcon } from '../../data';
 
-
-const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
+const WidgetBattery = ({ defaultProps }) => {
     const [state, setState] = useState({
         percentage: 0,
         charging: false
@@ -63,7 +63,7 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('battery')}
             onStop={(event, data) => {
@@ -78,14 +78,22 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
                 <h2 id='battery-widget-heading'
                     className='screen-reader-only'>Battery Widget</h2>
                 <div id='battery-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='battery-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('battery', 'utility')}
                     {/* Battery Image */}
                     <div id='battery-pill'>
@@ -102,7 +110,6 @@ const WidgetBattery = ({ defaultProps, smallMedIcon }) => {
                         <p id='battery-percentage'
                             className='text-animation font bold black'>{state.percentage}%</p>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

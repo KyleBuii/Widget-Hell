@@ -4,9 +4,8 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { classStack, decorationValue } from '../../data';
 
-
-/// Variables
 let A = 1;
 let B = 1;
 
@@ -100,7 +99,7 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('donutanimation')}
             onStop={(event, data) => {
@@ -115,14 +114,22 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                 <h2 id='donutanimation-widget-heading'
                     className='screen-reader-only'>Donut Animation Widget</h2>
                 <div id='donutanimation-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='donutanimation-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('donutanimation', 'fun')}
                     {/* Donut Container */}
                     <div className='flex-center column gap large-gap'>
@@ -265,7 +272,6 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
                                 defaultValue={0.03}/>
                         </div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

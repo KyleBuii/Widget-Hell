@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
+import { classStack, decorationValue } from '../data';
 
 const information = {
     special: [
@@ -803,7 +804,7 @@ const WidgetGuide = ({ defaultProps }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('guide')}
             onStop={(event, data) => {
@@ -819,15 +820,22 @@ const WidgetGuide = ({ defaultProps }) => {
                 <h2 id='guide-widget-heading'
                     className='screen-reader-only'>Guide Widget</h2>
                 <div id='guide-widget-animation'
-                    className='widget-animation custom-shape book'>
-                    {/* Drag Handle */}
+                    className={`widget-animation custom-shape book ${classStack}`}>
                     <span id='guide-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-className-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
-                    {/* Hotbar */}
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('guide', 'utility')}
                     <div className='pages'>
                         {Object.values(elementPages).map((page, pageIndex) => {

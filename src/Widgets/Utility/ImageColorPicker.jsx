@@ -3,7 +3,8 @@ import Draggable from 'react-draggable';
 import { EyeDropper } from 'react-eyedrop';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-
+import { classStack, decorationValue } from '../../data';
+import { copyToClipboard } from '../../helpers';
 
 class WidgetImageColorPicker extends Component {
     constructor(props) {
@@ -34,9 +35,10 @@ class WidgetImageColorPicker extends Component {
 
     handleColorClick() {
         let numbers = this.state.rgb.replace(/rgb\(-?([0-9]+),[\s-]*?([0-9]+),[\s-]*?([0-9]+)\)/, '$1 $2 $3');
+
         if (numbers !== '') {
             let splitNumbers = numbers.split(' ');
-            this.props.randomColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
+            this.props.parentRef.randomColor(Number(splitNumbers[0]), Number(splitNumbers[1]), Number(splitNumbers[2]));
         };
     };
 
@@ -118,7 +120,7 @@ class WidgetImageColorPicker extends Component {
 
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('imagecolorpicker')}
                 onStop={(event, data) => {
@@ -133,14 +135,22 @@ class WidgetImageColorPicker extends Component {
                     <h2 id='imagecolorpicker-widget-heading'
                         className='screen-reader-only'>Image Color Picker Widget</h2>
                     <div id='imagecolorpicker-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='imagecolorpicker-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('imagecolorpicker', 'utility')}
                         <div className='flex-center column gap small-gap'>
                             {/* Image */}
@@ -171,14 +181,14 @@ class WidgetImageColorPicker extends Component {
                                         name='imagecolorpicker-input-hex'
                                         value={this.state.hex}
                                         placeholder='Hex'
-                                        onClick={() => this.props.copyToClipboard(this.state.hex)}
+                                        onClick={() => copyToClipboard(this.state.hex)}
                                         readOnly/>
                                     <input className='text-animation input-match'
                                         type='text'
                                         name='imagecolorpicker-input-rgb'
                                         value={this.state.rgb}
                                         placeholder='RGB'
-                                        onClick={() => this.props.copyToClipboard(this.state.rgb)}
+                                        onClick={() => copyToClipboard(this.state.rgb)}
                                         readOnly/>
                                 </div>
                                 <div id='imagecolorpicker-color'
@@ -186,7 +196,6 @@ class WidgetImageColorPicker extends Component {
                                     onClick={() => this.handleColorClick()}></div>
                             </div>
                         </div>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}

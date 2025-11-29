@@ -4,7 +4,8 @@ import { IconContext } from 'react-icons';
 import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import Select from 'react-select';
-
+import { classStack, decorationValue, moneyConversions } from '../../data';
+import { formatGroupLabel, menuListScrollbar } from '../../helpers';
 
 const optionsMoneyConversion = [
     {
@@ -14,7 +15,7 @@ const optionsMoneyConversion = [
 ];
 let timeoutTextShadow;
 
-const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLabel, selectTheme, menuListScrollbar, randomColor }) => {
+const WidgetCurrencyConverter = ({ defaultProps, parentRef }) => {
     const [state, setState] = useState({
         input: 1,
         from: { value: 'US', label: 'USD' },
@@ -117,7 +118,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
 
     const handleSwap = () => {
         if (state.from.value !== state.to.value) {
-            randomColor();
+            parentRef.randomColor();
             const prev = state.from;
             setState((prevState) => ({
                 ...prevState,
@@ -139,7 +140,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('currencyconverter')}
             onStop={(event, data) => {
@@ -154,14 +155,22 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                 <h2 id='currencyconverter-widget-heading'
                     className='screen-reader-only'>Currency Converter Widget</h2>
                 <div id='currencyconverter-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='currencyconverter-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('currencyconverter', 'utility')}
                     {/* Currency Converter Container */}
                     <div id='currencyconverter-container'
@@ -196,7 +205,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                                     ...theme,
                                     colors: {
                                         ...theme.colors,
-                                        ...selectTheme
+                                        ...parentRef.state.selectTheme
                                     }
                                 })}/>
                             <button className='button-match inverse'
@@ -220,7 +229,7 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                                     ...theme,
                                     colors: {
                                         ...theme.colors,
-                                        ...selectTheme
+                                        ...parentRef.state.selectTheme
                                     }
                                 })}/>
                         </div>
@@ -229,7 +238,6 @@ const WidgetCurrencyConverter = ({ defaultProps, moneyConversions, formatGroupLa
                             onClick={() => fetchExchangeRate()}
                             disabled={state.running}>Exchange</button>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

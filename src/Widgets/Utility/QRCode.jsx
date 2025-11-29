@@ -5,7 +5,8 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa6';
 import QRCode from 'react-qr-code';
 import Select from 'react-select';
-
+import { classStack, decorationValue, smallMedIcon } from '../../data';
+import { formatGroupLabel } from '../../helpers';
 
 const optionsSize= [
     {
@@ -20,7 +21,7 @@ const optionsSize= [
     }
 ];
 
-const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIcon }) => {
+const WidgetQRCode = ({ defaultProps, parentRef }) => {
     const [state, setState] = useState({
         input: '',
         size: 256,
@@ -43,7 +44,7 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('qrcode')}
             onStop={(event, data) => {
@@ -58,16 +59,23 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
                 <h2 id='qrcode-widget-heading'
                     className='screen-reader-only'>QR Code Widget</h2>
                 <div id='qrcode-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='qrcode-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('qrcode', 'utility')}
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
@@ -94,7 +102,7 @@ const WidgetQRCode = ({ defaultProps, formatGroupLabel, selectTheme, smallMedIco
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    ...selectTheme
+                                    ...parentRef.state.selectTheme
                                 }
                             })}/>
                     </div>

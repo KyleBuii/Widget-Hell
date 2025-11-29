@@ -1,6 +1,5 @@
 import React, { Component, createRef, memo } from 'react';
 
-
 let points = [];
 let flipNext = true;
 let intervalLoop;

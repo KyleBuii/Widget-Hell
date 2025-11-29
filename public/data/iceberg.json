@@ -206,5 +206,16 @@
                 }
             }
         }
-    ]
+    ],
+	"creepy video game easter egg": [
+		{ "_comment": "Level 1",
+			"Hex Maniac Ghost": {
+				"video": ["https://www.youtube.com/watch?v=dkco7hXGOhg"],
+                "source": {
+                    "Pokemon X & Y - Lumiose City's Fighting Dojo: 2nd Floor": "",
+					"Youtube - Ms. I love Big Bear Cats": "https://www.youtube.com/watch?v=dkco7hXGOhg"
+                }
+            }
+		}
+	]
 }

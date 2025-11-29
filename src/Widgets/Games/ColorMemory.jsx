@@ -6,14 +6,15 @@ import { FaRegClock } from 'react-icons/fa6';
 import { TbMoneybag } from 'react-icons/tb';
 import { VscDebugBreakpointLogUnverified } from 'react-icons/vsc';
 import SimpleBar from 'simplebar-react';
-
+import { classStack, decorationValue } from '../../data';
+import { hexToRgb } from '../../helpers';
 
 let intervalTimer;
 let seenColorsHex = [];
 let seenColorsName = [];
 let seenColorsImage = [];
 
-const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) => {
+const WidgetColorMemory = ({ defaultProps, gameProps, parentRef }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         timer: 0,
@@ -158,7 +159,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
 
     const colorClick = (hex) => {
         let colorRgb = hexToRgb(`#${hex}`);
-        randomColor(colorRgb[0], colorRgb[1], colorRgb[2]);
+        parentRef.randomColor(colorRgb[0], colorRgb[1], colorRgb[2]);
     };
 
     const handleColorKeyDown = (index, event) => {
@@ -169,7 +170,7 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('colormemory')}
             onStop={(event, data) => {
@@ -184,14 +185,22 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                 <h2 id='colormemory-widget-heading'
                     className='screen-reader-only'>Color Memory Widget</h2>
                 <div id='colormemory-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='colormemory-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('colormemory', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -279,7 +288,6 @@ const WidgetColorMemory = ({ defaultProps, gameProps, hexToRgb, randomColor }) =
                             </div>
                         </SimpleBar>
                         : <></>}
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

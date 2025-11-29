@@ -2,7 +2,8 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-
+import { color } from '../..';
+import { classStack, decorationValue } from '../../data';
 
 let audioSpin = new Audio('/resources/audio/spin.wav');
 let size = 290;
@@ -15,7 +16,7 @@ let spinStart = 0;
 let progress = 0;
 let duration = 0;
 
-const WidgetPickerWheel = ({ defaultProps, color }) => {
+const WidgetPickerWheel = ({ defaultProps }) => {
     const [state, setState] = useState({
         segments: ['Me', 'I', 'Myself', 'Yours truly', 'Ourself'],
         segmentsColor: ['#EE4040', '#F0CF50', '#815CD1', '#3DA5E0', '#FF9000'],
@@ -263,7 +264,7 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('pickerwheel')}
             onStop={(event, data) => {
@@ -278,14 +279,22 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                 <h2 id='pickerwheel-widget-heading'
                     className='screen-reader-only'>Picker Wheel Widget</h2>
                 <div id='pickerwheel-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='pickerwheel-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('pickerwheel', 'fun')}
                     {/* Input */}
                     <div className='flex-center wrap row gap space-nicely space-bottom length-longer'>
@@ -322,7 +331,6 @@ const WidgetPickerWheel = ({ defaultProps, color }) => {
                         <span className='text-animation aesthetic-scale scale-self font largerer bold break-word'
                            onClick={handleOverlay}>{state.winner}</span>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

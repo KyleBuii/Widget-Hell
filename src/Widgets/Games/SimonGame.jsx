@@ -7,7 +7,7 @@ import { BsArrowCounterclockwise } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, decorationValue } from '../../data';
 
 let colors = {
     1: { current: '#3edd4b', new: '#116017' },
@@ -260,7 +260,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('simongame')}
             onStop={(event, data) => {
@@ -275,14 +275,22 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                 <h2 id='simongame-widget-heading'
                     className='screen-reader-only'>Simon Game Widget</h2>
                 <div id='simongame-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='simongame-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('simongame', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'
@@ -375,19 +383,16 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                         </button>
                     </div>
                     {/* Settings Popout */}
-                    <Draggable cancel='span, .slider, button'
-                        position={{
-                            x: defaultProps.popouts.settings.position.x,
-                            y: defaultProps.popouts.settings.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.settings.position.x, y: defaultProps.popouts.settings.position.y }}
                         onStop={(event, data) => {
                             defaultProps.updatePosition('simongame', 'games', data.x, data.y, 'popout', 'settings');
                         }}
+                        cancel='span, .slider, button'
                         bounds={defaultProps.calculateBounds('simongame-widget', 'simongame-popout-settings')}>
                         <div id='simongame-popout-settings'
                             className='popout'>
                             <div id='simongame-popout-animation-settings'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <div className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
                                     <div className='div-group'>
                                         <span className='font small when-elements-are-not-straight space-nicely space-bottom length-short'>
@@ -423,7 +428,6 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

@@ -6,7 +6,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaBomb, FaRegClock } from 'react-icons/fa6';
 import { PiFlagPennantFill } from 'react-icons/pi';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, decorationValue } from '../../data';
 
 let intervalTimer;
 
@@ -354,7 +354,7 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('minesweeper')}
             onStop={(event, data) => {
@@ -369,14 +369,22 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                 <h2 id='minesweeper-widget-heading'
                     className='screen-reader-only'>Minesweeper Widget</h2>
                 <div id='minesweeper-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='minesweeper-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('minesweeper', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -473,7 +481,6 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
                             })}
                         </div>
                         : <></>}
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

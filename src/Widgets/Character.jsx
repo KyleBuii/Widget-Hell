@@ -2,38 +2,41 @@ import React, { memo, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
+import { classStack, decorationValue, punctuation } from '../data';
 
-
-const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
+const WidgetCharacter = ({ defaultProps, parentRef }) => {
     useEffect(() => {
         window.addEventListener('equip item', addItem);
         window.addEventListener('unequip item', removeItem);
-        for (let i in equipment) {
-            if (equipment[i].name !== '') {
+
+        const refEquipment = parentRef.state.equipment;
+
+        for (let i in refEquipment) {
+            if (refEquipment[i].name !== '') {
                 /// Equipped items with no left and right
-                if (equipment[i].name !== undefined) {
+                if (refEquipment[i].name !== undefined) {
                     addItem({
                         'detail': {
-                            'name': equipment[i].name,
+                            'name': refEquipment[i].name,
                             'slot': i
                         }
                     });
                 } else {
                     /// Left equipped item
-                    if (equipment[i].left.name !== '') {
+                    if (refEquipment[i].left.name !== '') {
                         addItem({
                             'detail': {
-                                'name': equipment[i].left.name,
+                                'name': refEquipment[i].left.name,
                                 'slot': i,
                                 'side': 'left'
                             }
                         });
                     };
                     /// Right equipped item
-                    if (equipment[i].right.name !== '') {
+                    if (refEquipment[i].right.name !== '') {
                         addItem({
                             'detail': {
-                                'name': equipment[i].right.name,
+                                'name': refEquipment[i].right.name,
                                 'slot': i,
                                 'side': 'right'
                             }
@@ -81,7 +84,7 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('character')}
             onStop={(event, data) => {
@@ -96,14 +99,22 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
                 <h2 id='character-widget-heading'
                     className='screen-reader-only'>Character Widget</h2>
                 <div id='character-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='character-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('character', 'utility')}
                     {/* Character */}
                     <div id='character-container'>
@@ -164,7 +175,6 @@ const WidgetCharacter = ({ defaultProps, punctuation, equipment }) => {
                         <div id='character-consumable5'></div>
                         <div id='character-consumable6'></div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

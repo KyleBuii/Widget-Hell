@@ -5,9 +5,9 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FcAddColumn, FcAddRow, FcDeleteColumn, FcDeleteRow } from "react-icons/fc";
 import Spreadsheet from 'react-spreadsheet';
 import SimpleBar from 'simplebar-react';
+import { classStack, decorationValue, smallMedIcon } from '../../data';
 
-
-const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
+const WidgetSpreadsheet = ({ defaultProps }) => {
     const [state, setState] = useState({
         colLabels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
         rowLabels: [1, 2, 3, 4, 5, 6, 7, 8],
@@ -135,7 +135,7 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('spreadsheet')}
             onStop={(event, data) => {
@@ -150,14 +150,22 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                 <h2 id='spreadsheet-widget-heading'
                     className='screen-reader-only'>Spreadsheet Widget</h2>
                 <div id='spreadsheet-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='spreadsheet-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('spreadsheet', 'utility')}
                     <div>
                         <button className='button-match inverse'
@@ -196,7 +204,6 @@ const WidgetSpreadsheet = ({ defaultProps, smallMedIcon }) => {
                             rowLabels={state.rowLabels}
                             onChange={(val) => handleData(val)}/>
                     </SimpleBar>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

@@ -5,11 +5,11 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaDroplet, FaLocationDot, FaRegCircleQuestion, FaWind } from 'react-icons/fa6';
 import { MdWaves } from 'react-icons/md';
 import { WiCloudyGusts } from 'react-icons/wi';
-
+import { classStack, decorationValue, smallIcon } from '../../data';
 
 let timeoutTextShadow;
 
-const WidgetWeather = ({ defaultProps, smallIcon }) => {
+const WidgetWeather = ({ defaultProps }) => {
     const [state, setState] = useState({
         help: false,
         input: '',
@@ -153,7 +153,7 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('weather')}
             onStop={(event, data) => {
@@ -168,14 +168,22 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                 <h2 id='weather-widget-heading'
                     className='screen-reader-only'>Weather Widget</h2>
                 <div id='weather-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='weather-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('weather', 'utility')}
                     {/* Search Container */}
                     <div className='flex-center row gap small-gap space-nicely space-bottom'>
@@ -207,17 +215,14 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                         </button>
                     </div>
                     {/* Search help popout */}
-                    <Draggable cancel='li'
-                        position={{
-                            x: defaultProps.popouts.searchhelp.position.x,
-                            y: defaultProps.popouts.searchhelp.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.searchhelp.position.x, y: defaultProps.popouts.searchhelp.position.y }}
                         onStop={(event, data) => defaultProps.updatePosition('weather', 'utility', data.x, data.y, 'popout', 'searchhelp')}
+                        cancel='li'
                         bounds={defaultProps.calculateBounds('weather-widget', 'weather-help-popout')}>
                         <div id='weather-help-popout'
                             className='popout'>
                             <div id='weather-help-popout-animation'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <ul className='aesthetic-scale scale-li font medium'>
                                     <li>Latitude and Longitude <br/><span className='font small transparent-normal'>e.g: 48.8567,2.3508</span></li>
                                     <li>City name <span className='font small transparent-normal'>e.g.: Paris</span></li>
@@ -323,7 +328,6 @@ const WidgetWeather = ({ defaultProps, smallIcon }) => {
                     </div>
                     {/* Last Updated */}
                     <span className='text-animation font micro transparent-normal'>Last updated: {state.lastUpdated}</span>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

@@ -54,12 +54,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     - [Cherry Blossom](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by dandelion_tea
     - [Petal](https://codepen.io/rudtjd2548/pen/qBpVzxP) by Evan Jin (진경성)
 - **Rock Paper Scissor**
-    - [Choices](https://www.umop.com/rps101.htm) - by David C. Lovelace
+    - [Choices](https://www.umop.com/rps101.htm) by David C. Lovelace
+- **SCP**
+    - [SCP-002 Image](https://scp-wiki.wikidot.com/scp-002) by Elenee FishTruck
 - **Setting**
     - **Cursor**
         - [Cute Koi Carp](https://custom-cursor.com/en/collection/cute-cursors/cute-koi-carp) by Custom Cursor
         - [Cute Squid](https://custom-cursor.com/en/collection/kawaii/cute-squid) by Custom Cursor
         - [Delicate Pink](https://custom-cursor.com/en/collection/color/delicate-pink) by Custom Cursor
+        - [Reimu](https://yoiysan.fanbox.cc/posts/9177132) by yoiy_san
+        - [Gigi Murin](https://ko-fi.com/s/2d2841bf1f) by NOiiRE
     - **Decoration**
         - [Ribbon](https://pixabay.com/illustrations/bow-ribbon-flat-ribbon-bow-8952489/) by Chaudaryumair
         - [Santa Hat](https://pixabay.com/vectors/santa-hat-christmas-red-clipart-7602300/) by OseBoi

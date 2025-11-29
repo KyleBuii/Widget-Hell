@@ -2,10 +2,11 @@ import DOMPurify from 'dompurify';
 import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
-import { FaBars, FaGripHorizontal } from 'react-icons/fa';
+import { FaGripHorizontal } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-
+import { classStack, decorationValue } from '../../data';
+import { copyToClipboard } from '../../helpers';
 
 const genres = [
     'Action', 'Adventure', 'Comedy', 'Drama', 'Ecchi',
@@ -804,7 +805,7 @@ class WidgetAnimeSearcher extends Component {
         const currentItem = this.state.media[this.state.currentMedia];
 
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('animesearcher')}
                 onStop={(event, data) => {
@@ -819,14 +820,22 @@ class WidgetAnimeSearcher extends Component {
                     <h2 id='animesearcher-widget-heading'
                         className='screen-reader-only'>Anime Searcher Widget</h2>
                     <div id='animesearcher-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='animesearcher-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('animesearcher', 'utility')}
                         <div className='flex-center row gap'>
                             <div className='flex-center column gap'>
@@ -1097,7 +1106,7 @@ class WidgetAnimeSearcher extends Component {
                                                     <span className='aesthetic-scale scale-self origin-left flex-center row gap font bold medium'>
                                                         <span style={{ cursor: 'pointer' }}
                                                             onClick={() => {
-                                                                this.props.copyToClipboard(currentItem.titleEnglish || currentItem.titleRomaji);
+                                                                copyToClipboard(currentItem.titleEnglish || currentItem.titleRomaji);
                                                             }}>
                                                             {currentItem.titleEnglish || currentItem.titleRomaji}
                                                         </span>
@@ -1217,7 +1226,7 @@ class WidgetAnimeSearcher extends Component {
                                                         <div className='flex-center column gap only-justify-content'>
                                                             <span className='link-match font bold medium'
                                                                 onClick={() => {
-                                                                    this.props.copyToClipboard(currentItem.characters[this.state.characterIndex].name.full);
+                                                                    copyToClipboard(currentItem.characters[this.state.characterIndex].name.full);
                                                                 }}>{currentItem.characters[this.state.characterIndex].name.full}</span>
                                                             {(currentItem.characters[this.state.characterIndex].name.alternative.length !== 0)
                                                                 ? <div className='flex-center row gap only-align-items font transparent-bold small'>
@@ -1383,7 +1392,7 @@ class WidgetAnimeSearcher extends Component {
                                                 <span className='aesthetic-scale scale-self origin-left flex-center row gap font bold medium'
                                                     style={{ cursor: 'pointer', textAlign: 'center' }}>
                                                     <span onClick={() => {
-                                                        this.props.copyToClipboard(data.titleEnglish || data.titleRomaji);
+                                                        copyToClipboard(data.titleEnglish || data.titleRomaji);
                                                     }}>
                                                         {data.titleEnglish || data.titleRomaji}
                                                     </span>
@@ -1445,7 +1454,6 @@ class WidgetAnimeSearcher extends Component {
                                 </div>
                             </div>
                         </div>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}

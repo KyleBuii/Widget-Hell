@@ -7,11 +7,12 @@ import { BsPlusSlashMinus } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegPaste, FaRegTrashCan } from 'react-icons/fa6';
 import { FiDelete } from 'react-icons/fi';
-
+import { classStack, decorationValue, medIcon, operation } from '../../data';
+import { copyToClipboard } from '../../helpers';
 
 let timeoutTextShadow;
 
-const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation }) => {
+const WidgetCalculator = ({ defaultProps }) => {
     const [state, setState] = useState({
         question: '',
         input: '',
@@ -25,30 +26,38 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
     useEffect(() => {
         const inputField = document.getElementById('calculator-input-field');
         inputField.addEventListener('keydown', handleKeypress);
+
         if (sessionStorage.getItem('calculator') !== null) {
             setState((prevState) => {
                 const newState = {
                     ...prevState,
                     memory: JSON.parse(sessionStorage.getItem('calculator')).memory
                 };
+
                 newState.memory.forEach((value, index) => {
                     createLabelMemory(value, index);    
                 });
+
                 return newState;
             });
         };
+
         return () => {
             inputField.removeEventListener('keydown', handleKeypress);
+
             let data = {
                 memory: refMemory.current
             };
+
             sessionStorage.setItem('calculator', JSON.stringify(data));
+
             clearTimeout(timeoutTextShadow);
         };
     }, []);
 
     useEffect(() => {
         refMemory.current = state.memory;
+
         updateLabelMemory();
     }, [state.memory]);
 
@@ -469,7 +478,7 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('calculator')}
             onStop={(event, data) => { 
@@ -484,14 +493,22 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                 <h2 id='calculator-widget-heading'
                     className='screen-reader-only'>Calculator Widget</h2>
                 <div id='calculator-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='calculator-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: medIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('calculator', 'utility')}
                     {/* Display */}
                     <div id='calculator-display-container'
@@ -655,19 +672,16 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             value='='>=</button>
                     </div>
                     {/* Expand Input Popout */}
-                    <Draggable cancel='p'
-                        position={{
-                            x: defaultProps.popouts.expandinput.position.x,
-                            y: defaultProps.popouts.expandinput.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.expandinput.position.x, y: defaultProps.popouts.expandinput.position.y }}
                         onStop={(event, data) => {
                             defaultProps.updatePosition('calculator', 'utility', data.x, data.y, 'popout', 'expandinput');
                         }}
+                        cancel='p'
                         bounds={defaultProps.calculateBounds('calculator-widget', 'calculator-input-expand-popout')}>
                         <div id='calculator-input-expand-popout'
                             className='popout'>
                             <div id='calculator-input-expand-popout-animation'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <p id='calculator-input-expand-text'
                                     className='cut-scrollbar-corner-part-2 p area-short font medium break-word space-nicely space-all length-long'>
                                     {state.input}
@@ -675,7 +689,6 @@ const WidgetCalculator = ({ defaultProps, copyToClipboard, medIcon, operation })
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

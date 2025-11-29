@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-
+import { classStack, decorationValue } from '../../data';
 
 const WidgetFacts = ({ defaultProps }) => {
     const [state, setState] = useState({
@@ -67,7 +67,7 @@ const WidgetFacts = ({ defaultProps }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('facts')}
             onStop={(event, data) => {
@@ -82,14 +82,22 @@ const WidgetFacts = ({ defaultProps }) => {
                 <h2 id='facts-widget-heading'
                     className='screen-reader-only'>Facts Widget</h2>
                 <div id='facts-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='facts-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('facts', 'fun')}
                     {/* Facts */}
                     <div className='aesthetic-scale scale-span flex-center column gap only-justify-content'>
@@ -104,7 +112,6 @@ const WidgetFacts = ({ defaultProps }) => {
                                 : <span>No facts</span>}
                         </div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

@@ -1,18 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { FaRegClock } from 'react-icons/fa6';
-// import { AiOutlineSetting } from 'react-icons/ai';
-import { memo } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import { FaRegClock } from 'react-icons/fa6';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { breakoutPatterns, classStack, decorationValue } from '../../data';
 
 let dx = 2;
 let dy = -2;
 let intervalGame, intervalTimer;
 
-const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
+const WidgetBreakout = ({ defaultProps, gameProps }) => {
     const [state, setState] = useState({
         paddle: {
             height: 12,
@@ -280,8 +278,8 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
     };
 
     const generateBricks = () => {
-        let randomPattern = Math.floor(Math.random() * patterns.length);
-        let patternString = patterns[randomPattern].replace(/\s/g, '');
+        let randomPattern = Math.floor(Math.random() * breakoutPatterns.length);
+        let patternString = breakoutPatterns[randomPattern].replace(/\s/g, '');
         let charCount = 0;
         let newBricks = [];
         let newBrickCount = 0;
@@ -400,7 +398,7 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('breakout')}
             onStop={(event, data) => {
@@ -415,14 +413,22 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                 <h2 id='breakout-widget-heading'
                     className='screen-reader-only'>Breakout Widget</h2>
                 <div id='breakout-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='breakout-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('breakout', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -485,7 +491,6 @@ const WidgetBreakout = ({ defaultProps, gameProps, patterns }) => {
                             </IconContext.Provider>
                         </button> */}
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

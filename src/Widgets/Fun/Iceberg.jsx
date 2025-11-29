@@ -1,11 +1,13 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { FaGripHorizontal } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
 import Draggable from 'react-draggable';
+import { IconContext } from 'react-icons';
+import { FaGripHorizontal } from 'react-icons/fa';
+import ReactPlayer from 'react-player';
 import Select from 'react-select';
+import { classStack, decorationValue, fetchedData } from '../../data';
+import { formatGroupLabel, menuListScrollbar } from '../../helpers';
 
-
-const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectTheme, menuListScrollbar }) => {
+const WidgetIceberg = ({ defaultProps, parentRef }) => {
     const [optionsIceberg, setOptionsIceberg] = useState([
         {
             label: 'Icebergs',
@@ -16,17 +18,19 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
     const [selectedLevel, setSelectedLevel] = useState(0);
     const [selectedItem, setSelectedItem] = useState(0);
 
+    const { icebergs } = fetchedData;
+
     const selectedEntry = useMemo(() => {
-        const iceberg = Object.values(icebergData)[selectedIceberg.value];
+        const iceberg = Object.values(icebergs)[selectedIceberg.value];
         const level = iceberg[selectedLevel];
         const entries = Object.entries(level).filter(([key]) => key !== '_comment');
         return entries[selectedItem];
-    }, [icebergData, selectedIceberg, selectedLevel, selectedItem]);
+    }, [icebergs, selectedIceberg, selectedLevel, selectedItem]);
 
     const [title, data] = selectedEntry;
 
     useEffect(() => {
-        const dataKeys = Object.keys(icebergData).filter((key) => key !== '_comment');
+        const dataKeys = Object.keys(icebergs).filter((key) => key !== '_comment');
         const newOptions = [...optionsIceberg];
 
         for (let keyIndex = 0; keyIndex < dataKeys.length; keyIndex++) {
@@ -52,7 +56,7 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('iceberg')}
             onStop={(event, data) => {
@@ -67,15 +71,22 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
                 <h2 id='iceberg-widget-heading'
                     className='screen-reader-only'>Iceberg Widget</h2>
                 <div id='iceberg-widget-animation'
-                    className='widget-animation custom-shape'>
-                    {/* Drag Handle */}
+                    className={`widget-animation custom-shape ${classStack}`}>
                     <span id='iceberg-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
-                    {/* Hotbar */}
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('iceberg', 'fun')}
                     <Select className='select-match'
                         defaultValue={optionsIceberg[0]['options'][0]}
@@ -90,7 +101,7 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
                             ...theme,
                             colors: {
                                 ...theme.colors,
-                                ...selectTheme
+                                ...parentRef.state.selectTheme
                             }
                         })}/>
                     <div className='iceberg-template'>
@@ -100,7 +111,7 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
                             loading='lazy'
                             decoding='async'/>
                         <div className='iceberg-levels'>
-                            {icebergData[Object.keys(icebergData)[selectedIceberg.value]].map((level, levelIndex) => {
+                            {icebergs[Object.keys(icebergs)[selectedIceberg.value]].map((level, levelIndex) => {
                                 return <div className='iceberg-level'
                                     key={`level ${levelIndex}`}>
                                     {Object.keys(level)
@@ -116,16 +127,13 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
                             })}
                         </div>
                     </div>
-                    <Draggable cancel='a'
-                        position={{
-                            x: defaultProps.popouts.viewItem.position.x,
-                            y: defaultProps.popouts.viewItem.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.viewItem.position.x, y: defaultProps.popouts.viewItem.position.y }}
                         onStop={(event, data) => defaultProps.updatePosition('iceberg', 'fun', data.x, data.y, 'popout', 'viewItem')}
+                        cancel='a'
                         bounds={defaultProps.calculateBounds('iceberg-widget', 'iceberg-view-item-popout')}>
                         <div id='iceberg-view-item-popout'
                             className='popout'>
-                            <div className='popout-animation iceberg-view-item-popout-animation'>
+                            <div className={`popout-animation iceberg-view-item-popout-animation ${classStack}`}>
                                 {(data.image !== '')
                                     && <img src={`/resources/iceberg/${data.image}`}
                                         alt={title}
@@ -141,18 +149,26 @@ const WidgetIceberg = ({ defaultProps, icebergData, formatGroupLabel, selectThem
                                             </li>
                                         })}
                                     </ul>}
-                                <div className='flex-center row gap small-gap flex-wrap'>
+                                {(data.video)
+                                    && data.video.map((item, itemIndex) => {
+                                        return <div key={`video ${itemIndex}`}
+                                            style={{width: '100%'}}>
+                                            <ReactPlayer url={item}
+                                                width={'100%'}/>
+                                        </div>})}
+                                <div className='font flex-center row gap small-gap flex-wrap'>
                                     {Object.entries(data.source).map(([sourceName, sourceLink], sourceIndex) => {
-                                        return <a className='link-match'
-                                            href={sourceLink || 'https://www.youtube.com/watch?v=xvFZjo5PgG0'}
-                                            referrerPolicy='no-referrer'
-                                            key={`source ${sourceIndex}`}>{sourceName || 'N/A'}</a>
+                                        return sourceLink
+                                            ? <a className='link-match'
+                                                href={sourceLink}
+                                                referrerPolicy='no-referrer'
+                                                key={`source ${sourceIndex}`}>{sourceName || 'N/A'}</a>
+                                            : <span key={`source ${sourceIndex}`}>{sourceName}</span>
                                     })}
                                 </div>
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

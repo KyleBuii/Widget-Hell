@@ -5,7 +5,8 @@ import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaArrowRightFromBracket, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import Select from 'react-select';
-
+import { classStack, decorationValue, languages, smallIcon } from '../../data';
+import { copyToClipboard, formatGroupLabel, menuListScrollbar, randSentence } from '../../helpers';
 
 let timeoutCopy;
 let optionsTranslateFrom = [
@@ -23,7 +24,7 @@ let optionsTranslateTo = [
     }
 ];
 
-const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, randSentence, languages, talk, formatGroupLabel, selectTheme, menuListScrollbar, smallIcon }) => {
+const WidgetGoogleTranslator = ({ defaultProps, parentRef }) => {
     const [state, setState] = useState({
         input: '',
         converted: '',
@@ -145,7 +146,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
 
     const handleSwap = () => {
         if (state.from.value !== state.to.value) {
-            randomColor();
+            parentRef.randomColor();
             const prev = state.from;
             setState((prevState) => ({
                 ...prevState,
@@ -170,7 +171,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
     };
 
     const handleTalk = () => {
-        talk(state.converted);
+        parentRef.talk(state.converted);
     };
 
     const handleCopy = () => {
@@ -183,7 +184,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('googletranslator')}
             onStop={(event, data) => {
@@ -198,14 +199,22 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                 <h2 id='googletranslator-widget-heading'
                     className='screen-reader-only'>Google Translator Widget</h2>
                 <div id='googletranslator-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='googletranslator-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('googletranslator', 'utility')}
                     {/* Selects Container */}
                     <div className='flex-center wrap space-nicely space-bottom'>
@@ -224,7 +233,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    ...selectTheme
+                                    ...parentRef.state.selectTheme
                                 }
                             })}/>
                         <button className='button-match inverse'
@@ -249,7 +258,7 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    ...selectTheme
+                                    ...parentRef.state.selectTheme
                                 }
                             })}/>
                         <button className='button-match inverse'
@@ -303,7 +312,6 @@ const WidgetGoogleTranslator = ({ defaultProps, randomColor, copyToClipboard, ra
                         <button className='button-match fadded'
                             onClick={handleRandSentence}>Random sentence</button>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

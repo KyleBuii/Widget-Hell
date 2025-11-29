@@ -2,13 +2,15 @@ import React, { memo, useEffect } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
+import { classStack, decorationValue } from '../../data';
 
-
-const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
+const WidgetSticker = ({ defaultProps, parentRef }) => {
     useEffect(() => {
-        if (stickers.length !== 0){
-            for (let i = 0; i < stickers.length; i+=2) {
-                createPositionEditor(stickers[i], stickers[i + 1]);
+        const refStickers = parentRef.state.stickers;
+
+        if (refStickers.length !== 0){
+            for (let i = 0; i < refStickers.length; i+=2) {
+                createPositionEditor(refStickers[i], refStickers[i + 1]);
             };
         };
     }, []);
@@ -31,7 +33,7 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                 elementImage.style.zIndex = '1';
                 elementWidgetContainer.appendChild(elementImage);
                 createPositionEditor(reader.fileName, elementImage);
-                updateStickers('add', reader.fileName
+                parentRef.updateStickers('add', reader.fileName
                     .substring(0, 50)
                     .replace(/^./, (char) => char.toUpperCase())
                     .replace(/(.(jpe?g|gif|png|tiff?|webp|bmp))$/, ''),
@@ -119,13 +121,13 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
             elementStickersContainer.removeChild(elementInputX);
             elementStickersContainer.removeChild(elementInputY);
             elementStickersContainer.removeChild(elementDelete);
-            updateStickers('remove', pretierName);
+            parentRef.updateStickers('remove', pretierName);
         };
         elementStickersContainer.append(elementName, elementInputX, elementInputY, elementDelete);
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('sticker')}
             onStop={(event, data) => {
@@ -140,14 +142,22 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                 <h2 id='sticker-widget-heading'
                     className='screen-reader-only'>Sticker Widget</h2>
                 <div id='sticker-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='sticker-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('sticker', 'fun')}
                     <div className='flex-center column gap small-gap'>
                         {/* File Upload Button */}
@@ -165,7 +175,6 @@ const WidgetSticker = ({ defaultProps, stickers, updateStickers }) => {
                         <div id='sticker-stickers'
                             className='font'></div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

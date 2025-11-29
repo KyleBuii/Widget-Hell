@@ -3,11 +3,11 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import ReactPlayer from 'react-player';
-
+import { classStack, decorationValue, motivationVideos } from '../../data';
 
 let playedIndexs = [];
 
-const WidgetMotivation = ({ defaultProps, motivationVideos }) => {
+const WidgetMotivation = ({ defaultProps }) => {
     const [videoIndex, setVideoIndex] = useState(0);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const WidgetMotivation = ({ defaultProps, motivationVideos }) => {
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('motivation')}
             onStop={(event, data) => {
@@ -38,15 +38,22 @@ const WidgetMotivation = ({ defaultProps, motivationVideos }) => {
                 <h2 id='motivation-widget-heading'
                     className='screen-reader-only'>Motivation Widget</h2>
                 <div id='motivation-widget-animation'
-                    className='widget-animation custom-shape'>
-                    {/* Drag Handle */}
+                    className={`widget-animation custom-shape ${classStack}`}>
                     <span id='motivation-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
-                    {/* Hotbar */}
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('motivation', 'utility')}
                     <img src='/resources/singles/theatre.webp'
                         alt='theatre'
@@ -67,7 +74,6 @@ const WidgetMotivation = ({ defaultProps, motivationVideos }) => {
                                 },
                             }
                         }}/>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

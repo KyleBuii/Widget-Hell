@@ -6,7 +6,7 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
 import { FaRegChessPawn } from 'react-icons/fa6';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, decorationValue } from '../../data';
 
 let timeoutRandomMove;
 let intervalTimer;
@@ -309,7 +309,7 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('chess')}
             onStop={(event, data) => {
@@ -341,14 +341,22 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                         showPromotionDialog={state.promotionDialog}/>
                 </div>
                 <div id='chess-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='chess-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('chess', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -393,7 +401,6 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                     <div className='flex-center'>
                         <div id='chess-captured-pieces-black'></div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

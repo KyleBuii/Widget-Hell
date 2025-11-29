@@ -9,7 +9,8 @@ import { FaArrowDownLong } from 'react-icons/fa6';
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
 import 'react-time-picker/dist/TimePicker.css';
-
+import { classStack, decorationValue } from '../../data';
+import { formatGroupLabel, menuListScrollbar, sortSelect } from '../../helpers';
 
 const optionsTimzones = [
     {
@@ -225,7 +226,7 @@ class WidgetTimeConversion extends Component {
                 timezone: dataSessionStorage.timezone
             });
         };
-        this.props.sortSelect(optionsTimzones);
+        sortSelect(optionsTimzones);
     };
 
     componentWillUnmount() {
@@ -237,7 +238,7 @@ class WidgetTimeConversion extends Component {
 
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('timeconversion')}
                 onStop={(event, data) => {
@@ -252,14 +253,22 @@ class WidgetTimeConversion extends Component {
                     <h2 id='timeconversion-widget-heading'
                         className='screen-reader-only'>Time Conversion Widget</h2>
                     <div id='timeconversion-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='timeconversion-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('timeconversion', 'utility')}
                         {/* Time Conversion Container */}
                         <div id='timeconversion-container'
@@ -363,15 +372,15 @@ class WidgetTimeConversion extends Component {
                                             })
                                         }
                                         options={optionsTimzones}
-                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        formatGroupLabel={formatGroupLabel}
                                         components={{
-                                            MenuList: this.props.menuListScrollbar
+                                            MenuList: menuListScrollbar
                                         }}
                                         theme={(theme) => ({
                                             ...theme,
                                             colors: {
                                                 ...theme.colors,
-                                                ...this.props.selectTheme
+                                                ...this.props.parentRef.state.selectTheme
                                             }
                                         })}/>
                                 </div>
@@ -389,7 +398,6 @@ class WidgetTimeConversion extends Component {
                                 onChange={(val) => this.handleChange('date', val)}
                                 value={this.state.date}/>
                         </div>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}

@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { FaGripHorizontal, FaRandom } from 'react-icons/fa';
+import { classStack, decorationValue, microIcon } from '../../data';
 
 const P = new Pokedex.Pokedex();
 const round = (value, precision = 3) => parseFloat(value.toFixed(precision));
@@ -19,7 +20,7 @@ let springBackground = { x: 50, y: 50 };
 let springRotateDelta = { x: 0, y: 0 };
 let timeoutReset;
 
-const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
+const WidgetPokemonSearch = ({ defaultProps }) => {
     const [state, setState] = useState({
         input: '',
         searched: 'furret',
@@ -320,7 +321,7 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('pokemonsearch')}
             onStop={(event, data) => {
@@ -335,14 +336,22 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                 <h2 id='pokemonsearch-widget-heading'
                     className='screen-reader-only'>Pokemon Search Widget</h2>
                 <div id='pokemonsearch-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='pokemonsearch-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('pokemonsearch', 'fun')}
                     {/* Pokemon Search */}
                     <div className='flex-center column gap space-nicely space-bottom length-longer'>
@@ -493,17 +502,14 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                         </div>
                     </div>
                     {/* Settings Popout */}
-                    <Draggable cancel='button, .radio-match'
-                        position={{
-                            x: defaultProps.popouts.settings.position.x,
-                            y: defaultProps.popouts.settings.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.settings.position.x, y: defaultProps.popouts.settings.position.y }}
                         onStop={(event, data) => defaultProps.updatePosition('pokemonsearch', 'fun', data.x, data.y, 'popout', 'settings')}
+                        cancel='button, .radio-match'
                         bounds={defaultProps.calculateBounds('pokemonsearch-widget', 'pokemonsearch-popout-setting')}>
                         <div id='pokemonsearch-popout-setting'
                             className='popout'>
                             <div id='pokemonsearch-popout-animation-setting'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <div className='grid space-nicely space-all length-long font medium'>
                                     <button id='pokemonsearch-popout-setting-button-shiny'
                                         className='button-match option opt-long disabled-option'
@@ -641,7 +647,6 @@ const WidgetPokemonSearch = ({ defaultProps, microIcon }) => {
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

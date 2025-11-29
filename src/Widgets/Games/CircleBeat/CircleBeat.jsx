@@ -3,6 +3,7 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import ReactPlayer from 'react-player';
+import { classStack, decorationValue } from '../../../data';
 import { EventBus } from './Game/EventBus';
 import { PhaserGame } from './Game/PhaserGame';
 
@@ -175,7 +176,7 @@ const WidgetCircleBeat = ({ defaultProps }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('circlebeat')}
             onStop={(event, data) => {
@@ -190,14 +191,22 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                 <h2 id='circlebeat-widget-heading'
                     className='screen-reader-only'>Circle Beat Widget</h2>
                 <div id='circlebeat-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='circlebeat-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('circlebeat', 'games')}
                     <ReactPlayer id='circlebeat-video'
                         ref={playerRef}
@@ -233,7 +242,6 @@ const WidgetCircleBeat = ({ defaultProps }) => {
                         <button className='button-game'
                             type='submit'>Add</button>
                     </form>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

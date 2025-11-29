@@ -5,7 +5,8 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaQuestion, FaRegClock } from 'react-icons/fa';
 import { TbMoneybag } from 'react-icons/tb';
 import Select from 'react-select';
-
+import { classStack, decorationValue } from '../../data';
+import { formatGroupLabel, menuListScrollbar, sortSelect } from '../../helpers';
 
 const optionsCategory = [
     {
@@ -38,8 +39,7 @@ const optionsType = [
 ];
 let intervalTimer = undefined;
 
-
-const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, sortSelect, menuListScrollbar }) => {
+const WidgetTrivia = ({ defaultProps, gameProps, parentRef }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         timer: 0,
@@ -310,7 +310,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('trivia')}
             onStop={(event, data) => {
@@ -325,18 +325,25 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                 <h2 id='trivia-widget-heading'
                     className='screen-reader-only'>Trivia Widget</h2>
                 <div id='trivia-widget-animation'
-                    className='widget-animation'>
-                    {/* Author */}
+                    className={`widget-animation ${classStack}`}>
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}
-                    {/* Drag Handle */}
                     <span id='trivia-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('trivia', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -400,7 +407,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                                     ...theme,
                                     colors: {
                                         ...theme.colors,
-                                        ...selectTheme
+                                        ...parentRef.state.selectTheme
                                     }
                                 })}/>
                             <span className='origin-left'>Select Difficulty</span>
@@ -417,7 +424,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                                     ...theme,
                                     colors: {
                                         ...theme.colors,
-                                        ...selectTheme
+                                        ...parentRef.state.selectTheme
                                     }
                                 })}/>
                             <span className='origin-left'>Select Type</span>
@@ -434,7 +441,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, formatGroupLabel, selectTheme, 
                                     ...theme,
                                     colors: {
                                         ...theme.colors,
-                                        ...selectTheme
+                                        ...parentRef.state.selectTheme
                                     }
                                 })}/>
                         </div>

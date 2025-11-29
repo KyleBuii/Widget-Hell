@@ -3,13 +3,14 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, decorationValue } from '../../data';
+import { randSentence } from '../../helpers';
 
 const timeMax = 60;
 const wordLimit = 100;
 let timer;
 
-const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
+const WidgetTypingTest = ({ defaultProps, gameProps }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         time: timeMax,
@@ -311,7 +312,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('typingtest')}
             onStop={(event, data) => {
@@ -326,14 +327,22 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                 <h2 id='typingtest-widget-heading'
                     className='screen-reader-only'>Typing Test Widget</h2>
                 <div id='typingtest-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='typingtest-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('typingtest', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -432,7 +441,6 @@ const WidgetTypingTest = ({ defaultProps, gameProps, randSentence }) => {
                             </div>
                         </div>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

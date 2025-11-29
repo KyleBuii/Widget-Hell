@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
-
+import { classStack, dataLoaded, decorationValue, fetchedData, getData } from '../data';
 
 //#region Equipment Guide
 /* Stats Guide
@@ -30,65 +30,77 @@ Main Item -  Right Glove - Right Ring  -  Legging   - Left Ring  - Left Glove - 
 const audioItemOpen = new Audio('/resources/audio/switch_006.wav');
 const audioItemClose = new Audio('/resources/audio/switch_007.wav');
 const audioItemUnequip = new Audio('/resources/audio/cloth.wav');
+let items = {};
 
-const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, items, stats, abilities }) => {
+const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
     const [state, setState] = useState({
         item: { name: 'Creampuff', rarity: 'rare', slot: 'hidden' },
         abilities: []
     });
 
+    const { updateGameValue } = parentRef;
+    const { abilities, equipment, stats } = parentRef.state;
+
     useEffect(() => {
         audioItemOpen.volume = 0.5;
         audioItemClose.volume = 0.5;
+
         window.addEventListener('equip item', updateEquipment);
-        let itemSlot;
-        /// Fill equipment slots with image of equipped item
-        for (let i in equipment) {
-            if (equipment[i].name !== '') {
-                /// Equipped items with no left and right
-                if (equipment[i].name !== undefined) {
-                    itemSlot = document.getElementById(`equipment-slot-${i}`);
-                    itemSlot.style.backgroundImage = `url(${items[equipment[i].rarity][equipment[i].name].image})`;
-                    itemSlot.style.opacity = '1';
-                    itemSlot.onclick = () => {
-                        viewItem({
-                            ...equipment[i],
-                            'slot': i
-                        });
-                    };
-                } else {
-                    /// Left equipped item
-                    if (equipment[i].left.name !== '') {
-                        itemSlot = document.getElementById(`equipment-slot-${i}-left`);
-                        itemSlot.style.backgroundImage = `url(${items[equipment[i].left.rarity][equipment[i].left.name].image})`;
-                        itemSlot.style.transform = 'scaleX(-1)';
+
+        dataLoaded.then(() => {
+            items = getData('items');
+
+            let itemSlot;
+            /// Fill equipment slots with image of equipped item
+            for (let i in equipment) {
+                if (equipment[i].name !== '') {
+                    /// Equipped items with no left and right
+                    if (equipment[i].name !== undefined) {
+                        itemSlot = document.getElementById(`equipment-slot-${i}`);
+                        itemSlot.style.backgroundImage = `url(${items?.[equipment[i].rarity][equipment[i].name].image})`;
                         itemSlot.style.opacity = '1';
                         itemSlot.onclick = () => {
                             viewItem({
-                                ...equipment[i].left,
-                                'slot': i,
-                                'side': 'left'
+                                ...equipment[i],
+                                'slot': i
                             });
-                        };  
-                    };
-                    /// Right equipped item
-                    if (equipment[i].right.name !== '') {
-                        itemSlot = document.getElementById(`equipment-slot-${i}-right`);
-                        itemSlot.style.backgroundImage = `url(${items[equipment[i].right.rarity][equipment[i].right.name].image})`;
-                        itemSlot.style.transform = 'scaleX(1)';
-                        itemSlot.style.opacity = '1';
-                        itemSlot.onclick = () => {
-                            viewItem({
-                                ...equipment[i].right,
-                                'slot': i,
-                                'side': 'right'
-                            });
-                        };         
+                        };
+                    } else {
+                        /// Left equipped item
+                        if (equipment[i].left.name !== '') {
+                            itemSlot = document.getElementById(`equipment-slot-${i}-left`);
+                            itemSlot.style.backgroundImage = `url(${items?.[equipment[i].left.rarity][equipment[i].left.name].image})`;
+                            itemSlot.style.transform = 'scaleX(-1)';
+                            itemSlot.style.opacity = '1';
+                            itemSlot.onclick = () => {
+                                viewItem({
+                                    ...equipment[i].left,
+                                    'slot': i,
+                                    'side': 'left'
+                                });
+                            };  
+                        };
+                        /// Right equipped item
+                        if (equipment[i].right.name !== '') {
+                            itemSlot = document.getElementById(`equipment-slot-${i}-right`);
+                            itemSlot.style.backgroundImage = `url(${items?.[equipment[i].right.rarity][equipment[i].right.name].image})`;
+                            itemSlot.style.transform = 'scaleX(1)';
+                            itemSlot.style.opacity = '1';
+                            itemSlot.onclick = () => {
+                                viewItem({
+                                    ...equipment[i].right,
+                                    'slot': i,
+                                    'side': 'right'
+                                });
+                            };         
+                        };
                     };
                 };
             };
-        };
-        updateAbilities();
+
+            updateAbilities();
+        });
+
         return () => {
             window.removeEventListener('equip item', updateEquipment);
         };
@@ -162,17 +174,21 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             'name': event.detail.name,
             'rarity': event.detail.rarity
         };
+
         let itemSlot;
+
         if (event.detail.side) {
             if (equipment[event.detail.slot][event.detail.side].name !== event.detail.name
                 && equipment[event.detail.slot][event.detail.side].name === '') {
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}-${event.detail.side}`);
-                itemSlot.style.backgroundImage = `url(${items[itemData.rarity][itemData.name].image})`;
+                itemSlot.style.backgroundImage = `url(${items?.[itemData.rarity][itemData.name].image})`;
+
                 if (event.detail.side === 'left') {
                     itemSlot.style.transform = 'scaleX(-1)';
                 } else {
                     itemSlot.style.transform = 'scaleX(1)';
                 };
+                
                 itemSlot.style.opacity = '1';
                 itemSlot.onclick = () => {
                     viewItem({
@@ -186,7 +202,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
             if (equipment[event.detail.slot].name !== event.detail.name
                 && equipment[event.detail.slot].name === '') {
                 itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}`);
-                itemSlot.style.backgroundImage = `url(${items[itemData.rarity][itemData.name].image})`;
+                itemSlot.style.backgroundImage = `url(${items?.[itemData.rarity][itemData.name].image})`;
                 itemSlot.style.opacity = '1';
                 itemSlot.onclick = () => {
                     viewItem({
@@ -199,23 +215,29 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
     };
 
     const removeStats = (itemData) => {
-        let item = items[itemData.rarity][itemData.name];
+        let item = items?.[itemData.rarity][itemData.name];
         let newAbilities;
+
         if (item.type === 'ability' || item.type === 'both') {
             let indexRemove = abilities.indexOf(item.information);
+
             if (indexRemove === 0) {
                 newAbilities = [...abilities.slice(1)];
             } else {
                 newAbilities = [...abilities.slice(0, indexRemove), ...abilities.slice(indexRemove + 1)];
             };
+
             updateGameValue('abilities', newAbilities);
         };
+
         if (item.type === 'stat' || item.type === 'both') {
             let itemStats = Object.keys(item.stats);
             let newStats = {};
+
             for (let i in itemStats) {
                 newStats[itemStats[i]] = stats[itemStats[i]] - item.stats[itemStats[i]];
             };
+
             updateGameValue('stats', newStats);
         };
     };
@@ -246,7 +268,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('equipment')}
             onStop={(event, data) => {
@@ -261,14 +283,22 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                 <h2 id='equipment-widget-heading'
                     className='screen-reader-only'>Equipment Widget</h2>
                 <div id='equipment-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='equipment-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('equipment', 'utility')}
                     {/* Equipment Container */}
                     <SimpleBar style={{ maxHeight: '36em' }}
@@ -581,7 +611,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                         }}>
                         <span className='font bold large-medium'>{state.item.name}</span>
                         <div className='flex-center row gap medium-gap space-nicely space-all'>
-                            <img src={items[state.item.rarity][state.item.name].image}
+                            <img src={items?.[state.item.rarity]?.[state.item.name].image}
                                 alt='viewed inventory item'
                                 loading='lazy'
                                 decoding='async'/>
@@ -602,23 +632,23 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                                                 .replace(/^./, (char) => char.toUpperCase())
                                                 .replace(/[0-9]/, '')}</td>
                                         </tr>
-                                        {(/stat|both/.test(items[state.item.rarity][state.item.name].type))
-                                            ? Object.keys(items[state.item.rarity][state.item.name].stats)
+                                        {(/stat|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
+                                            ? Object.keys(items?.[state.item.rarity]?.[state.item.name].stats)
                                                 .map((value, index) => {
                                                     return <tr key={`row-stat-${index}`}>
                                                         <td scope='row'>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
                                                         <td>
-                                                            {(Math.sign(items[state.item.rarity][state.item.name].stats[value]) === -1)
+                                                            {(Math.sign(items?.[state.item.rarity]?.[state.item.name].stats[value]) === -1)
                                                                 ? ''
                                                                 : '+'}
-                                                            {items[state.item.rarity][state.item.name].stats[value]}
+                                                            {items?.[state.item.rarity]?.[state.item.name].stats[value]}
                                                         </td>
                                                     </tr>
                                                 })
                                             : <></>}
-                                        {(/ability|both/.test(items[state.item.rarity][state.item.name].type))
+                                        {(/ability|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
                                             ? <tr>
-                                                <td colSpan={2}>{items[state.item.rarity][state.item.name].information}</td>
+                                                <td colSpan={2}>{items?.[state.item.rarity]?.[state.item.name].information}</td>
                                             </tr>
                                             : <></>}
                                     </tbody>
@@ -626,20 +656,19 @@ const WidgetEquipment = ({ defaultProps, gameProps, updateGameValue, equipment, 
                             </SimpleBar>
                         </div>
                         <span dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(items[state.item.rarity][state.item.name].description)
+                            __html: DOMPurify.sanitize(items?.[state.item.rarity]?.[state.item.name].description)
                         }}></span>
-                        {(items[state.item.rarity][state.item.name].requirement)
+                        {(items?.[state.item.rarity]?.[state.item.name].requirement)
                             ? <span className='font micro'
                                 style={{
                                     color: 'red',
                                     opacity: '0.5'
-                                }}>Requirement: {items[state.item.rarity][state.item.name].requirement}</span>
+                                }}>Requirement: {items?.[state.item.rarity]?.[state.item.name].requirement}</span>
                             : <></>}
-                        <span className='font micro transparent-normal'>Source: {items[state.item.rarity][state.item.name].source}</span>
+                        <span className='font micro transparent-normal'>Source: {items?.[state.item.rarity]?.[state.item.name].source}</span>
                         <button className='button-match space-nicely space-top not-bottom'
                             onClick={(event) => unequipItem(event)}>Unequip</button>
                     </div>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

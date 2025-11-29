@@ -14,8 +14,11 @@ import ReactPaginate from 'react-paginate';
 import Select from 'react-select';
 import Switch from 'react-switch';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+import { widgetsFunActive, widgetsGamesActive, widgetsUtilityActive } from '../..';
+import { classStack, decorationValue, tricks } from '../../data';
+import { calculateBounds, dragStart, dragStop, formatGroupLabel, hexToRgb, menuListScrollbar, rgbToHex, selectStyleSmall, sortSelect } from '../../helpers';
 
-
+let ranOnce = false;
 let intervalTimeBased;
 let timeoutTrick;
 let previousCursor = null;
@@ -99,19 +102,19 @@ const optionsParticle = [
     {
         label: 'Particles',
         options: [
-            { value: 'default', label: 'Default' },
-            { value: 'circleConnect', label: 'Circle: Connect' },
-            { value: 'circlePop', label: 'Circle: Pop' },
-            { value: 'circleFreeMovement', label: 'Circle: Free Movement' },
-            { value: 'circleZigZag', label: 'Circle: Zig-Zag' },
-            { value: 'circleWander', label: 'Circle: Wander' },
-            { value: 'circleInfection', label: 'Circle: Infection' },
-            { value: 'circlePush', label: 'Circle: Push' },
-            { value: 'firework', label: 'Firework' },
-            { value: 'confetti', label: 'Confetti' },
-            { value: 'mouseCircle', label: 'Mouse: Circle' },
-            { value: 'mouseMagnifyingGlass', label: 'Mouse: Magnifying Glass' },
-            { value: 'heart', label: 'Heart' },
+            { value: 0, label: 'Default' },
+            { value: 1, label: 'Circle: Connect' },
+            { value: 2, label: 'Circle: Pop' },
+            { value: 3, label: 'Circle: Free Movement' },
+            { value: 4, label: 'Circle: Zig-Zag' },
+            { value: 5, label: 'Circle: Wander' },
+            { value: 6, label: 'Circle: Infection' },
+            { value: 7, label: 'Circle: Push' },
+            { value: 8, label: 'Firework' },
+            { value: 9, label: 'Confetti' },
+            { value: 10, label: 'Mouse: Circle' },
+            { value: 11, label: 'Mouse: Magnifying Glass' },
+            { value: 12, label: 'Heart' },
         ]
     }
 ];
@@ -166,6 +169,17 @@ const optionsCursor = [
             { value: 'cutesquid', label: 'Cute Squid' },
             { value: 'cutekoicarp', label: 'Cute Koi Carp' },
             { value: 'reimu', label: 'Reimu' },
+            { value: 'gigimurin', label: 'Gigi Murin' },
+        ]
+    }
+];
+const optionsCursorSize = [
+    {
+        label: 'Sizes',
+        options: [
+            { value: '32', label: '32x32' },
+            { value: '48', label: '48x48' },
+            { value: '64', label: '64x64' },
         ]
     }
 ];
@@ -174,6 +188,7 @@ class WidgetSetting extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            widgetData: {},
             values: {
                 screenDimmer: false,
                 screenDimmerSlider: false,
@@ -183,6 +198,7 @@ class WidgetSetting extends Component {
                 randomTrick: false,
                 live2D: false,
                 cursor: { value: 'default', label: 'Default' },
+                cursorSize: { value: '32', label: '32x32' },
                 reducedMotion: false,
             },
             search: '',
@@ -218,14 +234,14 @@ class WidgetSetting extends Component {
     };
 
     handleTrick() {
-        const combinedWidgets = [...this.props.widgetsUtilityActive, ...this.props.widgetsGamesActive, ...this.props.widgetsFunActive];
+        const combinedWidgets = [...widgetsUtilityActive, ...widgetsGamesActive, ...widgetsFunActive];
         if (combinedWidgets.length !== 0) {
             const randIndexWidget = Math.floor(Math.random() * combinedWidgets.length);
-            const randIndexAnimation = Math.floor(Math.random() * this.props.tricks.length);
+            const randIndexAnimation = Math.floor(Math.random() * tricks.length);
             const e = document.getElementById(combinedWidgets[randIndexWidget] + '-widget-animation');
             e.style.animation = 'none';
             window.requestAnimationFrame(() => {
-                e.style.animation = this.props.tricks[randIndexAnimation] + ' 2s';
+                e.style.animation = tricks[randIndexAnimation] + ' 2s';
             });
         };
     };
@@ -267,18 +283,18 @@ class WidgetSetting extends Component {
         };
         switch (event.detail.type) {
             case 'utility': {
-                const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(event.detail.element);
-                this.unorderedRemove(this.props.widgetsUtilityActive, widgetUtilityIndex);
+                const widgetUtilityIndex = widgetsUtilityActive.indexOf(event.detail.element);
+                this.unorderedRemove(widgetsUtilityActive, widgetUtilityIndex);
                 break;
             };
             case 'games': {
-                const widgetGamesIndex = this.props.widgetsGamesActive.indexOf(event.detail.element);
-                this.unorderedRemove(this.props.widgetsGamesActive, widgetGamesIndex);
+                const widgetGamesIndex = widgetsGamesActive.indexOf(event.detail.element);
+                this.unorderedRemove(widgetsGamesActive, widgetGamesIndex);
                 break;
             };
             case 'fun': {
-                const widgetFunIndex = this.props.widgetsFunActive.indexOf(event.detail.element);
-                this.unorderedRemove(this.props.widgetsFunActive, widgetFunIndex);
+                const widgetFunIndex = widgetsFunActive.indexOf(event.detail.element);
+                this.unorderedRemove(widgetsFunActive, widgetFunIndex);
                 break;
             };
             default: { break; };
@@ -319,39 +335,43 @@ class WidgetSetting extends Component {
                         this.props.updateWidgetsActive(what, where);
                     } else {
                         elementButton.classList.add('disabled');
-                        const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
-                        this.unorderedRemove(this.props.widgetsUtilityActive, widgetUtilityIndex);
+                        const widgetUtilityIndex = widgetsUtilityActive.indexOf(what);
+                        this.unorderedRemove(widgetsUtilityActive, widgetUtilityIndex);
                     };
                 });
                 break;
             };
             default: {
                 const button = document.getElementById('show-hide-widgets-popout-button-' + what);
+
                 this.props.showHide(what, where);
-                if (this.props.widgetActiveVariables[what] === false) {
+
+                if (!this.props.widgets[where][what].active) {
                     button.classList.remove('disabled-option');
                     this.props.updateWidgetsActive(what, where);
                 } else {
                     button.classList.add('disabled-option');
+
                     switch (where) {
                         case 'utility': {
-                            const widgetUtilityIndex = this.props.widgetsUtilityActive.indexOf(what);
-                            this.unorderedRemove(this.props.widgetsUtilityActive, widgetUtilityIndex);
+                            const widgetUtilityIndex = widgetsUtilityActive.indexOf(what);
+                            this.unorderedRemove(widgetsUtilityActive, widgetUtilityIndex);
                             break;
                         };
                         case 'games': {
-                            const widgetGamesIndex = this.props.widgetsGamesActive.indexOf(what);
-                            this.unorderedRemove(this.props.widgetsGamesActive, widgetGamesIndex);
+                            const widgetGamesIndex = widgetsGamesActive.indexOf(what);
+                            this.unorderedRemove(widgetsGamesActive, widgetGamesIndex);
                             break;
                         };
                         case 'fun': {
-                            const widgetFunIndex = this.props.widgetsFunActive.indexOf(what);
-                            this.unorderedRemove(this.props.widgetsFunActive, widgetFunIndex);
+                            const widgetFunIndex = widgetsFunActive.indexOf(what);
+                            this.unorderedRemove(widgetsFunActive, widgetFunIndex);
                             break;
                         };
                         default: { break; };
                     };
                 };
+                
                 break;
             };
         };
@@ -436,7 +456,15 @@ class WidgetSetting extends Component {
         switch (where) {
             case 'background':
             case 'cursor':
-                this[`update${where.replace(/^./, (char) => char.toUpperCase())}`](what);
+            case 'cursorSize': {
+                if (where === 'cursor') {
+                    this.updateCursor(what);
+                } else if (where === 'cursorSize') {
+                    this.updateCursor(this.state.values.cursor, what);   
+                } else {
+                    this[`update${where.replace(/^./, (char) => char.toUpperCase())}`](what);
+                };
+
                 this.setState({
                     values: {
                         ...this.state.values,
@@ -444,9 +472,11 @@ class WidgetSetting extends Component {
                     }
                 });
                 break;
-            default:
+            };
+            default: {
                 this.props.updateValue(what, where, 'values');
                 break;
+            };
         };
     };
 
@@ -488,7 +518,7 @@ class WidgetSetting extends Component {
     };
 
     handleColor(event, what) {
-        this.props.updateValue(this.props.hexToRgb(event), what, 'values');
+        this.props.updateValue(hexToRgb(event), what, 'values');
     };
 
     handleRadio(event) {
@@ -584,10 +614,17 @@ class WidgetSetting extends Component {
     updateTab(what) {
         let tabCapitalized = what.replace(/^./, (char) => char.toUpperCase());
         let widgetPage = `page${tabCapitalized}`;
-        let widgetKeys = Object.keys(this.props.widgets[what])
+        let widgetKeys = Object.keys(this.state.widgetData[what])
             .sort()
             .slice((12 * this.state[widgetPage]), (12 + (12 * this.state[widgetPage])));
-        for (let widget of this.props[`widgets${tabCapitalized}Active`]) {
+        
+        const widgetsActiveLookup = {
+            Utility: widgetsUtilityActive,
+            Games: widgetsGamesActive,
+            Fun: widgetsFunActive
+        };
+
+        for (let widget of widgetsActiveLookup[tabCapitalized]) {
             if (widgetKeys.indexOf(widget) !== -1) {
                 switch (widget) {
                     case 'inventory':
@@ -630,15 +667,17 @@ class WidgetSetting extends Component {
         e.classList.add(`background-${what.value}`);    
     };
 
-    updateCursor(what) {
+    updateCursor(what, size = 0) {
         if (what.value === 'default') {
             document.body.classList.remove('cursor-unset', 'cursor-custom');
         } else {
             document.body.classList.remove(previousCursor);
             document.body.classList.add('cursor-unset', 'cursor-custom', what.value);
 
-            document.documentElement.style.setProperty('--cursorDefault', `url(/resources/cursor/${what.value}/${what.value}-default.webp)`);
-            document.documentElement.style.setProperty('--cursorHover', `url(/resources/cursor/${what.value}/${what.value}-hover.webp)`);
+            const currentSize = size.value || this.state.values.cursorSize.value;
+
+            document.documentElement.style.setProperty('--cursorDefault', `url(/resources/cursor/${what.value}/${what.value}-default-${currentSize}.webp)`);
+            document.documentElement.style.setProperty('--cursorHover', `url(/resources/cursor/${what.value}/${what.value}-pointer-${currentSize}.webp)`);
 
             previousCursor = what.value;
         };
@@ -767,17 +806,24 @@ class WidgetSetting extends Component {
         this.buttonsUtility = [];
         this.buttonsGames = [];
         this.buttonsFun = [];
+
         let tabs = ['utility', 'games', 'fun'];
+
         for (let tab of tabs) {
-            let widgetKeys = Object.keys(this.props.widgets[tab]).sort();
+            if (!this.state.widgetData[tab]) return;
+
+            let widgetKeys = Object.keys(this.state.widgetData[tab]).sort();
+
             for (let widgetIndex in widgetKeys) {
                 let widget = widgetKeys[widgetIndex];
-                let elementButton = <button id={`show-hide-widgets-popout-button-${widget}`}
-                    data-widgetname={widget}
-                    className='button-match option disabled-option'
-                    onClick={() => this.handlePressableButton(widget, tab)}>
-                    {this.props.widgets[tab][widget]}
-                </button>;
+                let elementButton =
+                    <button id={`show-hide-widgets-popout-button-${widget}`}
+                        data-widgetname={widget}
+                        className='button-match option disabled-option'
+                        onClick={() => this.handlePressableButton(widget, tab)}>
+                        {this.state.widgetData[tab][widget]}
+                    </button>;
+
                 switch (tab) {
                     case 'utility': this.buttonsUtility.push(elementButton); break;
                     case 'games':   this.buttonsGames.push(elementButton);   break;
@@ -788,57 +834,18 @@ class WidgetSetting extends Component {
         };
     };
 
-    storeData() {
-        if (localStorage.getItem('widgets') !== null) {
-            let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-            let keyValues = Object.keys(this.state.values);
-            let dontStoreValues = ['screenDimmerSlider'];
-            let filteredValues = keyValues.filter((value) => !dontStoreValues.includes(value));
-            let objectValues = {};
-            filteredValues.forEach((value) => {
-                objectValues[value] = this.state.values[value];
-            });
-            dataLocalStorage['utility']['setting'] = {
-                ...dataLocalStorage['utility']['setting'],
-                values: {
-                    ...dataLocalStorage['utility']['setting']['values'],
-                    ...objectValues
-                }
-            };
-            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
-        };
-    };
-
-    async componentDidMount() {
-        window.addEventListener('close', this.handleClose);
-        window.addEventListener('beforeunload', this.storeData);
-        window.addEventListener('script loaded', this.handleScriptLoaded);
-        window.addEventListener('setting hide', this.hideSettings);
-
-        this.props.sortSelect(optionsAnimation);
-        this.props.sortSelect(optionsBackground);
-        this.props.sortSelect(optionsCustomBorder);
-        this.props.sortSelect(optionsParticle);
-        this.props.sortSelect(optionsVoice);
-        this.props.sortSelect(optionsHealth);
-
-        let elementSelects = document.getElementById('settings-widget-animation')
-            .querySelectorAll('.select-match');
-        for (let i of elementSelects) {
-            i.style.display = 'none';
-        };
-
-        this.createWidgetButtons();
-
+    async setupPages() {
         let utilityPageMax = Math.ceil(this.buttonsUtility.length / 12);
         let gamesPageMax = Math.ceil(this.buttonsGames.length / 12);
         let funPageMax = Math.ceil(this.buttonsFun.length / 12);
+
         this.setState({
             maxPageUtility: utilityPageMax,
             maxPageGames: gamesPageMax,
             maxPageFun: funPageMax,
             pageUtility: 0
-        });        
+        });
+
         /// Load only the first 12 utility widget's data from local storage
         /// as well as unique buttons [inventory, equipment, character]
         /// Since the first render will always be page 1 of utility tab
@@ -850,7 +857,7 @@ class WidgetSetting extends Component {
                 .slice(0, 12);
             widgetUtilityKeys = [...widgetUtilityKeys, 'inventory', 'equipment', 'character'];
             for (let i of widgetUtilityKeys) {
-                if (dataLocalStorage.utility[i].active === true) {
+                if (dataLocalStorage.utility[i]?.active === true) {
                     switch (i) {
                         case 'inventory':
                         case 'equipment':
@@ -865,7 +872,7 @@ class WidgetSetting extends Component {
                         };
                         default: {
                             let button = document.getElementById('show-hide-widgets-popout-button-' + i);
-                            button.classList.remove('disabled-option');
+                            button?.classList.remove('disabled-option');
                             break;
                         };
                     };
@@ -906,11 +913,85 @@ class WidgetSetting extends Component {
             };
             /// Values not saved here
             if (localStorageValues['cursorTrailColor'] !== undefined) {
-                document.getElementById('settings-popout-misc-cursor-trail-color').defaultValue = this.props.rgbToHex(localStorageValues['cursorTrailColor']);
+                document.getElementById('settings-popout-misc-cursor-trail-color').defaultValue = rgbToHex(localStorageValues['cursorTrailColor']);
             };
             if (localStorageValues['cursorTrailMode'] !== undefined) {
                 document.getElementById(`settings-popout-misc-cursor-trail-${localStorageValues['cursorTrailMode']}`).checked = 'true';
             };
+        };
+    };
+
+    storeData() {
+        if (localStorage.getItem('widgets') !== null) {
+            let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+            let keyValues = Object.keys(this.state.values);
+            let dontStoreValues = ['screenDimmerSlider'];
+            let filteredValues = keyValues.filter((value) => !dontStoreValues.includes(value));
+            let objectValues = {};
+            filteredValues.forEach((value) => {
+                objectValues[value] = this.state.values[value];
+            });
+            dataLocalStorage['utility']['setting'] = {
+                ...dataLocalStorage['utility']['setting'],
+                values: {
+                    ...dataLocalStorage['utility']['setting']['values'],
+                    ...objectValues
+                }
+            };
+            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+        };
+    };
+
+    async componentDidUpdate(prevProps) {
+        if (!ranOnce && prevProps.widgets !== this.props.widgets) {
+            ranOnce = true;
+
+            let newWidgetdata = {};
+
+            for (let widgetType of Object.keys(this.props.widgets)) {
+                for (let widget of Object.keys(this.props.widgets[widgetType])) {
+                    switch (widget) {
+                        case 'setting':
+                        case 'inventory':
+                        case 'equipment':
+                        case 'character':
+                        case 'guide': break;
+                        default:
+                            newWidgetdata[widgetType] = {
+                                ...newWidgetdata[widgetType],
+                                [widget]: this.props.widgets[widgetType][widget].name
+                            };
+                            break;
+                    };
+                };
+            };
+
+            this.setState({
+                widgetData: newWidgetdata
+            }, () => {
+                this.createWidgetButtons();
+                this.setupPages();
+            });
+        };
+    };
+
+    async componentDidMount() {
+        window.addEventListener('close', this.handleClose);
+        window.addEventListener('beforeunload', this.storeData);
+        window.addEventListener('script loaded', this.handleScriptLoaded);
+        window.addEventListener('setting hide', this.hideSettings);
+      
+        sortSelect(optionsAnimation);
+        sortSelect(optionsBackground);
+        sortSelect(optionsCustomBorder);
+        sortSelect(optionsParticle);
+        sortSelect(optionsVoice);
+        sortSelect(optionsHealth);
+
+        let elementSelects = document.getElementById('settings-widget-animation')
+            .querySelectorAll('.select-match');
+        for (let i of elementSelects) {
+            i.style.display = 'none';
         };
     };
 
@@ -925,9 +1006,9 @@ class WidgetSetting extends Component {
     render() {
         return (
             <Draggable position={{ x: this.props.position.x, y: this.props.position.y }}
-                onStart={() => this.props.dragStart('settings')}
+                onStart={() => dragStart('settings')}
                 onStop={(event, data) => {
-                    this.props.dragStop('settings');
+                    dragStop('settings');
                     this.props.updatePosition('setting', 'utility', data.x, data.y);
                 }}
                 cancel='button, span, p, li, .popout'
@@ -938,15 +1019,22 @@ class WidgetSetting extends Component {
                     <h2 id='settings-widget-heading'
                         className='screen-reader-only'>Settings Widget</h2>
                     <div id='settings-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='settings-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: '3em', className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
-                        {/* Hotbar */}
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         <div className='hotbar'>
                             {/* Close */}
                             {(this.props.valueClose)
@@ -973,20 +1061,17 @@ class WidgetSetting extends Component {
                             </div>
                         </div>
                         {/* Show/Hide Widgets Popout */}
-                        <Draggable cancel='button, #show-hide-widgets-popout-tabs, .paginate-pages'
-                            position={{
-                                x: this.props.positionPopout.showhidewidgets.x,
-                                y: this.props.positionPopout.showhidewidgets.y
-                            }}
+                        <Draggable defaultPosition={{ x: this.props.positionPopout.showhidewidgets.x, y: this.props.positionPopout.showhidewidgets.y }}
                             onStop={(event, data) => this.props.updatePosition('setting', 'utility', data.x, data.y, 'popout', 'showhidewidgets')}
-                            bounds={this.props.calculateBounds('settings-widget', 'show-hide-widgets-popout')}>
+                            cancel='button, #show-hide-widgets-popout-tabs, .paginate-pages'
+                            bounds={calculateBounds('settings-widget', 'show-hide-widgets-popout')}>
                             <section id='show-hide-widgets-popout'
                                 className='popout'
                                 aria-labelledby='show-hide-widgets-popout-heading'>
                                 <h2 id='show-hide-widgets-popout-heading'
                                     className='screen-reader-only'>Show/Hide Widgets Popout</h2>
                                 <div id='show-hide-widgets-popout-animation'
-                                    className='popout-animation'>
+                                    className={`popout-animation ${classStack}`}>
                                     <Tabs defaultIndex={0}
                                         onSelect={(index) => {
                                             const tabs = ['utility', 'games', 'fun'];
@@ -1131,20 +1216,17 @@ class WidgetSetting extends Component {
                             </section>
                         </Draggable>
                         {/* Settings Popout */}
-                        <Draggable cancel='span, label, input, button, .toggleable, .slider, .select-match'
-                            position={{
-                                x: this.props.positionPopout.settings.x,
-                                y: this.props.positionPopout.settings.y
-                            }}
+                        <Draggable defaultPosition={{ x: this.props.positionPopout.settings.x, y: this.props.positionPopout.settings.y }}
                             onStop={(event, data) => this.props.updatePosition('setting', 'utility', data.x, data.y, 'popout', 'settings')}
-                            bounds={this.props.calculateBounds('settings-widget', 'settings-popout')}>
+                            cancel='span, label, input, button, .toggleable, .slider, .select-match'
+                            bounds={calculateBounds('settings-widget', 'settings-popout')}>
                             <section id='settings-popout'
                                 className='popout'
                                 aria-labelledby='settings-popout-heading'>
                                 <h2 id='settings-popout-heading'
                                     className='screen-reader-only'>Settings Popout</h2>
                                 <div id='settings-popout-animation'
-                                    className='popout-animation scrollable'
+                                    className={`popout-animation scrollable ${classStack}`}
                                     onScroll={this.handleScroll}
                                     onMouseEnter={() => this.handleMouse('enter')}
                                     onMouseLeave={() => this.handleMouse('leave')}>
@@ -1260,10 +1342,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsAnimation[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'animation')}
                                                     options={optionsAnimation}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1293,10 +1375,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsBackground[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'background')}
                                                     options={optionsBackground}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1326,10 +1408,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsCustomBorder[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'customBorder')}
                                                     options={optionsCustomBorder}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1368,10 +1450,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsParticle[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'particle')}
                                                     options={optionsParticle}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1403,10 +1485,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsDecoration[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'decoration')}
                                                     options={optionsDecoration}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1431,7 +1513,7 @@ class WidgetSetting extends Component {
                                                 name='settings-popout-design-color-change-color'
                                                 className='color-input-match boxxed'
                                                 type='color'
-                                                defaultValue={this.props.rgbToHex(this.props.values.colorChange)}
+                                                defaultValue={rgbToHex(this.props.values.colorChange)}
                                                 onBlur={(event) => this.handleColor(event.target.value, 'colorChange')}
                                                 disabled={!this.props.values.noColorChange}
                                                 aria-label='Select site color'/>
@@ -1562,10 +1644,10 @@ class WidgetSetting extends Component {
                                                     isDisabled={!this.state.settings}
                                                     onChange={(event) => this.handleSelect(event, 'health')}
                                                     options={optionsHealth}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1596,10 +1678,10 @@ class WidgetSetting extends Component {
                                                     isDisabled={!this.state.settings}
                                                     onChange={(event) => this.handleSelect(event, 'loot')}
                                                     options={optionsLoot}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1642,10 +1724,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsVoice[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'voice')}
                                                     options={optionsVoice}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1747,10 +1829,10 @@ class WidgetSetting extends Component {
                                                     defaultValue={optionsCursor[0]['options'][0]}
                                                     onChange={(event) => this.handleSelect(event, 'cursor')}
                                                     options={optionsCursor}
-                                                    formatGroupLabel={this.props.formatGroupLabel}
-                                                    styles={this.props.selectStyleSmall}
+                                                    formatGroupLabel={formatGroupLabel}
+                                                    styles={selectStyleSmall}
                                                     components={{
-                                                        MenuList: this.props.menuListScrollbar
+                                                        MenuList: menuListScrollbar
                                                     }}
                                                     theme={(theme) => ({
                                                         ...theme,
@@ -1759,6 +1841,29 @@ class WidgetSetting extends Component {
                                                             ...this.props.selectTheme
                                                         }
                                                     })}/>
+                                                {/* Cursor Size */}
+                                                <div className='grid col-50-50'>
+                                                    <span className='font small'>Size</span>
+                                                    <Select id='settings-popout-misc-cursor-select-size'
+                                                        className='select-match space-nicely space-top length-small'
+                                                        value={this.state.values.cursorSize}
+                                                        defaultValue={optionsCursorSize[0]['options'][0]}
+                                                        onChange={(event) => this.handleSelect(event, 'cursorSize')}
+                                                        options={optionsCursorSize}
+                                                        formatGroupLabel={formatGroupLabel}
+                                                        styles={selectStyleSmall}
+                                                        components={{
+                                                            MenuList: menuListScrollbar
+                                                        }}
+                                                        theme={(theme) => ({
+                                                            ...theme,
+                                                            colors: {
+                                                                ...theme.colors,
+                                                                ...this.props.selectTheme
+                                                            }
+                                                        })}
+                                                        isDisabled={this.state.values.cursor.value === 'default'}/>
+                                                </div>
                                                 {/* Cursor Trail */}
                                                 <div className='element-ends'>
                                                     <label className='font small'

@@ -1,0 +1,477 @@
+{
+	"common": { "_comment": "Mainly currency and cosmetic items (aesthetics)",
+		"nothing": {
+			"description": "Nothing..."
+		},
+		"gold": {
+			"type": "currency",
+			"description": "A bag containing a random amount of gold."
+		},
+		"Sensei Mask": {
+			"slot": "eyewear",
+			"type": "cosmetic",
+			"description": "Uohhhhhhhhh! \uD83D\uDE2D",
+			"image": "/resources/items/senseimask.webp",
+			"source": "Blue Archive"
+		},
+		"Carla's Hat": {
+			"slot": "helmet",
+			"type": "cosmetic",
+			"description": "\uD83D\uDE09\u270C",
+			"image": "/resources/items/carlashat.webp",
+			"source": "Don't Hurt Me, My Healer!"
+		},
+		"Nina's Good Luck Charm": {
+			"slot": "undershirt",
+			"type": "cosmetic",
+			"description": "I'm perfectly prepared. I am fully and completely ready for this.",
+			"image": "/resources/items/ninasgoodluckcharm.webp",
+			"source": "Cautious Hero: The Hero Is Overpowered but Overly Cautious"
+		},
+		"Creamy": {
+			"slot": "undershirt",
+			"type": "cosmetic",
+			"description": "Lemon's good luck charm.",
+			"image": "/resources/items/creamy.webp",
+			"source": "Mashle"
+		}
+	},
+	"rare": { "_comment": "Items with basic properties (stat increase/decrease)",
+		"Creampuff": {
+			"slot": "hidden",
+			"type": "stat",
+			"stats": {
+				"vitality": 10
+			},
+			"description": "Nothing like a cream puff after pumping iron.",
+			"image": "/resources/items/creampuff.webp",
+			"source": "Mashle"
+		},
+		"Chunchunmaru": {
+			"slot": "main",
+			"type": "stat",
+			"stats": {
+				"luck": 99
+			},
+			"description": "Yes, I'm Kazuma.",
+			"image": "/resources/items/chunchunmaru.webp",
+			"source": "Konosuba"
+		},
+		"Seed": {
+			"slot": "consumable1",
+			"type": "stat",
+			"stats": {
+				"health": 1
+			},
+			"description": "Exclusive drop from skeletons in Tululu.",
+			"image": "/resources/items/seed.webp",
+			"source": "My Unique Skill Makes Me OP Even at Level 1"
+		},
+		"Mähne": {
+			"slot": "main",
+			"type": "stat",
+			"stats": {
+				"attack": 1
+			},
+			"description": "Comprised of two large blades joined by a hilt with an extending holder.",
+			"image": "/resources/items/mahne.webp",
+			"source": "Pumpkin Scissors"
+		},
+		"Belle Delphine's Bath Water": {
+			"slot": "consumable1",
+			"type": "stat",
+			"stats": {
+				"health": -99,
+				"mana": -99,
+				"attack": -99,
+				"defense": -99,
+				"strength": -99,
+				"agility": -99,
+				"vitality": -99,
+				"resilience": -99,
+				"intelligence": -99,
+				"dexterity": -99,
+				"luck": -99
+			},
+			"description": "...",
+			"image": "/resources/items/belledelphinesbathwater.webp",
+			"source": "Meme"
+		},
+		"Moona Breast": {
+			"slot": "consumable1",
+			"type": "stat",
+			"stats": {
+				"vitality": 99
+			},
+			"description": "MOONA MOONA MOONA BUTUH KAYU MOONA MOONA",
+			"image": "/resources/items/moonabreast.webp",
+			"source": "HoloGta"
+		},
+		"Reine Thigh": {
+			"slot": "consumable1",
+			"type": "stat",
+			"stats": {
+				"vitality": 99
+			},
+			"description": "mep",
+			"image": "/resources/items/reinethigh.webp",
+			"source": "HoloGta"
+		},
+		"Nasigo": {
+			"slot": "consumable1",
+			"type": "stat",
+			"stats": {
+				"vitality": 99
+			},
+			"description": "Best girl.",
+			"image": "/resources/items/nasigo.webp",
+			"source": "HoloGta"
+		},
+		"Reine Burger": {
+			"slot": "consumable2",
+			"type": "stat",
+			"stats": {
+				"intelligence": 10
+			},
+			"description": "mep",
+			"image": "/resources/items/reineburger.webp",
+			"source": "HoloGta"
+		},
+		"Moona Burger": {
+			"slot": "consumable2",
+			"type": "stat",
+			"stats": {
+				"intelligence": 10
+			},
+			"description": "MOONA MOONA MOONA BUTUH KAYU MOONA MOONA",
+			"image": "/resources/items/moonaburger.webp",
+			"source": "HoloGta"
+		},
+		"Pavonova Drink": {
+			"slot": "consumable5",
+			"type": "stat",
+			"stats": {
+				"agility": 10
+			},
+			"description": "mep",
+			"image": "/resources/items/pavonovadrink.webp",
+			"source": "HoloGta"
+		},
+		"Pavonofries": {
+			"slot": "consumable3",
+			"type": "stat",
+			"stats": {
+				"strength": 10
+			},
+			"description": "mep",
+			"image": "/resources/items/pavonofries.webp",
+			"source": "HoloGta"
+		},
+		"Ankimo Latte Art": {
+			"slot": "consumable5",
+			"type": "stat",
+			"stats": {
+				"agility": 10
+			},
+			"description": "Nun-nun!(๑╹ᆺ╹)",
+			"image": "/resources/items/ankimolatteart.webp",
+			"source": "HoloGta"
+		},
+		"Strawberry Popsicle": {
+			"slot": "consumable5",
+			"type": "stat",
+			"stats": {
+				"vitality": 10
+			},
+			"description": "Not Just-Ice!",
+			"image": "/resources/items/strawberrypopsicle.webp",
+			"source": "HoloGta"
+		},
+		"Choco Mint Popsicle": {
+			"slot": "consumable5",
+			"type": "stat",
+			"stats": {
+				"intelligence": 10
+			},
+			"description": "Not Just-Ice!",
+			"image": "/resources/items/chocomintpopsicle.webp",
+			"source": "HoloGta"
+		},
+		"Caramel Popsicle": {
+			"slot": "consumable5",
+			"type": "stat",
+			"stats": {
+				"dexterity": 10
+			},
+			"description": "Not Just-Ice!",
+			"image": "/resources/items/caramelpopsicle.webp",
+			"source": "HoloGta"
+		}
+	},
+	"exotic": { "_comment": "Items with unique properties (abilities)",
+		"Grass Block": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Places a grass block",
+			"description": "C418 - Sweden",
+			"image": "/resources/items/grassblock.webp",
+			"source": "Minecraft"
+		},
+		"Hestia Knife": {
+			"slot": "wrist",
+			"type": "ability",
+			"information": "Becomes stronger according to the wielder's status",
+			"description": "A special knife created by Hephaestus with help from Hestia.",
+			"requirement": "Member of Hestia Familia",
+			"image": "/resources/items/hestiaknife.webp",
+			"source": "Danmachi"
+		},
+		"Code of Hammurabi": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Redirects every \"attack\" against the user back to the \"attack'er\"",
+			"description": "An eye for an eye, a tooth for a tooth.",
+			"image": "/resources/items/codeofhammurabi.webp",
+			"source": "Tomb Raider King"
+		},
+		"Door Knocker": {
+			"slot": "main",
+			"type": "both",
+			"stats": {
+				"attack": 99,
+				"agility": -1
+			},
+			"information": "Decreases the enemy morale",
+			"description": "Töten Sie. Töten Sie. Töten Sie.",
+			"requirement": "Must be at point blank range",
+			"image": "/resources/items/doorknocker.webp",
+			"source": "Pumpkin Scissors"
+		},
+		"Necklace": {
+			"slot": "necklace",
+			"type": "ability",
+			"information": "Doubles item drops",
+			"description": "Hello... Yoda?",
+			"image": "/resources/items/necklace.webp",
+			"source": "My Unique Skill Makes Me OP Even at Level 1"
+		},
+		"Bicorn Horns": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Allows using level 1 magic with no limitations",
+			"description": "Magic: F",
+			"image": "/resources/items/bicornhorns.webp",
+			"source": "My Unique Skill Makes Me OP Even at Level 1"
+		},
+		"Slime Tear": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Reflects slime \"attack's\"",
+			"description": "Dead or carrot.",
+			"image": "/resources/items/slimetear.webp",
+			"source": "My Unique Skill Makes Me OP Even at Level 1"
+		},
+		"Crown Artifact": {
+			"slot": "helmet",
+			"type": "ability",
+			"information": "Cures any curse",
+			"description": "...",
+			"image": "/resources/items/crownartifact.webp",
+			"source": "Don't Hurt Me, My Healer!"
+		},
+		"Control Device": {
+			"slot": "headband",
+			"type": "ability",
+			"information": "Cuts \"stats\" by 50%",
+			"description": "What a pain.",
+			"image": "/resources/items/controldevice.webp",
+			"source": "The Disastrous Life of Saiki K."
+		},
+		"Rest in Peace": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a large radius",
+			"description": "I'm your Mori, I hope you'll remember me.",
+			"image": "/resources/items/restinpeace.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Oceanic Terror": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Fires a wave",
+			"description": "a",
+			"image": "/resources/items/oceanicterror.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Violet Miasma": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Summons a flying purple energy orb",
+			"description": "WAH",
+			"image": "/resources/items/violetmiasma.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Burning Phoenix": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a small radius followed by a fire trail",
+			"description": "Kikiriki!",
+			"image": "/resources/items/burningphoenix.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Burning Phoenix Shield": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Blocks any \"attack\"",
+			"description": "Kikiriki!",
+			"image": "/resources/items/burningphoenixshield.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Eye of Wisdom": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Debuffs enemies by 50%",
+			"description": "hic",
+			"image": "/resources/items/eyeofwisdom.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Light and Darkness: Dark": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Shoots a powerful charged shot",
+			"description": "Hope has descended.",
+			"image": "/resources/items/lightanddarknessdark.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Light and Darkness: Light": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Shoots a powerful charged shot",
+			"description": "Hope has descended.",
+			"image": "/resources/items/lightanddarknesslight.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Chaos Stampede": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Throws a grenade",
+			"description": "bruh",
+			"image": "/resources/items/chaosstampede.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Winds of Civilization": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a medium radius multiple times",
+			"description": "<img src=\"/resources/items/additions/mumei-nightmare.webp\" alt=\"mumei nightmare\" loading=\"lazy\" decoding=\"async\"/>,",
+			"image": "/resources/items/windsofcivilization.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Nature's Grace": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Heals 1 heart",
+			"description": "I would kill for this woman.",
+			"image": "/resources/items/naturesgrace.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Chrono Surge: Main": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a medium radius multiple times",
+			"description": "GWAK!",
+			"image": "/resources/items/chronosurgemain.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Chrono Surge: Offhand": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Slashes in a medium radius multiple times",
+			"description": "GWAK!",
+			"image": "/resources/items/chronosurgeoffhand.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Shining Emotion": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Shoots multiple shots",
+			"description": "Rock rock!",
+			"image": "/resources/items/shiningemotion.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Resonant Strike": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Hits with an AoE blast",
+			"description": "ope",
+			"image": "/resources/items/resonantstrike.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Bookmark of Memories": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Shoots a powerful charged shot",
+			"description": "The Archiver.",
+			"image": "/resources/items/bookmarkofmemories.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Azure Claw": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a small radius multiple times",
+			"description": "Bau Bau",
+			"image": "/resources/items/azureclaw.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Fuchsia Claw": {
+			"slot": "offhand",
+			"type": "ability",
+			"information": "Slashes in a small radius multiple times",
+			"description": "Haeh?",
+			"image": "/resources/items/fuchsiaclaw.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Automaton Assault": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Thrusts multiple times",
+			"description": "Speen to win!",
+			"image": "/resources/items/automatonassault.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Thorn of Order": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a large radius",
+			"description": "Oh~hohoho!",
+			"image": "/resources/items/thornoforder.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Gremlin Grenade": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slams the ground",
+			"description": "Do you remember?",
+			"image": "/resources/items/gremlingrenade.webp",
+			"source": "ENigmatic Recollection"
+		},
+		"Purrfect Execution": {
+			"slot": "main",
+			"type": "ability",
+			"information": "Slashes in a small radius multiple times",
+			"description": "Big cat means big trouble!",
+			"image": "/resources/items/purrfectexecution.webp",
+			"source": "ENigmatic Recollection"
+		}
+	},
+	"meme": { "_comment": "Items for fun (modifies the application)",
+		"Demon Lord's Ring": {
+			"slot": "ring",
+			"type": "ability",
+			"information": "Reflects all magic",
+			"description": "Most powerful accessory in Cross Reverie.",
+			"image": "/resources/items/demonlordsring.webp",
+			"source": "How Not to Summon a Demon Lord"
+		}
+	}
+}

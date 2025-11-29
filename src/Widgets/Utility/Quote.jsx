@@ -5,7 +5,8 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import { MdNumbers } from 'react-icons/md';
-
+import { classStack, decorationValue, fetchedData } from '../../data';
+import { copyToClipboard } from '../../helpers';
 
 let timeoutCopy;
 let intervalLoop;
@@ -23,10 +24,10 @@ class WidgetQuote extends Component {
     };
 
     handleNewQuote() {
-        const randQuote = Math.floor(Math.random() * this.props.quotes.length);
-        const randQuoteAuthor = (this.props.quotes[randQuote]['author'] === '') ? 'Anon' : this.props.quotes[randQuote]['author'];
+        const randQuote = Math.floor(Math.random() * fetchedData.quotes.length);
+        const randQuoteAuthor = (fetchedData.quotes[randQuote]['author'] === '') ? 'Anon' : fetchedData.quotes[randQuote]['author'];
         this.setState({
-            currentQuote: this.props.quotes[randQuote]['quote'],
+            currentQuote: fetchedData.quotes[randQuote]['quote'],
             currentAuthor: randQuoteAuthor
         });
         /// Restart animations
@@ -46,7 +47,7 @@ class WidgetQuote extends Component {
     handleButton(what) {
         switch (what) {
             case 'copy': {
-                this.props.copyToClipboard(this.state.currentQuote);
+                copyToClipboard(this.state.currentQuote);
                 let elementQuote = document.getElementById('quote-text');
                 elementQuote.style.textShadow = '0px 0px 10px var(--randColorLight)';
                 timeoutCopy = setTimeout(() => {
@@ -55,7 +56,7 @@ class WidgetQuote extends Component {
                 break;
             };
             case 'talk': {
-                this.props.talk(this.state.currentQuote);
+                this.props.parentRef.talk(this.state.currentQuote);
                 break;
             };
             case 'total': {
@@ -130,7 +131,7 @@ class WidgetQuote extends Component {
     
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('quote')}
                 onStop={(event, data) => {
@@ -145,14 +146,22 @@ class WidgetQuote extends Component {
                     <h2 id='quote-widget-heading'
                         className='screen-reader-only'>Quote Widget</h2>
                     <div id='quote-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='quote-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('quote', 'utility')}
                         {/* Falling Images */}
                         <canvas id='quote-canvas'
@@ -217,7 +226,6 @@ class WidgetQuote extends Component {
                             <button className='button-match'
                                 onClick={this.handleNewQuote}>New quote</button>
                         </div>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}

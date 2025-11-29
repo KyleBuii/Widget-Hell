@@ -6,7 +6,8 @@ import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaArrowRightLong, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import Select from 'react-select';
-
+import { aronaMessages, brailleDictionary, brailleFromDictionary, classStack, cunnyCodeDictionary, cunnyCodeFromDictionary, decorationValue, emojifyDictionary, enchantingTableDictionary, isMobile, matchAll, mirrorWrittingDictionary, moorseCodeDictionary, moorseCodeFromDictionary, phoneticAlphabetDictionary, phoneticAlphabetFromDictionary, punctuation, smallIcon, uwuDictionary, uwuEmoticons } from '../../data';
+import { copyToClipboard, formatGroupLabel, grep, mergePunctuation, randSentence, selectHideGroupHeading, selectHideGroupMenuList, sortSelect } from '../../helpers';
 
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
 let timeoutCopy, timeoutDialogue, timeoutDialogueOut, timeoutIdle, timeoutSleep;
@@ -89,6 +90,10 @@ const optionsTranslateTo = [
         ]
     }
 ];
+const translateLookup = {
+    moorseCode: [moorseCodeDictionary, moorseCodeFromDictionary],
+    phoneticAlphabet: [phoneticAlphabetDictionary, phoneticAlphabetFromDictionary],
+};
 
 class WidgetTranslator extends Component{
     constructor(props) {
@@ -127,7 +132,7 @@ class WidgetTranslator extends Component{
 
     async handleCopy() {
         try {
-            let clipboardStatus = await this.props.copyToClipboard(this.state.converted);
+            let clipboardStatus = await copyToClipboard(this.state.converted);
             let elementTranslatedText = document.getElementById('translator-translated-text');
             elementTranslatedText.style.textShadow = '0px 0px 2px var(--randColorLight)';
             timeoutCopy = setTimeout(() => {
@@ -185,11 +190,11 @@ class WidgetTranslator extends Component{
         clearTimeout(timeoutDialogueOut);
         let randomMessage;
         if (subsubtype !== undefined) {
-            randomMessage = this.props.aronaMessages[type][subtype][subsubtype][Math.floor(Math.random() * this.props.aronaMessages[type][subtype][subsubtype].length)];
+            randomMessage = aronaMessages[type][subtype][subsubtype][Math.floor(Math.random() * aronaMessages[type][subtype][subsubtype].length)];
         } else if (subtype !== undefined) {
-            randomMessage = this.props.aronaMessages[type][subtype][Math.floor(Math.random() * this.props.aronaMessages[type][subtype].length)];
+            randomMessage = aronaMessages[type][subtype][Math.floor(Math.random() * aronaMessages[type][subtype].length)];
         } else {
-            randomMessage = this.props.aronaMessages[type][Math.floor(Math.random() * this.props.aronaMessages[type].length)];
+            randomMessage = aronaMessages[type][Math.floor(Math.random() * aronaMessages[type].length)];
         };
         elementDialogue.innerHTML = DOMPurify.sanitize(randomMessage[0]);
         elementImage.src = `/resources/translator/cunny-code/arona/${randomMessage[1]}.webp`;
@@ -239,7 +244,7 @@ class WidgetTranslator extends Component{
                 elementImage.classList.add('dragging');
                 elementImage.style.animationFillMode = 'none';
                 elementImageAdditions.classList.add('dragging');
-                if (this.props.isMobile) {
+                if (isMobile) {
                     document.addEventListener('touchmove', this.handleCunnyCodeAronaDragging);
                     document.addEventListener('touchend', this.handleCunnyCodeAronaDrag);
                 } else {
@@ -258,7 +263,7 @@ class WidgetTranslator extends Component{
                 elementImageAdditions.classList.remove('dragging');
                 elementImageAdditions.style.left = '2.5em';
                 elementImageAdditions.style.top = '2em';
-                if (this.props.isMobile) {
+                if (isMobile) {
                     document.removeEventListener('touchmove', this.handleCunnyCodeAronaDragging);
                     document.removeEventListener('touchend', this.handleCunnyCodeAronaDrag);
                 } else {
@@ -273,7 +278,7 @@ class WidgetTranslator extends Component{
         const elementImageContainer = document.getElementById('translator-container-image').getBoundingClientRect();
         const elementImage = document.getElementById('translator-image');
         const elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
-        if (this.props.isMobile) {
+        if (isMobile) {
             const touch = event.touches[0];
             elementImage.style.left = `${touch.clientX - elementImageContainer.left - 66}px`;
             elementImage.style.top = `${touch.clientY - elementImageContainer.top + 108}px`;
@@ -316,7 +321,7 @@ class WidgetTranslator extends Component{
                     cunnyCodeArona = false;
                     toAuthor = 'Seth-sensei';
                     toAuthorLink = 'https://github.com/SethClydesdale/cunny-code';
-                    this.props.updateGlobalValue('hour', new Date().getHours());
+                    this.props.parentRef.updateGlobalValue('hour', new Date().getHours());
                     this.handleCunnyCode((swap) ? 'swap' : 'greetings');
                     elementContainer.style.backgroundImage = `url(./resources/translator/cunny-code/bg.webp)`;
                     elementImage.style.display = 'block';
@@ -381,7 +386,7 @@ class WidgetTranslator extends Component{
     /// Swaps 'from' language and 'to' language
     handleSwap() {
         if (this.state.from.value !== this.state.to.value) {
-            this.props.randomColor();
+            this.props.parentRef.randomColor();
             const prev = this.state.from;
             this.setState(prevState => ({
                 from: prevState.to,
@@ -408,7 +413,7 @@ class WidgetTranslator extends Component{
     };
 
     handleTalk() {
-        this.props.talk(this.state.converted);
+        this.props.parentRef.talk(this.state.converted);
     };
 
     /// Handles 'replace' from 'translator-translate-to'
@@ -446,7 +451,7 @@ class WidgetTranslator extends Component{
     /// Handles random sentence button
     handleRandSentence() {
         this.setState({
-            input: this.props.randSentence(),
+            input: randSentence(),
         }, () => {
             this.convertFromText();
         });
@@ -464,7 +469,7 @@ class WidgetTranslator extends Component{
                 stringConvertFrom = this.state.input
                     .toString()
                     .split('')
-                    .map(letter => this.props.brailleFromDictionary[letter])
+                    .map(letter => brailleFromDictionary[letter])
                     .join('');
                 break;
             };
@@ -474,14 +479,14 @@ class WidgetTranslator extends Component{
                     .split(' ')
                     .map((char) => {
                         if (char.charAt(0) === '^') {
-                            return this.props.cunnyCodeFromDictionary[char.substring(1)].toUpperCase();
+                            return cunnyCodeFromDictionary[char.substring(1)].toUpperCase();
                         } else if (char === '') {
                             return ' ';
-                        } else if (this.props.cunnyCodeFromDictionary[char] === undefined) {
+                        } else if (cunnyCodeFromDictionary[char] === undefined) {
                             encodeError = true;
                             return char;
                         } else {
-                            return this.props.cunnyCodeFromDictionary[char];
+                            return cunnyCodeFromDictionary[char];
                         };
                     })
                     .join('');
@@ -540,7 +545,7 @@ class WidgetTranslator extends Component{
             case 'phoneticAlphabet': {
                 stringConvertFrom = this.state.input
                     .split(' ')
-                    .map((char) => this.props[`${this.state.from.value}FromDictionary`][char] || '')
+                    .map((char) => translateLookup[this.state.from.value][1][char] || '')
                     .join('');
                 break;
             };
@@ -585,7 +590,7 @@ class WidgetTranslator extends Component{
             case 'braille': {
                 stringConvertTo = this.state.convert
                     .split('')
-                    .map((letter) => this.props.brailleDictionary[letter.toLowerCase()] || '')
+                    .map((letter) => brailleDictionary[letter.toLowerCase()] || '')
                     .join('')
                     .replace(/\s+/g, ' ');
                 break;
@@ -597,13 +602,13 @@ class WidgetTranslator extends Component{
                         .split('')
                         .map((char) => {
                             if (/[A-Z]/.test(char)) {
-                                return `^${this.props.cunnyCodeDictionary[char.toLowerCase()]}`;
+                                return `^${cunnyCodeDictionary[char.toLowerCase()]}`;
                             } else {
-                                if (this.props.cunnyCodeDictionary[char.toLowerCase()] === undefined) {
+                                if (cunnyCodeDictionary[char.toLowerCase()] === undefined) {
                                     encodeError = true;
                                     return char;
                                 } else {
-                                    return this.props.cunnyCodeDictionary[char.toLowerCase()];
+                                    return cunnyCodeDictionary[char.toLowerCase()];
                                 };
                             };
                         })
@@ -615,7 +620,7 @@ class WidgetTranslator extends Component{
                     let elementImageAdditions = document.getElementById('translator-image-additions-cunny-code');
                     let elementAronaBody = document.getElementById('translator-cunny-code-arona-body');
                     let elementDialogue = document.getElementById('translator-cunny-code-arona-dialogue');
-                    let keysSpecial = Object.keys(this.props.aronaMessages.special)
+                    let keysSpecial = Object.keys(aronaMessages.special)
                     keysSpecial.pop();
                     keysSpecial.join('|').replace(/_/g, ' ');
                     let regexSpecial = new RegExp(`${keysSpecial}`, 'i');
@@ -818,14 +823,14 @@ class WidgetTranslator extends Component{
                 break;
             };
             case 'emojify': {
-                let wordsEmojify = Object.keys(this.props.emojifyDictionary).join('|');
-                let regexEmojifyDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsEmojify})(?![\\w${this.props.punctuation}])`, 'i');
-                stringConvertTo = this.props.mergePunctuation(
-                    this.props.grep(this.state.convert
-                        .split(this.props.matchAll)
+                let wordsEmojify = Object.keys(emojifyDictionary).join('|');
+                let regexEmojifyDictionary = new RegExp(`(?<![\\w${punctuation}])(${wordsEmojify})(?![\\w${punctuation}])`, 'i');
+                stringConvertTo = mergePunctuation(
+                    grep(this.state.convert
+                        .split(matchAll)
                         .map((word) => {
-                            return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + ' ' + this.props.emojifyDictionary[word.toLowerCase()][
-                                Math.floor(Math.random() * this.props.emojifyDictionary[word.toLowerCase()].length)
+                            return (regexEmojifyDictionary.test(word)) ? word.replace(regexEmojifyDictionary, word + ' ' + emojifyDictionary[word.toLowerCase()][
+                                Math.floor(Math.random() * emojifyDictionary[word.toLowerCase()].length)
                             ]) : word;
                         })
                     )
@@ -835,7 +840,7 @@ class WidgetTranslator extends Component{
             case 'enchantingTable': {
                 stringConvertTo = this.state.convert
                     .split('')
-                    .map((char) => this.props.enchantingTableDictionary[char.toLowerCase()] || char)
+                    .map((char) => enchantingTableDictionary[char.toLowerCase()] || char)
                     .join('');
                 break;
             };
@@ -843,7 +848,7 @@ class WidgetTranslator extends Component{
                 stringConvertTo = this.state.convert
                     .split('')
                     .reverse()
-                    .map((char) => this.props.mirrorWrittingDictionary[char] || char)
+                    .map((char) => mirrorWrittingDictionary[char] || char)
                     .join('');
                 break;
             };
@@ -878,17 +883,17 @@ class WidgetTranslator extends Component{
                 break;
             };
             case 'uwu': {
-                let wordsUwu = Object.keys(this.props.uwuDictionary).join('|');
-                let regexUwuDictionary = new RegExp(`(?<![\\w${this.props.punctuation}])(${wordsUwu})(?![\\w${this.props.punctuation}])`, 'i');
-                stringConvertTo = this.props.mergePunctuation(
-                    this.props.grep(this.state.convert
+                let wordsUwu = Object.keys(uwuDictionary).join('|');
+                let regexUwuDictionary = new RegExp(`(?<![\\w${punctuation}])(${wordsUwu})(?![\\w${punctuation}])`, 'i');
+                stringConvertTo = mergePunctuation(
+                    grep(this.state.convert
                         .toString()
                         .toLowerCase()
-                        .split(this.props.matchAll))
+                        .split(matchAll))
                         .map((word) => {
                             return (/[?]+/.test(word)) ? word.replace(/[?]+/, '???')
                                 : (/[!]+/.test(word)) ? word.replace(/[!]+/, '!!11')
-                                : (regexUwuDictionary.test(word)) ? word.replace(regexUwuDictionary, this.props.uwuDictionary[word][Math.floor(Math.random() * this.props.uwuDictionary[word].length)])
+                                : (regexUwuDictionary.test(word)) ? word.replace(regexUwuDictionary, uwuDictionary[word][Math.floor(Math.random() * uwuDictionary[word].length)])
                                 : (/(l)\1/.test(word.substring(1, word.length))) ? word.replace(/(l)\1/, 'ww')
                                 : (/(r)\1/.test(word.substring(1, word.length))) ? word.replace(/(r)\1/, 'ww')
                                 : (/[l|r]/.test(word.substring(1, word.length-1))) ? word.replace(/(\w*)([l|r])(\w*)/, '$1w$3')
@@ -901,11 +906,11 @@ class WidgetTranslator extends Component{
                 );
                 /// Insert emoticon at random position
                 let randPosition;
-                const randEmoticon = Math.floor(Math.random() * this.props.uwuEmoticons.length);
+                const randEmoticon = Math.floor(Math.random() * uwuEmoticons.length);
                 if (stringConvertTo.length > 4) {
                     randPosition = Math.floor(Math.random() * (stringConvertTo.length - 2) + 2);
                     stringConvertTo = [...stringConvertTo.slice(0, randPosition)
-                        , this.props.uwuEmoticons[randEmoticon]
+                        , uwuEmoticons[randEmoticon]
                         , ...stringConvertTo.slice(randPosition)]
                         .join(' ');
                 } else if (stringConvertTo.length <= 4) {
@@ -917,7 +922,7 @@ class WidgetTranslator extends Component{
             case 'phoneticAlphabet': {
                 stringConvertTo = this.state.convert
                     .split('')
-                    .map((char) => this.props[`${this.state.to.value}Dictionary`][char.toLowerCase()] || '')
+                    .map((char) => translateLookup[this.state.to.value][0][char.toLowerCase()] || '')
                     .join(' ')
                     .replace(/\s+/g, ' ');
                 break;
@@ -984,7 +989,7 @@ class WidgetTranslator extends Component{
             case 'reverse': {
                 if (this.state.reverseWord && this.state.reverseSentence) {
                     /// Reverse Word + Sentence
-                    stringConvertTo = this.props.mergePunctuation(this.state.convert
+                    stringConvertTo = mergePunctuation(this.state.convert
                         .split(/([.?!])\s*/)
                         .map(sentence => sentence
                             .split(' ')
@@ -1009,7 +1014,7 @@ class WidgetTranslator extends Component{
                         .join('');
                 } else if (this.state.reverseSentence) {
                     /// Reverse Sentence
-                    stringConvertTo = this.props.mergePunctuation(this.state.convert
+                    stringConvertTo = mergePunctuation(this.state.convert
                         .split(/([.!?'])\s*/)
                         .map(function(sentence){
                             return sentence
@@ -1035,8 +1040,8 @@ class WidgetTranslator extends Component{
 
     componentDidMount() {
         /// Sort the 'translate-to' optgroups options alphabetically
-        this.props.sortSelect(optionsTranslateFrom);
-        this.props.sortSelect(optionsTranslateTo);
+        sortSelect(optionsTranslateFrom);
+        sortSelect(optionsTranslateTo);
         /// Default values
         if (sessionStorage.getItem('translator') === null) {
             this.setState({
@@ -1078,7 +1083,7 @@ class WidgetTranslator extends Component{
     
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('translator')}
                 onStop={(event, data) => {
@@ -1093,14 +1098,22 @@ class WidgetTranslator extends Component{
                     <h2 id='translator-widget-heading'
                         className='screen-reader-only'>Translator Widget</h2>
                     <div id='translator-widget-animation'
-                        className='widget-animation'>
-                        {/* Drag Handle */}
+                        className={`widget-animation ${classStack}`}>
                         <span id='translator-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('translator', 'utility')}
                         <div className='flex-center row wrap'
                             style={{
@@ -1168,22 +1181,22 @@ class WidgetTranslator extends Component{
                                         defaultValue={optionsTranslateFrom[0]['options'][0]}
                                         onChange={this.handleFrom}
                                         options={optionsTranslateFrom}
-                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        formatGroupLabel={formatGroupLabel}
                                         components={{
-                                            GroupHeading: this.props.selectHideGroupHeading,
-                                            MenuList: this.props.selectHideGroupMenuList
+                                            GroupHeading: selectHideGroupHeading,
+                                            MenuList: selectHideGroupMenuList
                                         }}
                                         theme={(theme) => ({
                                             ...theme,
                                             colors: {
                                                 ...theme.colors,
-                                                ...this.props.selectTheme
+                                                ...this.props.parentRef.state.selectTheme
                                             }
                                         })}/>
                                     <button className='button-match inverse'
                                         aria-label='Swap'
                                         onClick={this.handleSwap}>
-                                        <IconContext.Provider value={{ size: this.props.smallIcon, className: 'global-class-name' }}>
+                                        <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
                                             <BsArrowLeftRight/>
                                         </IconContext.Provider>
                                     </button>
@@ -1194,16 +1207,16 @@ class WidgetTranslator extends Component{
                                         defaultValue={optionsTranslateTo[0]['options'][0]}
                                         onChange={this.handleTo}
                                         options={optionsTranslateTo}
-                                        formatGroupLabel={this.props.formatGroupLabel}
+                                        formatGroupLabel={formatGroupLabel}
                                         components={{
-                                            GroupHeading: this.props.selectHideGroupHeading,
-                                            MenuList: this.props.selectHideGroupMenuList
+                                            GroupHeading: selectHideGroupHeading,
+                                            MenuList: selectHideGroupMenuList
                                         }}
                                         theme={(theme) => ({
                                             ...theme,
                                             colors: {
                                                 ...theme.colors,
-                                                ...this.props.selectTheme
+                                                ...this.props.parentRef.state.selectTheme
                                             }
                                         })}/>
                                 </div>
@@ -1258,19 +1271,16 @@ class WidgetTranslator extends Component{
                             </div>
                         </div>
                         {/* Replace Popout */}
-                        <Draggable cancel='input, button'
-                            position={{
-                                x: this.props.defaultProps.popouts.replace.position.x,
-                                y: this.props.defaultProps.popouts.replace.position.y
-                            }}
+                        <Draggable defaultPosition={{ x: this.props.defaultProps.popouts.replace.position.x, y: this.props.defaultProps.popouts.replace.position.y }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'replace');
                             }}
+                            cancel='input, button'
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'replace-popout')}>
                             <div id='replace-popout'
                                 className='popout'>
                                 <div id='replace-popout-animation'
-                                    className='popout-animation'>
+                                    className={`popout-animation ${classStack}`}>
                                     <div className='flex-center column space-nicely space-all length-long'>
                                         <div className='flex-center'>
                                             <input className='input-typable all-side input-button-input'
@@ -1294,19 +1304,16 @@ class WidgetTranslator extends Component{
                             </div>
                         </Draggable>
                         {/* Reverse Popout */}
-                        <Draggable cancel='input, button'
-                            position={{
-                                x: this.props.defaultProps.popouts.reverse.position.x,
-                                y: this.props.defaultProps.popouts.reverse.position.y
-                            }}
+                        <Draggable defaultPosition={{ x: this.props.defaultProps.popouts.reverse.position.x, y: this.props.defaultProps.popouts.reverse.position.y }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'reverse');
                             }}
+                            cancel='input, button'
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'reverse-popout')}>
                             <div id='reverse-popout'
                                 className='popout'>
                                 <div id='reverse-popout-animation'
-                                    className='popout-animation'>
+                                    className={`popout-animation ${classStack}`}>
                                     <div className='grid space-nicely space-all length-long'>
                                         <button className='button-match option opt-long'
                                             onClick={this.handleSave}>Save</button>
@@ -1323,19 +1330,16 @@ class WidgetTranslator extends Component{
                             </div>
                         </Draggable>
                         {/* Case Transform Popout */}
-                        <Draggable cancel='input, button'
-                            position={{
-                                x: this.props.defaultProps.popouts.casetransform.position.x,
-                                y: this.props.defaultProps.popouts.casetransform.position.y
-                            }}
+                        <Draggable defaultPosition={{ x: this.props.defaultProps.popouts.casetransform.position.x, y: this.props.defaultProps.popouts.casetransform.position.y }}
                             onStop={(event, data) => {
                                 this.props.defaultProps.updatePosition('translator', 'utility', data.x, data.y, 'popout', 'casetransform');
                             }}
+                            cancel='input, button'
                             bounds={this.props.defaultProps.calculateBounds('translator-widget', 'caseTransform-popout')}>
                             <div id='caseTransform-popout'
                                 className='popout'>
                                 <div id='caseTransform-popout-animation'
-                                    className='popout-animation'>
+                                    className={`popout-animation ${classStack}`}>
                                     <div className='grid space-nicely space-all length-long'>
                                         <button className='button-match option opt-long'
                                             onClick={this.handleSave}>Save</button>
@@ -1362,7 +1366,6 @@ class WidgetTranslator extends Component{
                                 </div>
                             </div>
                         </Draggable>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? (this.state.author === 'Me')
                                 ? <span className='font smaller transparent-normal author-name'>Created by {this.state.author}</span>

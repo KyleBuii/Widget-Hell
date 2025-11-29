@@ -4,11 +4,11 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
 import { TbMoneybag } from 'react-icons/tb';
 import SimpleBar from 'simplebar-react';
-
+import { classStack, decorationValue, fetchedData } from '../../data';
 
 let intervalTimer;
 
-const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
+const WidgetRockPaperScissor = ({ defaultProps, gameProps }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         timer: 0,
@@ -51,16 +51,16 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
         let gameStatus = true;
         let countScore = state.score;
         let choicePlayer = state.choicePlayer;
-        let choices = Object.keys(rps);
+        let choices = Object.keys(fetchedData.rps);
         let choiceComputer = choices[Math.floor(Math.random() * choices.length)];
         changeChoice('computer', choiceComputer);
         /// Same choice
         if (choicePlayer === choiceComputer) {
             message = 'Draw';
         /// Lose
-        } else if (rps[choicePlayer][choiceComputer] === undefined) {
-            if (rps[choiceComputer][choicePlayer] !== undefined) {
-                message = `${choiceComputer.replace(/^./, (char) => char.toUpperCase())} ${rps[choiceComputer][choicePlayer]} ${choicePlayer.replace(/^./, (char) => char.toUpperCase())}`;
+        } else if (fetchedData.rps[choicePlayer][choiceComputer] === undefined) {
+            if (fetchedData.rps[choiceComputer][choicePlayer] !== undefined) {
+                message = `${choiceComputer.replace(/^./, (char) => char.toUpperCase())} ${fetchedData.rps[choiceComputer][choicePlayer]} ${choicePlayer.replace(/^./, (char) => char.toUpperCase())}`;
                 gameStatus = false;
                 gameover();
             } else {
@@ -68,7 +68,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
             };
         /// Win
         } else {
-            message = `${choicePlayer.replace(/^./, (char) => char.toUpperCase())} ${rps[choicePlayer][choiceComputer]} ${choiceComputer.replace(/^./, (char) => char.toUpperCase())}`;
+            message = `${choicePlayer.replace(/^./, (char) => char.toUpperCase())} ${fetchedData.rps[choicePlayer][choiceComputer]} ${choiceComputer.replace(/^./, (char) => char.toUpperCase())}`;
             countScore++;
         };
         setState((prevState) => ({
@@ -111,7 +111,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
     };
     
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('rockpaperscissor')}
             onStop={(event, data) => {
@@ -126,14 +126,22 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                 <h2 id='rockpaperscissor-widget-heading'
                     className='screen-reader-only'>Rock Paper Scissor Widget</h2>
                 <div id='rockpaperscissor-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='rockpaperscissor-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('rockpaperscissor', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -202,7 +210,7 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                         role='region'
                         aria-label='Rock Paper Scissors Choices'>
                         <div id='rockpaperscissor-container-choices'>
-                            {Object.keys(rps).map((choice) => {
+                            {Object.keys(fetchedData.rps).map((choice) => {
                                 return <button className='button-match inverse'
                                     aria-label={choice}
                                     key={choice}
@@ -224,7 +232,6 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps, rps }) => {
                             })}
                         </div>
                     </SimpleBar>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

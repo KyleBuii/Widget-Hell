@@ -4,13 +4,13 @@ import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, decorationValue, isMobile } from '../../data';
 
 const pieces = ['O', 'I', 'S', 'Z', 'L', 'J', 'T'];
 let intervalLoop;
 let intervalTimer;
 
-const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
+const WidgetTetris = ({ defaultProps, gameProps }) => {
 	const [state, setState] = useState({
 		gameOver: true,
 		highscore: 0,
@@ -162,7 +162,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 	};
 	
 	return (
-		<Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+		<Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
 			disabled={defaultProps.dragDisabled}
 			onStart={() => defaultProps.dragStart('tetris')}
 			onStop={(event, data) => {
@@ -177,7 +177,7 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
                 <h2 id='tetris-widget-heading'
                     className='screen-reader-only'>Tetris Widget</h2>
 				<div id='tetris-widget-animation'
-					className='widget-animation'>
+					className={`widget-animation ${classStack}`}>
 					{/* Drag Handle */}
 					<span id='tetris-widget-draggable'
 						className='draggable'>
@@ -185,7 +185,16 @@ const WidgetTetris = ({ defaultProps, gameProps, isMobile }) => {
 							<FaGripHorizontal/>
 						</IconContext.Provider>
 					</span>
-					{defaultProps.renderHotbar('tetris', 'games')}
+					<img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
+                    {defaultProps.renderHotbar('tetris', 'games')}
 					{/* Information Container */}
 					<div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
 						{/* Gold Earned */}

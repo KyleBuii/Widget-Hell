@@ -922,7 +922,7 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
 }
 
 .border-diagonal {
-    border: 10px solid var(--randColor);
+    border: 10px solid var(--randColor) !important;
     border-image: 
         repeating-linear-gradient(45deg,
             transparent,
@@ -930,15 +930,16 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
             var(--randColor) 6px,
             var(--randColor) 15px,
             transparent 16px,
-            transparent 20px) 20/1rem;
+            transparent 20px) 20/1rem
+            !important;
 }
 
 .border-dashed {
-    border: 5px dashed var(--randColor);
+    border: 5px dashed var(--randColor) !important;
 }
 
-.border-double {
-    border: 10px double var(--randColor);
+.border-double:not(.custom-shape) {
+    border: 10px double var(--randColor) !important;
 }
 
 .border-map-inspired {
@@ -946,18 +947,19 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
     --dash-size: 5px;
     --theme-color: mediumseagreen;
     --fill-color: beige;
-    background: var(--randColorLight);
-	border: 5px dashed var(--theme-color);
+    background: var(--randColorLight) !important;
+	border: 5px dashed var(--theme-color) !important;
 	box-shadow: 0 0 0 calc(5px / 2) var(--randColor),
 		        0 0 0 (5px * 2.5) #fff,
 		        inset 0 0 0 calc(5px / 2) var(--randColor),
 		        0 5px (5px * 2) (5px * 3) rgba(0,0,0,0.5),
 		        inset 0 0 0 (5px * 1.2) #fff,
-		        inset 0 0 100vw 100vw var(--fill-color);
+		        inset 0 0 100vw 100vw var(--fill-color)
+                !important;
 }
 
 .border-default-light {
-    border: 8px solid var(--randColorLight);
+    border: 8px solid var(--randColorLight) !important;
 }
 //#endregion
 
@@ -3706,6 +3708,10 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
     }
 }
 
+.shadow {
+    box-shadow: 20px 20px rgba(0, 0, 0, .15);
+}
+
 /// Made by Przemysław Kopciara [https://codepen.io/captain_anonym0us/pen/ybVbpv]
 /// Edited by me
 .book {
@@ -5751,12 +5757,19 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
     transition: scale 0.5s;
     will-change: scale;
 
-    span:first-of-type {
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        gap: 1rem;
-        color: red;
+    span {
+        &:first-of-type {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 1rem;
+            color: red;
+        }
+
+        &:last-of-type {
+            font-size: 12px;
+            opacity: 0.4;
+        }
     }
 
     &:hover {
@@ -7206,6 +7219,20 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
 
 //////////////////// IDs: Widget Games ////////////////////
 //#region
+#twentyfortyeight-widget {
+    #twentyfortyeight-board {
+        min-width: 15em;
+        outline: none;
+    }
+    #twentyfortyeight-overlay-gameover {
+        img {
+            cursor: pointer;
+            height: 91%;
+            width: 91%;
+        }
+    }
+}
+
 #breakout-widget {
     #breakout-canvas {
         max-width: 700px;
@@ -7527,20 +7554,6 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
 
     #trivia-health {
         @include grid-auto(11);
-    }
-}
-
-#twentyfortyeight-widget {
-    #twentyfortyeight-board {
-        min-width: 15em;
-        outline: none;
-    }
-    #twentyfortyeight-overlay-gameover {
-        img {
-            cursor: pointer;
-            height: 91%;
-            width: 91%;
-        }
     }
 }
 

@@ -8,7 +8,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import { FaRegClock } from 'react-icons/fa6';
 import { FiExternalLink } from 'react-icons/fi';
 import { TbMoneybag } from 'react-icons/tb';
-
+import { classStack, debrisPatterns, decorationValue, foodTypes, isMobile } from '../../data';
 
 //////////////////// Guides ////////////////////
 /// Debris spawning guide
@@ -20,7 +20,6 @@ Debris right   13 seconds  5 seconds
 Debris bottom  20 seconds  7 seconds
 */
 
-//////////////////// Functions ////////////////////
 function shallowEquals(arr1, arr2) {
     if (!arr1 || !arr2 || arr1.length !== arr2.length) return false;
     let equals = true;
@@ -45,7 +44,6 @@ function fallsBetween(arr1, arr2, arr3) {
     return false;
 };
 
-/// Displays a single cell
 function GridCell(props) {
     const classes = `grid-cell 
         ${props.foodCell ? `grid-cell--food${props.foodType}` : ''} 
@@ -62,7 +60,6 @@ function GridCell(props) {
     );
 };
 
-//////////////////// Variables ////////////////////
 let intervalTimer;
 let moveSnakeInterval;
 let timeoutDebrisLeft;
@@ -76,7 +73,7 @@ let delayDebrisRight = 5000;
 let delayDebrisBottom = 7000;
 let numCells;
 
-const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) => {
+const WidgetSnake = ({ defaultProps, gameProps }) => {
     const [state, setState] = useState({
         goldEarned: 0,
         timer: 0,
@@ -245,7 +242,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
 
     const spawnDebris = (where) => {
         let randomPosition;
-        let randomDebris = debris[Math.floor(Math.random() * debris.length)];
+        let randomDebris = debrisPatterns[Math.floor(Math.random() * debrisPatterns.length)];
         let calculateDebris = [];
         switch (where) {
             case 'left':
@@ -668,7 +665,7 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
     });
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('snake')}
             onStop={(event, data) => {
@@ -683,14 +680,22 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                 <h2 id='snake-widget-heading'
                     className='screen-reader-only'>Snake Widget</h2>
                 <div id='snake-widget-animation'
-                    className='widget-animation'>
-                    {/* Drag Handle */}
+                    className={`widget-animation ${classStack}`}>
                     <span id='snake-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
                         </IconContext.Provider>
                     </span>
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('snake', 'games')}
                     {/* Information Container */}
                     <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
@@ -784,19 +789,16 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                         </div>
                         : <></>}
                     {/* Settings Popout */}
-                    <Draggable cancel='span, .slider, button'
-                        position={{
-                            x: defaultProps.popouts.settings.position.x,
-                            y: defaultProps.popouts.settings.position.y
-                        }}
+                    <Draggable defaultPosition={{ x: defaultProps.popouts.settings.position.x, y: defaultProps.popouts.settings.position.y }}
                         onStop={(event, data) => {
                             defaultProps.updatePosition('snake', 'games', data.x, data.y, 'popout', 'settings');
                         }}
+                        cancel='span, .slider, button'
                         bounds={defaultProps.calculateBounds('snake-widget', 'snake-popout-settings')}>
                         <div id='snake-popout-settings'
                             className='popout'>
                             <div id='snake-popout-animation-settings'
-                                className='popout-animation'>
+                                className={`popout-animation ${classStack}`}>
                                 <div className='aesthetic-scale scale-span font large-medium flex-center column gap space-nicely space-all'>
                                     {/* Gameplay Settings */}
                                     <div className='div-group'>
@@ -827,7 +829,6 @@ const WidgetSnake = ({ defaultProps, gameProps, foodTypes, debris, isMobile }) =
                             </div>
                         </div>
                     </Draggable>
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>
                             Created by&nbsp;

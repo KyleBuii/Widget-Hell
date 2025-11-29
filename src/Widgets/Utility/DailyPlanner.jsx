@@ -3,7 +3,8 @@ import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import Select from 'react-select';
-
+import { classStack, decorationValue } from '../../data';
+import { formatGroupLabel, menuListScrollbar } from '../../helpers';
 
 const monthLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const weekLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -42,7 +43,7 @@ let isPopoutOpen = false;
 let isPopoutFutureOpen = false;
 let leaveTimeout, clickedCellIndex, clickedPlanIndex, clickedFutureMonth, clickedFuturePlanIndex;
 
-const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar, selectTheme }) => {
+const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
     const [currentDay, setCurrentDay] = useState(0);
     const [month, setMonth] = useState('January');
     const [cells, setCells] = useState([]);
@@ -608,7 +609,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
     };
 
     return (
-        <Draggable position={{ x: defaultProps.position.x, y: defaultProps.position.y }}
+        <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
             onStart={() => defaultProps.dragStart('dailyplanner')}
             onStop={(event, data) => {
@@ -623,8 +624,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                 <h2 id='dailyplanner-widget-heading'
                     className='screen-reader-only'>dailyplanner Widget</h2>
                 <div id='dailyplanner-widget-animation'
-                    className='widget-animation custom-shape'>
-                    {/* Drag Handle */}
+                    className={`widget-animation custom-shape ${classStack}`}>
                     <span id='dailyplanner-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
@@ -747,7 +747,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                                                 ...theme,
                                                 colors: {
                                                     ...theme.colors,
-                                                    ...selectTheme
+                                                    ...parentRef.state.selectTheme
                                                 }
                                             })}
                                             onChange={setInputFuturePlanMonth}/>
@@ -788,7 +788,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                     {/* Add Plan Popout */}
                     <div className='popout'
                         onKeyDown={(event) => handlePopoutKeyDown(event)}>
-                        <div className='popout-animation dialogue dailyplanner-add-popout'>
+                        <div className={`popout-animation dialogue dailyplanner-add-popout ${classStack}`}>
                             <fieldset id='dailyplanner-input-plan'
                                 className='input-fieldset'>
                                 <legend>Plan</legend>
@@ -834,7 +834,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                     </div>
                     {/* View Plan Popout */}
                     <div className='popout'>
-                        <div className='popout-animation dialogue dailyplanner-view-popout'>
+                        <div className={`popout-animation dialogue dailyplanner-view-popout ${classStack}`}>
                             <span className='font bold large'
                                 contentEditable
                                 suppressContentEditableWarning
@@ -856,7 +856,7 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                     {/* View Future Plan Popout */}
                     <div ref={refFuturePlan}
                         className='popout'>
-                        <div className='popout-animation dialogue dailyplanner-view-future-popout'>
+                        <div className={`popout-animation dialogue dailyplanner-view-future-popout ${classStack}`}>
                             <div className='font small transparent-bold flex-center row only-align-items'>
                                 <span contentEditable
                                     suppressContentEditableWarning
@@ -886,9 +886,16 @@ const WidgetDailyPlanner = ({ defaultProps, formatGroupLabel, menuListScrollbar,
                             </div>
                         </div>
                     </div>
-                    {/* Hotbar */}
+                    <img className={`decoration ${decorationValue}`}
+                        src={`/resources/decoration/${decorationValue}.webp`}
+                        alt={decorationValue}
+                        key={decorationValue}
+                        onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                        }}
+                        loading='lazy'
+                        decoding='async'/>
                     {defaultProps.renderHotbar('dailyplanner', 'utility')}
-                    {/* Author */}
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                         : <></>}

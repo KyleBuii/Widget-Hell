@@ -9,7 +9,8 @@ import { TbRepeat, TbRepeatOnce } from 'react-icons/tb';
 import { VscClearAll } from 'react-icons/vsc';
 import ReactPlayer from 'react-player';
 import SimpleBar from 'simplebar-react';
-
+import { classStack, decorationValue } from '../../data';
+import { copyToClipboard, formatNumber } from '../../helpers';
 
 const audio = new Audio();
 let timeoutAnimationRemove, timeoutAnimationPrevious, timeoutAnimationNext, timeoutPlaylistClear, timeoutPlaylistPanel;
@@ -776,7 +777,7 @@ class WidgetMusicPlayer extends Component {
 
     formatTime() {
         const { days, hours, minutes, seconds } = this.state.statistic.time;
-        const textDays = (days !== 0) ? `${this.props.formatNumber(days, 2)} days ` : '';
+        const textDays = (days !== 0) ? `${formatNumber(days, 2)} days ` : '';
         const textHours = (hours !== 0) ? `${hours} hours ` : '';
         const textMinutes = (minutes !== 0) ? `${minutes} minutes ` : '';
         const textSeconds = (seconds !== 0) ? `${seconds} seconds ` : '';
@@ -953,7 +954,7 @@ class WidgetMusicPlayer extends Component {
     
     render() {
         return (
-            <Draggable position={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
+            <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
                 disabled={this.props.defaultProps.dragDisabled}
                 onStart={() => this.props.defaultProps.dragStart('musicplayer')}
                 onStop={(event, data) => {
@@ -968,14 +969,22 @@ class WidgetMusicPlayer extends Component {
                     <h2 id='musicplayer-widget-heading'
                         className='screen-reader-only'>Music Player Widget</h2>
                     <div id='musicplayer-widget-animation'
-                        className='widget-animation custom-shape'>
-                        {/* Drag Handle */}
+                        className={`widget-animation custom-shape ${classStack}`}>
                         <span id='musicplayer-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
                                 <FaGripHorizontal/>
                             </IconContext.Provider>
                         </span>
+                        <img className={`decoration ${decorationValue}`}
+                            src={`/resources/decoration/${decorationValue}.webp`}
+                            alt={decorationValue}
+                            key={decorationValue}
+                            onError={(event) => {
+                                event.currentTarget.style.display = 'none';
+                            }}
+                            loading='lazy'
+                            decoding='async'/>
                         {this.props.defaultProps.renderHotbar('musicplayer', 'utility')}
                         <div className='flex-center row'>
                             {/* Song */}
@@ -1019,11 +1028,11 @@ class WidgetMusicPlayer extends Component {
                                     <div className='flex-center column gap only-justify-content'>
                                         <div id='musicplayer-name'>
                                             <span className='text-animation font bold white large-medium'
-                                                onClick={() => this.props.copyToClipboard(this.state.name)}>{this.state.name}</span>
+                                                onClick={() => copyToClipboard(this.state.name)}>{this.state.name}</span>
                                         </div>
                                         <span id='musicplayer-author' 
                                             className='text-animation aesthetic-scale scale-self origin-left font white small'
-                                            onClick={() => this.props.copyToClipboard(this.state.artist)}>{this.state.artist}</span>
+                                            onClick={() => copyToClipboard(this.state.artist)}>{this.state.artist}</span>
                                     </div>
                                     <div>
                                         <input className='progress-bar'
@@ -1199,19 +1208,18 @@ class WidgetMusicPlayer extends Component {
                                 <span>(Updates every start of the month)</span>
                             </div>
                             <div className='flex-center column gap align-items-left'>
-                                <span>Played: {this.props.formatNumber(this.state.statistic.played, 2)}</span>
+                                <span>Played: {formatNumber(this.state.statistic.played, 2)}</span>
                                 <span>Time: {this.formatTime()}</span>
                                 <ul>
                                     {this.state.urls.map((url, index) => {
                                         return <li key={`${url.name} ${index}`}>
                                             <span>{index + 1}. {url.name}</span>
-                                            <span>{this.props.formatNumber((url.timePlayed / url.duration), 2)}</span>
+                                            <span>{formatNumber((url.timePlayed / url.duration), 2)}</span>
                                         </li>
                                     })}
                                 </ul>
                             </div>
                         </section>
-                        {/* Author */}
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
