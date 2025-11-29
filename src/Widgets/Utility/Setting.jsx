@@ -668,6 +668,8 @@ class WidgetSetting extends Component {
     };
 
     updateCursor(what, size = 0) {
+        if (!what?.value) return;
+
         if (what.value === 'default') {
             document.body.classList.remove('cursor-unset', 'cursor-custom');
         } else {
