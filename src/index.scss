@@ -7745,6 +7745,12 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
             padding-left: 0;
         }
     }
+
+    .iceberg-sources {
+        @extend .font, .flex-center, .row, .gap, .medium-gap, .wrap;
+        gap: 0.2rem 1rem;
+        margin-top: 0.5rem;
+    }
 }
 
 #pickerwheel-widget {

@@ -18,16 +18,20 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
     const [selectedLevel, setSelectedLevel] = useState(0);
     const [selectedItem, setSelectedItem] = useState(0);
 
-    const { icebergs } = fetchedData;
+    const { icebergs } = fetchedData || {};
 
     const selectedEntry = useMemo(() => {
         const iceberg = Object.values(icebergs)[selectedIceberg.value];
+
+        if (iceberg === undefined) return;
+
         const level = iceberg[selectedLevel];
         const entries = Object.entries(level).filter(([key]) => key !== '_comment');
+
         return entries[selectedItem];
     }, [icebergs, selectedIceberg, selectedLevel, selectedItem]);
 
-    const [title, data] = selectedEntry;
+    const [title, data] = selectedEntry || [];
 
     useEffect(() => {
         const dataKeys = Object.keys(icebergs).filter((key) => key !== '_comment');
@@ -134,7 +138,7 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
                         <div id='iceberg-view-item-popout'
                             className='popout'>
                             <div className={`popout-animation iceberg-view-item-popout-animation ${classStack}`}>
-                                {(data.image !== '')
+                                {(!/\s|undefined/.test(data.image))
                                     && <img src={`/resources/iceberg/${data.image}`}
                                         alt={title}
                                         draggable={false}
@@ -152,11 +156,11 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
                                 {(data.video)
                                     && data.video.map((item, itemIndex) => {
                                         return <div key={`video ${itemIndex}`}
-                                            style={{width: '100%'}}>
+                                            style={{width: '32rem'}}>
                                             <ReactPlayer url={item}
                                                 width={'100%'}/>
                                         </div>})}
-                                <div className='font flex-center row gap small-gap flex-wrap'>
+                                <div className='iceberg-sources'>
                                     {Object.entries(data.source).map(([sourceName, sourceLink], sourceIndex) => {
                                         return sourceLink
                                             ? <a className='link-match'

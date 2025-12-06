@@ -208,14 +208,392 @@
         }
     ],
 	"creepy video game easter egg": [
-		{ "_comment": "Level 1",
+		{ "_comment": "Level 1 – Harmless Oddities",
+			"Rat Man Dens": {
+				"video": ["https://www.youtube.com/watch?v=GuYwRmoPhV8"],
+				"source": {
+					"Portal & Portal 2": "",
+					"Youtube - lunchbox5567": "https://www.youtube.com/watch?v=GuYwRmoPhV8"
+				},
+				"information": [
+					"Doug Rattmann",
+					"One of the few survivors of a neurotoxin attack from GLaDOS, an artificial intelligence antagonist of the game"
+				]
+			},
+			"WOW Kraken": {
+				"video": ["https://www.youtube.com/watch?v=ieMzMpCpUNQ"],
+				"source": {
+					"World of Warcraft - North of Vol'dun": "",
+					"Youtube - XeLa": "https://www.youtube.com/watch?v=ieMzMpCpUNQ"
+				}
+			},
+			"Witcher 3 Whales": {
+				"video": ["https://www.youtube.com/watch?v=9zyAVm0Dmls"],
+				"source": {
+					"Witcher 3 - Skellige seas": "",
+					"Youtube - ThesaurusPG": "https://www.youtube.com/watch?v=9zyAVm0Dmls"
+				}
+			},
+			"Sims Kraken": {
+				"video": [
+					"https://www.youtube.com/watch?v=u7Um5aRWaSg",
+					"https://www.youtube.com/watch?v=fw_AELrYpnI"
+				],
+				"source": {
+					"Sims 3 Island Paradise": "",
+					"Youtube - SimsVIP": "https://www.youtube.com/watch?v=u7Um5aRWaSg",
+					"Youtube - Sandring44": "https://www.youtube.com/watch?v=fw_AELrYpnI"
+				},
+				"information": [
+					"4% kraken will swim by",
+					"1% it will attack the Sim, extra 1% if swam by boat"
+				]
+			},
+			"Assassin's Creed Squid": {
+				"video": [
+					"https://www.youtube.com/watch?v=N-oMNUnbtME",
+					"https://www.youtube.com/watch?v=gR31JhZj5cU"
+				],
+				"source": {
+					"Assassin's Creed II - Venice Assassin Tomb": "",
+					"Assassin's Creed IV - Coordinates dive at 630 650": "",
+					"Youtube - A Fresh Hot Bun": "https://www.youtube.com/watch?v=N-oMNUnbtME",
+					"Youtube - Nathan's Show": "https://www.youtube.com/watch?v=gR31JhZj5cU"
+				}
+			},
+			"Thief II Dancing Zombies": {
+				"video": ["https://www.youtube.com/watch?v=jILqjVI2D8A"],
+				"source": {
+					"Thief II - Framed": "",
+					"Youtube - Zevik": "https://www.youtube.com/watch?v=jILqjVI2D8A"
+				}
+			},
+			"Twisted Gallery OIIA": {
+				"video": ["https://www.youtube.com/watch?v=90DC_ri0WEY"],
+				"source": {
+					"Twisted Gallery 异馆": "",
+					"Youtube - MeowserKat": "https://www.youtube.com/watch?v=90DC_ri0WEY"
+				}
+			}
+		},
+		{ "_comment": "Level 2 – Mildly Creepy Moments",
 			"Hex Maniac Ghost": {
 				"video": ["https://www.youtube.com/watch?v=dkco7hXGOhg"],
-                "source": {
-                    "Pokemon X & Y - Lumiose City's Fighting Dojo: 2nd Floor": "",
+				"source": {
+					"Pokemon X & Y - Lumiose City's Fighting Dojo: 2nd Floor": "",
 					"Youtube - Ms. I love Big Bear Cats": "https://www.youtube.com/watch?v=dkco7hXGOhg"
-                }
-            }
+				}
+			},
+			"Heart of Liberty City": {
+				"video": ["https://www.youtube.com/watch?v=teMJGk3JEPc"],
+				"source": {
+					"Grand Theft Auto IV - Happiness Island statue": "",
+					"Youtube - gameworld6421": "https://www.youtube.com/watch?v=teMJGk3JEPc"
+				}
+			},
+			"TF2 Ghost Room": {
+				"video": ["https://www.youtube.com/watch?v=IuIN_3bcKtk"],
+				"source": {
+					"Team Fortress 2 - Halloween event harvest map": "",
+					"Youtube - Professor Pika": "https://www.youtube.com/watch?v=IuIN_3bcKtk"
+				}
+			},
+			"Hitman Hotel Ghost": {
+				"video": [
+					"https://www.youtube.com/watch?v=Bua7jUUL41Y",
+					"https://www.youtube.com/watch?v=yohdjgWVb0Y"
+				],
+				"source": {
+					"Hitman - Hotel Gallard": "",
+					"Youtube - scoobywizard": "https://www.youtube.com/watch?v=Bua7jUUL41Y",
+					"Youtube - TheMerovingian": "https://www.youtube.com/watch?v=yohdjgWVb0Y"
+				}
+			},
+			"HL2 G-Man Sightings": {
+				"video": ["https://www.youtube.com/watch?v=_T4hYw7uM4A"],
+				"source": {
+					"Half-Life": "",
+					"Half-Life: Opposing Force": "",
+					"Half-Life: Blue Shift": "",
+					"Half-Life 2": "",
+					"Half-Life 2: Episode One": "",
+					"Half-Life 2: Episode Two": "",
+					"Half-Life: Alyx": "",
+					"Youtube - noclick": "https://www.youtube.com/watch?v=_T4hYw7uM4A"
+				}
+			},
+			"TXR3 Ghost": {
+				"video": ["https://www.youtube.com/watch?v=ZJ1yM5MgXb8"],
+				"source": {
+					"Tokyo Ytreme Racer 3": "",
+					"Youtube - Vic K (SbeveDaGreat)": "https://www.youtube.com/watch?v=ZJ1yM5MgXb8"
+				}
+			},
+			"gm_bigcity": {
+				"video": ["https://www.youtube.com/watch?v=4dX3hh_nZJA"],
+				"source": {
+					"Garry's Mod - gm_bigcity": "",
+					"Youtube - Astro Kaizer": "https://www.youtube.com/watch?v=4dX3hh_nZJA"
+				}
+			},
+			"Zombie Army 4 Dolls": {
+				"video": ["https://www.youtube.com/watch?v=emf6RhheYlE"],
+				"source": {
+					"Zombie Army 4: Dead War": "",
+					"Youtube - Mehdi Gaming HQ": "https://www.youtube.com/watch?v=emf6RhheYlE"
+				}
+			},
+			"SnowRunner Eyes": {
+				"video": ["https://www.youtube.com/watch?v=anh9aka59qA"],
+				"source": {
+					"SnowRunner": "",
+					"Youtube - Uncle": "https://www.youtube.com/watch?v=anh9aka59qA"
+				}
+			},
+			"Fatal Frame Screen Savers": {
+				"video": ["https://www.youtube.com/watch?v=2slBx0MfzHs"],
+				"source": {
+					"Fatal Frame 1": "",
+					"Fatal Frame 2": "",
+					"Fatal Frame 3": "",
+					"Youtube - Psionic Torpor": "https://www.youtube.com/watch?v=2slBx0MfzHs"
+				}
+			}
+		},
+		{ "_comment": "Level 3 – Disturbing Atmosphere & Visual Uncanny",
+			"Witcher 3 Statues": {
+				"video": ["https://www.youtube.com/watch?v=bMtJg5y7uow"],
+				"source": {
+					"Witcher 3 - The Lindenvale Cemetery": "",
+					"Youtube - Jason Brody Gaming": "https://www.youtube.com/watch?v=bMtJg5y7uow"
+				}
+			},
+			"Skyrim Statues": {
+				"video": ["https://www.youtube.com/watch?v=Mvv0sHhTzbU"],
+				"source": {
+					"Skyrim - Sovngarde": "",
+					"Youtube - tootendatuba": "https://www.youtube.com/watch?v=Mvv0sHhTzbU"
+				}
+			},
+			"Skyrim Mannequin Glitch": {
+				"video": ["https://www.youtube.com/watch?v=uQd-XpW1CCg"],
+				"source": {
+					"Skyrim": "",
+					"Youtube - blueboots": "https://www.youtube.com/watch?v=uQd-XpW1CCg"
+				}
+			},
+			"Viscera Cleanup Detail Dear Head": {
+				"video": ["https://www.youtube.com/watch?v=RSKrVElOKyY"],
+				"source": {
+					"Viscera Cleanup Detail - Hourse of Horror": "",
+					"Youtube - neon penguin": "https://www.youtube.com/watch?v=RSKrVElOKyY"
+				}
+			},
+			"Slender The Arrival OOB": {
+				"video": ["https://www.youtube.com/watch?v=GyAM4P8FChU"],
+				"source": {
+					"Slender: The Arrival": "",
+					"Youtube - ItsSimplySilver": "https://www.youtube.com/watch?v=GyAM4P8FChU"
+				}
+			},
+			"Watch Dogs Legion Queen Victoria": {
+				"video": ["https://www.youtube.com/watch?v=Pynqvb95IDU"],
+				"source": {
+					"Watch Dogs: Legion": "",
+					"Youtube - Watch Dogs | DedSec": "https://www.youtube.com/watch?v=Pynqvb95IDU"
+				}
+			},
+			"SMG 2 Hell Valley Sky Trees": {
+				"video": ["https://www.youtube.com/watch?v=GwPmkRfb6Dk"],
+				"source": {
+					"Super Mario Galaxy 2 - Shiverburn Galaxy": "",
+					"Youtube - ratel505": "https://www.youtube.com/watch?v=GwPmkRfb6Dk"
+				}
+			},
+			"Runner2 Slender Man": {
+				"video": ["https://www.youtube.com/watch?v=jA4g7NMkcJA"],
+				"source": {
+					"Runner2 - Bush Wacky": "",
+					"Youtube - Sogeking Dante": "https://www.youtube.com/watch?v=jA4g7NMkcJA"
+				}
+			},
+			"PvZ Slender Man": {
+				"video": ["https://www.youtube.com/watch?v=D--Mw7kHdb4"],
+				"source": {
+					"Plants vs. Zombies: Garden Warfare - Zomboss Estate": "",
+					"Youtube - Just Eat It Videos": "https://www.youtube.com/watch?v=D--Mw7kHdb4"
+				}
+			},
+			"Viscera Cleanup Detail Painting": {
+				"video": ["https://www.youtube.com/watch?v=3SBYOSFNuP4"],
+				"source": {
+					"Viscera Cleanup Detail": "",
+					"Youtube - neon penguin": "https://www.youtube.com/watch?v=3SBYOSFNuP4"
+				}
+			},
+			"Fatal Frame III Closet": {
+				"video": ["https://www.youtube.com/watch?v=pFMID3Ga8k8"],
+				"source": {
+					"Fatal Frame III: The Tormented": "",
+					"Youtube - IkxGP": "https://www.youtube.com/watch?v=pFMID3Ga8k8"
+				}
+			},
+			"Postal 4 Gnome": {
+				"video": ["https://www.youtube.com/watch?v=KHwgrcAUBxI"],
+				"source": {
+					"Postal 4: No Regerts": "",
+					"Youtube - KingVamp": "https://www.youtube.com/watch?v=KHwgrcAUBxI"
+				}
+			},
+			"Outlaws Aliens": {
+				"video": ["https://www.youtube.com/watch?v=PKeEE5esh4Y"],
+				"source": {
+					"Outlaws - Slim's Hideout": "",
+					"Youtube - DasTasche": "https://www.youtube.com/watch?v=PKeEE5esh4Y"
+				}
+			}
+		},
+		{ "_comment": "Level 4 – Jumpscares & Aggressive Horror",
+			"RE4 Lake Jumpscare": {
+				"video": ["https://www.youtube.com/watch?v=VrRglV4YNYk"],
+				"source": {
+					"Resident Evil 4": "",
+					"Youtube - The Easter Egg Hunter": "https://www.youtube.com/watch?v=VrRglV4YNYk"
+				},
+				"information": ["Remake also has the jumpscare"]
+			},
+			"DBD Sadako": {
+				"video": [
+					"https://www.youtube.com/watch?v=EETlP9NQyw4",
+					"https://www.youtube.com/watch?v=lwdRE4a9TYo"
+				],
+				"source": {
+					"Dead By Daylight": "",
+					"Youtube - MooN RAM": "https://www.youtube.com/watch?v=EETlP9NQyw4",
+					"Youtube - Treilah": "https://www.youtube.com/watch?v=lwdRE4a9TYo"
+				}
+			},
+			"Golden Freddy": {
+				"video": [
+					"https://www.youtube.com/watch?v=3ez4-CY30fM",
+					"https://www.youtube.com/watch?v=at0g6BtmSmI"
+				],
+				"source": {
+					"Five Nights at Freddy's": "",
+					"Youtube - NickTheNecromancer": "https://www.youtube.com/watch?v=3ez4-CY30fM",
+					"Youtube - Gamer Jayvee": "https://www.youtube.com/watch?v=at0g6BtmSmI"
+				},
+				"information": ["1/32,768 chance when checking CAM 2B"]
+			},
+			"Pizza Tower Jumpscare": {
+				"video": ["https://www.youtube.com/watch?v=dsOIbGRu6zI"],
+				"source": {
+					"Pizza Tower": "",
+					"Youtube - boltumbles": "https://www.youtube.com/watch?v=dsOIbGRu6zI"
+				}
+			},
+			"Payday Witch": {
+				"video": ["https://www.youtube.com/watch?v=qLBr3vU-6UE"],
+				"source": {
+					"Payday - No Mercy": "",
+					"Youtube - TheBigE": "https://www.youtube.com/watch?v=qLBr3vU-6UE"
+				}
+			},
+			"Doom 3 Mirror": {
+				"video": ["https://www.youtube.com/watch?v=CaulF3GOkpY"],
+				"source": {
+					"Doom 3": "",
+					"Youtube - Penzky Gaming": "https://www.youtube.com/watch?v=CaulF3GOkpY"
+				}
+			},
+			"Death Stranding Jumpscare": {
+				"video": ["https://www.youtube.com/watch?v=TqxZXFJteCI"],
+				"source": {
+					"Death Stranding": "",
+					"Youtube - GreenBeret": "https://www.youtube.com/watch?v=TqxZXFJteCI"
+				}
+			},
+			"Omori Jumpscare": {
+				"video": ["https://www.youtube.com/watch?v=XjyIP5g7Qlc"],
+				"source": {
+					"Omori": "",
+					"Youtube - GatoEpicc": "https://www.youtube.com/watch?v=XjyIP5g7Qlc"
+				}
+			},
+			"Hitman 2 Live Exorcism": {
+				"video": ["https://www.youtube.com/watch?v=c-Q6YiZ56tc"],
+				"source": {
+					"Hitman 2 - Miami": "",
+					"Youtube - Qwarky": "https://www.youtube.com/watch?v=c-Q6YiZ56tc"
+				}
+			},
+			"Black Ops 2 Jumpscare": {
+				"video": ["https://www.youtube.com/watch?v=zfOiB9HDmpk"],
+				"source": {
+					"Black Ops 2 - Mob of the Dead": "",
+					"Youtube - Lutfi \"Lutfinator82496\" Barakat": "https://www.youtube.com/watch?v=zfOiB9HDmpk"
+				}
+			},
+			"DDLC Did I Scare You?": {
+				"video": ["https://www.youtube.com/watch?v=oASQx3b2oG8"],
+				"source": {
+					"Doki Doki Literature Club!": "",
+					"Youtube - 0nsra": "https://www.youtube.com/watch?v=oASQx3b2oG8"
+				}
+			},
+			"BioShock Infinite Please Stand By": {
+				"video": ["https://www.youtube.com/watch?v=3Rt284TCpQo"],
+				"source": {
+					"BioShock Infinite": "",
+					"Youtube - Ethart the Pianist": "https://www.youtube.com/watch?v=3Rt284TCpQo"
+				}
+			},
+			"Infra B2 Tunnel": {
+				"video": ["https://www.youtube.com/watch?v=mct7ttXDZEU"],
+				"source": {
+					"Infra": "",
+					"Youtube - Terrible Tony": "https://www.youtube.com/watch?v=mct7ttXDZEU"
+				}
+			}
+		},
+		{ "_comment": "Level 5 – Psychological Horror & Disturbing Concepts",
+			"Harvest Moon 444": {
+				"video": ["https://www.youtube.com/watch?v=vvxPL8xG4u8"],
+				"source": {
+					"Harvest Moon: Friends of Mineral Town": "",
+					"Youtube - Little0u0": "https://www.youtube.com/watch?v=vvxPL8xG4u8"
+				}
+			},
+			"The Crew End of the World": {
+				"video": ["https://www.youtube.com/watch?v=7HwowFB3MmM"],
+				"source": {
+					"The Crew: Wild Run": "",
+					"Youtube - INKEDxxLAD": "https://www.youtube.com/watch?v=7HwowFB3MmM"
+				}
+			},
+			"Dear Esther Ghosts": {
+				"video": ["https://www.youtube.com/watch?v=OFkSSZPSvqw"],
+				"source": {
+					"Dear Esther": "",
+					"Youtube - WOOTinator": "https://www.youtube.com/watch?v=OFkSSZPSvqw"
+				}
+			},
+			"Zombie Army 4 Controller": {
+				"video": ["https://www.youtube.com/watch?v=8brL3hAMq30"],
+				"source": {
+					"Zombie Army 4: Dead War": "",
+					"Youtube - PerfectParadox": "https://www.youtube.com/watch?v=8brL3hAMq30"
+				}
+			}
+		},
+		{ "_comment": "Level 6 – Extreme Disturbance & Nightmare Fuel",
+			"Utahonotatari 2 Dead Body": {
+				"video": ["https://www.youtube.com/watch?v=d0evp4Zat8U"],
+				"source": {
+					"Utahonotatari 2": "",
+					"Youtube - MikoEffect": "https://www.youtube.com/watch?v=d0evp4Zat8U"
+				}
+			}
 		}
 	]
 }

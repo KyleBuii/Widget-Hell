@@ -1446,10 +1446,7 @@ class Widgets extends Component {
 
                 widgetsTextActive = [...document.querySelectorAll('.text-animation')];
             });
-
-            console.log('first')
         } else {
-            console.log('second')
             this.storeData(newWidgets);
 
             this.setState({
