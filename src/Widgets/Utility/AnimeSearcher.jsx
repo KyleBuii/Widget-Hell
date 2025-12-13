@@ -6,7 +6,7 @@ import { FaGripHorizontal } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import { classStack, decorationValue } from '../../data';
-import { copyToClipboard } from '../../helpers';
+import { copyToClipboard, summarizeText } from '../../helpers';
 
 const genres = [
     'Action', 'Adventure', 'Comedy', 'Drama', 'Ecchi',
@@ -803,6 +803,7 @@ class WidgetAnimeSearcher extends Component {
     
     render() {
         const currentItem = this.state.media[this.state.currentMedia];
+        const summary = summarizeText(currentItem.description);
 
         return (
             <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
@@ -1145,6 +1146,7 @@ class WidgetAnimeSearcher extends Component {
                                                 </div>
                                             </div>
                                             {/* Description */}
+                                            {summary && <span>Simple Summary: {summary}</span>}
                                             <span className='text-animation'
                                                 dangerouslySetInnerHTML={{
                                                     __html: DOMPurify.sanitize(currentItem.description)
@@ -1365,6 +1367,8 @@ class WidgetAnimeSearcher extends Component {
                                 <div ref={this.refMultipleSearches}
                                     className='animesearcher-searches'>
                                     {this.state.media.map((data, dataIndex) => {
+                                        const searchesSummary = summarizeText(data.description);
+
                                         return <div className='animesearcher-search'
                                             style={{ '--animeSearcherCoverColor': data.coverImageColor || 'var(--randColorLight)' }}
                                             key={data.id ?? dataIndex}>
@@ -1403,6 +1407,7 @@ class WidgetAnimeSearcher extends Component {
                                                         : data.titleRomaji}
                                                 </span>
                                                 <div style={{ width: '100%' }}>
+                                                    {searchesSummary && <span>Simple Summary: {searchesSummary}</span>}
                                                     <span className='text-animation'
                                                         dangerouslySetInnerHTML={{
                                                             __html: DOMPurify.sanitize(data.description)

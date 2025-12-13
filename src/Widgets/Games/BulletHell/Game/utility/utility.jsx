@@ -87,7 +87,7 @@ export function danmakuSpokes({
     spokesArray, /// Output array to hold cannon angles
     originsArray /// Output array to hold cannon positions
 }) {  
-    let directions = []; /// This is the working array to hold the cannon angles --> pushed to spokesArray at end of this function
+    let directions = []; /// This is the working array to hold the cannon angles => pushed to spokesArray at end of this function
     function getAngles(centreAngle, range, points) {
         let tempArray = [];
         switch (points) {

@@ -526,6 +526,10 @@ class WidgetMusicPlayer extends Component {
         };
     };
 
+    handlePlayerError() {
+        this.handleNextMusic();
+    };
+
     handleBlur() {
         document.getElementById('musicplayer-input-add')
             .classList.remove('musicplayer-animation-input-add');
@@ -1007,7 +1011,8 @@ class WidgetMusicPlayer extends Component {
                                         onDuration={(event) => this.setMaxDuration(event)}
                                         onProgress={(event) => this.updateDuration(event)}
                                         onEnded={this.ended}
-                                        onReady={() => this.handlePlayerReady()}
+                                        onReady={this.handlePlayerReady}
+                                        onError={() => this.handlePlayerError()}
                                         style={{
                                             visibility: this.state.playerVisibility
                                         }}

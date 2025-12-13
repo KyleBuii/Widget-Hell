@@ -1293,7 +1293,7 @@ class Widgets extends Component {
             });
         });
         
-        // window.addEventListener('beforeunload', this.storeData);
+        window.addEventListener('beforeunload', this.storeData);
         window.addEventListener('new item', this.addItem);
         window.addEventListener('gold bag', this.addGoldBag);
         window.addEventListener('equip item', this.equipItem);
@@ -1578,7 +1578,7 @@ class Widgets extends Component {
                         <FaExclamationTriangle/>
                     </span>
                     <span>All item names, logos, characters, brands, trademarks and registered trademarks are property of their respective owners and unrelated to Widget Hell.</span>
-                    <span>Sources are located in LICENSE.md</span>
+                    <span>Sources are listed in LICENSE.md</span>
                 </div>
                 {(this.state.values.cursorTrail)
                     && <Cursor color={this.state.values.cursorTrailColor}

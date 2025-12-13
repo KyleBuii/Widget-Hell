@@ -1,0 +1,361 @@
+Templates #
+[function] #
+Type          : () =>
+Purpose       :
+Parameters    :
+Returns       :
+How It Works  :
+	1.
+Example Usage :
+~
+~
+
+async copyToClipboard(text) #
+Type          : (string) => Promise<string>
+Purpose       : Copies sanitized text to the clipboard and displays a popup on success.
+Parameters    :
+    text - The text to be copied.
+Returns       : Promise<string>
+    - 'success' : Text copied successfully.
+    - 'fail'    : An error occurred during the copy attempt.
+    - 'empty'   : Text was an empty string.
+How It Works  :
+    1. Inserts the text into a hidden DOM element ('clipboard-dump') after sanitizing with DOMPurify.
+    2. Extracts plain innerText from the sanitized element.
+    3. Attempts to write that text to the clipboard using navigator.clipboard.writeText().
+    4. On success, triggers createPopup('Copied!') for user feedback.
+    5. Clears the hidden DOM element ('clipboard-dump') after copying.
+    6. Catches any clipboard or DOM errors and returns 'fail'.
+Example Usage :
+    const result = await copyToClipboard('Hello World!');
+    console.log(result);
+    /// Output: "success"
+~
+
+dragStart(element) #
+Type          : (string) => void
+Purpose       : Makes a widget look draggable by reducing the opacity and showing a drag handle.
+Parameters    :
+    element - The base ID of the widget being dragged (e.g. settings).
+Returns       : void
+How It Works  :
+    1. Checks whether the element is the special 'settings' widget.
+    2. Sets the corresponding '-widget-draggable' element to visible.
+    3. Reduces opacity of the element.
+    4. For non-settings widgets, also increase z-index to bring the widget to the front.
+Example Usage :
+    dragStart('settings');
+~
+
+dragStop(element) #
+Type          : (string) => void
+Purpose       : Visually ends a drag by hiding the drag handle and restoring the widget’s appearance.
+Parameters    :
+    element - The base ID of the widget that stopped dragging (e.g. settings).
+Returns       : void
+How It Works  :
+    1. Checks whether the element is the special 'settings' widget.
+    2. Hides the draggable handle ('-widget-draggable').
+    3. Resets widget opacity back to normal.
+    4. For non-settings widgets, restores the default z-index.
+Example Usage :
+    dragStop('settings');
+~
+
+sortSelect(options) #
+Type          : (Array<Object>) => void
+Purpose       : Sorts the options inside an array, prioritizing special labels.
+Parameters    :
+    options - An array of objects used as options for a Select element.
+Returns       : void
+How It Works  :
+    1. Iterates through each object (category).
+    2. Sorts the options by checking for specific priority labels ('Default', 'Auto', 'Any').
+    3. If two labels have no priority difference, labels are sorted alphabetically.
+Example Usage :
+    sortSelect([{
+		label: 'Category',
+		options: [
+			{ value: '', label: 'Any' },
+			{ value: 'default', label: 'Default' }
+		]
+	}]);
+~
+
+mergePunctuation(arr) #
+Type          : (Array<string>) => Array<string>
+Purpose       : Merges punctuation tokens into their adjacent words for cleaner tokenization.
+Parameters    :
+    arr - An array of string (tokens) that may contain punctuation as separate entries.
+Returns       : Array<string>
+How It Works  :
+    1. Itterates through the array and checks for punctuation patterns.
+    2. If the string starts with punctuation, merge it with the previous word.
+    3. If the string starts with parentheses, merge it with the next word.
+    4. Mutates the array by splicing out merged tokens.
+Example Usage :
+    mergePunctuation(['Hello', ',', 'world', '!']);
+    /// Output: ['Hello,', 'world!']
+~
+
+grep(arr, filter) #
+Type          : (Array<any>, Function) => Array<any>
+Purpose       : Filters an array based on truthiness or by a provided filter function.
+Parameters    :
+    arr    - The array to filter.
+    filter - Optional filter function applied to each element.
+Returns       : Array<any>
+How It Works  :
+    1. Iterates through the array, checking truthiness.
+    2. If a filter is provided, it must return true for the element to be kept.
+    3. Builds a new array containing all passing elements.
+Example Usage :
+    grep([0, 1, 2, 3], (x) => x > 1);
+    /// Output: [2, 3]
+~
+
+randSentence() #
+Type          : () => string
+Purpose       : Returns a random sentence from the sentences array.
+Parameters    : None
+Returns       : string
+How It Works  :
+    1. Selects a random index from fetchedData.sentences.
+    2. Returns the sentence at that index.
+Example Usage :
+    randSentence();
+    /// Output: "Random sentence."
+~
+
+summarizeText(text, ratio = 0.3) #
+Type          : (string, number) => string
+Purpose       : Generates a summary by selecting the most 'important' sentences based on word frequency and simple heuristic scoring.
+Parameters    :
+    text  - The full text to summarize.
+    ratio - Fraction of sentences to keep in the summary. Must be between 0 and 1.
+Returns       : string
+How It Works  :
+    1. Removes html and other texts (sources).
+    2. Removes extra spaces and splits the text into sentences using punctuation (., !, ?).
+    3. If splitting fails, treat the entire text as a single sentence and return it.
+    4. Converts text to lowercase and extracts words using regex.
+    5. Counts the frequency of each word.
+    6. For each sentence, tokenize words and assign heuristic scores:
+		- Nouns          : Words ending with "tion", "ment", "ity", "ness"    => Score 2.5 each
+		- Verbs          : Words ending with "ing" or "ed"                    => Score 2.0 each
+		- Adjectives     : Words ending with "ous", "ful", "ive", "al"        => Score 1.0 each
+		- Frequent Words : Words occurring more than 30% of the max frequency    => Score 3.0 each
+    7. Sum of all gives the total sentence score.
+    8. Calculates how many sentences to keep based on ratio.
+    9. Sorts sentences by score (descending) and selects the top sentences.
+    10. Keeps original order for readability.
+    11. Joins selected sentences into a single string with proper trimming.
+Example Usage :
+    const text = 'React is a JavaScript library. It is used for building user interfaces. Developers love it for its declarative style.';
+    const summary = summarizeText(text, 0.5);
+    console.log(summary);
+    /// Ouput: "React is a JavaScript library. Developers love it for its declarative style."
+~
+
+createPopup(text, type = 'normal', randomPosition = false) #
+Type          : (string | object, string, boolean) => void
+Purpose       : Creates an animated popup.
+Parameters    :
+    text           - The text or item information to display.
+    type           - 'normal', 'gold', or 'item'.
+    randomPosition - Whether the popup appears randomly on screen.
+Returns       : void
+How It Works  :
+    1. Creates a popup element (div or img depending on type).
+    2. Applies styles and inserts text or item image.
+    3. Positions the popup (mouse or random).
+    4. Plays fade-in and fade-out animation.
+    5. Removes the popup automatically or on click.
+Example Usage :
+    createPopup("Hello!");
+	createPopup({ name: "Item", rarity: "common" });
+~
+
+formatNumber(number, digits, shouldRound = false) #
+Type          : (number, number, boolean) => string
+Purpose       : Formats large numbers using suffixes (K, M, G, etc.).
+Parameters    :
+    number      - The numeric value to format.
+    digits      - Number of decimal places to keep.
+    shouldRound - Whether to round or truncate decimals.
+Returns       : string
+How It Works  :
+    1. Finds the largest suffix value the number fits into.
+    2. Divides the number by its suffix value.
+    3. Either rounds or truncates decimals.
+    4. Removes trailing zeros.
+    5. Appends suffix (K, M, G, etc).
+Example Usage :
+    formatNumber(12345, 2);
+    /// Output: "12.34K"
+~
+
+randomItem(amount = 1, rarity) #
+Type          : (number, string?) => void
+Purpose       : Generates random loot from items array with an optional forced rarity.
+Parameters    :
+    amount - How many items to generate.
+    rarity - Optional forced rarity.
+Returns       : void
+How It Works  :
+    1. Determines rarity either from a random roll or forced.
+    2. Selects a random item of that rarity.
+    3. Handles gold separately and adds its total.
+    4. Dispatches "gold bag" and "new item" events.
+    5. Displays popups for each item generated.
+Example Usage :
+    randomItem();
+	randomItem(3);
+	randomItem(3, 'common');
+~
+
+renderHearts(health) #
+Type          : (number) => Array<JSX.Element>
+Purpose       : Converts a numeric value into a list of heart images.
+Parameters    :
+    health - The player's health value.
+Returns       : Array<JSX.Element>
+How It Works  :
+	1. Copies health and decrements it.
+	2. Pushes the heart index for every decrement.
+	3. Stops calculating hearts if a limit is chosen in settings (limit5).
+	4. Generates <img> elements based on how many heart indexes were calculated.
+Example Usage :
+    renderHearts(87);
+	/// Output: heart13, heart6, heart1, heart1
+~
+
+hexToRgb(hex) #
+Type          : (string) => Array<number>
+Purpose       : Converts a hex color string (#RRGGBB) into an RGB array [255, 255, 255].
+Parameters    :
+    hex - Hexadecimal color string.
+Returns       : [number, number, number]
+How It Works  :
+    1. Expands shorthand hex if necessary.
+    2. Splits into pairs.
+    3. Parses each pair into numbers.
+Example Usage :
+    hexToRgb("#FF00AA");
+	/// Output: [255, 0, 170]
+~~~
+
+rgbToHex(rgb) #
+Type          : (Array<number>) => string
+Purpose       : Converts an RGB array [255, 255, 255] into a hex color string (#RRGGBB).
+Parameters    :
+    rgb - Array of 3 numbers [255 (r), 255 (g), 255 (b)].
+Returns       : string (#RRGGBB)
+How It Works  :
+    1. Converts each value to hex.
+    2. Pads single digits with a leading zero.
+    3. Joins and prefixes with '#'.
+Example Usage :
+    rgbToHex([255, 128, 0]);
+	/// Output: #ff8000
+~~~~~
+
+calculateBounds(parent, popout) #
+Type          : (string, string) => object
+Purpose       : Calculates allowed movement bounds for a draggable popout.
+Parameters    :
+    parent - ID of the parent element.
+    popout - ID of the popout element.
+Returns       : object { top, right, bottom, left }
+How It Works  :
+    1. Reads dimensions of parent and popout.
+    2. Computes how far the popout can move in each direction.
+    3. Ensures popout stays visually within the parent.
+Example Usage :
+    calculateBounds("settings", "show-hide-widgets-popout");
+~
+
+formatGroupLabel(data) #
+Type          : (object) => JSX.Element
+Purpose       : Renders a styled group label for react-select components.
+Parameters    :
+    data - Object containing:
+		label   => The group name.
+        options => Array of options inside the group.
+Returns       : JSX.Element
+How It Works  :
+    1. Creates a flex container for the label and count badge.
+    2. Pulls dynamic colors from CSS variables using getComputedStyle.
+    3. Displays the number of options inside a rounded badge.
+Example Usage :
+	<Select formatGroupLabel={formatGroupLabel}/>
+~
+
+selectStyleSmall #
+Type          : () => object
+Purpose       : Provides a styling preset for react-select.
+Parameters    : None
+Returns       : object
+How It Works  :
+    1. Reduces control height.
+    2. Shrinks padding for value container and indicators.
+    3. Removes unnecessary spacing to create a dense layout.
+Example Usage :
+    <Select styles={selectStyleSmall}/>
+~
+
+selectHideGroupHeading(props) #
+Type          : (object) => JSX.Element
+Purpose       : Wraps react-select group headings in a clickable element to toggle group collapsing.
+Parameters    :
+    props - Props supplied by react-select’s GroupHeading component.
+Returns       : JSX.Element
+How It Works  :
+    1. Wraps GroupHeading in a custom <div>.
+    2. On click, toggles the 'collapse-group' class on the group wrapper.
+    3. Allows collapsing/expanding option groups.
+Example Usage :
+    <Select components={{ GroupHeading: selectHideGroupHeading }}/>
+~
+
+selectHideGroupMenuList(props) #
+Type          : (object) => JSX.Element
+Purpose       : Wraps group option lists in a scrollable SimpleBar container.
+Parameters    :
+    props - Props supplied by react-select’s MenuList component.
+Returns       : JSX.Element
+How It Works  :
+    1. Renders SimpleBar.
+    2. Displays children (the menu options) inside the scroll container.
+Example Usage :
+    <Select components={{ MenuList: selectHideGroupMenuList }}/>
+~
+
+menuListScrollbar(props) #
+Type          : (object) => JSX.Element
+Purpose       : Adds a custom scroll area for react-select dropdowns using SimpleBar.
+Parameters    :
+    props - Props supplied by react-select’s MenuList component.
+Returns       : JSX.Element
+How It Works  :
+    1. Sets up a SimpleBar.
+    2. Forwards react-select’s internal refs into SimpleBar's scrollable node.
+    3. Cleans up SimpleBar using unMount() on component unmount.
+Example Usage :
+    <Select components={{ MenuList: menuListScrollbar }}/>
+~
+
+LazyWidget({ Component, ...props }) #
+Type          : (object) => JSX.Element
+Purpose       : Creates a lazy loading widget using React.Suspense with a custom loading animation.
+Parameters    :
+    Component - Widget to be lazy-loaded.
+    props     - Props to pass into the widget.
+Returns       : JSX.Element
+How It Works  :
+    1. Wraps the widget in <Suspense>.
+    2. Shows a centered loading animation (fumo spinning GIF) while loading.
+    3. Renders the actual component once it has resolved.
+Example Usage :
+    <LazyWidget Component={Widget} someProp={123}/>
+~

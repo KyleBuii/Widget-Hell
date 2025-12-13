@@ -1,13 +1,13 @@
 /*  Template Guide
-1. [WIDGET NAME UPPER] -> Widget name in title case
+1. [WIDGET NAME UPPER] => Widget name in title case
    Example: AnimeSearcher
-2. [WIDGET SCREEN READER] -> Widget name with spaces between words
+2. [WIDGET SCREEN READER] => Widget name with spaces between words
    Example: Anime Searcher
-3. [WIDGET ANIME LOWER] -> Widget name in lower case
+3. [WIDGET ANIME LOWER] => Widget name in lower case
    Example: animesearcher
-4. [WIDGET TYPE] -> Widget's type
+4. [WIDGET TYPE] => Widget's type
    Example: utility, games, fun
-5. [AUTHOR NAME] -> Author's name
+5. [AUTHOR NAME] => Author's name
    Example: Kyle Bui (that's me!)
 */
 

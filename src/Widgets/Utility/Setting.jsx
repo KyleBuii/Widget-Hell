@@ -688,9 +688,9 @@ class WidgetSetting extends Component {
     updateScreenDimmer() {
         /// Triggers a new screen dim every 30 minutes based on time
         /// 24-6 = 40% brightness
-        /// 7-8 = 40% - 100% brightness: 2 hours:30 minutes x 4 -> 15% increase
+        /// 7-8 = 40% - 100% brightness: 2 hours:30 minutes x 4 => 15% increase
         /// 8-18 = 100% brightness
-        /// 19-24 = 100% to 40% brightness: 5 hours:30 minutes x 10 -> 6% decrease
+        /// 19-24 = 100% to 40% brightness: 5 hours:30 minutes x 10 => 6% decrease
         let date = new Date();
         let brightness;
         let hour = date.getHours();

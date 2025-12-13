@@ -6,7 +6,7 @@ import { BsArrowLeftRight } from 'react-icons/bs';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { FaArrowRightLong, FaRegPaste, FaVolumeHigh } from 'react-icons/fa6';
 import Select from 'react-select';
-import { aronaMessages, brailleDictionary, brailleFromDictionary, classStack, cunnyCodeDictionary, cunnyCodeFromDictionary, decorationValue, emojifyDictionary, enchantingTableDictionary, isMobile, matchAll, mirrorWrittingDictionary, moorseCodeDictionary, moorseCodeFromDictionary, phoneticAlphabetDictionary, phoneticAlphabetFromDictionary, punctuation, smallIcon, uwuDictionary, uwuEmoticons } from '../../data';
+import { aronaMessages, brailleDictionary, brailleFromDictionary, classStack, cunnyCodeDictionary, cunnyCodeFromDictionary, decorationValue, emojifyDictionary, enchantingTableDictionary, enchantingTableFromDictionary, isMobile, matchAll, mirrorWrittingDictionary, mirrorWrittingFromDictionary, moorseCodeDictionary, moorseCodeFromDictionary, phoneticAlphabetDictionary, phoneticAlphabetFromDictionary, punctuation, smallIcon, uwuDictionary, uwuEmoticons } from '../../data';
 import { copyToClipboard, formatGroupLabel, grep, mergePunctuation, randSentence, selectHideGroupHeading, selectHideGroupMenuList, sortSelect } from '../../helpers';
 
 let regexPopouts = new RegExp(/replace|reverse|caseTransform/);
@@ -37,6 +37,7 @@ const optionsTranslateFrom = [
             { value: 'phoneticAlphabet', label: 'Phonetic Alphabet' },
             { value: 'cunnyCode', label: 'Cunny Code' },
             { value: 'dayo', label: 'Dayo' },
+            { value: 'enchantingTable', label: 'Encahnting Table' },
         ]
     },
     {
@@ -91,8 +92,8 @@ const optionsTranslateTo = [
     }
 ];
 const translateLookup = {
-    moorseCode: [moorseCodeDictionary, moorseCodeFromDictionary],
-    phoneticAlphabet: [phoneticAlphabetDictionary, phoneticAlphabetFromDictionary],
+    moorseCode       : [moorseCodeDictionary       , moorseCodeFromDictionary],
+    phoneticAlphabet : [phoneticAlphabetDictionary , phoneticAlphabetFromDictionary],
 };
 
 class WidgetTranslator extends Component{
@@ -463,17 +464,19 @@ class WidgetTranslator extends Component{
     /// Convert the 'from' language to english
     convertFromText(swap) {
         let stringConvertFrom = '';
+
         switch (this.state.from.value) {
             /// Other languages
             case 'braille': {
                 stringConvertFrom = this.state.input
+                    .replace(/\u2800/g, ' ')
                     .toString()
                     .split('')
-                    .map(letter => brailleFromDictionary[letter])
+                    .map((letter) => brailleFromDictionary[letter])
                     .join('');
                 break;
             };
-            case 'cunnyCode': { 
+            case 'cunnyCode': {
                 let encodeError = false; /// If an error exist
                 stringConvertFrom = this.state.input
                     .split(' ')
@@ -536,6 +539,21 @@ class WidgetTranslator extends Component{
                     .replace(/\s(dayo)/ig, '');
                 break;
             };
+            case 'enchantingTable': {
+                stringConvertFrom = this.state.input
+                    .split('')
+                    .map((char) =>  enchantingTableFromDictionary[char] || char)
+                    .join('');
+                break;
+            };
+            case 'mirrorWriting': {
+                stringConvertFrom = this.state.input
+                    .split('')
+                    .reverse()
+                    .map((char) =>  mirrorWrittingFromDictionary[char] || char)
+                    .join('');
+                break;
+            };
             case 'pekofy': {
                 stringConvertFrom = this.state.input
                     .replace(/\s(peko)/ig, '');
@@ -575,6 +593,7 @@ class WidgetTranslator extends Component{
                 break;
             };
         };
+        
         this.setState({
             convert: stringConvertFrom
         }, () => {
@@ -865,10 +884,10 @@ class WidgetTranslator extends Component{
                     .toString()
                     .toLowerCase()
                     .split(' ')
-                    .map(curr => curr
+                    .map((curr) => curr
                         .replace(/^[aioue]\w*/i, '$&way')
                         .replace(/(^[^aioue]+)(\w*)/i, '$2$1ay'))
-                    .join(' ')
+                    .join(' ');
                 break;
             };
             case 'spaced': {

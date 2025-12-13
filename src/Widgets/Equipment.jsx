@@ -8,11 +8,11 @@ import { classStack, dataLoaded, decorationValue, fetchedData, getData } from '.
 
 //#region Equipment Guide
 /* Stats Guide
-[Main Stats]   ->       [Side Stats]
-   Health      ->         Vitality
-    Mana       ->       Intelligence
-   Attack      ->   Strength + Dexterity
-   Defense     ->        Resilience
+[Main Stats]   =>       [Side Stats]
+   Health      =>         Vitality
+    Mana       =>       Intelligence
+   Attack      =>   Strength + Dexterity
+   Defense     =>        Resilience
    Agility
     Luck
 */

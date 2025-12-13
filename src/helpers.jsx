@@ -5,11 +5,11 @@ import SimpleBar from 'simplebar-react';
 import { healthDisplay, lootDisplay } from '.';
 import { fetchedData, heartValues, itemRates, zIndexDefault, zIndexDrag } from './data';
 
-export async function copyToClipboard(what) {
-    if (what !== '') {
+export async function copyToClipboard(text) {
+    if (text !== '') {
         try {
             let dump = document.getElementById('clipboard-dump');
-            dump.innerHTML = DOMPurify.sanitize(what);
+            dump.innerHTML = DOMPurify.sanitize(text);
 
             await navigator.clipboard.writeText(dump.innerText);
 
@@ -27,35 +27,35 @@ export async function copyToClipboard(what) {
 };
 
 export const
-    dragStart = (what) => {
-        switch (what) {
+    dragStart = (element) => {
+        switch (element) {
             case 'settings':
-                document.getElementById(what + '-widget-draggable').style.visibility = 'visible';
-                document.getElementById(what + '-widget').style.opacity = '0.5';
+                document.getElementById(element + '-widget-draggable').style.visibility = 'visible';
+                document.getElementById(element + '-widget').style.opacity = '0.5';
                 break;
             default:
-                document.getElementById(what + '-widget-draggable').style.visibility = 'visible';
-                document.getElementById(what + '-widget').style.opacity = '0.5';
-                document.getElementById(what + '-widget').style.zIndex = zIndexDrag;
+                document.getElementById(element + '-widget-draggable').style.visibility = 'visible';
+                document.getElementById(element + '-widget').style.opacity = '0.5';
+                document.getElementById(element + '-widget').style.zIndex = zIndexDrag;
                 break;
         };
     },
-    dragStop = (what) => {
-        switch (what) {
+    dragStop = (element) => {
+        switch (element) {
             case 'settings':
-                document.getElementById(what + '-widget-draggable').style.visibility = 'hidden';
-                document.getElementById(what + '-widget').style.opacity = '1';
+                document.getElementById(element + '-widget-draggable').style.visibility = 'hidden';
+                document.getElementById(element + '-widget').style.opacity = '1';
                 break;
             default:
-                document.getElementById(what + '-widget-draggable').style.visibility = 'hidden';
-                document.getElementById(what + '-widget').style.opacity = '1';
-                document.getElementById(what + '-widget').style.zIndex = zIndexDefault;
+                document.getElementById(element + '-widget-draggable').style.visibility = 'hidden';
+                document.getElementById(element + '-widget').style.opacity = '1';
+                document.getElementById(element + '-widget').style.zIndex = zIndexDefault;
                 break;
         };
     },
 
-    sortSelect = (what) => {
-        what.forEach((value) => {
+    sortSelect = (options) => {
+        options.forEach((value) => {
             value.options.sort((a, b) => {
                 return ['Default', 'Auto', 'Any'].indexOf(b.label) - ['Default', 'Auto', 'Any'].indexOf(a.label)
                     || a.label.localeCompare(b.label);
@@ -89,9 +89,9 @@ export const
         };
 
         for (let i = 0; i < arr.length; i++) {
-            const e = arr[i]||'';
+            const e = arr[i] || '';
 
-            if (filter ? filter(e) : e) {
+            if ((filter) ? filter(e) : e) {
                 result.push(e);
             };
         };
@@ -101,6 +101,72 @@ export const
 
     randSentence = () => {
         return fetchedData.sentences[Math.floor(Math.random() * fetchedData.sentences.length)];
+    },
+
+    summarizeText = (text, ratio = 0.3) => {
+        if (!text || text.trim().length === 0) return '';
+
+        const sanatizedText = text
+            .replace(/<[^>]*>/g, '')
+            .replace(/\(Source:.*\)/g, '');
+
+        const sentences = sanatizedText
+            .replace(/\s+/g, ' ')
+            .match(/[^.!?]+[.!?]+/g) || [sanatizedText];
+
+        if (sentences.length === 0) return text;
+
+        const frequency = {};
+        const words = sanatizedText.toLowerCase().match(/\b[a-z']+\b/g) || [];
+
+        for (const word of words) {
+            frequency[word] = (frequency[word] || 0) + 1;
+        };
+
+        const maxFrequency = Math.max(...Object.values(frequency));
+
+        const sentenceScores = sentences.map((sentence) => {
+            const lower = sentence.toLowerCase();
+            const tokens = lower.match(/\b[a-z']+\b/g) || [];
+
+            let nouns = 0;
+            let verbs = 0;
+            let adjectives = 0;
+            let frequencyScore = 0;
+
+            for (const token of tokens) {
+                if (frequency[token] > maxFrequency * ratio) {
+                    frequencyScore++;
+                };
+           
+                if (token.endsWith('tion') || token.endsWith('ment') || token.endsWith('ity') || token.endsWith('ness')) {
+                    nouns++;
+                };
+                if (token.endsWith('ing') || token.endsWith('ed')) {
+                    verbs++;
+                };
+                if (token.endsWith('ous') || token.endsWith('ful') || token.endsWith('ive') || token.endsWith('al')) {
+                    adjectives++;
+                };
+            };
+
+            const score =
+                (nouns * 2.5)
+                + (verbs * 2.0)
+                + (adjectives * 1.0)
+                + (frequencyScore * 3.0);
+
+            return { sentence, score };
+        });
+
+        const keepCount = Math.max(1, Math.floor(sentences.length * ratio));
+
+        const topSentences = sentenceScores
+            .sort((a, b) => b.score - a.score)
+            .slice(0, keepCount)
+            .sort((a, b) => sentences.indexOf(a.sentence) - sentences.indexOf(b.sentence));
+
+        return topSentences.map((s) => s.sentence.trim()).join(' ');
     },
 
     createPopup = (text, type = 'normal', randomPosition = false) => {
@@ -287,62 +353,61 @@ export const
     },
 
     renderHearts = (health) => {
+        if (healthDisplay.value === 'none') return;
+
         let elementHearts = [];
+        let currentHealth = health;
+        let calculateHearts = [];
+        let heartKeys = Object.keys(heartValues);
+        let heartIndex = heartKeys.length;
+        let currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        let amount;
 
-        if (healthDisplay.value !== 'none') {
-            let currentHealth = health;
-            let calculateHearts = [];
-            let heartKeys = Object.keys(heartValues);
-            let heartIndex = heartKeys.length;
-            let currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
-            let amount;
-
-            calculating: while (Math.floor(currentHealth) > 0) {
-                if (Math.max(currentHealth, currentHeartValue) === currentHealth) {
-                    switch (healthDisplay.value) {
-                        case 'limit5':
-                            amount = Math.floor(currentHealth / currentHeartValue);
-                            currentHealth -= (amount * currentHeartValue);
-                            
-                            if (calculateHearts.length === 5) {
-                                break calculating;
-                            };
+        calculating: while (Math.floor(currentHealth) > 0) {
+            if (Math.max(currentHealth, currentHeartValue) === currentHealth) {
+                switch (healthDisplay.value) {
+                    case 'limit5':
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
                         
-                            if (amount > 5 && calculateHearts.length === 0) {
-                                amount = 5;
-                            } else if (amount > 5) {
-                                amount = 5 - calculateHearts.length;
-                            };
+                        if (calculateHearts.length === 5) {
+                            break calculating;
+                        };
+                    
+                        if (amount > 5 && calculateHearts.length === 0) {
+                            amount = 5;
+                        } else if (amount > 5) {
+                            amount = 5 - calculateHearts.length;
+                        };
 
-                            for (let i = amount; i > 0; i--) {
-                                calculateHearts.push(heartIndex);
-                            };
-                            break;
-                        default:
-                            amount = Math.floor(currentHealth / currentHeartValue);
-                            currentHealth -= (amount * currentHeartValue);
-                            
-                            for (let i = amount; i > 0; i--) {
-                                calculateHearts.push(heartIndex);
-                            };
-                            break;        
-                    };
+                        for (let i = amount; i > 0; i--) {
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;
+                    default:
+                        amount = Math.floor(currentHealth / currentHeartValue);
+                        currentHealth -= (amount * currentHeartValue);
+                        
+                        for (let i = amount; i > 0; i--) {
+                            calculateHearts.push(heartIndex);
+                        };
+                        break;        
                 };
-
-                heartIndex--;
-                currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
             };
 
-            for (let i = 0; i < calculateHearts.length; i++) {
-                if ((calculateHearts[i] === 1) && (healthDisplay.value === 'noredheart')) break; 
-                
-                elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.webp`}
-                    alt={`heart${calculateHearts[i]} ${i + 1}`}
-                    key={`heart${calculateHearts[i]} ${i + 1}`}
-                    draggable={false}
-                    loading='lazy'
-                    decoding='async'/>);
-            };
+            heartIndex--;
+            currentHeartValue = heartValues[heartKeys[heartIndex - 1]];
+        };
+
+        for (let i = 0; i < calculateHearts.length; i++) {
+            if ((calculateHearts[i] === 1) && (healthDisplay.value === 'noredheart')) break; 
+            
+            elementHearts.push(<img src={`/resources/hearts/heart${calculateHearts[i]}.webp`}
+                alt={`heart${calculateHearts[i]} ${i + 1}`}
+                key={`heart${calculateHearts[i]} ${i + 1}`}
+                draggable={false}
+                loading='lazy'
+                decoding='async'/>);
         };
 
         return elementHearts;
@@ -370,22 +435,21 @@ export const
     },
 
     calculateBounds = (parent, popout) => {
+        if (document.getElementById(parent) === null) return;
+
         let bounds = {};
+        let sizeParent = document.getElementById(parent).getBoundingClientRect();
+        let sizePopout = document.getElementById(popout).getBoundingClientRect();
         
-        if (document.getElementById(parent) !== null) {
-            let sizeParent = document.getElementById(parent).getBoundingClientRect();
-            let sizePopout = document.getElementById(popout).getBoundingClientRect();
-            
-            bounds = {
-                top: -sizePopout.height,
-                right: (sizePopout.width < sizeParent.width)
-                    ? sizeParent.width
-                    : sizePopout.width - Math.abs(sizeParent.width - sizePopout.width),
-                bottom: (sizePopout.height < sizeParent.height)
-                    ? sizeParent.height
-                    : sizePopout.height - Math.abs(sizeParent.height - sizePopout.height),
-                left: -sizePopout.width
-            };
+        bounds = {
+            top: -sizePopout.height,
+            right: (sizePopout.width < sizeParent.width)
+                ? sizeParent.width
+                : sizePopout.width - Math.abs(sizeParent.width - sizePopout.width),
+            bottom: (sizePopout.height < sizeParent.height)
+                ? sizeParent.height
+                : sizePopout.height - Math.abs(sizeParent.height - sizePopout.height),
+            left: -sizePopout.width
         };
         
         return bounds;
