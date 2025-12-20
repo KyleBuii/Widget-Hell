@@ -1,4 +1,5 @@
 /*  Template Guide
+IN THIS FILE
 1. [WIDGET NAME UPPER] => Widget name in title case
    Example: AnimeSearcher
 2. [WIDGET SCREEN READER] => Widget name with spaces between words
@@ -9,6 +10,9 @@
    Example: utility, games, fun
 5. [AUTHOR NAME] => Author's name
    Example: Kyle Bui (that's me!)
+
+NOT IN THIS FILE
+1. Open data.jsx.
 */
 
 import React, { memo } from 'react';

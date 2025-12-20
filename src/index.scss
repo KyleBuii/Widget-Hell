@@ -81,12 +81,31 @@
     --yellow: #eedf10;
     //#endregion
 
-    --cursorDefault: ;
-    --cursorHover: ;
+    //#region Cursors
+    --cursorCrosshair   : ;
+    --cursorDefault     : ;
+    --cursorGrab        : ;
+    --cursorGrabbing    : ;
+    --cursorHelp        : ;
+    --cursorLocation    : ;
+    --cursorMove        : ;
+    --cursorNotAllowed  : ;
+    --cursorPen         : ;
+    --cursorPerson      : ;
+    --cursorPointer     : ;
+    --cursorResizeEW    : ;
+    --cursorResizeNESW  : ;
+    --cursorResizeNS    : ;
+    --cursorResizeNWSE  : ;
+    --cursorText        : ;
+    --cursorWait        : ;
+    --cursorZoomIn      : ;
+    --cursorZoomOut     : ;
+    //#endregion
 
-    --randColor: ;
-    --randColorLight: ;
-    --randColorOpacity: ;
+    --randColor        : ;
+    --randColorLight   : ;
+    --randColorOpacity : ;
 
     --guideSize: 12px;
 
@@ -176,7 +195,45 @@ input[type='checkbox'], input[type='radio'] {
 
 //////////////////// Variables ////////////////////
 //#region
-$hoverables: "button, a, input, select, textarea, .toggleable";
+$cursor-crosshair   : '';
+$cursor-grab        : '';
+$cursor-grabbing    : '';
+$cursor-help        : '.help-element';
+$cursor-location    : '';
+$cursor-move        : '';
+$cursor-not-allowed : 'button:disabled, input:disabled, .disabled-element, .rc-slider-disabled';
+$cursor-pen         : '';
+$cursor-person      : '';
+$cursor-pointer     : 'button, a, input, textarea, .toggleable, .simplebar-scrollable-y';
+$cursor-resize-ew   : '';
+$cursor-resize-nesw : '';
+$cursor-resize-ns   : '';
+$cursor-resize-nwse : '';
+$cursor-text        : 'input[type='text'], textarea, .input-match, .select-match';
+$cursor-wait        : '';
+$cursor-zoom-in     : '';
+$cursor-zoom-out    : '';
+
+$cursor-selectors: (
+    cursorCrosshair  : $cursor-crosshair,
+    cursorGrab       : $cursor-grab,
+    cursorGrabbing   : $cursor-grabbing,
+    cursorHelp       : $cursor-help,
+    cursorLocation   : $cursor-location,
+    cursorMove       : $cursor-move,
+    cursorNotAllowed : $cursor-not-allowed,
+    cursorPen        : $cursor-pen,
+    cursorPerson     : $cursor-person,
+    cursorPointer    : $cursor-pointer,
+    cursorText       : $cursor-text,
+    cursorResizeEW   : $cursor-resize-ew,
+    cursorResizeNESW : $cursor-resize-nesw,
+    cursorResizeNS   : $cursor-resize-ns,
+    cursorResizeNWSE : $cursor-resize-nwse,
+    cursorWait       : $cursor-wait,
+    cursorZoomIn     : $cursor-zoom-in,
+    cursorZoomOut    : $cursor-zoom-out
+);
 //#endregion
 
 
@@ -4215,16 +4272,20 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
 }
 
 .cursor-custom {
-    cursor: var(--cursorDefault), auto;
-
-    #{$hoverables} {
-        cursor: var(--cursorHover), auto !important;
+    @each $name, $selector in $cursor-selectors {
+        @if $selector != '' {
+            #{$selector} {
+                cursor: var(--#{$name}), auto !important;
+            }
+        }
     }
+
+    cursor: var(--cursorDefault), auto;
     
     //#region Cursors
     &.delicatepink {
-        #{$hoverables} {
-            cursor: var(--cursorHover) 9 0, auto !important;
+        #{$cursor-pointer} {
+            cursor: var(--cursorPointer) 9 0, auto !important;
         }
     }
     //#endregion
@@ -6049,6 +6110,14 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
 }
 
 #battery-widget {
+    max-width: 10.8rem;
+    width: 100%;
+
+    .battery-pet {
+        @extend .float, .middle;
+        bottom: 110%;
+    }
+
     #battery-pill {
         position: relative;
         width: 4.7em;
@@ -7201,6 +7270,7 @@ $hoverables: "button, a, input, select, textarea, .toggleable";
         position: relative;
 
         #weather-search-help-button {
+            @extend .help-element;
             position: absolute;
             top: 50%;
             right: 0.5em;

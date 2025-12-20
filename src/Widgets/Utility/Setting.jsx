@@ -184,6 +184,28 @@ const optionsCursorSize = [
     }
 ];
 
+const cursorTypes = {
+    Crosshair  : 'crosshair',
+    Default    : 'default',
+    Grab       : 'grab',
+    Grabbing   : 'grabbing',
+    Help       : 'help',
+    Location   : 'location',
+    Move       : 'move',
+    NotAllowed : 'not-allowed',
+    Pen        : 'pen',
+    Person     : 'person',
+    Pointer    : 'pointer',
+    ResizeEW   : 'resize-ew',
+    ResizeNESW : 'resize-nesw',
+    ResizeNS   : 'resize-ns',
+    ResizeNWSE : 'resize-nwse',
+    Text       : 'text',
+    Wait       : 'wait',
+    ZoomIn     : 'zoom-in',
+    ZoomOut    : 'zoom-out',
+};
+
 class WidgetSetting extends Component {
     constructor(props) {
         super(props);
@@ -644,14 +666,17 @@ class WidgetSetting extends Component {
     updateSearch(what) {
         let widgetsMatch = [];
         let widgetButtons = this[`buttons${this.state.activeTab.replace(/^./, (char) => char.toUpperCase())}`];
+
         if (what.length > 2) {
             let regexSearch = new RegExp(`(${what})`, 'i');
+
             for (let i of widgetButtons) {
-                if (regexSearch.test(i.props['data-widgetname'])) {
-                    widgetsMatch.push(i.props['data-widgetname']);
-                };
+                if (!regexSearch.test(i.props['data-widgetname'])) return;
+                
+                widgetsMatch.push(i.props['data-widgetname']);
             };
         };
+
         this.setState({
             searched: [...widgetsMatch]
         }, () => {
@@ -678,8 +703,12 @@ class WidgetSetting extends Component {
 
             const currentSize = size.value || this.state.values.cursorSize.value;
 
-            document.documentElement.style.setProperty('--cursorDefault', `url(/resources/cursor/${what.value}/${what.value}-default-${currentSize}.webp)`);
-            document.documentElement.style.setProperty('--cursorHover', `url(/resources/cursor/${what.value}/${what.value}-pointer-${currentSize}.webp)`);
+            for (const [key, file] of Object.entries(cursorTypes)) {
+                document.documentElement.style.setProperty(
+                    `--cursor${key}`,
+                    `url(/resources/cursor/${what.value}/${what.value}-${file}-${currentSize}.webp)`
+                );
+            };
 
             previousCursor = what.value;
         };

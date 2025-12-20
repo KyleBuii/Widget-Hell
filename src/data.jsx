@@ -1,31 +1,64 @@
+/*  Template Guide - Continued...
+1. Add the widget to the matching object [widgetsSpecial, widgetsUtility, widgetsGames, widgetsFun]
+   EX1.
+   widgets[WIDGET TYPE] = {
+        ...[all other widgets],
+        '[WIDGET NAME UPPER]': {
+            name: '[any display name]',
+            popouts [optional]: {
+                [POPOUT NAME IN STATE]: { position: { x: [desired x], y: [desired y]] } }
+            }
+        },
+   }
+
+   EX2.
+   widgetsUtility = {
+        ...[all other widgets],
+        'AnimeSearcher': { name: 'Anime Searcher 9000' },
+   }
+
+   EX3.
+   widgetsUtility = {
+        ...[all other widgets],
+        'AnimeSearcher': {
+            name: 'Anime Searcher 9000',
+            popouts: {
+                animeviewer: { position: { x: 90, y: 90 } }
+            }
+        },
+   }
+2. Finished! View the widget by pressing the corresponding widget button in the Show/Hide Widgets popout.
+*/
+
 import React from 'react';
 
+/// v Add new widgets here v
 export const
     widgetsSpecial = {
-        'Guide':     { name: 'Guide' },
-        'Character': { name: 'Character' },
-        'Equipment': { name: 'Equipment' },
-        'Inventory': { name: 'Inventory' },
+        'Guide'     : { name: 'Guide' },
+        'Character' : { name: 'Character' },
+        'Equipment' : { name: 'Equipment' },
+        'Inventory' : { name: 'Inventory' },
     },
     widgetsUtility = {
-        'AnimeSearcher':     { name: 'Anime Searcher' },
-        'Battery':           { name: 'Battery' },
-        'Calculator':        {
+        'AnimeSearcher'     : { name: 'Anime Searcher' },
+        'Battery'           : { name: 'Battery' },
+        'Calculator'        : {
             name: 'Calculator',
             popouts: {
                 expandinput: { position: { x: 60, y: 115 } }
             }
         },
-        'CurrencyConverter': { name: 'Currency Converter' },
-        'DailyPlanner':      { name: 'Daily Planner' },
-        'GoogleTranslator':  { name: 'Google Translator' },
-        'ImageColorPicker':  { name: 'Image Color Picker' },
-        'MusicPlayer':       { name: 'Music Player' },
-        'QRCode':            { name: 'QR Code' },
-        'Quote':             { name: 'Quote' },
-        'Spreadsheet':       { name: 'Spreadsheet' },
-        'TimeConversion':    { name: 'Time Conversion' },
-        'Translator':        {
+        'CurrencyConverter' : { name: 'Currency Converter' },
+        'DailyPlanner'      : { name: 'Daily Planner' },
+        'GoogleTranslator'  : { name: 'Google Translator' },
+        'ImageColorPicker'  : { name: 'Image Color Picker' },
+        'MusicPlayer'       : { name: 'Music Player' },
+        'QRCode'            : { name: 'QR Code' },
+        'Quote'             : { name: 'Quote' },
+        'Spreadsheet'       : { name: 'Spreadsheet' },
+        'TimeConversion'    : { name: 'Time Conversion' },
+        'Translator'        : {
             name: 'Translator',
             popouts: {
                 replace:       { position: { x: 50, y: 74 } },
@@ -33,62 +66,62 @@ export const
                 casetransform: { position: { x: 90, y: 74 } }
             }
         },
-        'Weather':           {
+        'Weather'           : {
             name: 'Weather',
             popouts: {
                 searchhelp: { position: { x: 12, y: 70 } }
             }
         },
-        'Motivation':        { name: 'Motivation' }
+        'Motivation'        : { name: 'Motivation' },
     },
     widgetsGames = {
-        'Breakout':         { name: 'Breakout' },
-        'BulletHell':       { name: 'Bullet Hell' },
-        'Chess':            { name: 'Chess' },
-        'CircleBeat':       { name: 'Circle Beat' },
-        'ColorMemory':      { name: 'Color Memory' },
-        'Minesweeper':      { name: 'Minesweeper' },
-        'RockPaperScissor': { name: 'Rock Paper Scissor' },
-        'SimonGame':        {
+        'Breakout'         : { name: 'Breakout' },
+        'BulletHell'       : { name: 'Bullet Hell' },
+        'Chess'            : { name: 'Chess' },
+        'CircleBeat'       : { name: 'Circle Beat' },
+        'ColorMemory'      : { name: 'Color Memory' },
+        'Minesweeper'      : { name: 'Minesweeper' },
+        'RockPaperScissor' : { name: 'Rock Paper Scissor' },
+        'SimonGame'        : {
             name: 'Simon Game',
             popouts: {
                 settings: { position: { x: 105, y: 290 } }
             }
         },
-        'Snake':            {
+        'Snake'            : {
             name: 'Snake',
             popouts: {
                 settings: { position: { x: 145, y: 325 } }
             }
         },
-        'Tetris':           { name: 'Tetris' },
-        'Trivia':           { name: 'Trivia' },
-        'TwentyFortyEight': { name: '2048' },
-        'TypingTest':       { name: 'Typing Test' }
+        'Tetris'           : { name: 'Tetris' },
+        'Trivia'           : { name: 'Trivia' },
+        'TwentyFortyEight' : { name: '2048' },
+        'TypingTest'       : { name: 'Typing Test' },
     },
     widgetsFun = {
-        'AiImageGenerator': {
+        'AiImageGenerator' : {
             name: 'Ai Image Generator',
             popouts: {
                 prompthelp: { position: { x: 230, y: 50 } }
             }
         },
-        'DonutAnimation':   { name: 'Donut Animation' },
-        'Facts':            { name: 'Facts' },
-        'Iceberg':          {
+        'DonutAnimation'   : { name: 'Donut Animation' },
+        'Facts'            : { name: 'Facts' },
+        'Iceberg'          : {
             name: 'Iceberg',
             popouts: {
                 viewItem: { position: { x: 560, y: 0 } }
             }
         },
-        'PickerWheel':     { name: 'Picker Wheel' },
-        'PokemonSearch':   {
+        'PickerWheel'      : { name: 'Picker Wheel' },
+        'PokemonSearch'    : {
             name: 'Pokemon Search',
             popouts: {
                 settings: { position: { x: 15, y: 85 } }
             }
         },
-        'Sticker':         { name: 'Sticker' }
+        'Sticker'          : { name: 'Sticker' },
     };
 
 export const
@@ -911,6 +944,69 @@ export const
         'oth36uDKiD8', 'o3JHNmCud1Q', 'nrFcPe4FixA', 'PATNQ5J2vcw',
         '56vtZsQgAF0', 'KxGRhd_iWuE', 'UhmQOn45E6k',
     ],
+    batteryInformation = {
+        power     : {
+            ultraSmall : {
+                capacity : 2050,
+                energy   : 7.75,
+                examples : [
+                    'iPhone <= 8',
+                    'small Android <= 2017',
+                ],
+            },
+            small      : {
+                capacity : 2650,
+                energy   : 10.05,
+                examples: [
+                    'iPhone mini',
+                    'Pixel <= 4',
+                    'Galaxy S <= S9',
+                ],
+            },
+            medium     : {
+                capacity : 3500,
+                energy   : 13.30,
+                examples: [
+                    'iPhone 11-15',
+                    'Galaxy Note <= 10',
+                    'Galaxy S10-S20',
+                ],
+            },
+            large      : {
+                capacity : 4500,
+                energy   : 17.10,
+                examples: [
+                    'Galaxy S21-S23',
+                    'Pixel 6-7',
+                    'Galaxy Note 20',
+                ],
+            },
+            XL         : {
+                capacity : 5500,
+                energy   : 20.90,
+                examples: [
+                    'Galaxy Ultra',
+                    'Pixel Pro',
+                    'gaming phone',
+                ],
+            },
+            XXL        : {
+                capacity : 6750,
+                energy   : 25.65,
+                examples: [
+                    'Rugged phone',
+                    'extreme battery model',
+                ],
+            },
+        },
+        powerDraw : {
+            idle    : 0.2,
+            light   : 1.2,
+            medium  : 2.5,
+            hearvy  : 4.5,
+            extreme : 7.5
+        }
+    },
     operation = '-+/*%',
     punctuation =
         '\\[\\!\\"\\#\\$\\%\\&\\\'\\(\\)'

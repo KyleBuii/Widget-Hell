@@ -184,7 +184,7 @@ const WidgetAiImageGenerator = ({ defaultProps, parentRef }) => {
                             className='aesthetic-scale scale-span flex-center only-justify-content column gap font bold'>
                             <div className='element-ends'>
                                 <span className='origin-left'>Prompt</span>
-                                <button className='when-elements-are-not-straight button-match inverse'
+                                <button className='help-element when-elements-are-not-straight button-match inverse'
                                     aria-label='Help'
                                     onClick={() => handleButtonHelp()}>
                                     <IconContext.Provider value={{ size: smallIcon, className: 'global-class-name' }}>
@@ -215,7 +215,7 @@ const WidgetAiImageGenerator = ({ defaultProps, parentRef }) => {
                             </span>
                         </div>
                         {/* Model Select */}
-                        <Select className='select-match'
+                        <Select className={`select-match ${state.running ? 'disabled-element' : ''}`}
                             defaultValue={optionsModel[0]['options'][0]}
                             value={state.model}
                             options={optionsModel}

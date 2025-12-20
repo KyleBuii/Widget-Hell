@@ -861,10 +861,12 @@ class WidgetAnimeSearcher extends Component {
                                             disabled={this.state.running}>SPOILER</button>
                                     </div>
                                     <button className='button-match'
-                                        onClick={() => this.handleAmountButton()}>{this.state.searchAmount}x</button>
+                                        onClick={() => this.handleAmountButton()}
+                                        disabled={this.state.running}>{this.state.searchAmount}x</button>
                                     <button className='button-match'
                                         type='button'
-                                        onClick={() => this.handleSearch()}>Search</button>
+                                        onClick={() => this.handleSearch()}
+                                        disabled={this.state.running}>Search</button>
                                 </div>
                                 <button className='button-match fill-width'
                                     onClick={this.handleFilterButton}>Filter</button>
