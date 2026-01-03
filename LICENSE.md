@@ -1,6 +1,9 @@
-## **Code License**
-Copyright (c) 2024 by Rich East (https://codepen.io/REast/pen/bGMyqP) - Tetris
-Copyright (c) 2024 Seth Clydesdale - Translator: Cunny Code
+## **MIT License**
+Copyright (c) 2025 Kyle Bui
+
+Portions of this software are based on third-party works:
+- Rich East (https://codepen.io/REast/pen/bGMyqP) - Tetris
+- Seth Clydesdale - Translator: Cunny Code
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -8,17 +11,20 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+Assets listed below are licensed separately from the MIT-licensed code and may have their own usage restrictions.
 
 ## **Asset License**
 - **Anime Searcher**
     - [Default Background](https://pixabay.com/photos/poppies-flowers-field-red-poppies-6982527/) by Camera-man
     - [Page](https://pixabay.com/vectors/file-generic-icon-icons-matt-1294459/) by OpenClipart-Vectors
 - **Bullet Hell**
-    - [Bullet System](https://codepen.io/cedarcantab/pen/ZEXpMLo) - cedarcantab
+    - [Bullet System](https://codepen.io/cedarcantab/pen/ZEXpMLo) by cedarcantab
     - **Enemies**
-        - [Sheep](https://x.com/Yupina_Ch) - Yupina
+        - [Sheep](https://x.com/Yupina_Ch) by Yupina
     - **Patterns**
         - [Recollection Of Scripter's Past Bullets](https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past) by AJS
+- **Calculator**
+    - [Reimu Calculating](https://x.com/mati10110302/status/1896188528117289264) by まちぽんちょ(mati10110302)
 - **Circle Beat**
     - [Hit Animation](https://opengameart.org/content/pixel-fx-pack) by CodeManu
     - [Hit Sound](https://pixabay.com/sound-effects/clap-10-36723/) by Pixabay

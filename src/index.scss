@@ -6110,7 +6110,7 @@ $cursor-selectors: (
 }
 
 #battery-widget {
-    max-width: 10.8rem;
+    max-width: 18.5rem;
     width: 100%;
 
     .battery-pet {
@@ -6158,6 +6158,25 @@ $cursor-selectors: (
 
     #battery-information {
         bottom: 2.8em;
+    }
+
+    .battery-calculating {
+        position: absolute;
+        bottom: 55px;
+        left: 140px;
+        
+        img {
+            &:first-of-type {
+                position: absolute;
+                bottom: 80px;
+                left: 30px;
+            }
+
+            &:last-of-type {
+                max-height: 256px;
+                clip-path: inset(0 0 28% 0);
+            }
+        }
     }
 }
 
@@ -7314,8 +7333,8 @@ $cursor-selectors: (
     }
 }
 
-#bullethell-widget {
-    max-width: 653px;
+#derivativedomain-widget {
+    max-width: 853px;
     width: 100%;
 }
 

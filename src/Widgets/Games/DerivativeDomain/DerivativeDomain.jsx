@@ -7,7 +7,7 @@ import { EventBus } from './Game/EventBus';
 import { PhaserGame } from './Game/PhaserGame';
 
 
-const WidgetBulletHell = ({ defaultProps, gameProps }) => {
+const WidgetDerivativeDomain = ({ defaultProps, gameProps }) => {
     const phaserRef = useRef(null);
 
     useEffect(() => {
@@ -40,21 +40,21 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
     return (
         <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
-            onStart={() => defaultProps.dragStart('bullethell')}
+            onStart={() => defaultProps.dragStart('derivativedomain')}
             onStop={(event, data) => {
-                defaultProps.dragStop('bullethell');
-                defaultProps.updatePosition('bullethell', 'games', data.x, data.y);
+                defaultProps.dragStop('derivativedomain');
+                defaultProps.updatePosition('derivativedomain', 'games', data.x, data.y);
             }}
-            cancel='button, #bullethell-game'
+            cancel='button, #derivativedomain-game'
             bounds='parent'>
-            <section id='bullethell-widget'
+            <section id='derivativedomain-widget'
                 className='widget'
-                aria-labelledby='bullethell-widget-heading'>
-                <h2 id='bullethell-widget-heading'
-                    className='screen-reader-only'>Bullet Hell Widget</h2>
-                <div id='bullethell-widget-animation'
+                aria-labelledby='derivativedomain-widget-heading'>
+                <h2 id='derivativedomain-widget-heading'
+                    className='screen-reader-only'>Derivative Domain Widget</h2>
+                <div id='derivativedomain-widget-animation'
                     className={`widget-animation ${classStack}`}>
-                    <span id='bullethell-widget-draggable'
+                    <span id='derivativedomain-widget-draggable'
                         className='draggable'>
                         <IconContext.Provider value={{ size: defaultProps.largeIcon, className: 'global-class-name' }}>
                             <FaGripHorizontal/>
@@ -69,7 +69,7 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
                         }}
                         loading='lazy'
                         decoding='async'/>
-                    {defaultProps.renderHotbar('bullethell', 'games')}
+                    {defaultProps.renderHotbar('derivativedomain', 'games')}
                     <PhaserGame ref={phaserRef}
                         currentActiveScene={currentScene}/>
                     {(defaultProps.values.authorNames)
@@ -81,4 +81,4 @@ const WidgetBulletHell = ({ defaultProps, gameProps }) => {
     );
 };
 
-export default memo(WidgetBulletHell);
+export default memo(WidgetDerivativeDomain);

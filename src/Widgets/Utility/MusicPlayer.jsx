@@ -98,6 +98,7 @@ class WidgetMusicPlayer extends Component {
         this.loadMusic = this.loadMusic.bind(this);
         this.updateDuration = this.updateDuration.bind(this);
         this.storeData = this.storeData.bind(this);
+        this.handleKeydown = this.handleKeydown.bind(this);
     };
 
     async fetchURLData(URL) {
@@ -632,12 +633,46 @@ class WidgetMusicPlayer extends Component {
                     };
                 };
             });
-            let elementButtonPlay = document.getElementById('musicplayer-button-clone-play');
-            elementButtonPlay.style.animation = 'none';
-            window.requestAnimationFrame(() => {
-                elementButtonPlay.style.animation = 'pulse 0.8s';
-            });
+
+            this.animatePlayButton();
         };
+    };
+
+    handlePlayerPlay = () => {
+        if (!this.state.playing) {
+            this.setState({ playing: true });
+        };
+
+        if (this.state.playerVisibility === 'hidden') {
+            const disc = document.getElementById('musicplayer-disc');
+            if (disc) {
+                disc.style.animation =
+                    'rotateDisk 5s linear 0s infinite forwards';
+            };
+        };
+
+        this.animatePlayButton();
+    };
+
+    handlePlayerPause = () => {
+        if (this.state.playing) {
+            this.setState({ playing: false });
+        };
+
+        const disc = document.getElementById('musicplayer-disc');
+        if (disc) {
+            disc.style.animation = 'none';
+        };
+
+        this.animatePlayButton();
+    };
+
+    animatePlayButton = () => {
+        let elementButtonPlay = document.getElementById('musicplayer-button-clone-play');
+        elementButtonPlay.style.animation = 'none';
+        window.requestAnimationFrame(() => {
+            elementButtonPlay.style.animation = 'pulse 0.8s';
+        });
     };
 
     updateDuration(event) {
@@ -706,19 +741,25 @@ class WidgetMusicPlayer extends Component {
     loadMusic(music) {
         let combineArrays = [...this.state.music, ...this.state.urls];
         let musicIndex;
+
         if (music !== undefined) {
             musicIndex = music;
         } else {
             musicIndex = Math.floor(Math.random() * combineArrays.length);
             unplayedSongsIndex.splice(musicIndex, 1);
         };
+
         const elementPlaylist = this.refPlaylist.getContentElement();
         const elementPlaylistItem = elementPlaylist.children[musicIndex];
+
         previousPlaylistItem = activePlaylistItem;
+
         activePlaylistItem.classList?.remove('musicplayer-playlist-active');
         elementPlaylistItem.classList.add('musicplayer-playlist-active');
         elementPlaylistItem.scrollIntoView();
+
         activePlaylistItem = elementPlaylistItem;
+
         let randomMusic = combineArrays[musicIndex];
         if (randomMusic.url) {
             if (randomMusic.name) {
@@ -729,6 +770,7 @@ class WidgetMusicPlayer extends Component {
             } else {
                 this.fetchURLData(randomMusic.url);
             };
+
             this.setState({
                 currentDuration: '00:00',
                 maxDuration: '00:00',
@@ -737,6 +779,7 @@ class WidgetMusicPlayer extends Component {
                 url: randomMusic.url,
                 playerVisibility: 'visible'
             });
+
             audio.pause();
             document.getElementById('musicplayer-disc').style.animation = 'none';
         } else {
@@ -746,12 +789,14 @@ class WidgetMusicPlayer extends Component {
                 songIndex: musicIndex,
                 playerVisibility: 'hidden'
             });
+
             /// Audio
             audio.src = randomMusic.song;
             audio.autoplay = this.state.autoplay;
             audio.onloadedmetadata = () => {
                 this.setMaxDuration();
             };
+
             /// Image
             let musicDisc = document.getElementById('musicplayer-disc');
             musicDisc.style.backgroundImage = `url(${randomMusic.cover})`;
@@ -832,6 +877,16 @@ class WidgetMusicPlayer extends Component {
         return { days, hours, minutes, seconds };
     };
 
+    handleKeydown(event) {
+        if (!event.key.match(/MediaTrack(Next|Previous)/)) return;
+
+        switch (event.key) {
+            case 'MediaTrackNext'     : this.handleNextMusic();     break;
+            case 'MediaTrackPrevious' : this.handlePreviousMusic(); break;
+            default: break;
+        };
+    };
+
     storeData() {
         if (localStorage.getItem('widgets') !== null) {
             if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
@@ -877,6 +932,7 @@ class WidgetMusicPlayer extends Component {
     };
 
     async componentDidMount() {
+        window.addEventListener('keydown', this.handleKeydown)
         window.addEventListener('beforeunload', this.storeData);
         audio.addEventListener('ended', this.ended);
         audio.addEventListener('timeupdate', this.updateDuration);
@@ -1008,6 +1064,8 @@ class WidgetMusicPlayer extends Component {
                                         loop={this.state.loop}
                                         height={'21em'}
                                         width={'21em'}
+                                        onPlay={this.handlePlayerPlay}
+                                        onPause={this.handlePlayerPause}
                                         onDuration={(event) => this.setMaxDuration(event)}
                                         onProgress={(event) => this.updateDuration(event)}
                                         onEnded={this.ended}

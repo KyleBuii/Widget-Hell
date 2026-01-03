@@ -1,3 +1,8 @@
+Template Guide - Part 4/4
+1. Document any functions added in helpers.jsx using the template.
+2. Document the widget using the template.
+3. Documentaiton Finished!
+
 Templates #
 [function] #
 Type          : () =>
@@ -358,4 +363,10 @@ How It Works  :
     3. Renders the actual component once it has resolved.
 Example Usage :
     <LazyWidget Component={Widget} someProp={123}/>
+~
+
+Battery #
+Purpose      : Widget for showing the current life of the device
+How It Works :
+	1. 
 ~

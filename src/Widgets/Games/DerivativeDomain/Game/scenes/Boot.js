@@ -2,15 +2,15 @@ import { Scene } from 'phaser';
 
 
 export class Boot extends Scene{
-    constructor(){
+    constructor() {
         super('Boot');
     };
 
-    preload(){
-        this.load.image('background', 'assets/bullethell/menu/menu-background.webp',);
+    preload() {
+        this.load.image('background', 'resources/derivativedomain/main-menu.webp',);
     };
     
-    create(){
+    create() {
         this.scene.start('Preloader');
     };
 };

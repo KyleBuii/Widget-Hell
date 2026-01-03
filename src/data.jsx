@@ -1,4 +1,4 @@
-/*  Template Guide - Continued...
+/*  Template Guide - Part 2/4
 1. Add the widget to the matching object [widgetsSpecial, widgetsUtility, widgetsGames, widgetsFun]
    EX1.
    widgets[WIDGET TYPE] = {
@@ -28,11 +28,13 @@
         },
    }
 2. Finished! View the widget by pressing the corresponding widget button in the Show/Hide Widgets popout.
+3. Open Guide.jsx.
+   Path: ./src/Widgets/Guide.jsx
 */
 
 import React from 'react';
 
-/// v Add new widgets here v
+/// v Add new widget here v
 export const
     widgetsSpecial = {
         'Guide'     : { name: 'Guide' },
@@ -76,7 +78,7 @@ export const
     },
     widgetsGames = {
         'Breakout'         : { name: 'Breakout' },
-        'BulletHell'       : { name: 'Bullet Hell' },
+        'DerivativeDomain' : { name: 'Derivative Domain' },
         'Chess'            : { name: 'Chess' },
         'CircleBeat'       : { name: 'Circle Beat' },
         'ColorMemory'      : { name: 'Color Memory' },

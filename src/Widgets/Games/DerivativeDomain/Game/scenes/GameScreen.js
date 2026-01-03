@@ -21,8 +21,8 @@ import { Player } from '../utility/Player.jsx';
 */
 //#endregion
 
-const WIDTH = 600;
-const HEIGHT = 850;
+const WIDTH = 850;
+const HEIGHT = 600;
 const enemies = {
     yupina: {
         health: 10,
@@ -192,7 +192,7 @@ export class GameScreen extends Scene {
         this.playerAbilitiesAdditions = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
             .setDepth(9);
         this.playerAbilitiesTimeEvents = [];
-        this.player = new Player(this, 'player-default', 300, 750, this.playerBullets, this.playerAbilitiesBullets)
+        this.player = new Player(this, 'player-default', WIDTH / 2, HEIGHT - 100, this.playerBullets, this.playerAbilitiesBullets)
             .setOffset(37, 60);
     };
 
@@ -241,10 +241,10 @@ export class GameScreen extends Scene {
     };
 
     createColliders() {
-        this.anchorOutside = this.physics.add.sprite(300, -100)
-            .setSize(600, 1)
+        this.anchorOutside = this.physics.add.sprite(WIDTH / 2, -100)
+            .setSize(WIDTH, 1)
             .setPushable(false);
-        this.anchorBoss = this.physics.add.sprite(300, 280)
+        this.anchorBoss = this.physics.add.sprite(WIDTH / 2, 280)
             .setPushable(false);
         this.physics.add.collider(this.playerAbilities, this.anchorOutside, (anchor, ability) => {
             switch (ability.name) {
@@ -297,7 +297,7 @@ export class GameScreen extends Scene {
         let randomBoss = Math.floor(Math.random() * 15 + 1);
         this.boss = new Boss(
             1, 200, 1, this.bossBullets, this, `boss-${randomBoss}`,
-            300, 0, 1000, 0, 100
+            WIDTH / 2, 0, 1000, 0, 100
         );
         if (this.debuffs.length !== 0) {
             this.debuffs.forEach((debuff) => {

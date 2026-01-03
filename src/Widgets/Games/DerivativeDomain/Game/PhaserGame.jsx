@@ -9,7 +9,8 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
 
     useLayoutEffect(() => {
         if(game.current === undefined){
-            game.current = StartGame('bullethell-game');
+            game.current = StartGame('derivativedomain-game');
+            
             if(ref !== null){
                 ref.current = {
                     game: game.current,
@@ -17,11 +18,10 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
                 };
             };
         };
+
         return () => {
-            if(game.current){
-                game.current.destroy(true);
-                game.current = undefined;
-            };
+            game.current?.destroy(true);
+            game.current = undefined;
         };
     }, [ref]);
 
@@ -38,7 +38,7 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
     }, [currentActiveScene, ref]);
     
     return(
-        <div id='bullethell-game'></div>
+        <div id='derivativedomain-game'></div>
     );
 });
 

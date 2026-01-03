@@ -1,15 +1,14 @@
-import { CANVAS, Game, Scale } from 'phaser';
+import { Game, Scale, WEBGL } from 'phaser';
 import { Boot } from './scenes/Boot';
 import { GameScreen } from './scenes/GameScreen';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 
-
 const config = {
-    type: CANVAS,
-    width: 600,
-    height: 850,
-    parent: 'bullethell-game',
+    type: WEBGL,
+    width: 850,
+    height: 600,
+    parent: 'derivativedomain-game',
     backgroundColor: '#016EC6',
     scale: {
         mode: Scale.FIT,

@@ -2,23 +2,22 @@ import { Scene } from 'phaser';
 
 
 export class Preloader extends Scene{
-    constructor(){
+    constructor() {
         super('Preloader');
     };
 
-    init(){
-        this.add.image(300, 425, 'background');
-        this.add.rectangle(300, 425, 468, 32).setStrokeStyle(1, 0xffffff);
-        const bar = this.add.rectangle(299-230, 425, 4, 28, 0xffffff);
+    init() {
+        this.add.image(425, 300, 'background');
+        this.add.rectangle(425, 300, 468, 32).setStrokeStyle(1, 0xffffff);
+        const bar = this.add.rectangle(425-230, 300, 4, 28, 0xffffff);
         this.load.on('progress', (progress) => {
             bar.width = 4 + (462 * progress);
         });
     };
 
-    preload(){
-        this.load.setPath('assets/bullethell/');
+    preload() {
+        this.load.setPath('resources/derivativedomain/');
         /// Menu
-        this.load.image('title', 'menu/menu-title.webp');
         this.load.image('box', 'menu/menu-box.webp');
         this.load.image('button', 'menu/menu-button.webp');
         /// Player
@@ -31,7 +30,7 @@ export class Preloader extends Scene{
         this.load.atlas('abilities-atlas', 'abilities/abilities.webp', 'abilities/abilities.json');
         /// Bullet
         this.load.atlas('bullet-atlas', 'bullet/bullet.webp', 'bullet/bullet.json');
-        this.load.setPath('assets/');
+        this.load.setPath('resources/');
         this.load.image('bullet1', 'attacks/bullet1.png');
         this.load.image('bullet2', 'attacks/bullet2.png');
         this.load.image('bullet3', 'attacks/bullet3.png');
@@ -45,7 +44,7 @@ export class Preloader extends Scene{
         this.load.image('bullet11', 'attacks/bullet11.png');
     };
     
-    create(){
+    create() {
         this.scene.start('MainMenu');
     };
 };

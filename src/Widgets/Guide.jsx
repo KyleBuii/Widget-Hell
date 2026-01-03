@@ -1,9 +1,37 @@
+/*  Template Guide - Part 3/4
+1. Add the widget to the information object
+   EX1.
+   [WIDGET TYPE]: [
+        ...[all other widgets],
+        { name: '[any display name]',
+            description: [
+                [short description of what the widget does]
+                [any other information that may not be intuitive]
+            ],
+        },
+   ]
+
+   EX2.
+   utility: [
+        ...[all other widgets],
+        { name: 'Anime Searcher 9000',
+            description: [
+                'Widget for searching an anime or manga using an Anilist ID, name, or an image URL',
+                'Providing an image URl will perform a reverse search to find the most related anime or manga that matches it',
+            ],
+        },
+    ]
+2. Open documentation.txt.
+   Path: ./documentation.txt
+*/
+
 import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
 import { classStack, decorationValue } from '../data';
 
+/// v Add new widget here v
 const information = {
     special: [
         { name: 'Inventory',
@@ -145,10 +173,10 @@ const information = {
                 health: 'Allows the ball to bounce off the bottom for every 10',
             },
         },
-        { name: 'Bullet Hell',
+        { name: 'Derivative Domain',
             description: [
-                'Widget for playing bullet hell',
-                'Goal is to dodge the bullets and eliminate the boss',
+                'Widget for playing a vampire survivors like game',
+                'Goal is to dodge the bullets and eliminate the enemies',
             ],
             controls: [
                 {

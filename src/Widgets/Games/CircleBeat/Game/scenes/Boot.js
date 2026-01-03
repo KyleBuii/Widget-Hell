@@ -7,7 +7,7 @@ export class Boot extends Scene{
     };
 
     preload(){
-        this.load.image('background', 'assets/bullethell/menu/menu-background.webp',);
+        this.load.image('background', 'assets/derivativedomain/menu/menu-background.webp',);
     };
     
     create(){
