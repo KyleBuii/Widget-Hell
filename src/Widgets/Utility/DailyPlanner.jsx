@@ -675,7 +675,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                         && <span className='text-tag'
                                             style={{ position: 'absolute', right: 0 }}>Today
                                         </span>}
-                                    <div className='scrollable flex-center column only-align-items gap'
+                                    <div className='dailyplanner-plans'
                                         style={{ margin: '0.3rem' }}>
                                         {cell.holidays?.map((holiday, holidayIndex) => {
                                             return <div className={`calendar-plan holiday ${holiday

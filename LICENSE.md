@@ -59,6 +59,7 @@ Assets listed below are licensed separately from the MIT-licensed code and may h
 - **Quote**
     - [Cherry Blossom](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by dandelion_tea
     - [Petal](https://codepen.io/rudtjd2548/pen/qBpVzxP) by Evan Jin (진경성)
+    - [Reimu Talking / Thinking](https://www.reddit.com/r/touhou/comments/1lh76n6/stupid_idea_i_had/) by u/Mountain-Divide-1691
 - **Rock Paper Scissor**
     - [Choices](https://www.umop.com/rps101.htm) by David C. Lovelace
 - **SCP**

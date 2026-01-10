@@ -130,6 +130,7 @@ const information = {
         { name: 'Quote',
             description: [
                 'Widget for reading quotes',
+                'Hovering the top left corner will show a secret button, pressing it will touhouify the widget',
             ],
         },
         { name: 'Spreadsheet',

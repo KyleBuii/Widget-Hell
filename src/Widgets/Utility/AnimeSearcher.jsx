@@ -3,8 +3,6 @@ import React, { Component, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import SimpleBar from 'simplebar-react';
-import 'simplebar-react/dist/simplebar.min.css';
 import { classStack, decorationValue } from '../../data';
 import { copyToClipboard, summarizeText } from '../../helpers';
 
@@ -85,7 +83,10 @@ class WidgetAnimeSearcher extends Component {
     constructor(props) {
         super(props);
 
+        this.refWidget = React.createRef();
         this.refMultipleSearches = React.createRef();
+        this.refElementHover = React.createRef();
+        this.refCharInfo = React.createRef();
 
         this.state = {
             running: false,
@@ -147,6 +148,12 @@ class WidgetAnimeSearcher extends Component {
                 chapters: 0,
             }],
             currentMedia: 0,
+            hoverVisible: false,
+            hoveredData: {
+                name: '',
+                image: '',
+            },
+            previousSearches: [],
         };
     };
 
@@ -178,13 +185,15 @@ class WidgetAnimeSearcher extends Component {
     async fetchMedia(name = null, id = null, image = false) {
         this.refMultipleSearches.current.style.display = (this.state.searchAmount === 1 || id || name) ? 'none' : 'flex';
 
-        /// Clear existing animations
+        /// Clear existing popouts
         if (this.state.media[this.state.currentMedia].characters.length !== 0) {
             const elementCharacter = document.getElementById(`animesearcher-character-${this.state.characterIndex}`);
-            const elementCharacterInformation = document.getElementById('animesearcher-character-information');
+            const elementCharacterInformation = this.refCharInfo.current;
             elementCharacter.classList.remove('animation-image-character');
             elementCharacterInformation.classList.remove('animation-animesearcher-character-information');
         };
+        if (this.refElementHover.current.checkVisibility()) this.hideElementHover();
+
         /// Clear existing uploaded image
         if (!image) {
             document.getElementById('animesearcher-image-uploaded').innerHTML = '';
@@ -284,12 +293,21 @@ class WidgetAnimeSearcher extends Component {
                             isMediaSpoiler
                         }
                         relations{
+                            edges{
+                                relationType
+                            }
                             nodes{
                                 id
+                                title{
+                                    romaji
+                                    english
+                                    native
+                                }
                                 type
                                 coverImage{
                                     extraLarge
                                 }
+                                bannerImage
                             }
                         }
                         characters(sort: ROLE){
@@ -348,10 +366,16 @@ class WidgetAnimeSearcher extends Component {
                             nodes{
                                 mediaRecommendation{
                                     id
+                                    title{
+                                        romaji
+                                        english
+                                        native
+                                    }
                                     type
                                     coverImage{
                                         extraLarge
                                     }
+                                    bannerImage
                                 }
                             }
                         }
@@ -410,12 +434,21 @@ class WidgetAnimeSearcher extends Component {
                         isMediaSpoiler
                     }
                     relations{
+                        edges{
+                            relationType
+                        }
                         nodes{
                             id
+                            title{
+                                romaji
+                                english
+                                native
+                            }
                             type
                             coverImage{
                                 extraLarge
                             }
+                            bannerImage
                         }
                     }
                     characters(sort: ROLE){
@@ -474,10 +507,16 @@ class WidgetAnimeSearcher extends Component {
                         nodes{
                             mediaRecommendation{
                                 id
+                                title{
+                                    romaji
+                                    english
+                                    native
+                                }
                                 type
                                 coverImage{
                                     extraLarge
                                 }
+                                bannerImage
                             }
                         }
                     }
@@ -582,7 +621,7 @@ class WidgetAnimeSearcher extends Component {
                         ? dataMedia.rankings[1].rank
                         : 0,
                     recommendations: dataMedia.recommendations.nodes,
-                    relations: dataMedia.relations.nodes,
+                    relations: dataMedia.relations,
                     season: dataMedia.season,
                     seasonYear: dataMedia.seasonYear,
                     source: dataMedia.source,
@@ -607,8 +646,13 @@ class WidgetAnimeSearcher extends Component {
                 newMedia = [...tempMedia];
             };
 
-            this.setState({
-                media: [...newMedia]
+            this.setState((prev) => {
+                const newPrevSearch = [...prev.media,...prev.previousSearches].slice(0, 5);
+                console.log(prev.media.titleEnglish, prev.media.titleRomaji, prev.media.titleNative)
+                return {
+                    media: [...newMedia],
+                    previousSearches: newPrevSearch,
+                }
             });
         } catch (err) {
             console.error(err);
@@ -715,20 +759,25 @@ class WidgetAnimeSearcher extends Component {
     };
 
     characterClick(index) {
+        if (this.refElementHover.current.checkVisibility()) this.hideElementHover();
+
         const elementCharacter = document.getElementById(`animesearcher-character-${(index !== undefined) ? index : this.state.characterIndex}`);
-        const elementCharacterInformation = document.getElementById('animesearcher-character-information');
+        const elementCharacterInformation = this.refCharInfo.current;
+
         if (index !== undefined) {
             let previousIndex = this.state.characterIndex;
             this.setState({
                 previousCharacterIndex: previousIndex,
                 characterIndex: index
             });
+
             const elementPreviousCharacter = document.getElementById(`animesearcher-character-${previousIndex}`);
             if (elementCharacterInformation.classList.contains('animation-animesearcher-character-information')) {
                 elementPreviousCharacter.classList.toggle('animation-image-character');
                 elementCharacterInformation.classList.toggle('animation-animesearcher-character-information');
             };
         };
+
         elementCharacterInformation.classList.toggle('animation-animesearcher-character-information');
         elementCharacter.classList.toggle('animation-image-character');
     };
@@ -775,6 +824,41 @@ class WidgetAnimeSearcher extends Component {
         this.refMultipleSearches.current.style.display = (this.refMultipleSearches.current.checkVisibility()) ? 'none' : 'flex';
     };
 
+    handleMouseEnter(element, name, image) {
+        if ((this.state.hoverVisible && this.state.hoveredData.name === name)
+            || this.refCharInfo?.current.classList.contains('animation-animesearcher-character-information')) return;
+
+        this.setState({
+            hoverVisible: true,
+            hoveredData: { name, image }
+        });
+        
+        const parentRect = this.refWidget.current.getBoundingClientRect();
+        const childRect = element.getBoundingClientRect();
+        const elementHoverRect = this.refElementHover.current.getBoundingClientRect();
+        const x = childRect.left - parentRect.left + (childRect.width / 2) - (elementHoverRect.width / 2);
+        const y = childRect.top - parentRect.top - elementHoverRect.height;
+        this.refElementHover.current.style.left = `${x}px`;
+        this.refElementHover.current.style.top = `${y}px`;
+    };
+
+    handleHoverClick() {
+        this.setState({
+            hoverVisible: false
+        });
+    };
+
+    handleScroll() {
+        if (this.refElementHover.current.checkVisibility()) this.hideElementHover();
+    };
+
+    hideElementHover() {
+        this.refElementHover.current.style.visibility = 'hidden';
+        this.setState({
+            hoverVisible: false
+        });
+    };
+
     storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
@@ -813,9 +897,10 @@ class WidgetAnimeSearcher extends Component {
                     this.props.defaultProps.dragStop('animesearcher');
                     this.props.defaultProps.updatePosition('animesearcher', 'utility', data.x, data.y);
                 }}
-                cancel='input, button, span, a, img, .popout, .simplebar-track, .radio-match, #animesearcher-information'
+                cancel='input, button, span, a, img, .popout, .div-track, .radio-match, .animesearcher-hover, .animesearcher-information'
                 bounds='parent'>
-                <section id='animesearcher-widget'
+                <section ref={this.refWidget}
+                    id='animesearcher-widget'
                     className='widget'
                     aria-labelledby='animesearcher-widget-heading'>
                     <h2 id='animesearcher-widget-heading'
@@ -922,9 +1007,9 @@ class WidgetAnimeSearcher extends Component {
                                 <button className='button-match fill-width'
                                     onClick={() => this.toggleSearches()}>Show Searches</button>
                                 {/* Media Information */}
-                                <SimpleBar id='animesearcher-information'
-                                    className='font'
-                                    style={{ maxHeight: '34em' }}>
+                                <div className='animesearcher-information'
+                                    style={{ maxHeight: '34em' }}
+                                    onScroll={() => this.handleScroll()}>
                                     <section className='character'
                                         aria-labelledby='animesearcher-uploaded-image-heading'>
                                         <h2 id='animesearcher-uploaded-image-heading'
@@ -1154,15 +1239,20 @@ class WidgetAnimeSearcher extends Component {
                                                     __html: DOMPurify.sanitize(currentItem.description)
                                                 }}></span>
                                             {/* Relations */}
-                                            {(currentItem.relations.length !== 0)
+                                            {(currentItem.relations.nodes) && (currentItem.relations.nodes.length !== 0)
                                                 ? <span className='font bold small'>Relations</span>
                                                 : <></>}
-                                            {(currentItem.relations.length !== 0)
-                                                ? <SimpleBar id='animesearcher-relations'
+                                            {(currentItem.relations.nodes) && (currentItem.relations.nodes.length !== 0)
+                                                ? <div className='animesearcher-relations'
                                                     role='list'
                                                     aria-label='Related Media'>
-                                                    {currentItem.relations.map((relation, index) => {
+                                                    {currentItem.relations.nodes.map((relation, index) => {
                                                         return <div className='character flex-center column'
+                                                            onMouseEnter={(event) => this.handleMouseEnter(
+                                                                event.currentTarget
+                                                                , relation.title.english || relation.title.romaji || relation.title.native
+                                                                , relation.bannerImage || relation.coverImage.extraLarge
+                                                            )}
                                                             key={`relation-${index}`}
                                                             role='listitem'> 
                                                             <img id={`animesearcher-relation-${index}`}
@@ -1176,18 +1266,24 @@ class WidgetAnimeSearcher extends Component {
                                                                 loading='lazy'
                                                                 decoding='async'/>
                                                             <span className='font small text-boxed anime-searcher-normal'>
-                                                                {relation.type.charAt(0) + relation.type.substring(1).toLowerCase()}
+                                                                {currentItem.relations.edges[index].relationType
+                                                                    .toLowerCase()
+                                                                    .replace(/_/g, ' ')
+                                                                    .replace(/\b[a-z]/g, (character) => character.toUpperCase())
+                                                                    || relation.type
+                                                                        .toLowerCase()
+                                                                        .replace(/\b[a-z]/g, (character) => character.toUpperCase())}
                                                             </span>
                                                         </div>
                                                     })}
-                                                </SimpleBar>
+                                                </div>
                                                 : <></>}
                                             {/* Characters */}
                                             {(currentItem.characters.length !== 0)
                                                 ? <span className='font bold small'>Characters</span>
                                                 : <></>}
                                             {(currentItem.characters.length !== 0)
-                                                ? <SimpleBar id='animesearcher-characters'
+                                                ? <div id='animesearcher-characters'
                                                     role='list'
                                                     aria-label='Character List'>
                                                     {currentItem.characters.map((character, index) => {
@@ -1207,12 +1303,12 @@ class WidgetAnimeSearcher extends Component {
                                                             </span>
                                                         </div>
                                                     })}
-                                                </SimpleBar>
+                                                </div>
                                                 : <></>}
                                             {/* Character Information */}
                                             {(currentItem.characters.length !== 0)
-                                                ? <SimpleBar id='animesearcher-character-information'
-                                                    className='popout box dimmed no-highlight'
+                                                ? <div ref={this.refCharInfo}
+                                                    className='animesearcher-character-information'
                                                     onClick={() => {
                                                         this.characterClick();
                                                     }}
@@ -1225,13 +1321,14 @@ class WidgetAnimeSearcher extends Component {
                                                         loading='lazy'
                                                         decoding='async'/>
                                                     {/* Information */}
-                                                    <div className='flex-center column gap align-items-left'>
+                                                    <div className='flex-center column gap align-items-left'
+                                                        style={{ height: '100%' }}>
                                                         {/* Name */}
                                                         <div className='flex-center column gap only-justify-content'>
                                                             <span className='link-match font bold medium'
                                                                 onClick={() => {
                                                                     copyToClipboard(currentItem.characters[this.state.characterIndex].name.full);
-                                                                }}>{currentItem.characters[this.state.characterIndex].name.full}</span>
+                                                                }}>{currentItem.characters[this.state.characterIndex]?.name.full}</span>
                                                             {(currentItem.characters[this.state.characterIndex].name.alternative.length !== 0)
                                                                 ? <div className='flex-center row gap only-align-items font transparent-bold small'>
                                                                     {currentItem.characters[this.state.characterIndex].name.alternative.map((name, index) => {
@@ -1302,14 +1399,14 @@ class WidgetAnimeSearcher extends Component {
                                                             </div>
                                                             : <></>}
                                                     </div>
-                                                </SimpleBar>
+                                                </div>
                                                 : <></>}
                                             {/* Streaming Episodes */}
                                             {(currentItem.streamingEpisodes.length !== 0)
                                                 ? <span className='font bold small'>Episode Videos</span>
                                                 : <></>}
                                             {(currentItem.streamingEpisodes.length !== 0)
-                                                ? <SimpleBar id='animesearcher-streaming-episodes'
+                                                ? <div id='animesearcher-streaming-episodes'
                                                     role='list'
                                                     aria-label='Streaming Episodes'>
                                                     {currentItem.streamingEpisodes.map((episode, index) => {
@@ -1331,18 +1428,23 @@ class WidgetAnimeSearcher extends Component {
                                                             </span>
                                                         </div>
                                                     })}
-                                                </SimpleBar>
+                                                </div>
                                                 : <></>}
                                             {/* Recommendations */}
                                             {(currentItem.recommendations.length !== 0)
                                                 ? <span className='font bold small'>Recommendations</span>
                                                 : <></>}
                                             {(currentItem.recommendations.length !== 0)
-                                                ? <SimpleBar id='animesearcher-recommendations'
+                                                ? <div id='animesearcher-recommendations'
                                                     role='list'
                                                     aria-label='Recommended Media'>
                                                     {currentItem.recommendations.map((recommendation, index) => {
                                                         return <div className='character flex-center column'
+                                                            onMouseEnter={(event) => this.handleMouseEnter(
+                                                                event.currentTarget
+                                                                , recommendation.mediaRecommendation.title.english || recommendation.mediaRecommendation.title.romaji || recommendation.mediaRecommendation.title.native
+                                                                , recommendation.mediaRecommendation.bannerImage || recommendation.mediaRecommendation.coverImage.extraLarge
+                                                            )}
                                                             key={`recommendation-${index}`}
                                                             role='listitem'>
                                                             <img id={`animesearcher-recommendation-${index}`}
@@ -1360,11 +1462,11 @@ class WidgetAnimeSearcher extends Component {
                                                             </span>
                                                         </div>
                                                     })}
-                                                </SimpleBar>
+                                                </div>
                                                 : <></>}
                                         </section>
                                     </div>
-                                </SimpleBar>
+                                </div>
                                 {/* Searches Information */}
                                 <div ref={this.refMultipleSearches}
                                     className='animesearcher-searches'>
@@ -1461,6 +1563,15 @@ class WidgetAnimeSearcher extends Component {
                                 </div>
                             </div>
                         </div>
+                        <section ref={this.refElementHover}
+                            className='animesearcher-hover'
+                            style={{
+                                backgroundImage: `url(${this.state.hoveredData.image})`,
+                                visibility: `${this.state.hoverVisible ? 'visible' : 'hidden'}`
+                            }}
+                            onClick={() => this.handleHoverClick()}>
+                            <span>{this.state.hoveredData.name}</span>
+                        </section>
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}

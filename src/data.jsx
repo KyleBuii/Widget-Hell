@@ -1005,7 +1005,7 @@ export const
             idle    : 0.2,
             light   : 1.2,
             medium  : 2.5,
-            hearvy  : 4.5,
+            heavy   : 4.5,
             extreme : 7.5
         }
     },

@@ -47,6 +47,7 @@ export class GameScreen extends Scene {
         };
         this.createMenu();
         this.createPlayer();
+        this.createMenuEnemy();
         this.createEnemy();
         this.createBoss();
         this.createColliders();
@@ -67,7 +68,7 @@ export class GameScreen extends Scene {
             .setInteractive()
             .on('pointerdown', () => {
                 this.toggleMenu(true);
-                this.spawnBoss();
+                this.spawnEnemies();
             });
         this.textPlay = this.add.text(this.buttonPlay.x, this.buttonPlay.y, 'Play')
             .setDepth(2)
@@ -87,9 +88,9 @@ export class GameScreen extends Scene {
                     particle.kill();
                 });
                 this.boss.kill(true);
-                this.spawnEnemy();
-                this.time.delayedCall(1000, this.spawnEnemy, [], this);
-                this.time.delayedCall(2000, this.spawnEnemy, [], this);        
+                this.spawnMenuEnemies();
+                this.time.delayedCall(1000, this.spawnMenuEnemies, [], this);
+                this.time.delayedCall(2000, this.spawnMenuEnemies, [], this);        
                 this.toggleMenu(false);
                 this.player.revive();
                 this.playerAbilities.getChildren().forEach((ability) => {
@@ -147,11 +148,11 @@ export class GameScreen extends Scene {
 
     toggleMenu(isHide, isGameover = false) {
         if (isHide) {
-            this.enemies.getChildren().forEach((enemy) => {
+            this.menuEnemies.getChildren().forEach((enemy) => {
                 enemy.kill();
                 this.time.removeAllEvents();
             });
-            this.enemies.getChildren().forEach((enemy) => {
+            this.menuEnemies.getChildren().forEach((enemy) => {
                 enemy.kill();
                 this.time.removeAllEvents();
             });
@@ -198,9 +199,13 @@ export class GameScreen extends Scene {
 
     createEnemy() {
         this.enemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
-        this.spawnEnemy();
-        this.time.delayedCall(1000, this.spawnEnemy, [], this);
-        this.time.delayedCall(2000, this.spawnEnemy, [], this);
+    };
+
+    createMenuEnemy() {
+        this.menuEnemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
+        this.spawnMenuEnemies();
+        this.time.delayedCall(1000, this.spawnMenuEnemies, [], this);
+        this.time.delayedCall(2000, this.spawnMenuEnemies, [], this);
     };
 
     createBoss() {
@@ -260,6 +265,18 @@ export class GameScreen extends Scene {
         this.physics.add.overlap(this.player, this.bossBullets, (player, bullet) => {
             this.playerHitCallback(bullet, player);
         });
+        this.physics.add.overlap(this.menuEnemies, this.playerBullets, (enemy, bullet) => {
+            this.enemyHitCallback(bullet, enemy);
+        });
+        this.physics.add.overlap(this.menuEnemies, this.playerAbilitiesBullets, (enemy, bullet) => {
+            this.enemyHitCallback(bullet, enemy);
+        });
+        this.physics.add.overlap(this.menuEnemies, this.playerAbilities, (enemy, ability) => {
+            this.enemyHitCallback(ability, enemy);
+        });
+        this.physics.add.overlap(this.menuEnemies, this.playerAbilitiesAdditions, (enemy, addition) => {
+            this.enemyHitCallback(addition, enemy);
+        });
         this.physics.add.overlap(this.enemies, this.playerBullets, (enemy, bullet) => {
             this.enemyHitCallback(bullet, enemy);
         });
@@ -277,7 +294,7 @@ export class GameScreen extends Scene {
         });
     };
 
-    spawnEnemy() {
+    spawnEnemies() {
         let enemiesKeys = Object.keys(enemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
         let randomX = Math.random() * 500 + 100;
@@ -290,7 +307,23 @@ export class GameScreen extends Scene {
             enemies[randomEnemy].speed,
             enemies[randomEnemy]?.healthXOffset
         );
-        this.enemies.add(enemy);
+        this.menuEnemies.add(enemy);
+    };
+
+    spawnMenuEnemies() {
+        let enemiesKeys = Object.keys(enemies);
+        let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
+        let randomX = Math.random() * 500 + 100;
+        let enemy = new Enemy(
+            this,
+            randomEnemy,
+            randomX, 0,
+            enemies[randomEnemy].health,
+            enemies[randomEnemy].defense,
+            enemies[randomEnemy].speed,
+            enemies[randomEnemy]?.healthXOffset
+        );
+        this.menuEnemies.add(enemy);
     };
 
     spawnBoss() {
@@ -510,7 +543,7 @@ export class GameScreen extends Scene {
         if (enemy.hp.decrease(damage)) {
             enemy.kill();
             if (enemy?.key !== "boss") {
-                this.spawnEnemy();
+                this.spawnMenuEnemies();
             } else {
                 this.clearScreen();   
             };

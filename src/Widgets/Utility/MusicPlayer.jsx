@@ -33,6 +33,7 @@ class WidgetMusicPlayer extends Component {
         this.ref = player => {
             this.player = player;
         };
+        
         this.state = {
             music: [],
             urls: [
@@ -93,6 +94,9 @@ class WidgetMusicPlayer extends Component {
                 },
             },
         };
+
+        this.animateOnce = false;
+
         this.ended = this.ended.bind(this);
         this.clearMusic = this.clearMusic.bind(this);
         this.loadMusic = this.loadMusic.bind(this);
@@ -615,6 +619,8 @@ class WidgetMusicPlayer extends Component {
     toggleMusic() {
         let combineArrays = [...this.state.music, ...this.state.urls];
         if (combineArrays.length !== 0) {
+            this.animateOnce = true;
+
             this.setState({
                 playing: !this.state.playing,
                 autoplay: !this.state.autoplay
@@ -649,6 +655,11 @@ class WidgetMusicPlayer extends Component {
                 disc.style.animation =
                     'rotateDisk 5s linear 0s infinite forwards';
             };
+        };
+
+        if (this.animateOnce) {
+            this.animateOnce = false;
+            return;
         };
 
         this.animatePlayButton();

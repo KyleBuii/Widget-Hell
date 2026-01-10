@@ -9,6 +9,8 @@ import { classStack, decorationValue, fetchedData } from '../../data';
 import { copyToClipboard } from '../../helpers';
 
 let timeoutCopy;
+let timeoutThinking;
+let timeoutNextQuote;
 let intervalLoop;
 
 class WidgetQuote extends Component {
@@ -18,27 +20,83 @@ class WidgetQuote extends Component {
             currentQuote: '',
             currentAuthor: '',
             falling: [],
-            total: 8
+            total: 8,
+            touhoued: false,
+            isThinking: true,
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
+        this.storeData = this.storeData.bind(this);
     };
 
     handleNewQuote() {
-        const randQuote = Math.floor(Math.random() * fetchedData.quotes.length);
-        const randQuoteAuthor = (fetchedData.quotes[randQuote]['author'] === '') ? 'Anon' : fetchedData.quotes[randQuote]['author'];
+        const randQuoteIndex = Math.floor(Math.random() * fetchedData.quotes.length);
+        const randQuote = fetchedData.quotes[randQuoteIndex].quote;
+        const randQuoteAuthor = (fetchedData.quotes[randQuoteIndex].author === '')
+            ? 'Anon'
+            : fetchedData.quotes[randQuoteIndex].author;
+
+        if (this.state.touhoued) {
+            this.createTimeout(randQuote, randQuoteAuthor);
+            return;
+        };
+
         this.setState({
-            currentQuote: fetchedData.quotes[randQuote]['quote'],
+            currentQuote: randQuote,
             currentAuthor: randQuoteAuthor
         });
-        /// Restart animations
+
+        this.animateQuote();
+    };
+
+    createTimeout(quote, author) {
+        clearTimeout(timeoutThinking);
+        clearTimeout(timeoutNextQuote);
+
+        this.setState({
+            isThinking: true
+        });
+
         const quoteText = document.getElementById('quote-container');
         const quoteAuthor = document.getElementById('author-container');
+
+        if (!quoteText || !quoteAuthor) return;
+
+        quoteText.style.visibility = 'hidden';
+        quoteAuthor.style.visibility = 'hidden';
+
+        const totalWords = quote.split(/\s/g).length;
+        timeoutThinking = setTimeout(() => {
+            this.setState({
+                currentQuote: quote,
+                currentAuthor: author,
+                isThinking: false
+            });
+
+            quoteText.style.visibility = 'visible';
+            quoteAuthor.style.visibility = 'visible';
+
+            this.animateQuote();
+
+            timeoutNextQuote = setTimeout(() => {
+                this.handleNewQuote();
+            }, (totalWords * 1.5) * 1000);
+        }, (totalWords / 5) * 1000);
+    };
+
+    animateQuote() {
+        const quoteText = document.getElementById('quote-container');
+        const quoteAuthor = document.getElementById('author-container');
+
+        if (!quoteText || !quoteAuthor) return;
+
         quoteText.style.animation = 'none';
         quoteAuthor.style.animation = 'none';
+        
         window.requestAnimationFrame(() => {
             quoteText.style.animation = 'fadeIn 2s';
             quoteAuthor.style.animation = 'fadeIn 2s';
         });
+        
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         };
@@ -119,14 +177,55 @@ class WidgetQuote extends Component {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 
+    touhouify() {
+        this.setState({
+            touhoued: !this.state.touhoued
+        }, () => {
+            this.handleNewQuote();
+        });
+
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        };
+    };
+
+    storeData() {
+        if (localStorage.getItem('widgets') === null) return;
+
+        const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+        dataLocalStorage.utility.quote = {
+            ...dataLocalStorage.utility.quote,
+            touhoued: this.state.touhoued
+        };
+        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+    };
+
     componentDidMount() {
+        if (localStorage.getItem('widgets') !== null) {
+            const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+            const dataQuote = dataLocalStorage.utility.quote;
+            if (dataQuote.touhoued !== undefined) {
+                this.setState({
+                    touhoued: dataQuote.touhoued,
+                    isThinking: dataQuote.touhoued
+                });
+            };
+        };
+
+        window.addEventListener('beforeunload', this.storeData);
         this.handleNewQuote();
         this.loadFallingImage();
     };
-
+    
     componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.storeData);
+
         clearTimeout(timeoutCopy);
+        clearTimeout(timeoutThinking);
+        clearTimeout(timeoutNextQuote);
         clearInterval(intervalLoop);
+
+        this.storeData();
     };
     
     render() {
@@ -146,7 +245,7 @@ class WidgetQuote extends Component {
                     <h2 id='quote-widget-heading'
                         className='screen-reader-only'>Quote Widget</h2>
                     <div id='quote-widget-animation'
-                        className={`widget-animation ${classStack}`}>
+                        className={`widget-animation ${this.state.touhoued ? 'speech-bubble' : ''} ${classStack}`}>
                         <span id='quote-widget-draggable'
                             className='draggable'>
                             <IconContext.Provider value={{ size: this.props.defaultProps.largeIcon, className: 'global-class-name' }}>
@@ -169,6 +268,19 @@ class WidgetQuote extends Component {
                         {/* Background Image */}
                         <div id='quote-image'
                             className='float center'></div>
+                        <button className='touhouify'
+                            onClick={() => this.touhouify()}
+                            type='button'>
+                            <img src='/favicon-32x32.png'
+                                alt='widget hell icon'/>
+                        </button>
+                        {this.state.touhoued
+                            && <img className='quote-reimu'
+                                src={`/resources/quote/reimu-${this.state.isThinking ? 'thinking' : 'talking'}.webp`}
+                                alt='reimu talking'
+                                draggable={false}/>}
+                        {this.state.isThinking
+                            && <span className='quote-reimu-thinking'>...</span>}
                         {/* Quote */}
                         <div id='quote-container'
                             className='aesthetic-scale scale-self'>
@@ -223,8 +335,9 @@ class WidgetQuote extends Component {
                                 </span>
                             </div>
                             {/* New Quote */}
-                            <button className='button-match'
-                                onClick={this.handleNewQuote}>New quote</button>
+                            {!this.state.touhoued
+                                && <button className='button-match'
+                                    onClick={this.handleNewQuote}>New Quote</button>}
                         </div>
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>

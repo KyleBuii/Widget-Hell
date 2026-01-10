@@ -26,6 +26,8 @@ const WidgetBattery = ({ defaultProps, parentRef }) => {
     const refInterval = useRef(null);
     const refTimePerPercentage = useRef(0);
     const refCounter = useRef(0);
+    const refOptionPhone = useRef(null);
+    const refOptionPower = useRef(null);
     const refIsCharging = useRef(isCharging);
 
     useEffect(() => {
@@ -67,6 +69,14 @@ const WidgetBattery = ({ defaultProps, parentRef }) => {
     }, []);
 
     useEffect(() => {
+        refOptionPhone.current = optionPhone;
+    }, [optionPhone]);
+    
+    useEffect(() => {
+        refOptionPower.current = optionPower;
+    }, [optionPower]);
+
+    useEffect(() => {
         refIsCharging.current = isCharging;
     }, [isCharging]);
 
@@ -82,10 +92,15 @@ const WidgetBattery = ({ defaultProps, parentRef }) => {
     }, [optionPhone, optionPower, percentage, isCharging]);
 
     const storeData = () => {
-        const stored = JSON.parse(localStorage.getItem('widgets') || '{}');
-        stored.utility = stored.utility || {};
-        stored.utility.battery = { ...stored.utility.battery, phone: optionPhone, power: optionPower };
-        localStorage.setItem('widgets', JSON.stringify(stored));
+        if (localStorage.getItem('widgets') === null) return;
+
+        const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+        dataLocalStorage.utility.battery = {
+            ...dataLocalStorage.utility.battery,
+            phone: refOptionPhone.current,
+            power: refOptionPower.current
+        };
+        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
     };
 
     const handlePercentage = (percentage) => {
