@@ -22,7 +22,7 @@ class WidgetQuote extends Component {
             falling: [],
             total: 8,
             touhoued: false,
-            isThinking: true,
+            isThinking: false,
         };
         this.handleNewQuote = this.handleNewQuote.bind(this);
         this.storeData = this.storeData.bind(this);
