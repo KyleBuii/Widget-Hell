@@ -4,6 +4,12 @@ Template Guide - Part 4/4
 3. Documentaiton Finished!
 
 Templates #
+[widget] #
+Purpose      :
+How It Works :
+	1.
+Functions    :
+~
 [function] #
 Type          : () =>
 Purpose       :
@@ -365,8 +371,305 @@ Example Usage :
     <LazyWidget Component={Widget} someProp={123}/>
 ~
 
-Battery #
-Purpose      : Widget for showing the current life of the device
+Anime Searcher #
+Purpose      : Widget for searching anime/manga/novel using the Anilist GraphQL API
 How It Works :
-	1. 
+	1. Allows searching by AniList ID, title, or image URL.
+	2. Uses Anilist GraphQL API with queries to find the media.
+	3. Returned data is destructured and stored.
+	4. Supports filters (type, genres, tags), multi-result searches (up to 3) and up to 10 saved results.
+	7. Caches total media count to reduce API calls.
+Functions    :
+async fetchImage(link) #
+Type          : (string) => Promise<void>
+Purpose       : Fetches the media from an image URL using trace.moe and gets the AniList data.
+Parameters    :
+	link - Direct URL to an image.
+Returns       : None
+How It Works  :
+	1. Uses trace.moe API to find the media in the image.
+	2. Returned data is destructured and stored for episode number, time range, similarity score, and AniList ID.
+	3. Calls fetchMedia using the AniList ID to display the media data.
+Example Usage :
+	this.fetchImage('https://example.com/image.png');
+~
+async fetchMedia(name = null, id = null, image = false) #
+Type          : (string, number, boolean) => Promise<void>
+Purpose       : Fetches the provided media from name or AniList ID.
+Parameters    :
+	name  - Media title.
+	id    - AniList ID.
+	image - Whether the request originated from image search.
+Returns       : None
+How It Works  :
+	1. Resets UI animations, hover states, and previous results.
+	2. Queries based on provided information (name, id, random).
+	3. Creates GraphQL variables from active filters.
+	4. Executes one or more queries based on searchAmount.
+	5. Returned data is destructured and stored.
+	6. Ensures that there are no duplicates and updates active media index.
+Example Usage :
+	this.fetchMedia('Kimi no Na wa');
+	this.fetchMedia(null, 139465);
+	this.fetchMedia();
+~
+async runQuery(query, variables) #
+Type          : (string, object) => Promise<object>
+Purpose       : Executes a GraphQL query for AniList API.
+Parameters    :
+	query     - GraphQL query.
+	variables - Query variables.
+Returns       : object
+How It Works  :
+	1. Sends POST request to AniList GraphQL endpoint.
+	2. Passes query and variables in request body.
+	3. Returns parsed JSON response.
+Example Usage :
+	await this.runQuery(query, variables);
+~
+async fetchMaxMedia() #
+Type          : () => Promise<void>
+Purpose       : Retrieves the total number of entries on AniList.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Queries AniList GraphQL API for site statistics.
+	2. Extracts total number of entries.
+	3. Stores value in state and sessionStorage.
+	4. Automatically triggers initial fetchMedia call.
+Example Usage :
+	this.fetchMaxMedia();
+~
+toggleReimu() #
+Type          : () => void
+Purpose       : Toggles visibility of the Reimu helper element after repeated failed API calls.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Checks current visibility state.
+	2. Toggles CSS visibility property.
+Example Usage :
+	this.toggleReimu();
+~
+handleKeyDown(event) #
+Type          : (KeyboardEvent) => void
+Purpose       : Triggers a search when the Enter key is pressed in the search input.
+Parameters    :
+	event - Keydown event from the input field.
+Returns       : None
+How It Works  :
+	1. Checks if the pressed key is Enter.
+	2. Calls handleSearch if true.
+Example Usage :
+	onKeyDown={(event) => this.handleKeyDown(event)}
+~
+handleSearch() #
+Type          : () => void
+Purpose       : Handles search input and calls the correct search method.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Reads values from the input field.
+	2. Compares it to the last searched value.
+	3. Determines search type:
+		3a. Image URL => fetchImage().
+		3b. ID        => fetchMedia(null, id).
+		3c. Text      => fetchMedia(name).
+	3. Resets input field.
+Example Usage :
+	this.handleSearch();
+~
+handleButtonSpoiler() #
+Type          : () => void
+Purpose       : Toggles spoiler visibility for tags and character information.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Toggles spoiler boolean in state.
+	2. Toggles disabled CSS class on spoiler button.
+Example Usage :
+	this.handleButonSpoiler();
+~
+characterClick(index) #
+Type          : (number) => void
+Purpose       : Toggles character information popout.
+Parameters    :
+	index - Index of the clicked character.
+Returns       : None
+How It Works  :
+	1. Hides hover popout if visible.
+	2. Updates previous and current character index.
+	3. Toggles character image animation.
+	4. Toggles character information popout animation.
+Example Usage :
+	this.characterClick(2);
+~
+handleFilterButton() #
+Type          : () => void
+Purpose       : Shows or hides the filter panel.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Toggles show class on filter panel.
+Example Usage :
+	this.handleFilterButton();
+~
+handleFilter(event, type) #
+Type          : (Event, string) => void
+Purpose       : Applies or removes search filters (type, genre, tag).
+Parameters    :
+	event - Click event from filter button.
+	type  - Filter category (type, genre, tag)
+Returns       : None
+How It Works  :
+	1. If type is type, sets global filterType.
+	2. Toggles disabled state on filter button.
+	3. Adds or removes value from filter query arrays.
+Example Usage :
+	this.handleFilter(event, 'genre');
+~
+handleAmountButon() #
+Type          : () => void
+Purpose       : Cycles the number of random searches (1-3).
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Increments searchAmount.
+	2. Wraps values back to 1 after 3.
+Example Usage :
+	this.handleAmountButton();
+~
+handleSearchClick(index) #
+Type          : (number) => void
+Purpose       : Switches to a previously fetched media entry.
+Parameters    :
+	index - Index of the selected media item.
+Returns       : None
+How It Works  :
+	1. Hides multiple-searches panels.
+	2. Sets currentMedia to selected index.
+Example Usage :
+	this.handleSearchClick(2);
+~
+toggleSearches() #
+Type          : () => void
+Purpose       : Toggles visibility of previous search results panel.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Checks visibility of searches panel.
+	2. Toggles display between none and flex.
+Example Usage :
+	this.toggleSearches();
+~
+handleMouseEnter(element, name, image) #
+Type          : (HTMLElement, string, string) => void
+Purpose       : Displays hover popout for relations and recommendations.
+Parameters    :
+	element - Hovered element.
+	name    - Media name.
+	image   - Background image URL.
+Returns       : None
+How It Works  :
+	1. Prevents duplicate hover.
+	2. Updates hover state and data.
+	3. Calculates popout position relative to the widget.
+	4. Positions popout above hovered element.
+Example Usage :
+	this.handleMouseEnter(element, 'Moyashimon' imageURL);
+~
+handleHoverClick() #
+Type          : () => void
+Purpose       : Hides the hover popout on click.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Sets hover visibility to false.
+Example Usage :
+	this.handleHoverClick();
+~
+handleScroll() #
+Type          : () => void
+Purpose       : Hides the hover popout when the information panel is scrolled.
+Parameters    : None
+Returns       : None
+How It Works  :
+1. Checks if the hover element is currently visible.
+2. Hides the hover popout if visible.
+Example Usage :
+	this.handleScroll();
+~
+hideElementHover() #
+Type          : () => void
+Purpose       : Hides the hover popout.
+Parameters    : None
+Returns       : None
+How It Works  :
+1. Sets the hover element visibility to hidden.
+2. Updates state to mark hover as not visible.
+Example Usage :
+	this.hideElementHover();
+~
+handleNavigation(direction) #
+Type          : (string) => void
+Purpose       : Navigates between each media entry.
+Parameters    :
+	direction - Navigation direction (left or right).
+Returns       : None
+How It Works  :
+1. Determines direction delta based on input.
+2. Calculates new media index using modulo.
+3. Updates the current media index in state.
+Example Usage :
+	this.handleNavigation('right');
+~
+handleFocusKeyDown(event, direction) #
+Type          : (KeyboardEvent, string) => void
+Purpose       : Enables keyboard navigation for media arrows.
+Parameters    :
+	event     - Keydown event.
+	direction - Navigation direction (left or right).
+Returns       : None
+How It Works  :
+1. Listens for Space or Enter key presses.
+2. Prevents default browser behavior.
+3. Triggers the corresponding navigation click.
+Example Usage :
+	this.handleFocusKeyDown(event, 'left');
+~
+handleCoverClick() #
+Type          : () => void
+Purpose       : Toggles cover image scaling and prevents top overflow.
+Parameters    : None
+Returns       : None
+How It Works  :
+1. Toggles the cover image scale animation.
+2. Calculates scaled height and upward offset.
+3. Applies a CSS variable to keep the image within bounds.
+Example Usage :
+	this.handleCoverClick();
+~
+storeData() #
+Type          : () => void
+Purpose       : Stores data.
+Parameters    : None
+Returns       : None
+How It Works  :
+	1. Stores data.
+Example Usage :
+	this.storeData();
+~
+componentDidMount() #
+Type          : () => void
+Purpose       : Initializes cached data and performs the initial media fetch.
+Parameters    : None
+Returns       : None
+How It Works  :
+1. Reads cached date and media count.
+2. Uses cached value if still valid for the day.
+3. Otherwise fetches the max media count.
+4. Performs the initial random media search.
+Example Usage :
+	(React lifecycle method)
+~
 ~

@@ -23,8 +23,6 @@ Assets listed below are licensed separately from the MIT-licensed code and may h
         - [Sheep](https://x.com/Yupina_Ch) by Yupina
     - **Patterns**
         - [Recollection Of Scripter's Past Bullets](https://www.bulletforge.org/u/ajs/p/recollection-of-scripters-past) by AJS
-- **Calculator**
-    - [Reimu Calculating](https://x.com/mati10110302/status/1896188528117289264) by まちぽんちょ(mati10110302)
 - **Circle Beat**
     - [Hit Animation](https://opengameart.org/content/pixel-fx-pack) by CodeManu
     - [Hit Sound](https://pixabay.com/sound-effects/clap-10-36723/) by Pixabay
@@ -60,6 +58,8 @@ Assets listed below are licensed separately from the MIT-licensed code and may h
     - [Cherry Blossom](https://pixabay.com/vectors/cherry-blossom-tree-spring-flowers-7081566/) by dandelion_tea
     - [Petal](https://codepen.io/rudtjd2548/pen/qBpVzxP) by Evan Jin (진경성)
     - [Reimu Talking / Thinking](https://www.reddit.com/r/touhou/comments/1lh76n6/stupid_idea_i_had/) by u/Mountain-Divide-1691
+- **Reimu**
+    - [Reimu Dialogue](https://x.com/mati10110302/status/1896188528117289264) by まちぽんちょ(mati10110302)
 - **Rock Paper Scissor**
     - [Choices](https://www.umop.com/rps101.htm) by David C. Lovelace
 - **SCP**

@@ -302,12 +302,13 @@ export class GameScreen extends Scene {
             this,
             randomEnemy,
             randomX, 0,
+            'enemy',
             enemies[randomEnemy].health,
             enemies[randomEnemy].defense,
             enemies[randomEnemy].speed,
             enemies[randomEnemy]?.healthXOffset
         );
-        this.menuEnemies.add(enemy);
+        this.enemies.add(enemy);
     };
 
     spawnMenuEnemies() {
@@ -318,6 +319,7 @@ export class GameScreen extends Scene {
             this,
             randomEnemy,
             randomX, 0,
+            'menu',
             enemies[randomEnemy].health,
             enemies[randomEnemy].defense,
             enemies[randomEnemy].speed,
@@ -542,10 +544,17 @@ export class GameScreen extends Scene {
     damageEnemy(enemy, damage) {
         if (enemy.hp.decrease(damage)) {
             enemy.kill();
-            if (enemy?.key !== "boss") {
-                this.spawnMenuEnemies();
-            } else {
-                this.clearScreen();   
+            switch(enemy?.key) {
+                case 'menu':
+                    this.spawnMenuEnemies();
+                    break;
+                case 'enemy':
+                    this.spawnEnemies();
+                    break;
+                case 'boss':
+                    this.clearScreen();   
+                    break;
+                default: break;
             };
         };
     };

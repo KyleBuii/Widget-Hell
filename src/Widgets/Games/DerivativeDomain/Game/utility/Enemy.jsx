@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { HealthBar } from './HealthBar';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, texture, x, y, health, defense, speed, healthXOffset = 7) {
+    constructor(scene, texture, x, y, key, health, defense, speed, healthXOffset = 7) {
         super(scene, x, y, "enemy-atlas");
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -10,6 +10,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setPosition(x, y);
         this.setDepth(1);
         this.setSize(this.width, this.height);
+        this.key = key;
         this.health = health;
         this.hp = new HealthBar(scene, health, this.displayWidth / healthXOffset, 11);
         this.def = defense;

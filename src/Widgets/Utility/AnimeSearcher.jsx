@@ -77,6 +77,8 @@ const queries = {
     genre: queryGenres,
     tag: queryTags,
 };
+const callsLimit = 5;
+let totalCalls = 0;
 let filterType = '';
 
 class WidgetAnimeSearcher extends Component {
@@ -87,6 +89,11 @@ class WidgetAnimeSearcher extends Component {
         this.refMultipleSearches = React.createRef();
         this.refElementHover = React.createRef();
         this.refCharInfo = React.createRef();
+        this.refNavigationLeft = React.createRef();
+        this.refNavigationRight = React.createRef();
+        this.refReimu = React.createRef();
+        this.refCoverImage = React.createRef();
+        this.refElementInformation = React.createRef();
 
         this.state = {
             running: false,
@@ -100,6 +107,7 @@ class WidgetAnimeSearcher extends Component {
             characterIndex: 0,
             searchAmount: 1,
             media: [{
+                id: 0,
                 bannerImage: '',
                 dubbed: false,
                 charactersRole: [{
@@ -153,7 +161,6 @@ class WidgetAnimeSearcher extends Component {
                 name: '',
                 image: '',
             },
-            previousSearches: [],
         };
     };
 
@@ -183,6 +190,7 @@ class WidgetAnimeSearcher extends Component {
     };
 
     async fetchMedia(name = null, id = null, image = false) {
+        this.refReimu.current.style.visibility = 'hidden';
         this.refMultipleSearches.current.style.display = (this.state.searchAmount === 1 || id || name) ? 'none' : 'flex';
 
         /// Clear existing popouts
@@ -251,6 +259,7 @@ class WidgetAnimeSearcher extends Component {
                         genre_in: $genres,
                         tag_in: $tags,
                     ){
+                        id
                         title{
                             romaji
                             english
@@ -392,6 +401,7 @@ class WidgetAnimeSearcher extends Component {
                     id: $id,
                     search: $search,
                 ){ # Insert our variables into the query arguments (type: ANIME is hard-coded in the query)
+                    id
                     title{
                         romaji
                         english
@@ -568,6 +578,17 @@ class WidgetAnimeSearcher extends Component {
                     dataMedia = responseRandom.data.Page.media[0];
                 };
 
+                if (dataMedia === undefined) {
+                    if(++totalCalls === callsLimit) {
+                        this.toggleReimu();
+                        totalCalls = 0;
+                        return;
+                    };
+                    this.fetchMedia(name, id, image);
+                    return;
+                };
+                totalCalls = 0;
+
                 let mediaStartDate = (new Date(`${dataMedia.startDate.month || ''} ${dataMedia.startDate.day || ''} ${dataMedia.startDate.year || ''}`)
                     .toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -590,6 +611,7 @@ class WidgetAnimeSearcher extends Component {
                 };
 
                 newMedia.push({
+                    id: dataMedia.id,
                     bannerImage: dataMedia.bannerImage,
                     dubbed: checkDubbed,
                     charactersRole: dataMedia.characters.edges,
@@ -640,19 +662,27 @@ class WidgetAnimeSearcher extends Component {
                 if (id || name) break;
             };
 
-            if (id || name) {
-                let tempMedia = [...this.state.media];
-                tempMedia[this.state.currentMedia] = newMedia[0];
-                newMedia = [...tempMedia];
-            };
-
             this.setState((prev) => {
-                const newPrevSearch = [...prev.media,...prev.previousSearches].slice(0, 5);
-                console.log(prev.media.titleEnglish, prev.media.titleRomaji, prev.media.titleNative)
+                const cleanedMedia = prev.media.filter((item) =>
+                    !newMedia.some((newItem) => item.id === newItem.id)
+                );
+                const mediaInformation = prev.media[0];
+                const isPlaceholder = prev.media.length === 1
+                    && mediaInformation.titleEnglish === ''
+                    && mediaInformation.titleNative === ''
+                    && mediaInformation.titleRomaji === '';
+                const media = isPlaceholder
+                    ? newMedia
+                    : [...cleanedMedia, ...newMedia];
+
+                const newIndex = isPlaceholder
+                    ? prev.currentMedia
+                    : media.length - 1;
+
                 return {
-                    media: [...newMedia],
-                    previousSearches: newPrevSearch,
-                }
+                    media: media.slice(-10),
+                    currentMedia: newIndex
+                };
             });
         } catch (err) {
             console.error(err);
@@ -707,6 +737,11 @@ class WidgetAnimeSearcher extends Component {
         } catch (err) {
             console.error(err);
         };
+    };
+
+    toggleReimu() {
+        const isReimuVisible = this.refReimu.current.checkVisibility({ visibilityProperty: true });
+        this.refReimu.current.style.visibility = isReimuVisible ? 'hidden' : 'visible';
     };
 
     handleKeyDown(event) {
@@ -826,7 +861,7 @@ class WidgetAnimeSearcher extends Component {
 
     handleMouseEnter(element, name, image) {
         if ((this.state.hoverVisible && this.state.hoveredData.name === name)
-            || this.refCharInfo?.current.classList.contains('animation-animesearcher-character-information')) return;
+            || this.refCharInfo?.current?.classList.contains('animation-animesearcher-character-information')) return;
 
         this.setState({
             hoverVisible: true,
@@ -859,6 +894,54 @@ class WidgetAnimeSearcher extends Component {
         });
     };
 
+    handleNavigation(direction) {
+        if (this.state.media.length <= 1) return;
+
+        this.setState((prev) => {
+            let mediaLength = prev.media.length;
+            let delta = (direction === 'left')
+                ? -1
+                : (direction === 'right')
+                    ? 1
+                    : 0;
+
+            return {
+                currentMedia: (prev.currentMedia + delta + mediaLength) % mediaLength
+            };
+        });
+    };
+
+    handleFocusKeyDown(event, direction) {
+        if (!event.code.match(/Space|Enter/)) return;
+        event.preventDefault();
+
+        const refMap = {
+            left: this.refNavigationLeft.current,
+            right: this.refNavigationRight.current
+        };
+        refMap[direction].click();
+    };
+
+    handleCoverClick() {
+        this.refCoverImage.current.classList.toggle('animation-image-cover');
+
+        if (!this.refCoverImage.current.classList.contains('animation-image-cover')) return;
+
+        const parentRect = this.refElementInformation.current.getBoundingClientRect();
+        const childRect = this.refCoverImage.current.getBoundingClientRect();
+
+        const originalHeight = childRect.height / 2;
+        const scalingHeight = childRect.height - originalHeight;
+        const upwardScaling = scalingHeight / 2;
+        const trueTop = childRect.top - upwardScaling;
+
+        if (trueTop < parentRect.top) {
+            document.documentElement.style.setProperty('--animeSearcherTopOffset', `${upwardScaling + 20}px`);
+        } else {
+            document.documentElement.style.setProperty('--animeSearcherTopOffset', 0);
+        };
+    };
+
     storeData() {
         sessionStorage.setItem('animesearcher', this.state.maxAmount);
     };
@@ -888,6 +971,7 @@ class WidgetAnimeSearcher extends Component {
     render() {
         const currentItem = this.state.media[this.state.currentMedia];
         const summary = summarizeText(currentItem.description);
+        const searchesIndex = Math.max(0, this.state.media.length - 3);
 
         return (
             <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}
@@ -1005,9 +1089,11 @@ class WidgetAnimeSearcher extends Component {
                                     </div>
                                 </div>
                                 <button className='button-match fill-width'
-                                    onClick={() => this.toggleSearches()}>Show Searches</button>
+                                    onClick={() => this.toggleSearches()}
+                                    disabled={this.state.media.length === 1}>Show Searches</button>
                                 {/* Media Information */}
-                                <div className='animesearcher-information'
+                                <div ref={this.refElementInformation}
+                                    className='animesearcher-information'
                                     style={{ maxHeight: '34em' }}
                                     onScroll={() => this.handleScroll()}>
                                     <section className='character'
@@ -1024,34 +1110,48 @@ class WidgetAnimeSearcher extends Component {
                                                 |
                                                 <span>{this.state.linkDuration}</span>
                                                 |
-                                                <span>{this.state.linkSimilarity}%</span>
+                                                <span>{this.state.linkSimilarity * 100}%</span>
                                             </div>
                                             : <></>}
                                     </section>
-                                    {/* Banner Image */}
-                                    <img id='animesearcher-image-banner'
-                                        style={{
-                                            boxShadow: `0px 0px 10px ${currentItem?.coverImageColor}`
-                                        }}
-                                        src={currentItem.bannerImage || '/resources/singles/animebackground.webp'}
-                                        draggable='false'
-                                        alt='banner'
-                                        loading='lazy'
-                                        decoding='async'/>
+                                    <section style={{ position: 'relative', display: 'inline-block' }}>
+                                        {/* Banner Image */}
+                                        <img id='animesearcher-image-banner'
+                                            style={{
+                                                boxShadow: `0px 0px 10px ${currentItem?.coverImageColor}`
+                                            }}
+                                            src={currentItem.bannerImage || '/resources/singles/animebackground.webp'}
+                                            draggable='false'
+                                            alt='banner'
+                                            loading='lazy'
+                                            decoding='async'/>
+                                        {/* Navigation */}
+                                        <div ref={this.refNavigationLeft}
+                                            className='animesearcher-arrow-left'
+                                            onClick={() => this.handleNavigation('left')}
+                                            onKeyDown={(event) => this.handleFocusKeyDown(event, 'left')}
+                                            role='button'
+                                            aria-label='Previous'
+                                            tabIndex={0}>&#x2BC7;</div>
+                                        <div ref={this.refNavigationRight}
+                                            className='animesearcher-arrow-right'
+                                            onClick={() => this.handleNavigation('right')}
+                                            onKeyDown={(event) => this.handleFocusKeyDown(event, 'right')}
+                                            role='button'
+                                            aria-label='Next'
+                                            tabIndex={0}>&#x2BC8;</div>
+                                    </section>
                                     <div className='flex-center row gap medium-gap only-justify-content'>
                                         {/* Information Container */}
                                         <div id='animesearcher-container-information'
                                             className='flex-center column gap small-gap only-align-items'>
                                             {/* Cover Image */}
-                                            <img id='animesearcher-image-cover'
+                                            <img ref={this.refCoverImage}
                                                 className='image-cover'
                                                 style={{
                                                     boxShadow: `0px 0px 6px ${currentItem.coverImageColor}`
                                                 }}
-                                                onClick={() => {
-                                                    document.getElementById('animesearcher-image-cover')
-                                                        .classList.toggle('animation-image-cover');
-                                                }}
+                                                onClick={() => this.handleCoverClick()}
                                                 src={currentItem.coverImageLink}
                                                 draggable='false'
                                                 alt='cover'
@@ -1127,8 +1227,12 @@ class WidgetAnimeSearcher extends Component {
                                                         <span>Genres</span>
                                                         <div className='font transparent-normal flex-center column gap only-justify-content'>
                                                             {currentItem.genres.map((genre, genreIndex) => {
+                                                                const filteredGenre = queryGenres.indexOf(genre);
                                                                 return <span key={`${genreIndex} ${genre}`}
-                                                                    className='no-alternating-text-color'>
+                                                                    className={`
+                                                                        ${(filteredGenre !== - 1) ? 'highlighted' : ''}
+                                                                        no-alternating-text-color
+                                                                    `}>
                                                                     {genre}
                                                                 </span>;
                                                             })}
@@ -1144,12 +1248,22 @@ class WidgetAnimeSearcher extends Component {
                                                             {currentItem.tags.map((tag, tagIndex) => {
                                                                 if (((tag.isGeneralSpoiler === false) && (tag.isMediaSpoiler === false))
                                                                     || (this.state.spoiler && (tag.isGeneralSpoiler || tag.isMediaSpoiler))){
-                                                                    return <div className='element-ends'
+                                                                    const filteredTag = queryTags.indexOf(tag.name);
+                                                                    return <div className={`
+                                                                            ${(filteredTag !== -1) ? 'highlighted' : ''}
+                                                                            element-ends
+                                                                        `}
                                                                         key={`${tagIndex} ${tag.name}`}>
-                                                                        <span className={`${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''} no-alternating-text-color`}>
+                                                                        <span className={`
+                                                                            ${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''}
+                                                                            no-alternating-text-color
+                                                                        `}>
                                                                             {tag.name}
                                                                         </span>
-                                                                        <span className={`${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''} no-alternating-text-color`}>
+                                                                        <span className={`
+                                                                            ${(tag.isGeneralSpoiler || tag.isMediaSpoiler) ? 'font spoiler' : ''}
+                                                                            no-alternating-text-color
+                                                                        `}>
                                                                             {tag.rank}%
                                                                         </span>
                                                                     </div>
@@ -1265,7 +1379,7 @@ class WidgetAnimeSearcher extends Component {
                                                                 draggable='false'
                                                                 loading='lazy'
                                                                 decoding='async'/>
-                                                            <span className='font small text-boxed anime-searcher-normal'>
+                                                            <span className='font small text-boxed'>
                                                                 {currentItem.relations.edges[index].relationType
                                                                     .toLowerCase()
                                                                     .replace(/_/g, ' ')
@@ -1298,7 +1412,7 @@ class WidgetAnimeSearcher extends Component {
                                                                 draggable='false'
                                                                 loading='lazy'
                                                                 decoding='async'/>
-                                                            <span className='font small text-boxed anime-searcher-normal'>
+                                                            <span className='font small text-boxed'>
                                                                 {currentItem.charactersRole[index].role.charAt(0) + currentItem.charactersRole[index].role.substring(1).toLowerCase()}
                                                             </span>
                                                         </div>
@@ -1423,7 +1537,7 @@ class WidgetAnimeSearcher extends Component {
                                                                 draggable='false'
                                                                 loading='lazy'
                                                                 decoding='async'/>
-                                                            <span className='font small text-boxed anime-searcher-wide'>
+                                                            <span className='font small text-boxed'>
                                                                 {episode.title}
                                                             </span>
                                                         </div>
@@ -1457,7 +1571,7 @@ class WidgetAnimeSearcher extends Component {
                                                                 draggable='false'
                                                                 loading='lazy'
                                                                 decoding='async'/>
-                                                            <span className='font small text-boxed anime-searcher-normal'>
+                                                            <span className='font small text-boxed'>
                                                                 {recommendation.mediaRecommendation?.type.charAt(0) + recommendation.mediaRecommendation?.type.substring(1).toLowerCase() || ''}
                                                             </span>
                                                         </div>
@@ -1470,8 +1584,9 @@ class WidgetAnimeSearcher extends Component {
                                 {/* Searches Information */}
                                 <div ref={this.refMultipleSearches}
                                     className='animesearcher-searches'>
-                                    {this.state.media.map((data, dataIndex) => {
+                                    {this.state.media.slice(searchesIndex).map((data, dataIndex) => {
                                         const searchesSummary = summarizeText(data.description);
+                                        const calculateIndex = searchesIndex + dataIndex;
 
                                         return <div className='animesearcher-search'
                                             style={{ '--animeSearcherCoverColor': data.coverImageColor || 'var(--randColorLight)' }}
@@ -1481,7 +1596,7 @@ class WidgetAnimeSearcher extends Component {
                                                 alt='cover'
                                                 loading='lazy'
                                                 decoding='async'
-                                                onClick={() => this.handleSearchClick(dataIndex)}/>
+                                                onClick={() => this.handleSearchClick(calculateIndex)}/>
                                             <div>
                                                 <div className='flex-center row gap'>
                                                     <span className='text-tag'>
@@ -1570,8 +1685,21 @@ class WidgetAnimeSearcher extends Component {
                                 visibility: `${this.state.hoverVisible ? 'visible' : 'hidden'}`
                             }}
                             onClick={() => this.handleHoverClick()}>
-                            <span>{this.state.hoveredData.name}</span>
+                            <span onClick={(event) => {
+                                event.stopPropagation();
+                                copyToClipboard(this.state.hoveredData.name);
+                            }}>
+                                {this.state.hoveredData.name}
+                            </span>
                         </section>
+                        <img ref={this.refReimu}
+                            className='animesearcher-reimu'
+                            src='/resources/reimu/reimu-try-again.webp'
+                            alt='reimu message, try again'
+                            onClick={() => this.toggleReimu()}
+                            loading='lazy'
+                            decoding='async'
+                            draggable={false}/>
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
                             : <></>}
