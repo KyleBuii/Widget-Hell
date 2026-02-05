@@ -32,6 +32,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.danmaku = new Danmaku(scene, bullets, {});
         this.danmakuAbilities = new Danmaku(scene, bulletsAbilities, {});
         this.bulletLastFired = 0;
+        this.direction = new Phaser.Math.Vector2(0, -1);
     };
 
     preUpdate(time, delta) {
@@ -109,6 +110,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityY(velocityY);
         };
 
+        if (velocityX !== 0 || velocityY !== 0) {
+            this.direction.set(velocityX, velocityY).normalize();
+        };
+
         if (this.active) {
             if (this.keyShift?.isDown && !this.sneakInitialized) {
                 this.sneakInitialized = true;
@@ -123,6 +128,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             };
             if (time > this.bulletLastFired + (300 - (this.dex * 10))) {
                 this.bulletLastFired = time;
+
+                const aimAngle = Phaser.Math.Angle.Between(0, 0, this.direction.x, this.direction.y);
+                this.danmaku.setRotation(aimAngle);
                 this.danmaku.fireDanmaku(this.scene);
             };
         };
@@ -188,6 +196,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     dead() {
         this.active = false;
+
+        if (this.body) {
+            this.body.enable = false;
+        };
+
         this.hp.draw();
     };
 
@@ -195,6 +208,33 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.active = true;
         this.hp.reset();
         this.abilityTimer = this.abilityCooldown;
+    };
+
+    getAbilityVelocity(speed) {
+        return {
+            x: this.direction.x * speed,
+            y: this.direction.y * speed
+        };
+    };
+
+    applyDirectionToAbility(ability, {
+        speed = 0,
+        rotationOffset = 0,
+        applyVelocity = true,
+    } = {}) {
+        const directionCloned = this.direction.clone();
+
+        if (directionCloned.lengthSq() === 0) {
+            directionCloned.set(0, -1);
+        };
+
+        const angle = Phaser.Math.Angle.Between(0, 0, directionCloned.x, directionCloned.y);
+
+        ability.setRotation(angle + rotationOffset);
+
+        if (applyVelocity) {
+            ability.setVelocity(directionCloned.x * speed, directionCloned.y * speed);
+        };
     };
 
     grassBlock() {
@@ -236,9 +276,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
                 ability.anims.play("rest-in-peace", true);
                 let abilityAdditions = this.scene.playerAbilitiesAdditions.getChildren();
+                this.applyDirectionToAbility(ability, {
+                    applyVelocity: false,
+                    rotationOffset: Math.PI / 2
+                });
+
                 let count = 1;
                 loop: for (let i = 0; i < abilityAdditions.length; i++) {
-                    if (abilityAdditions[i].name = "restInPeaceHand") {
+                    if (abilityAdditions[i].name === "restInPeaceHand") {
                         if (count > 7) break loop;
                         let abilityPositionLeft = ability.getTopLeft();
                         let abilityPositionRight = ability.getTopRight();
@@ -268,6 +313,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             let slash = new Ability(this.scene, "restInPeace", "rest-in-peace-0", this.x, this.y - this.height / 2, {
                 attack: true
             });
+
+            this.applyDirectionToAbility(slash, {
+                applyVelocity: false,
+                rotationOffset: Math.PI / 2
+            });
+
             slash.anims.create({
                 key: 'rest-in-peace',
                 frames: this.anims.generateFrameNames('abilities-atlas', {
@@ -276,6 +327,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 }),
                 frameRate: 12
             });
+
             slash.on("animationcomplete", () => {
                 this.scene.tweens.add({
                     targets: slash,
@@ -287,40 +339,59 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     },
                 });
             });
+
             slash.anims.play("rest-in-peace", true);
             this.scene.playerAbilities.add(slash);
+
             for (let i = 1; i <= 14; i++) {
-                let hand = this.scene.add.sprite(0, 0, "abilities-atlas", "rest-in-peace-hand")
+                const hand = this.scene.add.sprite(0, 0, "abilities-atlas", "rest-in-peace-hand")
                     .setActive(true)
                     .setVisible(true)
                     .setName("restInPeaceHand")
                     .setDepth(9);
+
                 hand.addition = true;
                 this.scene.playerAbilitiesAdditions.add(hand);
+
                 if (i <= 7) {
+                    const directionCloned = this.direction.clone();
+                    if (directionCloned.lengthSq() === 0) directionCloned.set(0, -1);
+
+                    const isVertical = Math.abs(directionCloned.y) >= Math.abs(directionCloned.x);
+
                     let slashPositionLeft = slash.getTopLeft();
                     let slashPositionRight = slash.getTopRight();
-                    let randomX = Phaser.Math.Between(slashPositionLeft.x, slashPositionRight.x);
-                    hand.x = randomX;
-                    hand.y = slashPositionLeft.y - (100 * i);
-                    if (hand.y < -100) {
-                        hand.setActive(false)
-                            .setVisible(false);
+
+                    let randomX = 0;
+                    let randomY = 0;
+                    if (isVertical) {
+                        randomX = Phaser.Math.Between(slashPositionLeft.x, slashPositionRight.x);
+                        
+                        hand.x = randomX;
+                        hand.y = slashPositionLeft.y + (directionCloned.y * 100 * i);
+                    } else {
+                        randomY = Phaser.Math.Between(slash.y - slash.displayHeight / 2, slash.y + slash.displayHeight / 2);
+
+                        hand.x = slash.x + (directionCloned.x * 100 * i);
+                        hand.y = randomY;
+                    };
+
+                    if (hand.y < -100 || hand.x < -100) {
+                        hand.setActive(false).setVisible(false);
                     } else {
                         this.scene.tweens.add({
                             targets: hand,
                             alpha: 0,
                             duration: 1000,
                             onComplete: () => {
-                                hand.setAlpha(1);
                                 hand.setActive(false);
                                 hand.setVisible(false);
+                                hand.setAlpha(1);
                             }
                         });
                     };
                 } else {
-                    hand.setActive(false)
-                        .setVisible(false);
+                    hand.setActive(false).setVisible(false);
                 };
             };
         };
@@ -330,7 +401,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.playerAbilities.getChildren().find((ability) => {
             if ((ability.name === "oceanicTerror" && !ability.active)) {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
-                ability.setVelocityY(-300);
+
+                this.applyDirectionToAbility(ability, {
+                    speed: 300,
+                    rotationOffset: Math.PI / 2
+                });
+
                 if (this.scene.playerAbilitiesTimeEvents.find((timeEvent, index) => {
                     if ((timeEvent.callback.name === "oceanicTerrorSpawnSeaCritter")
                         && timeEvent.paused) {
@@ -360,7 +436,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.scene.playerAbilitiesTimeEvents.push(timeEvent);    
                 if (i === 0) {
                     timeEvent.paused = false;
-                    wave.setVelocityY(-300);
+                    this.applyDirectionToAbility(wave, {
+                        speed: 300,
+                        rotationOffset: Math.PI / 2
+                    });
                 } else {
                     wave.kill();
                     timeEvent.paused = true;  

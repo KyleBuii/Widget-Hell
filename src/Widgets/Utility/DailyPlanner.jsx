@@ -67,6 +67,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
         }
     ]);
     const [hoveredHoliday, setHoveredHoliday] = useState('');
+    const [isNotepad, setIsNotepad] = useState(false);
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
@@ -313,7 +314,8 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
         if (otherPopout.checkVisibility()) otherPopout.style.visibility = 'hidden';
 
         const elementCell = refElementCells.current[cellIndex];
-        const elementPlan = elementCell.querySelector('.calendar-plan:not(.holiday)')?.children[planIndex];
+        const elementPlan = elementCell.querySelectorAll('.calendar-plan:not(.holiday)')[planIndex];
+
         const rectElement = ((type === 'add') ? elementCell : elementPlan).getBoundingClientRect();
         const elementCalendar = document.getElementById('dailyplanner-widget-animation').getBoundingClientRect();
 
@@ -654,76 +656,69 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                             loading='lazy'
                             decoding='async'/>
                     </div>
-                    <div className='flex-center row'
-                        style={{ alignItems: 'flex-end' }}>
-                        <div className='calendar'>
-                            <span className='calendar-month'>{month}</span>
-                            {weekLabels.map((week) => {
-                                return <span className='calendar-label'
-                                    key={week}>{week}</span>
-                            })}
-                            {cells.map((cell, cellIndex) => {
-                                return <div ref={(element) => refElementCells.current[cellIndex] = element}
-                                    className={`calendar-cell ${cell?.classes || ''} flex-center column only-justify-content`}
-                                    role='button'
-                                    onClick={() => handleCellClick(cellIndex)}
-                                    onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
-                                    key={`cell ${cellIndex}`}
-                                    tabIndex={0}>
-                                    <span>{cell.day}</span>
-                                    {((currentDay === cell.day) && (!cell?.classes))
-                                        && <span className='text-tag'
-                                            style={{ position: 'absolute', right: 0 }}>Today
-                                        </span>}
-                                    <div className='dailyplanner-plans'
-                                        style={{ margin: '0.3rem' }}>
-                                        {cell.holidays?.map((holiday, holidayIndex) => {
-                                            return <div className={`calendar-plan holiday ${holiday
-                                                    .toLowerCase()
-                                                    .replace(/[^a-z0-9]+/g, '-')
-                                                    .replace(/^-+|-+$/g, '')}`}
-                                                role='button'
-                                                onClick={(event) => event.stopPropagation()}
-                                                onMouseEnter={handleHolidayMouseEnter}
-                                                onMouseLeave={handleHolidayMouseLeave}
-                                                key={`holiday ${holidayIndex} ${holiday}`}
-                                                tabIndex={0}>
-                                                <span>{holiday}</span>
-                                            </div>
-                                        })}
-                                        {cell.plans?.map((plan, planIndex) => {
-                                            return <div className={`calendar-plan ${plan.completed && 'completed'}`}
-                                                role='button'
-                                                onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
-                                                onMouseDown={(event) => markPlan(event, cellIndex, planIndex)}
-                                                onMouseUp={(event) => markPlan(event, cellIndex, planIndex, false)}
-                                                key={`plan ${planIndex} ${plan.abbr}`}
-                                                tabIndex={0}>
-                                                <span>{plan.abbr}</span>
-                                            </div>
-                                        })}
-                                    </div>
+                    {(isNotepad)
+                        ? <section className='notepad'>
+                            <div className='note'>
+                                <div className='spiral-container'>
+                                    {Array.from({ length: 11 }).map((_, i) => {
+                                        return <div key={`notepad spiral ${i}`}>
+                                            <div className='spiral-hole'></div>
+                                            <div className='spiral-wire'></div>
+                                        </div>
+                                    })}
                                 </div>
-                            })}
-                        </div>
-                        {/* Side Panel */}
-                        <span className='dailyplanner-side-panel-button'
-                            role='button'
-                            onClick={(event) => handleButtonFuturePlan(event)}>Future Plans</span>
-                        <div ref={refSidePanel}
-                            className='dailyplanner-side-panel'>
-                            <div className='dailyplanner-side-panel-plans'>
-                                {Object.entries(futurePlans).map((month) => {
-                                    return <div className='fill-width'
-                                        key={month[0]}>
-                                        <span className='font transparent-bold'>{month[0]}</span>
-                                        <div className='flex-center column gap'
-                                            style={{ marginTop: '0.2rem' }}>
-                                            {month[1].map((plan, planIndex) => {
-                                                return <div className='calendar-plan'
-                                                    onClick={(event) => handleFuturePlanClick(event, plan.abbr, plan.plan, plan.month, plan.day)}
+                                <div className='note-lines'>
+                                    {Array.from({ length: 14 }).map((_, i) => {
+                                        return <div className='note-line'
+                                            key={`notepad line ${i}`}>Test</div>
+                                    })}
+                                </div>
+                            </div>
+                        </section>
+                        : <div className='flex-center row'
+                            style={{ alignItems: 'flex-end' }}>
+                            <div className='calendar'>
+                                <span className='calendar-month'>{month}</span>
+                                {weekLabels.map((week) => {
+                                    return <span className='calendar-label'
+                                        key={week}>{week}</span>
+                                })}
+                                {cells.map((cell, cellIndex) => {
+                                    return <div ref={(element) => refElementCells.current[cellIndex] = element}
+                                        className={`calendar-cell ${cell?.classes || ''} flex-center column only-justify-content`}
+                                        role='button'
+                                        onClick={() => handleCellClick(cellIndex)}
+                                        onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
+                                        key={`cell ${cellIndex}`}
+                                        tabIndex={0}>
+                                        <span>{cell.day}</span>
+                                        {((currentDay === cell.day) && (!cell?.classes))
+                                            && <span className='text-tag'
+                                                style={{ position: 'absolute', right: 0 }}>Today
+                                            </span>}
+                                        <div className='dailyplanner-plans'
+                                            style={{ margin: '0.3rem' }}>
+                                            {cell.holidays?.map((holiday, holidayIndex) => {
+                                                return <div className={`calendar-plan holiday ${holiday
+                                                        .toLowerCase()
+                                                        .replace(/[^a-z0-9]+/g, '-')
+                                                        .replace(/^-+|-+$/g, '')}`}
                                                     role='button'
-                                                    key={`${plan.plan} ${plan.month} ${plan.day} ${planIndex}`}
+                                                    onClick={(event) => event.stopPropagation()}
+                                                    onMouseEnter={handleHolidayMouseEnter}
+                                                    onMouseLeave={handleHolidayMouseLeave}
+                                                    key={`holiday ${holidayIndex} ${holiday}`}
+                                                    tabIndex={0}>
+                                                    <span>{holiday}</span>
+                                                </div>
+                                            })}
+                                            {cell.plans?.map((plan, planIndex) => {
+                                                return <div className={`calendar-plan ${plan.completed && 'completed'}`}
+                                                    role='button'
+                                                    onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
+                                                    onMouseDown={(event) => markPlan(event, cellIndex, planIndex)}
+                                                    onMouseUp={(event) => markPlan(event, cellIndex, planIndex, false)}
+                                                    key={`plan ${planIndex} ${plan.abbr}`}
                                                     tabIndex={0}>
                                                     <span>{plan.abbr}</span>
                                                 </div>
@@ -732,59 +727,85 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                     </div>
                                 })}
                             </div>
-                            <div className='flex-center column gap'>
-                                <div className='dailyplanner-side-panel-buttons'>
-                                    <div className='grid col-50-50'>
-                                        <Select ref={refSelectMonth}
-                                            className='select-match'
-                                            value={inputFuturePlanMonth}
-                                            options={optionsMonth}
-                                            formatGroupLabel={formatGroupLabel}
-                                            components={{
-                                                MenuList: menuListScrollbar
-                                            }}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    ...parentRef.state.selectTheme
-                                                }
-                                            })}
-                                            onChange={setInputFuturePlanMonth}/>
-                                        <input ref={refInputFuturePlanDay}
-                                            className='input-match'
-                                            style={{ maxWidth: '6.3rem' }}
-                                            value={inputFuturePlanDay}
-                                            type='number'
-                                            min={1}
-                                            max={20}
-                                            placeholder='Day'
-                                            onChange={(event) => handleInputFuturePlan(event, 'day')}/>
-                                    </div>
-                                    <input ref={refInputFuturePlanDesc}
-                                        className='input-match fill-width'
-                                        type='text'
-                                        value={inputFuturePlanDesc}
-                                        placeholder='Plan'
-                                        onChange={(event) => handleInputFuturePlan(event, 'desc')}/>
-                                    <input ref={refInputFuturePlanAbbr}
-                                        className='input-match fill-width'
-                                        type='text'
-                                        value={inputFuturePlanAbbr}
-                                        maxLength={maxLength}
-                                        placeholder='Abbreviation'
-                                        onChange={(event) => handleInputFuturePlan(event, 'abbr')}/>
-                                    <button className='button-match fill-width'
-                                        onClick={() => handleButtonsFuturePlan('add')}>Add</button>
+                            {/* Side Panel */}
+                            <span className='dailyplanner-side-panel-button'
+                                role='button'
+                                onClick={(event) => handleButtonFuturePlan(event)}>Future Plans</span>
+                            <div ref={refSidePanel}
+                                className='dailyplanner-side-panel'>
+                                <div className='dailyplanner-side-panel-plans'>
+                                    {Object.entries(futurePlans).map((month) => {
+                                        return <div className='fill-width'
+                                            key={month[0]}>
+                                            <span className='font transparent-bold'>{month[0]}</span>
+                                            <div className='flex-center column gap'
+                                                style={{ marginTop: '0.2rem' }}>
+                                                {month[1].map((plan, planIndex) => {
+                                                    return <div className='calendar-plan'
+                                                        onClick={(event) => handleFuturePlanClick(event, plan.abbr, plan.plan, plan.month, plan.day)}
+                                                        role='button'
+                                                        key={`${plan.plan} ${plan.month} ${plan.day} ${planIndex}`}
+                                                        tabIndex={0}>
+                                                        <span>{plan.abbr}</span>
+                                                    </div>
+                                                })}
+                                            </div>
+                                        </div>
+                                    })}
                                 </div>
-                                <div className='fill-width'
-                                    style={{ paddingTop: '1rem' }}>
-                                    <button className='button-match fill-width'
-                                        onClick={() => handleButtonsFuturePlan('show')}>Add Plan</button>
+                                <div className='flex-center column gap'>
+                                    <div className='dailyplanner-side-panel-buttons'>
+                                        <div className='grid col-50-50'>
+                                            <Select ref={refSelectMonth}
+                                                className='select-match'
+                                                value={inputFuturePlanMonth}
+                                                options={optionsMonth}
+                                                formatGroupLabel={formatGroupLabel}
+                                                components={{
+                                                    MenuList: menuListScrollbar
+                                                }}
+                                                theme={(theme) => ({
+                                                    ...theme,
+                                                    colors: {
+                                                        ...theme.colors,
+                                                        ...parentRef.state.selectTheme
+                                                    }
+                                                })}
+                                                onChange={setInputFuturePlanMonth}/>
+                                            <input ref={refInputFuturePlanDay}
+                                                className='input-match'
+                                                style={{ maxWidth: '6.3rem' }}
+                                                value={inputFuturePlanDay}
+                                                type='number'
+                                                min={1}
+                                                max={20}
+                                                placeholder='Day'
+                                                onChange={(event) => handleInputFuturePlan(event, 'day')}/>
+                                        </div>
+                                        <input ref={refInputFuturePlanDesc}
+                                            className='input-match fill-width'
+                                            type='text'
+                                            value={inputFuturePlanDesc}
+                                            placeholder='Plan'
+                                            onChange={(event) => handleInputFuturePlan(event, 'desc')}/>
+                                        <input ref={refInputFuturePlanAbbr}
+                                            className='input-match fill-width'
+                                            type='text'
+                                            value={inputFuturePlanAbbr}
+                                            maxLength={maxLength}
+                                            placeholder='Abbreviation'
+                                            onChange={(event) => handleInputFuturePlan(event, 'abbr')}/>
+                                        <button className='button-match fill-width'
+                                            onClick={() => handleButtonsFuturePlan('add')}>Add</button>
+                                    </div>
+                                    <div className='fill-width'
+                                        style={{ paddingTop: '1rem' }}>
+                                        <button className='button-match fill-width'
+                                            onClick={() => handleButtonsFuturePlan('show')}>Add Plan</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div>}
                     {/* Add Plan Popout */}
                     <div className='popout'
                         onKeyDown={(event) => handlePopoutKeyDown(event)}>

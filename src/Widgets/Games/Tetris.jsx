@@ -121,15 +121,13 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 	};
 
 	const loop = () => {
-		if (!refGameover.current) {
-			/// Always update Page
-			Page.Update();
-			/// Only need to update GM if the player is alive
-			if (GM.IsAlive) {
-				GM.Update();
-			} else {
-				gameOver();
-			};
+		/// Always update Page
+		Page.Update();
+		/// Only need to update GM if the player is alive
+		if (GM.IsAlive) {
+			GM.Update();
+		} else {
+			gameOver();
 		};
 	};
 
@@ -142,6 +140,7 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 		if (state.score >= 5000) {
 			let amount = Math.floor(state.score / 5000);
             gameProps.randomItem(amount);
+			console.log(amount, gold)
 		};
 		setState((prevState) => ({
 			...prevState,

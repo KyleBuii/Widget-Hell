@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import { danmakuSpokes, drawCannons, readAngle, readParam } from './utility';
 
-const WIDTH = 600;
-const HEIGHT = 850;
+const WIDTH = 850;
+const HEIGHT = 600;
 
 export class Bullet extends Phaser.Physics.Arcade.Sprite {
     fire(

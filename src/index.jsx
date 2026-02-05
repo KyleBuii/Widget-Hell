@@ -2,6 +2,7 @@ import React, { Component, StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { IconContext } from 'react-icons';
 import { AiOutlineSetting } from 'react-icons/ai';
+import { BiCollapse } from 'react-icons/bi';
 import { FaExclamationTriangle, FaExpand } from 'react-icons/fa';
 import { Fa0 } from 'react-icons/fa6';
 import { IoIosArrowUp } from 'react-icons/io';
@@ -44,6 +45,7 @@ class Widgets extends Component {
                 fullscreen: false,
                 resetPosition: false,
                 showOnTop: false,
+                collapse: false,
                 shadow: false,
                 voice: {value: '0', label: 'David'},
                 pitch: 0,
@@ -598,8 +600,87 @@ class Widgets extends Component {
                 widget.classList.add('show-on-top');
                 break;
             };
+            case 'collapse': {
+                let e = document.getElementById(`${element}-widget`);
+                let eAnimation = document.getElementById(`${element}-widget-animation`);
+
+                if (eAnimation.classList.contains(`${what}-animation`)) {
+                    eAnimation.classList.remove(`${what}-animation`);
+                } else {
+                    eAnimation.classList.add(`${what}-animation`);
+                };
+
+                const yinYangExist = e.querySelector('.yin-yang');
+                if (yinYangExist) {
+                    e.removeChild(yinYangExist);
+                } else {
+                    eAnimation.ontransitionend = (event) => {
+                        if (event.propertyName !== 'transform') return;
+
+                        eAnimation.classList.remove(`${what}-animation`);
+                        eAnimation.classList.add('collapsed');
+                    };
+
+                    const elementYinYang = document.createElement('div');
+                    elementYinYang.className = 'yin-yang float center';
+
+                    const elementName = document.createElement('span');
+                    elementName.innerText = element.replace(/^./, (char) => char.toUpperCase());
+                    elementName.className = 'yin-yang-name';
+                    elementName.onclick = () => {
+                        e.removeChild(e.querySelector('.yin-yang'));
+                        e.removeChild(e.querySelector('.yin-yang-name'));
+                        eAnimation.classList.remove(`${what}-animation`, 'collapsed');
+                    };
+
+                    e.appendChild(elementName);
+                    e.appendChild(elementYinYang);
+                };
+                break;
+            };
             default: { break; };
         };
+    };
+
+    renderHotbar = (widget, type) => {
+        return <div id={`${widget}-hotbar`}
+            className='hotbar'>
+            {(this.state.values.showOnTop)
+                ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar show on top'
+                    onClick={() => this.handleHotbar(widget, 'showOnTop', type)}>
+                    <IoIosArrowUp/>
+                </button>
+                : <></>}
+            {(this.state.values.resetPosition)
+                ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar reset position'
+                    onClick={() => this.handleHotbar(widget, 'resetPosition', type)}>
+                    <Fa0/>
+                </button>
+                : <></>}
+            {(this.state.values.fullscreen)
+                ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar fullscreen'
+                    onClick={() => this.handleHotbar(widget, 'fullscreen', type)}>
+                    <FaExpand/>
+                </button>
+                : <></>}
+            {(this.state.values.collapse)
+                ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar collapse'
+                    onClick={() => this.handleHotbar(widget, 'collapse', type)}>
+                    <BiCollapse/>
+                </button>
+                : <></>}
+            {(this.state.values.close)
+                ? <button className='button-match inverse when-elements-are-not-straight'
+                    aria-label='Hotbar close'
+                    onClick={() => this.handleHotbar(widget, 'close', type)}>
+                    <IoClose/>
+                </button>
+                : <></>}
+        </div>
     };
 
     handleMouseMove(event) {
@@ -663,6 +744,10 @@ class Widgets extends Component {
                 break;
             case 'colorChange':
                 this.randomColor(value[0], value[1], value[2], true);
+                break;
+            case 'showOnTop':
+            case 'fullscreen':
+            case 'collapse':
                 break;
             default:
                 this.updateDesign(what, value);
@@ -1092,40 +1177,6 @@ class Widgets extends Component {
             elementSetting.style.visibility = 'visible';
             elementButtonSetting.classList.add('button-setting-active');
         };
-    };
-
-    renderHotbar = (widget, type) => {
-        return <div id={`${widget}-hotbar`}
-            className='hotbar'>
-            {(this.state.values.showOnTop)
-                ? <button className='button-match inverse when-elements-are-not-straight'
-                    aria-label='Hotbar show on top'
-                    onClick={() => this.handleHotbar(widget, 'showOnTop', type)}>
-                    <IoIosArrowUp/>
-                </button>
-                : <></>}
-            {(this.state.values.resetPosition)
-                ? <button className='button-match inverse when-elements-are-not-straight'
-                    aria-label='Hotbar reset position'
-                    onClick={() => this.handleHotbar(widget, 'resetPosition', type)}>
-                    <Fa0/>
-                </button>
-                : <></>}
-            {(this.state.values.fullscreen)
-                ? <button className='button-match inverse when-elements-are-not-straight'
-                    aria-label='Hotbar fullscreen'
-                    onClick={() => this.handleHotbar(widget, 'fullscreen', type)}>
-                    <FaExpand/>
-                </button>
-                : <></>}
-            {(this.state.values.close)
-                ? <button className='button-match inverse when-elements-are-not-straight'
-                    aria-label='Hotbar close'
-                    onClick={() => this.handleHotbar(widget, 'close', type)}>
-                    <IoClose/>
-                </button>
-                : <></>}
-        </div>
     };
 
     generateDefaultProps(widget, type) {

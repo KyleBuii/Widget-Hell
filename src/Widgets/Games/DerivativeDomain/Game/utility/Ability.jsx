@@ -35,7 +35,16 @@ export class Ability extends Phaser.Physics.Arcade.Sprite{
     };
 
     kill() {
-        this.hp?.bar.destroy();
-        this.disableBody(true, true);
+        if (this.hp?.bar) {
+            this.hp.bar.destroy();
+            this.hp.bar = null;
+        };
+
+        if (this.body) {
+            this.disableBody(true, true);
+        } else {
+            this.setActive(false);
+            this.setVisible(false);
+        };
     };
 };

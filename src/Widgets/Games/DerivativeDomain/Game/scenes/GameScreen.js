@@ -23,13 +23,23 @@ import { Player } from '../utility/Player.jsx';
 
 const WIDTH = 850;
 const HEIGHT = 600;
-const enemies = {
+const dataMenuEnemies = {
     yupina: {
         health: 10,
+        attack: 1,
         defense: 0,
         speed: 1.5,
-    }
+    },
 };
+const dataEnemies = {
+    slime: {
+        health: 10,
+        attack: 1,
+        defense: 0,
+        speed: 1,
+    },
+};
+const enemySpawnRate = 5;
 
 export class GameScreen extends Scene {
     constructor() {
@@ -39,83 +49,105 @@ export class GameScreen extends Scene {
         this.player = null;
         this.boss = null;
         this.debuffs = [];
+        this.gameTimer = null;
+        this.enemyMultiplier = 1;
+        this.menuTimers = [];
+        this.elapsedSeconds = 0;
     };
 
     create() {
         if ('maxTouchPoints' in navigator) {
             this.isMobile = navigator.maxTouchPoints > 0;
         };
-        this.createMenu();
+
+        this.createUI();
         this.createPlayer();
-        this.createMenuEnemy();
+        this.createUIEnemy();
         this.createEnemy();
         this.createBoss();
         this.createColliders();
+
+        this.gameTimer = this.time.addEvent({
+            delay: 1000,
+            callback: this.handleTimer,
+            callbackScope: this,
+            loop: true,
+        });
+        this.gameTimer.paused = true;
+
         EventBus.once('data', (data) => {
             this.setData(data);
         });
         EventBus.emit('current-scene-ready', this);
     };
 
-    createMenu() {
+    handleTimer() {
+        this.elapsedSeconds++;
+        this.enemyMultiplier = 1 + Math.floor(this.elapsedSeconds / 60);
+        this.updateTimerText();
+    };
+
+    updateTimerText() {
+        const minutes = Math.floor(this.elapsedSeconds / 60);
+        const seconds = this.elapsedSeconds % 60;
+        
+        this.textTimer.setText(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    };
+
+    createUI() {
         this.buttonContainer = this.add.image(95, 72, "box")
             .setDepth(2)
             .setDisplaySize(165, 105)
             .setAlpha(0.8);
+
         this.buttonPlay = this.add.image(95, 50, "button")
             .setDepth(2)
             .setDisplaySize(140, 40)
             .setInteractive()
-            .on('pointerdown', () => {
-                this.toggleMenu(true);
-                this.spawnEnemies();
-            });
+            .on('pointerdown', () => this.handleButton('play'));
         this.textPlay = this.add.text(this.buttonPlay.x, this.buttonPlay.y, 'Play')
             .setDepth(2)
             .setOrigin(0.5);
-        this.buttonReturn = this.add.image(95, 50, "button")
-            .setVisible(false)
-            .setDepth(2)
-            .setDisplaySize(140, 40)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.boss.danmaku.resetDanmaku(this);
-                this.bossBullets.getMatching("active", true).forEach((bullet) => {
-                    bullet.remove();
-                });
-                this.bossBulletsEmitter.stop();
-                this.bossBulletsEmitter.forEachAlive((particle) => {
-                    particle.kill();
-                });
-                this.boss.kill(true);
-                this.spawnMenuEnemies();
-                this.time.delayedCall(1000, this.spawnMenuEnemies, [], this);
-                this.time.delayedCall(2000, this.spawnMenuEnemies, [], this);        
-                this.toggleMenu(false);
-                this.player.revive();
-                this.playerAbilities.getChildren().forEach((ability) => {
-                    ability.kill();
-                });
-            });
-        this.textReturn = this.add.text(this.buttonPlay.x, this.buttonPlay.y, 'Return')
-            .setVisible(false)
-            .setDepth(2)
-            .setOrigin(0.5);
+
         this.buttonMouseMovement = this.add.image(95, 95, "button")
             .setDepth(2)
             .setDisplaySize(140, 40)
             .setInteractive()
-            .on('pointerdown', () => {
-                if (!this.isMobile) {
-                    this.mouseMovement = !this.mouseMovement;
-                };
-            });
+            .on('pointerdown', () => this.handleButton('mouse'));
         this.textMouseMovement = this.add.text(this.buttonMouseMovement.x, this.buttonMouseMovement.y, 'Mouse')
             .setDepth(2)
             .setOrigin(0.5);
+
+        this.buttonReturn = this.add.image(95, 95, "button")
+            .setVisible(false)
+            .setDepth(2)
+            .setDisplaySize(140, 40)
+            .setInteractive()
+            .on('pointerdown', () => this.handleButton('return'));
+        this.textReturn = this.add.text(this.buttonReturn.x, this.buttonReturn.y, 'Return')
+            .setVisible(false)
+            .setDepth(2)
+            .setOrigin(0.5);
+
+        this.buttonTryAgain = this.add.image(95, 50, "button")
+            .setVisible(false)
+            .setDepth(2)
+            .setDisplaySize(140, 40)
+            .setInteractive()
+            .on('pointerdown', () => this.handleButton('try again'));
+        this.textTryAgain = this.add.text(this.buttonTryAgain.x, this.buttonTryAgain.y, 'Try Again')
+            .setVisible(false)
+            .setDepth(2)
+            .setOrigin(0.5);
+
         this.textCurrentAbility = this.add.text(580, 830, "")
             .setDepth(2)
             .setOrigin(1);
+        this.textTimer = this.add.text(WIDTH / 2, 25, '00:00')
+            .setVisible(false)
+            .setDepth(2)
+            .setOrigin(0.5, 0);
+
         if (this.isMobile) {
             this.buttonAbility = this.add.image(60, 810, "button")
                 .setDepth(2)
@@ -146,35 +178,122 @@ export class GameScreen extends Scene {
         };
     };
 
-    toggleMenu(isHide, isGameover = false) {
-        if (isHide) {
-            this.menuEnemies.getChildren().forEach((enemy) => {
-                enemy.kill();
-                this.time.removeAllEvents();
-            });
-            this.menuEnemies.getChildren().forEach((enemy) => {
-                enemy.kill();
-                this.time.removeAllEvents();
-            });
-            this.buttonContainer.setVisible(false);
-            this.buttonPlay.setVisible(false);
-            this.textPlay.setVisible(false);
-            this.buttonMouseMovement.setVisible(false);
-            this.textMouseMovement.setVisible(false);
-        } else {
-            if (isGameover) {
+    handleButton(type) {
+        switch(type) {
+            case 'play':
+                this.stopMenuSpawns();
+                this.clearEnemies(this.menuEnemies);
+
+                this.hideMenu();
+                this.spawnEnemies();
+
+                this.elapsedSeconds = 0;
+                this.gameTimer.paused = false;
+                this.textTimer.setVisible(true);
+                break;
+            case 'return':
+                this.clearEnemies(this.enemies);
+                this.resetBoss();
+
+                this.showMenu('home');
+                this.createUIEnemy();
+
+                this.player.revive();
+                this.playerAbilities.getChildren().forEach((ability) => {
+                    ability.kill();
+                });
+
+                this.gameTimer.paused = true;
+                this.elapsedSeconds = 0;
+                this.updateTimerText();
+                this.textTimer.setVisible(false);
+                break;
+            case 'mouse':
+                if (this.isMobile) return;
+                this.mouseMovement = !this.mouseMovement;
+                break;
+            case 'try again':
+                this.clearEnemies(this.enemies);
+                this.resetBoss();
+
+                this.hideMenu();
+                this.spawnEnemies();
+
+                this.elapsedSeconds = 0;
+                this.updateTimerText();
+                this.gameTimer.paused = false;
+
+                this.player.revive();
+                this.playerAbilities.getChildren().forEach((ability) => {
+                    ability.kill();
+                });
+                break;
+            default: break;
+        };
+    };
+
+    showMenu(type) {
+        this.hideMenu();
+        this.buttonContainer.setVisible(true);
+        switch(type) {
+            case 'home':
+                this.buttonPlay.setVisible(true);
+                this.textPlay.setVisible(true);
+                
+                this.buttonMouseMovement.setVisible(true);
+                this.textMouseMovement.setVisible(true);
+                break;
+            case 'game':
                 this.buttonReturn.setVisible(true);
                 this.textReturn.setVisible(true);
-            } else {
-                this.buttonReturn.setVisible(false);
-                this.textReturn.setVisible(false);  
-            };
-            this.buttonContainer.setVisible(true);
-            this.buttonPlay.setVisible(true);
-            this.textPlay.setVisible(true);
-            this.buttonMouseMovement.setVisible(true);
-            this.textMouseMovement.setVisible(true);
+                
+                this.buttonTryAgain.setVisible(true);
+                this.textTryAgain.setVisible(true);
+                break;
+            default: break;
         };
+    };
+
+    hideMenu() {
+        this.buttonContainer.setVisible(false);
+
+        this.buttonPlay.setVisible(false);
+        this.textPlay.setVisible(false);
+        
+        this.buttonMouseMovement.setVisible(false);
+        this.textMouseMovement.setVisible(false);
+
+        this.buttonReturn.setVisible(false);
+        this.textReturn.setVisible(false);
+        
+        this.buttonTryAgain.setVisible(false);
+        this.textTryAgain.setVisible(false);
+    };
+
+    resetBoss() {
+        if (!this.boss) return;
+        this.boss.danmaku.resetDanmaku(this);
+        this.bossBullets.getMatching("active", true).forEach((bullet) => {
+            bullet.remove();
+        });
+        this.bossBulletsEmitter.stop();
+        this.bossBulletsEmitter.forEachAlive((particle) => {
+            particle.kill();
+        });
+        this.boss.kill(true);
+    };
+
+    stopMenuSpawns() {
+        this.menuTimers.forEach((timer) => timer.remove());
+        this.menuTimers = [];
+    };
+
+    clearEnemies(group) {
+        if (!group) return;
+        group.getChildren().forEach((enemy) => {
+            enemy.kill();
+        });
+        group.clear(false, true);
     };
 
     createPlayer() {
@@ -201,11 +320,13 @@ export class GameScreen extends Scene {
         this.enemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
     };
 
-    createMenuEnemy() {
+    createUIEnemy() {
         this.menuEnemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
-        this.spawnMenuEnemies();
-        this.time.delayedCall(1000, this.spawnMenuEnemies, [], this);
-        this.time.delayedCall(2000, this.spawnMenuEnemies, [], this);
+        this.menuTimers = [
+            this.time.delayedCall(0   , this.spawnMenuEnemies, [], this),
+            this.time.delayedCall(1000, this.spawnMenuEnemies, [], this),
+            this.time.delayedCall(2000, this.spawnMenuEnemies, [], this),
+        ];
     };
 
     createBoss() {
@@ -251,6 +372,7 @@ export class GameScreen extends Scene {
             .setPushable(false);
         this.anchorBoss = this.physics.add.sprite(WIDTH / 2, 280)
             .setPushable(false);
+
         this.physics.add.collider(this.playerAbilities, this.anchorOutside, (anchor, ability) => {
             switch (ability.name) {
                 case "oceanicTerror":
@@ -259,12 +381,14 @@ export class GameScreen extends Scene {
                 default: break;
             };
         });
+
         this.physics.add.overlap(this.player, this.enemyBullets, (player, bullet) => {
             this.playerHitCallback(bullet, player);
         });
         this.physics.add.overlap(this.player, this.bossBullets, (player, bullet) => {
             this.playerHitCallback(bullet, player);
         });
+
         this.physics.add.overlap(this.menuEnemies, this.playerBullets, (enemy, bullet) => {
             this.enemyHitCallback(bullet, enemy);
         });
@@ -277,6 +401,7 @@ export class GameScreen extends Scene {
         this.physics.add.overlap(this.menuEnemies, this.playerAbilitiesAdditions, (enemy, addition) => {
             this.enemyHitCallback(addition, enemy);
         });
+
         this.physics.add.overlap(this.enemies, this.playerBullets, (enemy, bullet) => {
             this.enemyHitCallback(bullet, enemy);
         });
@@ -289,30 +414,54 @@ export class GameScreen extends Scene {
         this.physics.add.overlap(this.enemies, this.playerAbilitiesAdditions, (enemy, addition) => {
             this.enemyHitCallback(addition, enemy);
         });
+        this.physics.add.overlap(this.enemies, this.player, (enemy, player) => {
+            this.playerEnemyHitCallback(player, enemy);
+        });
+        
         this.physics.add.overlap(this.playerAbilities, this.bossBullets, (ability, bullet) => {
             this.abilityHitCallback(bullet, ability);
         });
     };
 
     spawnEnemies() {
-        let enemiesKeys = Object.keys(enemies);
+        let enemiesKeys = Object.keys(dataEnemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
-        let randomX = Math.random() * 500 + 100;
-        let enemy = new Enemy(
-            this,
-            randomEnemy,
-            randomX, 0,
-            'enemy',
-            enemies[randomEnemy].health,
-            enemies[randomEnemy].defense,
-            enemies[randomEnemy].speed,
-            enemies[randomEnemy]?.healthXOffset
-        );
-        this.enemies.add(enemy);
+        let randomSide = 0;
+        let randomX = 0;
+        let randomY = 0;
+        let totalEnemies = enemySpawnRate * this.enemyMultiplier;
+
+        for(var enemyCount = 0; enemyCount < totalEnemies; enemyCount++) {
+            randomSide = Math.random();
+
+            if (randomSide >= 0.50) {
+                /// Top / Bottom
+                randomX = Math.random() * WIDTH;
+                randomY = (randomSide >= 0.75) ? 0 : HEIGHT;
+            } else {
+                /// Right / Left
+                randomX = (randomSide >= 0.25) ? WIDTH : 0;
+                randomY = Math.random() * HEIGHT;
+            };
+
+            let enemy = new Enemy(
+                this,
+                randomEnemy,
+                randomX, randomY,
+                'enemy',
+                dataEnemies[randomEnemy].health,
+                dataEnemies[randomEnemy].attack,
+                dataEnemies[randomEnemy].defense,
+                dataEnemies[randomEnemy].speed,
+                dataEnemies[randomEnemy]?.healthXOffset,
+                this.player
+            );
+            this.enemies.add(enemy);
+        };
     };
 
     spawnMenuEnemies() {
-        let enemiesKeys = Object.keys(enemies);
+        let enemiesKeys = Object.keys(dataMenuEnemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
         let randomX = Math.random() * 500 + 100;
         let enemy = new Enemy(
@@ -320,10 +469,11 @@ export class GameScreen extends Scene {
             randomEnemy,
             randomX, 0,
             'menu',
-            enemies[randomEnemy].health,
-            enemies[randomEnemy].defense,
-            enemies[randomEnemy].speed,
-            enemies[randomEnemy]?.healthXOffset
+            dataMenuEnemies[randomEnemy].health,
+            dataMenuEnemies[randomEnemy].attack,
+            dataMenuEnemies[randomEnemy].defense,
+            dataMenuEnemies[randomEnemy].speed,
+            dataMenuEnemies[randomEnemy]?.healthXOffset
         );
         this.menuEnemies.add(enemy);
     };
@@ -436,11 +586,15 @@ export class GameScreen extends Scene {
         );
     };
 
+    playerEnemyHitCallback(enemy, player) {
+        if (player.active === false) return;
+        this.damagePlayer(player, enemy.atk);
+    };
+
     playerHitCallback(bullet, player) {
-        if (bullet.active === true) {
-            this.damagePlayer(player, bullet.damage);
-            bullet.remove();
-        };
+        if (bullet.active === false) return;
+        this.damagePlayer(player, bullet.damage);
+        bullet.remove();
     };
     
     abilityHitCallback(bullet, ability) {
@@ -538,6 +692,7 @@ export class GameScreen extends Scene {
         if (player.active && player.hp.decrease(damage)) {
             player.dead();
             this.clearScreen();
+            this.gameTimer.paused = true;
         };
     };
     
@@ -549,7 +704,6 @@ export class GameScreen extends Scene {
                     this.spawnMenuEnemies();
                     break;
                 case 'enemy':
-                    this.spawnEnemies();
                     break;
                 case 'boss':
                     this.clearScreen();   
@@ -560,7 +714,7 @@ export class GameScreen extends Scene {
     };
 
     clearScreen() {
-        this.toggleMenu(false, true);
+        this.showMenu('game');
         this.bossBombs.clear(true, true);
     };
 };

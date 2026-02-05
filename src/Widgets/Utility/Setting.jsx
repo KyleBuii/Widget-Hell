@@ -1608,6 +1608,18 @@ class WidgetSetting extends Component {
                                                         onChange={(event) => this.handleCheckbox(event.target.checked, 'close', 'values')}
                                                         checked={this.props.values.close}/>
                                                 </div>
+                                                {/* Collapse */}
+                                                <div className='element-ends'>
+                                                    <label className='font small'
+                                                        htmlFor='settings-popout-feature-collapse'>
+                                                        Collapse
+                                                    </label>
+                                                    <input id='settings-popout-feature-collapse'
+                                                        name='settings-input-popout-feature-collapse'
+                                                        type='checkbox'
+                                                        onChange={(event) => this.handleCheckbox(event.target.checked, 'collapse', 'values')}
+                                                        checked={this.props.values.collapse}/>
+                                                </div>
                                                 {/* Fullscreen */}
                                                 <div className='element-ends'>
                                                     <label className='font small'
