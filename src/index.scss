@@ -3074,7 +3074,7 @@ $cursor-selectors: (
 
 .spiral-container {
     height: 3rem;
-    background-color: #A1C5DE;
+    background-color: var(--randColorLight);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -3084,7 +3084,7 @@ $cursor-selectors: (
     width: 0.9rem;
     height: 0.9rem;
     border-radius: 50%;
-    background-color: #1A6EB4;
+    background-color: var(--randColor);
     margin: 0 0.6rem;
 }
 
@@ -3104,13 +3104,43 @@ $cursor-selectors: (
 
 .note-line {
     @extend .font;
+    cursor: pointer;
     display: flex;
     height: 2rem;
     border-bottom: 0.2rem solid #E7E6E2;
     align-items: flex-end;
 
+    &:first-of-type {
+        @extend .bold, .medium;
+    }
+
     &.finished-line {
+        color: var(--randColorLight);
         text-decoration: line-through;
+    }
+}
+
+.note-corner {
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    border-width: 0.5rem;
+    border-style: solid;
+    transition-property: bottom, right, border;
+    transition-duration: 0.4s;
+
+    &:hover {
+        border-width: 2rem;
+    }
+
+    &.corner-left {
+        left: 0;
+        border-color: white white silver silver;
+    }
+
+    &.corner-right {
+        right: 0;
+        border-color: white silver silver white;
     }
 }
 //#endregion

@@ -33,13 +33,12 @@ const dataMenuEnemies = {
 };
 const dataEnemies = {
     slime: {
-        health: 10,
+        health: 5,
         attack: 1,
         defense: 0,
-        speed: 1,
+        speed: 0.5,
     },
 };
-const enemySpawnRate = 5;
 
 export class GameScreen extends Scene {
     constructor() {
@@ -50,7 +49,6 @@ export class GameScreen extends Scene {
         this.boss = null;
         this.debuffs = [];
         this.gameTimer = null;
-        this.enemyMultiplier = 1;
         this.menuTimers = [];
         this.elapsedSeconds = 0;
     };
@@ -83,8 +81,8 @@ export class GameScreen extends Scene {
 
     handleTimer() {
         this.elapsedSeconds++;
-        this.enemyMultiplier = 1 + Math.floor(this.elapsedSeconds / 60);
         this.updateTimerText();
+        this.updateSpawning();
     };
 
     updateTimerText() {
@@ -92,6 +90,25 @@ export class GameScreen extends Scene {
         const seconds = this.elapsedSeconds % 60;
         
         this.textTimer.setText(`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    };
+
+    updateSpawning() {
+        const targetEnemyCount = this.getTargetEnemyCount();
+        const currentEnemyCount = this.enemies.getLength();
+
+        if (currentEnemyCount < targetEnemyCount) {
+            const missing = targetEnemyCount - currentEnemyCount;
+            this.spawnEnemies(Math.min(missing, 10));
+        };
+    };
+
+    getTargetEnemyCount() {
+        const base = 20;
+        const scaling = 1.5;
+
+        return Math.floor(
+            base + this.elapsedSeconds * scaling
+        );
     };
 
     createUI() {
@@ -185,7 +202,6 @@ export class GameScreen extends Scene {
                 this.clearEnemies(this.menuEnemies);
 
                 this.hideMenu();
-                this.spawnEnemies();
 
                 this.elapsedSeconds = 0;
                 this.gameTimer.paused = false;
@@ -196,7 +212,11 @@ export class GameScreen extends Scene {
                 this.resetBoss();
 
                 this.showMenu('home');
-                this.createUIEnemy();
+                this.menuTimers = [
+                    this.time.delayedCall(0   , this.spawnMenuEnemies, [], this),
+                    this.time.delayedCall(1000, this.spawnMenuEnemies, [], this),
+                    this.time.delayedCall(2000, this.spawnMenuEnemies, [], this),
+                ];
 
                 this.player.revive();
                 this.playerAbilities.getChildren().forEach((ability) => {
@@ -217,7 +237,6 @@ export class GameScreen extends Scene {
                 this.resetBoss();
 
                 this.hideMenu();
-                this.spawnEnemies();
 
                 this.elapsedSeconds = 0;
                 this.updateTimerText();
@@ -423,16 +442,13 @@ export class GameScreen extends Scene {
         });
     };
 
-    spawnEnemies() {
+    spawnEnemies(amount) {
         let enemiesKeys = Object.keys(dataEnemies);
-        let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
-        let randomSide = 0;
-        let randomX = 0;
-        let randomY = 0;
-        let totalEnemies = enemySpawnRate * this.enemyMultiplier;
 
-        for(var enemyCount = 0; enemyCount < totalEnemies; enemyCount++) {
-            randomSide = Math.random();
+        for(let enemyCount = 0; enemyCount < amount; enemyCount++) {
+            const randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
+            let randomSide = Math.random();
+            let randomX, randomY;
 
             if (randomSide >= 0.50) {
                 /// Top / Bottom
@@ -456,6 +472,7 @@ export class GameScreen extends Scene {
                 dataEnemies[randomEnemy]?.healthXOffset,
                 this.player
             );
+
             this.enemies.add(enemy);
         };
     };

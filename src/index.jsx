@@ -1048,6 +1048,12 @@ class Widgets extends Component {
                             }
                         }, () => {
                             this.calculateMaxExp();
+
+                            if (this.state.stats.level < 20) {
+                                randomItem();
+                            } else {
+                                randomItem(Math.floor(this.state.stats.level / 10));
+                            };
                         });
                     };
                 });        

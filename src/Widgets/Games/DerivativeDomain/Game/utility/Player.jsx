@@ -206,6 +206,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     revive() {
         this.active = true;
+        this.body.enable = true;
         this.hp.reset();
         this.abilityTimer = this.abilityCooldown;
     };

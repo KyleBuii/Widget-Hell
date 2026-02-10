@@ -68,6 +68,8 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
     ]);
     const [hoveredHoliday, setHoveredHoliday] = useState('');
     const [isNotepad, setIsNotepad] = useState(false);
+    const [cellIndex, setCellIndex] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
 
     const refCells = useRef(cells);
     const refElementCells = useRef([]);
@@ -83,6 +85,30 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
 
     refCells.current = cells;
     refFuturePlans.current = futurePlans;
+
+    const holidaysOffset = 13 * currentPage;
+    const holidaysShown = Math.max(
+        0,
+        Math.min(
+            13,
+            (cells[cellIndex]?.holidays?.length ?? 0) - holidaysOffset
+        )
+    );
+    const plansOffset = Math.max(
+        0,
+        13 * currentPage - (cells[cellIndex]?.holidays?.length ?? 0)
+    );
+    const plansShown = Math.max(
+        0,
+        Math.min(
+            13 - holidaysShown,
+            (cells[cellIndex]?.plans?.length ?? 0) - plansOffset
+        )
+    );
+    const fillerCount = Math.max(
+        0,
+        13 - holidaysShown - plansShown
+    );
 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
@@ -135,17 +161,20 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
         const daysInPrevMonth = new Date(year, monthIndex, 0).getDate();
 
         const prevDays = Array.from({ length: firstDay }, (_, i) => ({
+            month: monthLabels[monthIndex - 1],
             day: daysInPrevMonth - firstDay + i + 1,
             classes: 'dimmed',
         }));
 
         const currentDays = Array.from({ length: daysInMonth }, (_, i) => ({
+            month: monthLabels[monthIndex],
             day: i + 1,
         }));
 
         const nextDays = Array.from(
             { length: 42 - (firstDay + daysInMonth) },
             (_, i) => ({
+                month: monthLabels[monthIndex + 1],
                 day: i + 1,
                 classes: 'dimmed',
             })
@@ -432,19 +461,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
             plan.classList.remove('holding');
             plan.removeEventListener('animationend', onAnimationEnd);
             refIsHolding.current = true;
-
-            const newCells = [...cells];
-            const selectedCell = newCells[cellIndex];
-            const isCompleted = selectedCell.plans[planIndex].completed;
-            selectedCell.plans[planIndex].completed = !isCompleted;
-
-            if (isCompleted) {
-                selectedCell.plans.unshift(selectedCell.plans.splice(planIndex, 1)[0]);
-            } else {   
-                selectedCell.plans.push(selectedCell.plans.splice(planIndex, 1)[0]);
-            };
-
-            setCells(newCells);
+            markPlanCompleted(cellIndex, planIndex);
         };
 
         if (isPressing) {
@@ -454,6 +471,21 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
             plan.classList.remove('holding');
             plan.removeEventListener('animationend', onAnimationEnd);
         };
+    };
+
+    const markPlanCompleted = (cellIndex, planIndex) => {
+        const newCells = [...cells];
+        const selectedCell = newCells[cellIndex];
+        const isCompleted = selectedCell.plans[planIndex].completed;
+        selectedCell.plans[planIndex].completed = !isCompleted;
+
+        if (isCompleted) {
+            selectedCell.plans.unshift(selectedCell.plans.splice(planIndex, 1)[0]);
+        } else {
+            selectedCell.plans.push(selectedCell.plans.splice(planIndex, 1)[0]);
+        };
+
+        setCells(newCells);
     };
 
     const handleButtonFuturePlan = (event) => {
@@ -610,6 +642,32 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
         }, 100);
     };
 
+    const toggleNotepad = (event, index) => {
+        event.stopPropagation();
+        setIsNotepad(!isNotepad);
+
+        if (!index) return;
+
+        setCellIndex(index);
+    };
+
+    const handlePagnation = (direction) => {
+        const currentCell = cells[cellIndex];
+        const totalItems = (currentCell.holidays?.length ?? 0) + (currentCell.plans?.length ?? 0);
+        const maxPage = Math.ceil(totalItems / 13) - 1;
+        let calculatePage = currentPage;
+
+        if (maxPage <= 0) return;
+
+        if (direction === 'left') {
+            calculatePage = (currentPage <= 0) ? maxPage : currentPage - 1;
+        } else {
+            calculatePage = (currentPage >= maxPage) ? 0 : currentPage + 1;
+        };
+
+        setCurrentPage(calculatePage);
+    };
+
     return (
         <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
@@ -618,7 +676,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                 defaultProps.dragStop('dailyplanner');
                 defaultProps.updatePosition('dailyplanner', 'utility', data.x, data.y);
             }}
-            cancel='button, input, .popout, .calendar-cell, .select-match, .dailyplanner-side-panel, .dailyplanner-side-panel-button'
+            cancel='button, input, .popout, .calendar-cell, .select-match, .dailyplanner-side-panel, .dailyplanner-side-panel-button, .note-line, .note-corner'
             bounds='parent'>
             <section id='dailyplanner-widget'
                 className='widget'
@@ -668,11 +726,37 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                     })}
                                 </div>
                                 <div className='note-lines'>
-                                    {Array.from({ length: 14 }).map((_, i) => {
+                                    <div className='note-line'
+                                        onClick={(event) => toggleNotepad(event)}>{cells[cellIndex].month} {cells[cellIndex].day}</div>
+                                    {cells[cellIndex].holidays?.slice(holidaysOffset, holidaysOffset + holidaysShown).map((holiday, holidayIndex) => {
                                         return <div className='note-line'
-                                            key={`notepad line ${i}`}>Test</div>
+                                            key={`notepad-line-holiday-${holidaysOffset + holidayIndex}`}>
+                                            {holiday}
+                                        </div>
+                                    })}
+                                    {cells[cellIndex].plans?.slice(plansOffset, plansOffset + plansShown).map((plan, planIndex) => {
+                                        const realIndex = plansOffset + planIndex;
+                                        const lineID = `note-line-${realIndex}`;
+
+                                        return <div className={`note-line ${plan.completed && 'finished-line'}`}
+                                            key={`notepad-line-plan-${realIndex}`}>
+                                            <input id={lineID}
+                                                type='checkbox'
+                                                onChange={() => markPlanCompleted(cellIndex, realIndex)}
+                                                checked={plan.completed}/>
+                                            <label htmlFor={lineID}>{plan.abbr}</label>
+                                        </div>
+                                    })}
+                                    {Array.from({ length: fillerCount }).map((_, i) => {
+                                        return <div className='note-line'
+                                            key={`notepad line filler ${i}`}>
+                                        </div>
                                     })}
                                 </div>
+                                <div className='note-corner corner-left'
+                                    onClick={() => handlePagnation('left')}></div>
+                                <div className='note-corner corner-right'
+                                    onClick={() => handlePagnation('right')}></div>
                             </div>
                         </section>
                         : <div className='flex-center row'
@@ -691,10 +775,11 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                         onKeyDown={(event) => handleCellKeyDown(event, cellIndex)}
                                         key={`cell ${cellIndex}`}
                                         tabIndex={0}>
-                                        <span>{cell.day}</span>
+                                        <span onClick={(event) => toggleNotepad(event, cellIndex)}>{cell.day}</span>
                                         {((currentDay === cell.day) && (!cell?.classes))
                                             && <span className='text-tag'
-                                                style={{ position: 'absolute', right: 0 }}>Today
+                                                style={{ position: 'absolute', right: 0 }}>
+                                                Today
                                             </span>}
                                         <div className='dailyplanner-plans'
                                             style={{ margin: '0.3rem' }}>
