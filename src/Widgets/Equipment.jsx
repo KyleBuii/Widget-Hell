@@ -50,8 +50,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
         dataLoaded.then(() => {
             items = getData('items');
 
-            let itemSlot;
             /// Fill equipment slots with image of equipped item
+            let itemSlot;
             for (let i in equipment) {
                 if (equipment[i].name !== '') {
                     /// Equipped items with no left and right
@@ -235,8 +235,14 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
             let newStats = {};
 
             for (let i in itemStats) {
-                newStats[itemStats[i]] = stats[itemStats[i]] - item.stats[itemStats[i]];
+                let currentStat = item.stats[itemStats[i]];
+
+                newStats[itemStats[i]] = [
+                    stats[itemStats[i]][0],
+                    stats[itemStats[i]][1] - currentStat
+                ];
             };
+
 
             updateGameValue('stats', newStats);
         };
@@ -540,47 +546,47 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                     <tbody>
                                         <tr>
                                             <td>Health:</td>
-                                            <td>{stats.health}</td>
+                                            <td>{stats.health[0] + stats.health[1]} {(stats.health[1] !== 0) && `+${stats.health[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Mana:</td>
-                                            <td>{stats.mana}</td>
+                                            <td>{stats.mana[0] + stats.mana[1]} {(stats.mana[1] !== 0) && `+${stats.mana[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Attack:</td>
-                                            <td>{stats.attack}</td>
+                                            <td>{stats.attack[0] + stats.attack[1]} {(stats.attack[1] !== 0) && `+${stats.attack[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Defense:</td>
-                                            <td>{stats.defense}</td>
+                                            <td>{stats.defense[0] + stats.defense[1]} {(stats.defense[1] !== 0) && `+${stats.defense[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Strength:</td>
-                                            <td>{stats.strength}</td>
+                                            <td>{stats.strength[0] + stats.strength[1]} {(stats.strength[1] !== 0) && `+${stats.strength[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Agility:</td>
-                                            <td>{stats.agility}</td>
+                                            <td>{stats.agility[0] + stats.agility[1]} {(stats.agility[1] !== 0) && `+${stats.agility[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Vitality:</td>
-                                            <td>{stats.vitality}</td>
+                                            <td>{stats.vitality[0] + stats.vitality[1]} {(stats.vitality[1] !== 0) && `+${stats.vitality[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Resilience:</td>
-                                            <td>{stats.resilience}</td>
+                                            <td>{stats.resilience[0] + stats.resilience[1]} {(stats.resilience[1] !== 0) && `+${stats.resilience[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Intelligence:</td>
-                                            <td>{stats.intelligence}</td>
+                                            <td>{stats.intelligence[0] + stats.intelligence[1]} {(stats.intelligence[1] !== 0) && `+${stats.intelligence[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Dexterity:</td>
-                                            <td>{stats.dexterity}</td>
+                                            <td>{stats.dexterity[0] + stats.dexterity[1]} {(stats.dexterity[1] !== 0) && `+${stats.dexterity[1]}`}</td>
                                         </tr>
                                         <tr>
                                             <td>Luck:</td>
-                                            <td>{stats.luck}</td>
+                                            <td>{stats.luck[0] + stats.luck[1]} {(stats.luck[1] !== 0) && `+${stats.luck[1]}`}</td>
                                         </tr>
                                     </tbody>
                                 </table>

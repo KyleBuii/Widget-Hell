@@ -276,17 +276,17 @@ class Widgets extends Component {
                 level: 1,
                 exp: 0,
                 maxExp: 0,
-                health: 1,
-                mana: 1,
-                attack: 1,
-                defense: 1,
-                strength: 1,
-                agility: 1,
-                vitality: 1,
-                resilience: 1,
-                intelligence: 1,
-                dexterity: 1,
-                luck: 1
+                health       : [1, 0],
+                mana         : [1, 0],
+                attack       : [1, 0],
+                defense      : [1, 0],
+                strength     : [1, 0],
+                agility      : [1, 0],
+                vitality     : [1, 0],
+                resilience   : [1, 0],
+                intelligence : [1, 0],
+                dexterity    : [1, 0],
+                luck         : [1, 0]
             },
             abilities: [],
         };
@@ -958,13 +958,15 @@ class Widgets extends Component {
 
     equipItem = (event) => {
         const itemData = {
-            'name': event.detail.name,
-            'rarity': event.detail.rarity
+            name: event.detail.name,
+            rarity: event.detail.rarity
         };
         let newEquipment;
+
         if (event.detail.side) {
-            if (this.state.equipment[event.detail.slot][event.detail.side].name !== event.detail.name
-                && this.state.equipment[event.detail.slot][event.detail.side].name === '') {
+            if (this.state.equipment[event.detail.slot][event.detail.side].name === event.detail.name) return;
+
+            if (this.state.equipment[event.detail.slot][event.detail.side].name === '') {
                 newEquipment = {
                     ...this.state.equipment,
                     [event.detail.slot]: {
@@ -975,43 +977,86 @@ class Widgets extends Component {
                     }
                 };
                 this.updateGameValue('equipment', newEquipment);
+
                 let item = fetchedData.items[itemData.rarity][itemData.name];
                 if (item.type === 'stat' || item.type === 'both') {
                     let itemStats = Object.keys(item.stats);
                     let newStats = {};
+
                     for (let i in itemStats) {
-                        newStats[itemStats[i]] = item.stats[itemStats[i]] + this.state.stats[itemStats[i]];
+                        let currentStat = item.stats[itemStats[i]];
+
+                        newStats[itemStats[i]] = [
+                            this.state.stats[itemStats[i]][0],
+                            this.state.stats[itemStats[i]][1] + currentStat
+                        ];
                     };
+
                     this.updateGameValue('stats', newStats);
                 };
+
                 if (item.type === 'ability' || item.type === 'both') {
                     let newAbilities = [...this.state.abilities, item.information];
                     this.updateGameValue('abilities', newAbilities);
                 };
             };
         } else {
-            if (this.state.equipment[event.detail.slot].name !== event.detail.name
-                && this.state.equipment[event.detail.slot].name === '') {
-                newEquipment = {
-                    ...this.state.equipment,
-                    [event.detail.slot]: {
-                        ...itemData
-                    }
-                };
-                this.updateGameValue('equipment', newEquipment);
-                let item = fetchedData.items[itemData.rarity][itemData.name];
-                if (item.type === 'stat' || item.type === 'both') {
-                    let itemStats = Object.keys(item.stats);
-                    let newStats = {};
-                    for (let i in itemStats) {
-                        newStats[itemStats[i]] = item.stats[itemStats[i]] + this.state.stats[itemStats[i]];
+            if (this.state.equipment[event.detail.slot].name === event.detail.name) return;
+
+            newEquipment = {
+                ...this.state.equipment,
+                [event.detail.slot]: {
+                    ...itemData
+                }
+            };
+            this.updateGameValue('equipment', newEquipment);
+
+            const item = fetchedData.items[itemData.rarity][itemData.name];
+            if (item.type === 'stat' || item.type === 'both') {
+                const itemStats = Object.keys(item.stats);
+                let newStats = {};
+
+                if (this.state.equipment[event.detail.slot].name !== '') {
+                    const stateItem = this.state.equipment[event.detail.slot];
+                    const oldItem = fetchedData.items[stateItem.rarity][stateItem.name];
+                    const oldItemStats = Object.keys(oldItem.stats);
+
+                    for (let i in oldItemStats) {
+                        let currentStat = oldItem.stats[oldItemStats[i]];
+
+                        newStats[oldItemStats[i]] = [
+                            this.state.stats[oldItemStats[i]][0],
+                            this.state.stats[oldItemStats[i]][1] - currentStat
+                        ];
                     };
-                    this.updateGameValue('stats', newStats);
                 };
-                if (item.type === 'ability' || item.type === 'both') {
-                    let newAbilities = [...this.state.abilities, item.information];
-                    this.updateGameValue('abilities', newAbilities);
+
+                for (let i in itemStats) {
+                    let currentStat = item.stats[itemStats[i]];
+
+                    newStats[itemStats[i]] = [
+                        this.state.stats[itemStats[i]][0],
+                        this.state.stats[itemStats[i]][1] + currentStat
+                    ];
                 };
+
+                this.updateGameValue('stats', newStats);
+            };
+
+            if (item.type === 'ability' || item.type === 'both') {
+                let newAbilities = [...this.state.abilities, item.information];
+
+                if (this.state.equipment[event.detail.slot].name !== '') {
+                    const stateItem = this.state.equipment[event.detail.slot];
+                    const oldItem = fetchedData.items[stateItem.rarity][stateItem.name];
+                    const oldItemIndex = newAbilities.indexOf(oldItem.information);
+
+                    if (oldItemIndex === -1) return;
+
+                    newAbilities.splice(oldItemIndex, 1);
+                };
+
+                this.updateGameValue('abilities', newAbilities);
             };
         };
     };
@@ -1037,14 +1082,11 @@ class Widgets extends Component {
                 }, () => {
                     if (this.state.stats.exp >= this.state.stats.maxExp) {
                         let remainderExp = Math.abs(this.state.stats.maxExp - this.state.stats.exp);
-                        let allStats = Object.keys(this.state.stats).slice(3);
-                        let randomStat = allStats[Math.floor(Math.random() * allStats.length)];
                         this.setState({
                             stats: {
                                 ...this.state.stats,
                                 level: this.state.stats.level + 1,
-                                exp: remainderExp,
-                                [randomStat]: this.state.stats[randomStat] + 1
+                                exp: remainderExp
                             }
                         }, () => {
                             this.calculateMaxExp();

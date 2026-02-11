@@ -3110,6 +3110,12 @@ $cursor-selectors: (
     border-bottom: 0.2rem solid #E7E6E2;
     align-items: flex-end;
 
+    label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     &:first-of-type {
         @extend .bold, .medium;
     }

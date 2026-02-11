@@ -744,7 +744,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                                 type='checkbox'
                                                 onChange={() => markPlanCompleted(cellIndex, realIndex)}
                                                 checked={plan.completed}/>
-                                            <label htmlFor={lineID}>{plan.abbr}</label>
+                                            <label htmlFor={lineID}>{plan.plan}</label>
                                         </div>
                                     })}
                                     {Array.from({ length: fillerCount }).map((_, i) => {
