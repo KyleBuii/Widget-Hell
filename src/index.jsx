@@ -288,6 +288,7 @@ class Widgets extends Component {
                 dexterity    : [1, 0],
                 luck         : [1, 0]
             },
+            statPoints: 0,
             abilities: [],
         };
     };
@@ -1364,6 +1365,7 @@ class Widgets extends Component {
         localStorage.setItem('inventory', JSON.stringify(this.state.inventory));
         localStorage.setItem('equipment', JSON.stringify(this.state.equipment));
         localStorage.setItem('stats', JSON.stringify(this.state.stats));
+        localStorage.setItem('statpoints', this.state.statPoints);
         localStorage.setItem('abilities', JSON.stringify(this.state.abilities));
     };
 
@@ -1614,11 +1616,23 @@ class Widgets extends Component {
             });
         };
         if (localStorage.getItem('stats') !== null) {
-            let dataLocalStorageStats = JSON.parse(localStorage.getItem('stats'));
+            const dataLocalStorageStats = JSON.parse(localStorage.getItem('stats'));
+
+            if (typeof dataLocalStorageStats.health !== 'object') return;
+            
+            const localStorageStatPoints = localStorage.getItem('statpoints');
+            let dataStatPoints = 0;
+            if (localStorageStatPoints !== null) {
+                dataStatPoints = JSON.parse(localStorageStatPoints);
+            } else {
+                dataStatPoints = dataLocalStorageStats.level;
+            };
+
             this.setState({
                 stats: {
                     ...dataLocalStorageStats
-                }
+                },
+                statPoints: dataStatPoints
             }, () => {
                 if (this.state.stats.maxExp === 0) {
                     this.calculateMaxExp();

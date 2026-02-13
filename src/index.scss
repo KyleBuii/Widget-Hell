@@ -7248,12 +7248,45 @@ $cursor-selectors: (
         background-color: var(--randColorLight);
         color: white;
         border-radius: 10px 10px 0px 0px;
-        transition-property: top visibility;
+        transition-property: top, visibility;
         transition-duration: 0.5s;
         
 	    &.musicplayer-playlist-length-show {
             visibility: visible;
             top: 8.2em;
+        }
+    }
+
+    .musicplayer-knife {
+        cursor: pointer;
+        visibility: hidden;
+        z-index: -1;
+        position: absolute;
+        right: 1rem;
+        bottom: 0rem;
+        background: none;
+        border: none;
+        transform:
+            translateX(9.2em)
+            rotate(-150deg);
+        transition-property: right, bottom, visibility, filter;
+        transition-duration: 0.5s;
+
+        &.musicplayer-knife-show {
+            visibility: visible;
+            right: 0rem;
+            bottom: 5rem;
+        }
+
+        &.musicplayer-knife-active {
+            filter:
+                drop-shadow(0 0 0.3rem white)
+                drop-shadow(0 0 0.8rem #65c9e3)
+                drop-shadow(0 0 1.5rem #3baed7);
+                
+            &.musicplayer-knife-active-animation {
+                animation: knifeShine 0.5s;
+            }
         }
     }
 
@@ -8711,6 +8744,39 @@ $cursor-selectors: (
   from { rotate: 0deg;        }
   to   { rotate: -3600000deg; }
 }
+
+@keyframes knifeShine {
+    0% {
+        filter:
+            drop-shadow(0 0 0.3rem white)
+            drop-shadow(0 0 0.8rem #65c9e3)
+            drop-shadow(0 0 1.5rem #3baed7);
+    }
+    15% {
+        filter:
+            drop-shadow(0 0 0.05rem white)
+            drop-shadow(0 0 0.2rem #65c9e3)
+            drop-shadow(0 0 0.4rem #3baed7);
+    }
+    22% {
+        filter:
+            drop-shadow(0 0 0.1rem white)
+            drop-shadow(0 0 0.3rem #65c9e3)
+            drop-shadow(0 0 0.6rem #3baed7);
+    }
+    35% {
+        filter:
+            drop-shadow(0 0 0.8rem white)
+            drop-shadow(0 0 2rem #65c9e3)
+            drop-shadow(0 0 3rem #3baed7);
+    }
+    100% {
+        filter:
+            drop-shadow(0 0 0.3rem white)
+            drop-shadow(0 0 0.8rem #65c9e3)
+            drop-shadow(0 0 1.5rem #3baed7);
+    }
+}
 //#endregion
 
 
@@ -8814,6 +8880,7 @@ input:-webkit-autofill:active {
             opacity: 1;
         }
     }
+
     #musicplayer-widget {
         #musicplayer-controls-expanded {
             transform: translateY(-10%);
@@ -8863,7 +8930,17 @@ input:-webkit-autofill:active {
             right: 10.75em;
             
 	        &.musicplayer-playlist-length-show {
-                top: -6.8em;
+                top: -6.7em;
+            }
+        }
+
+        .musicplayer-knife {
+            right: 17.7rem;
+            bottom: 15rem;
+
+            &.musicplayer-knife-show {
+                right: 16.7rem;
+                bottom: 20rem;
             }
         }
 

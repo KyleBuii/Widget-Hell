@@ -138,12 +138,16 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
                         <div id='iceberg-view-item-popout'
                             className='popout'>
                             <div className={`popout-animation iceberg-view-item-popout-animation ${classStack}`}>
-                                {(!/\s|undefined/.test(data.image))
-                                    && <img src={`/resources/iceberg/${data.image}`}
-                                        alt={title}
-                                        draggable={false}
-                                        loading='lazy'
-                                        decoding='async'/>}
+                                {(data.image)
+                                    && data.image.map((item, itemIndex) => {
+                                        return <img src={`/resources/iceberg/${item}`}
+                                            alt={title}
+                                            draggable={false}
+                                            loading='lazy'
+                                            decoding='async'
+                                            key={item}/>
+                                    })
+                                }
                                 <span className='font bold large'>{title}</span>
                                 {(data.information)
                                     && <ul className='font'>
@@ -152,14 +156,17 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
                                                 {item}
                                             </li>
                                         })}
-                                    </ul>}
+                                    </ul>
+                                }
                                 {(data.video)
                                     && data.video.map((item, itemIndex) => {
                                         return <div key={`video ${itemIndex}`}
                                             style={{width: '32rem'}}>
                                             <ReactPlayer url={item}
                                                 width={'100%'}/>
-                                        </div>})}
+                                        </div>
+                                    })
+                                }
                                 <div className='iceberg-sources'>
                                     {Object.entries(data.source).map(([sourceName, sourceLink], sourceIndex) => {
                                         return sourceLink

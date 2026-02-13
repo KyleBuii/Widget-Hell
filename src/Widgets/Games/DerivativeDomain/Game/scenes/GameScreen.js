@@ -541,23 +541,26 @@ export class GameScreen extends Scene {
     };
 
     setData(data) {
+        const totalHealth = data.stats.health[0] + data.stats.health[1];
         this.player.hp = new HealthBar(
             this,
-            (data.stats.health < 10)
+            (totalHealth < 10)
                 ? 1
                 : Math.floor(data.stats.health / 10),
             10, 11
         );
-        this.player.mana = (data.stats.mana < 10) ? 1 : Math.floor(data.stats.mana / 10);
-        this.player.atk = data.stats.attack;
-        this.player.def = data.stats.defense;
-        this.player.str = data.stats.strength;
-        this.player.agi = data.stats.agility;
-        this.player.vit = data.stats.vitality;
-        this.player.res = data.stats.resilience;
-        this.player.int = data.stats.intelligence;
-        this.player.dex = data.stats.dexterity;
-        this.player.lck = data.stats.luck;
+
+        const totalMana = data.stats.mana[0] + data.stats.mana[1];
+        this.player.mana = (totalMana < 10) ? 1 : Math.floor(totalMana / 10);
+        this.player.atk = data.stats.attack[0] + data.stats.attack[1];
+        this.player.def = data.stats.defense[0] + data.stats.defense[1];
+        this.player.str = data.stats.strength[0] + data.stats.strength[1];
+        this.player.agi = data.stats.agility[0] + data.stats.agility[1];
+        this.player.vit = data.stats.vitality[0] + data.stats.vitality[1];
+        this.player.res = data.stats.resilience[0] + data.stats.resilience[1];
+        this.player.int = data.stats.intelligence[0] + data.stats.intelligence[1];
+        this.player.dex = data.stats.dexterity[0] + data.stats.dexterity[1];
+        this.player.lck = data.stats.luck[0] + data.stats.luck[1];
         this.player.weapons.push(
             { name: "DEFAULT",
                 danmakuConfig: {

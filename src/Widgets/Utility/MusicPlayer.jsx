@@ -1,4 +1,4 @@
-import React, { Component, memo } from 'react';
+import React, { Component, createRef, memo } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -33,6 +33,7 @@ class WidgetMusicPlayer extends Component {
         this.ref = player => {
             this.player = player;
         };
+        this.refElementKnife = createRef(null);
         
         this.state = {
             music: [],
@@ -93,6 +94,7 @@ class WidgetMusicPlayer extends Component {
                     seconds: 0,
                 },
             },
+            isKnifeActive: false,
         };
 
         this.animateOnce = false;
@@ -395,6 +397,7 @@ class WidgetMusicPlayer extends Component {
                     const elementPlaylist = document.getElementById('musicplayer-playlist');
                     if (elementPlaylistLength.classList.contains('musicplayer-playlist-length-show')) {
                         elementPlaylistLength.classList.toggle('musicplayer-playlist-length-show');
+                        this.refElementKnife.current.classList.toggle('musicplayer-knife-show');
                         timeoutPlaylistPanel = setTimeout(() => {
                             elementPlaylist.classList.toggle('musicplayer-playlist-show');
                             timeoutPlaylistPanel = undefined;
@@ -403,6 +406,7 @@ class WidgetMusicPlayer extends Component {
                         elementPlaylist.classList.toggle('musicplayer-playlist-show');
                         timeoutPlaylistPanel = setTimeout(() => {
                             elementPlaylistLength.classList.toggle('musicplayer-playlist-length-show');
+                            this.refElementKnife.current.classList.toggle('musicplayer-knife-show');
                             timeoutPlaylistPanel = undefined;
                         }, 500);
                     };
@@ -507,12 +511,40 @@ class WidgetMusicPlayer extends Component {
     };
 
     handlePlaylist(index, element) {
+        if (this.state.isKnifeActive) {
+            this.refElementKnife.current.classList.remove('musicplayer-knife-active-animation');
+            window.requestAnimationFrame(() => {
+                this.refElementKnife.current.classList.add('musicplayer-knife-active-animation');
+            });
+
+            const removeUrl = [...this.state.urls];
+            removeUrl.splice(index, 1);
+            this.setState({
+                urls: removeUrl
+            });
+
+            if (removeUrl.length === 0) {
+                this.clearMusic();
+                return;
+            };
+
+            if (element.target.classList.contains('musicplayer-playlist-active')) {
+                this.setState({}, () => {
+                    this.loadMusic();
+                });
+            };
+            return;
+        };
+
         if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+
         this.loadMusic(index);
+
         if (activePlaylistItem !== -1) {
             activePlaylistItem.classList.remove('musicplayer-playlist-active');
         };
         activePlaylistItem = element.target;
+
         element.target.classList.add('musicplayer-playlist-active');
     };
 
@@ -898,6 +930,14 @@ class WidgetMusicPlayer extends Component {
         };
     };
 
+    handleKnifeButton() {
+        this.refElementKnife.current.classList.remove('musicplayer-knife-active-animation');
+        this.refElementKnife.current.classList.toggle('musicplayer-knife-active');
+        this.setState((prev) => ({
+            isKnifeActive: !prev.isKnifeActive
+        }));
+    };
+
     storeData() {
         if (localStorage.getItem('widgets') !== null) {
             if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
@@ -1271,6 +1311,15 @@ class WidgetMusicPlayer extends Component {
                                     </section>
                                 })}
                             </SimpleBar>
+                            <button ref={this.refElementKnife}
+                                className='musicplayer-knife'
+                                onClick={() => this.handleKnifeButton()}>
+                                <img src='/resources/musicplayer/knife.webp'
+                                    alt='music-player-knife'
+                                    decoding='async'
+                                    loading='lazy'
+                                    draggable={false}/>
+                            </button>
                         </div>
                         {/* Statistic Popout */}
                         <section id='musicplayer-statistic'
@@ -1285,12 +1334,15 @@ class WidgetMusicPlayer extends Component {
                                 <span>Played: {formatNumber(this.state.statistic.played, 2)}</span>
                                 <span>Time: {this.formatTime()}</span>
                                 <ul>
-                                    {this.state.urls.map((url, index) => {
-                                        return <li key={`${url.name} ${index}`}>
-                                            <span>{index + 1}. {url.name}</span>
-                                            <span>{formatNumber((url.timePlayed / url.duration), 2)}</span>
-                                        </li>
-                                    })}
+                                    {this.state.urls
+                                        .sort((a, b) => (b.timePlayed / b.duration) - (a.timePlayed / a.duration))
+                                        .map((url, index) => {
+                                            return <li key={url.name}>
+                                                <span>{index + 1}. {url.name}</span>
+                                                <span>{formatNumber((url.timePlayed / url.duration), 2)}</span>
+                                            </li>
+                                        })
+                                    }
                                 </ul>
                             </div>
                         </section>

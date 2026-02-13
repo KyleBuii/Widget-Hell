@@ -2,49 +2,65 @@
     "scary signs": [
 		{ "_comment": "Level 1 - Common Warnings",
             "Prevent Your Death!": {
-                "image": "/scary-signs/prevent-your-death.webp",
+                "image": [
+					"/scary-signs/prevent-your-death.webp"
+				],
                 "source": {
                     "Eagle's Nest Cave": "https://maps.app.goo.gl/5kcktyHNxYZSXqBh9"
                 }
             },
             "Percy Priest Lake": {
-                "image": "/scary-signs/percy-priest-lake.webp",
+                "image": [
+					"/scary-signs/percy-priest-lake.webp"
+				],
                 "source": {
                     "Percy Priest Lake": "https://maps.app.goo.gl/YRshA3vF7ahoZ6fV9"
                 }
             },
             "White Mountain Trail Sign": {
-                "image": "/scary-signs/white-mountain-trail-sign.webp",
+                "image": [
+                    "/scary-signs/white-mountain-trail-sign.webp"
+                ],
                 "source": {
                     "White Mountain National Forest": "https://maps.app.goo.gl/YLzGK99dPko4BoBi9"
                 }
             },
             "Fatal Drop": {
-                "image": "/scary-signs/fatal-drop.webp",
+                "image": [
+                    "/scary-signs/fatal-drop.webp"
+                ],
                 "source": {
                     "Plaza": ""
                 }
             },
             "Quayside": {
-                "image": "/scary-signs/quayside.webp",
+                "image": [
+                    "/scary-signs/quayside.webp"
+                ],
                 "source": {
                     "Opatija": "https://maps.app.goo.gl/nZjTxdUB8Zd25hve6"
                 }
             },
             "Suicide Strip": {
-                "image": "/scary-signs/suicide-strip.webp",
+                "image": [
+                    "/scary-signs/suicide-strip.webp"
+                ],
                 "source": {
                     "US-58": "https://maps.app.goo.gl/UH5MDBfN914Yniky7"
                 }
             },
             "Suicide Cords": {
-                "image": "/scary-signs/suicide-cords.webp",
+                "image": [
+                    "/scary-signs/suicide-cords.webp"
+                ],
                 "source": {
                     "Bamboo Blinds": ""
                 }
             },
             "Beach Umbrella": {
-                "image": "/scary-signs/beach-umbrella.webp",
+                "image": [
+                    "/scary-signs/beach-umbrella.webp"
+                ],
                 "source": {
                     "Ocean City": "https://maps.app.goo.gl/MrEF4S24tb2NaKs6A"
                 }
@@ -52,25 +68,33 @@
         },
 		{ "_comment": "Level 2 - Unusual Warnings",
             "Emergency Siren": {
-                "image": "/scary-signs/emergency-siren.webp",
+                "image": [
+                    "/scary-signs/emergency-siren.webp"
+                ],
                 "source": {
                     "Salem Nuclear Power Plant": "https://maps.app.goo.gl/dBpeP35QQNyjWNQ57"
                 }
             },
             "Do Not Ski Alone": {
-                "image": "/scary-signs/do-not-ski-alone.webp",
+                "image": [
+                    "/scary-signs/do-not-ski-alone.webp"
+                ],
                 "source": {
                     "Killington Resort": "https://maps.app.goo.gl/CFEHqFKqJpQUse3i7"
                 }
             },
             "Live Bombs": {
-                "image": "/scary-signs/live-bombs.webp",
+                "image": [
+                    "/scary-signs/live-bombs.webp"
+                ],
                 "source": {
                     "West Virgina Hiking Trails": ""
                 }
             },
             "Behind You": {
-                "image": "/scary-signs/behind-you.webp",
+                "image": [
+                    "/scary-signs/behind-you.webp"
+                ],
                 "source": {
                     "Parking Garage - Vancouver": ""
                 }
@@ -78,129 +102,169 @@
         },
 		{ "_comment": "Level 3 – Dangerous Environments",
             "Lava Falls": {
-                "image": "/scary-signs/lava-falls.webp",
+                "image": [
+                    "/scary-signs/lava-falls.webp"
+                ],
                 "source": {
                     "Grand Canyon National Park": "https://maps.app.goo.gl/EeVewgKS6WPKJwaW7"
                 }
             },
             "The Drowning Machine": {
-                "image": "/scary-signs/the-drowning-machine.webp",
+                "image": [
+                    "/scary-signs/the-drowning-machine.webp"
+                ],
                 "source": {
                     "Low-head Dams": ""
                 }
             },
             "Stinging Tree": {
-                "image": "/scary-signs/stinging-tree.webp",
+                "image": [
+                    "/scary-signs/stinging-tree.webp"
+                ],
                 "source": {
                     "North Queensland": "https://maps.app.goo.gl/pQo6yDdYoHRx8Do37"
                 }
             },
             "Lava Bench": {
-                "image": "/scary-signs/lava-bench.webp",
+                "image": [
+                    "/scary-signs/lava-bench.webp"
+                ],
                 "source": {
                     "Island of Hawai'i": "https://maps.app.goo.gl/cK8zA6biVSyQJCFj6"
                 }
             },
             "Fire Danger": {
-                "image": "/scary-signs/fire-danger.webp",
+                "image": [
+                    "/scary-signs/fire-danger.webp"
+                ],
                 "source": {
                     "Australia": ""
                 }
             },
             "Natural Toxic Gas": {
-                "image": "/scary-signs/natural-toxic-gas.webp",
+                "image": [
+                    "/scary-signs/natural-toxic-gas.webp"
+                ],
                 "source": {
                     "Mammoth Lakes": "https://maps.app.goo.gl/qHW6KKtDnaA9FvYu6"
                 }
             }
         },
-		{ "_comment": "Level 4 – Cryptic or Ambiguous",
+        { "_comment": "Level 4 – Cryptic or Ambiguous",
             "Wall or Ceiling?": {
-                "image": "/scary-signs/wall-or-ceiling.webp",
+                "image": [
+                    "/scary-signs/wall-or-ceiling.webp"
+                ],
                 "source": {
                     "Hospital": ""
                 }
             },
             "Do Not Dig": {
-                "image": "/scary-signs/do-not-dig.webp",
+                "image": [
+                    "/scary-signs/do-not-dig.webp"
+                ],
                 "source": {
                     "Willow Springs": "https://maps.app.goo.gl/NHjiCWxf7BAKNr5aA"
                 }
             },
             "These Plants Can Kill": {
-                "image": "/scary-signs/these-plants-can-kill.webp",
+                "image": [
+                    "/scary-signs/these-plants-can-kill.webp"
+                ],
                 "source": {
                     "The Alnwick Garden": "https://maps.app.goo.gl/4CVBLfGy11FiE7X28"
                 }
             },
             "Danger of Death": {
-                "image": "/scary-signs/danger-of-death.webp",
+                "image": [
+                    "/scary-signs/danger-of-death.webp"
+                ],
                 "source": {
                     "Substations": ""
                 }
             }
         },
-		{ "_comment": "Level 5 – Absurd / Darkly Humorous",
+        { "_comment": "Level 5 – Absurd / Darkly Humorous",
             "Deadly Manure": {
-                "image": "/scary-signs/deadly-manure.webp",
+                "image": [
+                    "/scary-signs/deadly-manure.webp"
+                ],
                 "source": {
                     "Treatment Stations": ""
                 }
             },
             "Do You Know Where the Bears Are?": {
-                "image": "/scary-signs/do-you-know-where-the-bears-are.webp",
+                "image": [
+                    "/scary-signs/do-you-know-where-the-bears-are.webp"
+                ],
                 "source": {
                     "Yorkshire Wildlife Park": "https://maps.app.goo.gl/4tqGjxoZz6i8A1wW6"
                 }
             },
             "Waving Children": {
-                "image": "/scary-signs/waving-children.webp",
+                "image": [
+                    "/scary-signs/waving-children.webp"
+                ],
                 "source": {
                     "Eden Nature Park": "https://maps.app.goo.gl/4CBcL2zQvJSDVk2R8"
                 }
             },
             "WARNING": {
-                "image": "/scary-signs/WARNING.webp",
+                "image": [
+                    "/scary-signs/WARNING.webp"
+                ],
                 "source": {
                     "": ""
                 }
             }
         },
-		{ "_comment": "Level 6 – Sentient / Interactive",
+        { "_comment": "Level 6 – Sentient / Interactive",
             "NEVER OPEN THIS DOOR": {
-                "image": "/scary-signs/NEVER-OPEN-THIS-DOOR.webp",
+                "image": [
+                    "/scary-signs/NEVER-OPEN-THIS-DOOR.webp"
+                ],
                 "source": {
                     "Fast Foods": ""
                 }
             },
             "Please Don't Kill Us": {
-                "image": "/scary-signs/please-dont-kill-us.webp",
+                "image": [
+                    "/scary-signs/please-dont-kill-us.webp"
+                ],
                 "source": {
                     "Road Work - South Africa": ""
                 }
             },
             "Lurking": {
-                "image": "/scary-signs/lurking.webp",
+                "image": [
+                    "/scary-signs/lurking.webp"
+                ],
                 "source": {
                     "Conquerors March": "https://maps.app.goo.gl/RsPBmLtrSjGf7zob7"
                 }
             }
         },
-		{ "_comment": "Level 7 – Existential / Reality-Breaking",
+        { "_comment": "Level 7 – Existential / Reality-Breaking",
             "Crying is Not an Emergency": {
-                "image": "/scary-signs/crying-is-not-an-emergency.webp",
+                "image": [
+                    "/scary-signs/crying-is-not-an-emergency.webp"
+                ],
                 "source": {
                     "Parks": ""
                 }
             },
             "Border Patrol Button": {
-                "image": "/scary-signs/border-patrol-button.webp",
+                "image": [
+                    "/scary-signs/border-patrol-button.webp"
+                ],
                 "source": {
                     "Mexico Deserts": ""
                 }
             },
             "Fatal Fall": {
-                "image": "/scary-signs/fatal-fall.webp",
+                "image": [
+                    "/scary-signs/fatal-fall.webp"
+                ],
                 "source": {
                     "Fernie": "https://maps.app.goo.gl/WQdBmkaWJwPhB6426"
                 }

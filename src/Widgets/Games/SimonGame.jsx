@@ -240,10 +240,11 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
     };
 
     const calculateHealth = () => {
-        if (gameProps.stats.health < 10) {
+        const totalHealth = gameProps.stats.health[0] + gameProps.stats.health[1];
+        if (totalHealth < 10) {
             return 1;
         } else {
-            return Math.floor(gameProps.stats.health / 10);
+            return Math.floor(totalHealth / 10);
         };
     };
 
