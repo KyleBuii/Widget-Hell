@@ -659,5 +659,109 @@
 				}
 			}
 		}
+	],
+	"natural phenomenon": [
+		{ "_comment": "Normal to Common",
+			"Rainbow": {
+                "image": [
+                    "/natural-phenomenon/rainbow/double-rainbow.webp",
+                    "/natural-phenomenon/rainbow/twinned-rainbow.webp",
+                    "/natural-phenomenon/rainbow/circular-rainbow.webp",
+                    "/natural-phenomenon/rainbow/supernumerary-rainbow.webp",
+                    "/natural-phenomenon/rainbow/reflection-rainbow.webp",
+                    "/natural-phenomenon/rainbow/monochrome-rainbow.webp",
+                    "/natural-phenomenon/rainbow/sleetbow.webp",
+                    "/natural-phenomenon/rainbow/circumhorizontal-arc.webp",
+                    "/natural-phenomenon/rainbow/fogbow.webp",
+                    "/natural-phenomenon/rainbow/moonbow.webp"
+                ],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Rainbow",
+					"Image: Double - Alexis Dworsky": "https://commons.wikimedia.org/wiki/File:Regenbogen_%C3%BCber_dem_Lipno-Stausee.JPG",
+					"Image: Twinned - Willirememberme": "https://commons.wikimedia.org/wiki/File:Alexander%E2%80%99s_band_will_1.jpg",
+					"Image: Circular - Steve Kaufman": "https://commons.wikimedia.org/wiki/File:Circular_rainbow.jpg",
+					"Image: Supernumerary - Johannes Bahrdt": "https://commons.wikimedia.org/wiki/File:Supernumerary-rainbows-jb.jpg",
+					"Image: Reflection - Tlatla at English Wikipedia": "https://commons.wikimedia.org/wiki/File:ReflectionRainbow.jpg",
+					"Image: Monochrome - Astronautilus": "https://commons.wikimedia.org/wiki/File:Monochrome_rainbow.jpg",
+					"Image: Moonbow - Brocken Inaglory": "https://commons.wikimedia.org/wiki/File:Moonbow_at_lower_Yosemite_fall.jpg",
+					"Image: Fogbow - Brocken Inaglory": "https://commons.wikimedia.org/wiki/File:Fogbow_spectre_and_glory_filtered.jpg",
+					"Image: Sleetbow - WxWill": "https://commons.wikimedia.org/wiki/File:Sleetbow.jpeg",
+					"Image: Circumhorizontal - BlueHypercane761": "https://commons.wikimedia.org/wiki/File:A_Double_Rainbow_Halo_on_June_1,_2014,_at_1-57_PM.jpg"
+				},
+				"information": [
+					"Produced when sunlight interacts with suspended water droplets in the atmosphere.",
+					"Forms through a combination of refraction (light bending as it enters a droplet), internal reflection inside the droplet, and dispersion (separation of white light into individual wavelengths).",
+					"Appears as a multicolored circular arc with red on the outer edge and violet on the inner edge in the primary bow.",
+					"Geometrically, a rainbow is a full circle centered at the antisolar point; from ground level, only the upper arc is typically visible.",
+					"The angular radius of a primary rainbow is approximately 42° for red light and 40° for violet light.",
+					"Variations:",
+					"Double Rainbow - Produced when light undergoes two internal reflections within water droplets; the secondary arc forms outside the primary and displays reversed color order.",
+					"Twinned Rainbow - Two primary arcs that split from a shared base, typically caused by droplets of differing sizes; both retain identical color order.",
+					"Full-Circle Rainbow - Visible from elevated viewpoints such as aircraft, revealing the complete circular structure.",
+					"Supernumerary Rainbows - Faint, closely spaced bands inside the primary bow caused by wave interference between light rays traveling slightly different optical paths.",
+					"Reflection Rainbow - Occurs when sunlight reflects off a water surface before entering raindrops, creating additional mirrored arcs above or below the horizon.",
+					"Monochrome Rainbow - Appears near sunrise or sunset when shorter wavelengths (blue and green) are scattered out of direct sunlight, leaving predominantly red tones.",
+					"Sleetbow - Forms similarly to a standard rainbow but occurs when light passes through falling ice pellets instead of liquid droplets.",
+					"Circumhorizontal and Circumzenithal Arcs - Rainbow-like arcs formed by refraction of sunlight through hexagonal ice crystals in cirrus clouds rather than liquid water droplets."
+				]
+			},
+			"Lightning": {
+				"image": [
+					"/natural-phenomenon/lightning/cloud-to-cloud.gif",
+					"/natural-phenomenon/lightning/intra-cloud.webp"
+				],
+				"video": ["https://www.youtube.com/watch?v=rNb46s4Iim0"],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Lightning",
+					"Youtube - MrNousia": "https://www.youtube.com/watch?v=rNb46s4Iim0",
+					"Image: CC - Karthik Easvur": "https://commons.wikimedia.org/wiki/File:Ligtning_new_delhi_view_1.GIF",
+					"Image: IC - Lukas Schmidt": "https://www.flickr.com/photos/elixias/40134760494/"
+				},
+				"information": [
+					"A large-scale electrostatic discharge occurring between regions of differing electrical potential within the atmosphere or between the atmosphere and the ground.",
+					"Most commonly associated with thunderstorms, though it may also occur during volcanic eruptions, dust storms, and intense winter weather systems.",
+					"Develops due to charge separation within cumulonimbus clouds, typically between positively and negatively charged regions.",
+					"When the electric field strength exceeds the dielectric breakdown threshold of air, a rapid discharge occurs, partially or completely neutralizing the charge imbalance.",
+					"Releases substantial energy, typically ranging from approximately 200 megajoules to several gigajoules per strike.",
+					"Heats surrounding air to temperatures near 30,000 °C (54,000 °F), causing explosive expansion and generating a shock wave perceived as thunder.",
+					"Emits electromagnetic radiation across a broad spectrum, including visible light, radio waves, and occasionally X-rays.",
+					"Forms:",
+					"Intra-Cloud (IC) – Occurs within a single thundercloud; the most common form of lightning.",
+					"Cloud-to-Cloud (CC) – Discharge occurring between two separate clouds.",
+					"Cloud-to-Ground (CG) – Discharge between a cloud and the Earth's surface, commonly referred to as a lightning strike."
+				]
+			},
+			"Fog": {
+				"image": [
+					"/natural-phenomenon/fog/ground-fog.webp",
+					"/natural-phenomenon/fog/advection-fog.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Fog",
+					"Image: Ground - Dr. Thomas Liptak": "https://commons.wikimedia.org/wiki/File:Frankfurt,_Friedrich-Ebert-Anlage_in_the_fog.jpg",
+					"Image: Advection - David Edwards": "https://commons.wikimedia.org/wiki/File:Sydney_Harbour_Fog_-_panoramio.jpg"
+				},
+				"information": [
+					"A visible cloud layer in direct contact with the Earth's surface, composed of tiny suspended water droplets or ice crystals.",
+					"Forms when air near the ground cools to its dew point, causing water vapor to condense.",
+					"Reduces horizontal visibility to less than 1 kilometer.",
+					"Commonly develops through nighttime radiative cooling, moist air moving over cooler surfaces, or gentle upslope flow.",
+					"Can significantly impact transportation due to reduced visibility."
+				]
+			},
+			"Dew": {
+				"image": ["/natural-phenomenon/dew/dew.webp"],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Dew",
+					"Image: Dew - Max Ronnersjö": "https://commons.wikimedia.org/wiki/File:Dew_drop.jpg"
+				},
+				"information": [
+					"Liquid water that forms on exposed surfaces through condensation.",
+					"Occurs when surface temperatures fall below the dew point of the surrounding air.",
+					"Most common during clear nights with calm winds that allow efficient radiative cooling.",
+					"Forms directly from atmospheric water vapor rather than from precipitation."
+				]
+			}
+		}
 	]
 }

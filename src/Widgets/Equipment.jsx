@@ -3,8 +3,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
-import SimpleBar from 'simplebar-react';
-import { classStack, dataLoaded, decorationValue, fetchedData, getData } from '../data';
+import { classStack, dataLoaded, decorationValue, getData } from '../data';
 
 //#region Equipment Guide
 /* Stats Guide
@@ -30,6 +29,7 @@ Main Item -  Right Glove - Right Ring  -  Legging   - Left Ring  - Left Glove - 
 const audioItemOpen = new Audio('/resources/audio/switch_006.wav');
 const audioItemClose = new Audio('/resources/audio/switch_007.wav');
 const audioItemUnequip = new Audio('/resources/audio/cloth.wav');
+const allStats = ['health', 'mana', 'attack', 'defense', 'strength', 'agility', 'vitality', 'resilience', 'intelligence', 'dexterity', 'luck'];
 let items = {};
 
 const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
@@ -38,8 +38,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
         abilities: []
     });
 
-    const { updateGameValue } = parentRef;
-    const { abilities, equipment, stats } = parentRef.state;
+    const { updateGameValue, useStatPoint } = parentRef;
+    const { abilities, equipment, stats, statPoints } = parentRef.state;
 
     useEffect(() => {
         audioItemOpen.volume = 0.5;
@@ -259,9 +259,11 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
         } else {
             let abilityCounts = {};
             elementAbilities.innerHTML = '';
+
             abilities.forEach((value) => {
                 abilityCounts[value] = (abilityCounts[value] || 0) + 1;
             });
+
             let abilityKeys = Object.keys(abilityCounts);
             for (let i in abilityKeys) {
                 let abilityRow = document.createElement('tr');
@@ -271,6 +273,10 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                 elementAbilities.appendChild(abilityRow);
             };
         };
+    };
+
+    const handleUseStatPoint = (stat, amount = 1) => {
+        useStatPoint(stat, amount);
     };
     
     return (
@@ -307,7 +313,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                         decoding='async'/>
                     {defaultProps.renderHotbar('equipment', 'utility')}
                     {/* Equipment Container */}
-                    <SimpleBar style={{ maxHeight: '36em' }}
+                    <div className='scrollable'
+                        style={{ maxHeight: '36em' }}
                         role='region'
                         aria-label='Equipment panel'>
                         <div className='flex-center column gap medium-gap'>
@@ -535,67 +542,37 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                 </div>
                                 {/* Stats */}
                                 <table id='equipment-table-stats'
-                                    className='aesthetic-scale scale-table table font'
                                     aria-label='Stats'>
                                     <thead>
                                         <tr>
                                             <th scope='col'>Stat</th>
                                             <th scope='col'>Value</th>
+                                            {(statPoints > 0)
+                                                && <th className='table-no-style'
+                                                    style={{ paddingLeft: '0.35rem' }}
+                                                    scope='col'>{statPoints} SP</th>
+                                            }
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Health:</td>
-                                            <td>{stats.health[0] + stats.health[1]} {(stats.health[1] !== 0) && `+${stats.health[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Mana:</td>
-                                            <td>{stats.mana[0] + stats.mana[1]} {(stats.mana[1] !== 0) && `+${stats.mana[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Attack:</td>
-                                            <td>{stats.attack[0] + stats.attack[1]} {(stats.attack[1] !== 0) && `+${stats.attack[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Defense:</td>
-                                            <td>{stats.defense[0] + stats.defense[1]} {(stats.defense[1] !== 0) && `+${stats.defense[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Strength:</td>
-                                            <td>{stats.strength[0] + stats.strength[1]} {(stats.strength[1] !== 0) && `+${stats.strength[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Agility:</td>
-                                            <td>{stats.agility[0] + stats.agility[1]} {(stats.agility[1] !== 0) && `+${stats.agility[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Vitality:</td>
-                                            <td>{stats.vitality[0] + stats.vitality[1]} {(stats.vitality[1] !== 0) && `+${stats.vitality[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Resilience:</td>
-                                            <td>{stats.resilience[0] + stats.resilience[1]} {(stats.resilience[1] !== 0) && `+${stats.resilience[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Intelligence:</td>
-                                            <td>{stats.intelligence[0] + stats.intelligence[1]} {(stats.intelligence[1] !== 0) && `+${stats.intelligence[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Dexterity:</td>
-                                            <td>{stats.dexterity[0] + stats.dexterity[1]} {(stats.dexterity[1] !== 0) && `+${stats.dexterity[1]}`}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Luck:</td>
-                                            <td>{stats.luck[0] + stats.luck[1]} {(stats.luck[1] !== 0) && `+${stats.luck[1]}`}</td>
-                                        </tr>
+                                        {allStats.map((stat, statIndex) => {
+                                            return <tr key={stat}>
+                                                <td>{stat.replace(/^./, (char) => char.toUpperCase())}:</td>
+                                                <td>{stats[stat][0] + stats[stat][1]} {(stats[stat][1] !== 0) && `+${stats[stat][1]}`}</td>
+                                                {(statPoints > 0)
+                                                    && <td className='table-no-style leave-me-alone'>
+                                                        <button className='button-match inverse'
+                                                            onClick={() => handleUseStatPoint(stat)}>+</button>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
                             {/* Abilities */}
-                            <SimpleBar className='fill-width font'
-                                style={{
-                                    maxHeight: '14.7em'
-                                }}>
+                            <div className='scrollable fill-width font'
+                                style={{ maxHeight: '14.3em' }}>
                                 <table className='table'
                                     aria-label='Abilities'>
                                     <thead>
@@ -605,61 +582,47 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                     </thead>
                                     <tbody id='equipment-abilities'></tbody>
                                 </table>
-                            </SimpleBar>
+                            </div>
                         </div>
-                    </SimpleBar>
+                    </div>
                     {/* View Item Popout */}
                     <div id='equipment-popout-view-item'
-                        className='flex-center column gap font no-highlight'
                         onClick={() => {
                             defaultProps.playAudio(audioItemClose);
                             document.getElementById('equipment-popout-view-item').style.visibility = 'hidden';
                         }}>
-                        <span className='font bold large-medium'>{state.item.name}</span>
-                        <div className='flex-center row gap medium-gap space-nicely space-all'>
+                        <span className='item-name'>{state.item.name}</span>
+                        <div className='flex-center row gap medium-gap'>
                             <img src={items?.[state.item.rarity]?.[state.item.name].image}
                                 alt='viewed inventory item'
                                 loading='lazy'
                                 decoding='async'/>
-                            <SimpleBar style={{
-                                maxHeight: 160,
-                                width: 150
-                            }}>
-                                <table className='flex-center column font small'
-                                    aria-label='Item stats'>
-                                    <tbody>
-                                        <tr>
-                                            <td scope='row'>Rarity:</td>
-                                            <td>{state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</td>
-                                        </tr>
-                                        <tr>
-                                            <td scope='row'>Slot:</td>
-                                            <td>{state.item.slot
-                                                .replace(/^./, (char) => char.toUpperCase())
-                                                .replace(/[0-9]/, '')}</td>
-                                        </tr>
-                                        {(/stat|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
-                                            ? Object.keys(items?.[state.item.rarity]?.[state.item.name].stats)
-                                                .map((value, index) => {
-                                                    return <tr key={`row-stat-${index}`}>
-                                                        <td scope='row'>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
-                                                        <td>
-                                                            {(Math.sign(items?.[state.item.rarity]?.[state.item.name].stats[value]) === -1)
-                                                                ? ''
-                                                                : '+'}
-                                                            {items?.[state.item.rarity]?.[state.item.name].stats[value]}
-                                                        </td>
-                                                    </tr>
-                                                })
-                                            : <></>}
-                                        {(/ability|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
-                                            ? <tr>
-                                                <td colSpan={2}>{items?.[state.item.rarity]?.[state.item.name].information}</td>
-                                            </tr>
-                                            : <></>}
-                                    </tbody>
-                                </table>
-                            </SimpleBar>
+                            <div className='flex-center column align-items-left'>
+                                <span className={`item-rarity item-${state.item.rarity}`}>{state.item.rarity.replace(/^./, (char) => char.toUpperCase())}</span>
+                                <span>{state.item.slot
+                                    .replace(/^./, (char) => char.toUpperCase())
+                                    .replace(/[0-9]/, '')}</span>
+                                <div className='scrollable'
+                                    style={{ height: '5rem' }}>
+                                    {(/stat|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
+                                        ? Object.keys(items?.[state.item.rarity]?.[state.item.name].stats)
+                                            .map((value, index) => {
+                                                return <div key={`row-stat-${index}`}>
+                                                    <span className={value}>
+                                                        {(Math.sign(items?.[state.item.rarity]?.[state.item.name].stats[value]) === -1)
+                                                            ? ''
+                                                            : '+'}
+                                                        {items?.[state.item.rarity]?.[state.item.name].stats[value]}
+                                                    </span>
+                                                    <span className={value}> {value.replace(/^./, (char) => char.toUpperCase())}</span>
+                                                </div>
+                                            })
+                                        : <></>}
+                                    {(/ability|both/.test(items?.[state.item.rarity]?.[state.item.name].type))
+                                        ? <span>{items?.[state.item.rarity]?.[state.item.name].information}</span>
+                                        : <></>}
+                                </div>
+                            </div>
                         </div>
                         <span dangerouslySetInnerHTML={{
                             __html: DOMPurify.sanitize(items?.[state.item.rarity]?.[state.item.name].description)
@@ -672,7 +635,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                 }}>Requirement: {items?.[state.item.rarity]?.[state.item.name].requirement}</span>
                             : <></>}
                         <span className='font micro transparent-normal'>Source: {items?.[state.item.rarity]?.[state.item.name].source}</span>
-                        <button className='button-match space-nicely space-top not-bottom'
+                        <button className='button-match space-nicely space-top not-bottom fill-width'
                             onClick={(event) => unequipItem(event)}>Unequip</button>
                     </div>
                     {(defaultProps.values.authorNames)

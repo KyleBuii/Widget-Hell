@@ -3384,15 +3384,23 @@ $cursor-selectors: (
     transition-property: visibility height;
     transition-duration: 2s;
 
-    td, th {
+    td:not(.table-no-style), th:not(.table-no-style) {
         border: 1px solid #dddddd;
         text-align: left;
         padding: 0.5rem;
     }
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
+    tr:nth-child(odd) {
+        background-color: white;
     }
+
+    tr:nth-child(even) {
+        background-color: rgba(var(--randColorOpacity), 0.15);
+    }
+}
+
+.table-no-style {
+    background-color: white;
 }
 
 .overlay {
@@ -4186,6 +4194,38 @@ $cursor-selectors: (
         max-height: 100vh;
         opacity: 1;
     }
+}
+
+.item-viewer {
+    @extend .flex-center, .column, .gap, .font, .no-highlight;
+    justify-content: flex-start !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16em;
+    background-color: var(--randColorLight);
+    border: 4px solid var(--randColor);
+    padding: 1rem;
+
+    span {
+        text-align: center;
+    }
+
+    img {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+.item-name {
+    @extend .font, .bold, .large-medium;
+    width: 90%;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(var(--randColorOpacity), 0.8);
+}
+
+.item-rarity {
+    font-weight: bold;
 }
 //#endregion
 
@@ -5006,6 +5046,68 @@ $cursor-selectors: (
 
 .gradient-color-yellow, .green-color-yellow::after {
     background: var(--gradient-color-yellow);
+}
+//#endregion
+
+//#region Game colors
+.item-common {
+    color: rgb(148, 148, 148);
+}
+
+.item-rare {
+    color: rgb(4, 107, 189);
+}
+
+.item-exotic {
+    color: rgb(195, 126, 25);
+}
+
+.item-meme {
+    color: rgb(255, 0, 187);
+}
+
+.health {
+    color: red;
+}
+
+.mana {
+    color: blue;
+}
+
+.attack {
+    color: #cb47dd;
+}
+
+.defense {
+    color: #010000;
+}
+
+.strength {
+    color: #ab0000;
+}
+
+.agility {
+    color: #2dd16c;
+}
+
+.vitality {
+    color: #be0011;
+}
+
+.resilience {
+    color: #808080;
+}
+
+.intelligence {
+    color: #337de9;
+}
+
+.dexterity {
+    color: #e86801;
+}
+
+.luck {
+    color: #b5af00;
 }
 //#endregion
 
@@ -6710,9 +6812,6 @@ $cursor-selectors: (
 }
 
 #equipment-widget {
-    max-width: 35.1em;
-    width: 100%;
-
     #equipment-slots-armor, #equipment-slots-consumable {
         button {
             @extend .flex-center;
@@ -6727,95 +6826,77 @@ $cursor-selectors: (
     }
 
     #equipment-popout-view-item {
-        @extend .overlay;
-        @extend .rounded;
-        height: 21.4em;
-        width: 22em;
-        top: 6em;
-        left: 0;
-        transform: none;
-
-        span {
-            text-align: center;
-        }
-
-        img {
-            height: 64px;
-            width: 64px;
-        }
+        @extend .item-viewer;
+        visibility: hidden;
+        top: 20%;
+        left: 6%;
     }
 
     #equipment-slot-and-stat {
         width: 100%;
+    }
 
-        #equipment-table-stats {
-            tbody {
-                tr {
-                    /// Health
-                    &:nth-child(1) {
-                        color: red;
-                    }
+    #equipment-table-stats {
+        @extend .aesthetic-scale, .scale-table, .table, .font;
 
-                    /// Mana
-                    &:nth-child(2) {
-                        color: blue;
-                    }
+        tbody {
+            tr {
+                /// Health
+                &:nth-child(1) {
+                    @extend .health;
+                }
 
-                    /// Attack
-                    &:nth-child(3) {
-                        color: #cb47dd;
-                    }
+                /// Mana
+                &:nth-child(2) {
+                    @extend .mana;
+                }
 
-                    /// Defense
-                    &:nth-child(4) {
-                        color: #010000;
-                    }
+                /// Attack
+                &:nth-child(3) {
+                    @extend .attack;
+                }
 
-                    /// Strength
-                    &:nth-child(5) {
-                        color: #ab0000;
-                    }
+                /// Defense
+                &:nth-child(4) {
+                    @extend .defense;
+                }
 
-                    /// Agility
-                    &:nth-child(6) {
-                        color: #2dd16c;
-                    }
+                /// Strength
+                &:nth-child(5) {
+                    @extend .strength;
+                }
 
-                    /// Vitality
-                    &:nth-child(7) {
-                        color: #be0011;
-                    }
+                /// Agility
+                &:nth-child(6) {
+                    @extend .agility;
+                }
 
-                    /// Resilience
-                    &:nth-child(8) {
-                        color: #808080;
-                    }
-                    
-                    /// Intelligence
-                    &:nth-child(9) {
-                        color: #337de9;
-                    }
+                /// Vitality
+                &:nth-child(7) {
+                    @extend .vitality;
+                }
 
-                    /// Dexterity
-                    &:nth-child(10) {
-                        color: #e86801;
-                    }
+                /// Resilience
+                &:nth-child(8) {
+                    @extend .resilience;
+                }
 
-                    /// Luck
-                    &:nth-child(11) {
-                        color: #b5af00;
-                    }
+                /// Intelligence
+                &:nth-child(9) {
+                    @extend .intelligence;
+                }
+
+                /// Dexterity
+                &:nth-child(10) {
+                    @extend .dexterity;
+                }
+
+                /// Luck
+                &:nth-child(11) {
+                    @extend .luck;
                 }
             }
         }
-    }
-
-    .simplebar-offset {
-        position: relative;
-    }
-
-    .simplebar-track {
-        position: unset;
     }
 }
 
@@ -6899,14 +6980,12 @@ $cursor-selectors: (
     }
 
     #inventory-popout-view-item {
-        span {
-            text-align: center;
-        }
-
-        img {
-            height: 64px;
-            width: 64px;
-        }
+        @extend .item-viewer;
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     #inventory-currency {
@@ -6915,14 +6994,6 @@ $cursor-selectors: (
 
     #inventory-tabs {
         margin-top: 1em;
-    }
-
-    .simplebar-offset {
-        position: relative;
-    }
-
-    .simplebar-track {
-        position: unset;
     }
 }
 

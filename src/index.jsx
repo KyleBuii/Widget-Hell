@@ -684,7 +684,7 @@ class Widgets extends Component {
         </div>
     };
 
-    handleMouseMove(event) {
+    handleMouseMove = (event) => {
         window.mouse = {
             x: event.clientX,
             y: event.clientY
@@ -721,7 +721,7 @@ class Widgets extends Component {
         };
     };
 
-    updateDesign(what, value) {
+    updateDesign = (what, value) => {
         if (value) {
             addClassStack(what);
         } else {
@@ -783,7 +783,7 @@ class Widgets extends Component {
         };
     };
 
-    updateDecoration(option) {
+    updateDecoration = (option) => {
         if (option) {
             setDecorationValue(option.value);
         } else {
@@ -791,7 +791,7 @@ class Widgets extends Component {
         };
     };
 
-    randomTimeoutText() {
+    randomTimeoutText = () => {
         if (this.state.values.randomText && (timeoutText === undefined)) {
             let randomNumber = Math.random() * 60000 + 5000;
             timeoutText = setTimeout(() => {
@@ -802,7 +802,7 @@ class Widgets extends Component {
         };
     };
 
-    randomTextAnimation() {
+    randomTextAnimation = () => {
         if (widgetsTextActive.length > 0) {
             let randomTextAnimation = textAnimations[Math.floor(Math.random() * textAnimations.length)];
             let elementRandomText = widgetsTextActive[Math.floor(Math.random() * widgetsTextActive.length)];
@@ -813,7 +813,7 @@ class Widgets extends Component {
         };
     };
 
-    randomTimeoutHorror() {
+    randomTimeoutHorror = () => {
         /// Creating a shadow image
         let randomNumber = Math.random() * 1200000 + 300000;
         let elementShadow = document.createElement('img');
@@ -862,7 +862,7 @@ class Widgets extends Component {
         }, randomNumber);
     };
 
-    updateWidgetsActive(what, where) {
+    updateWidgetsActive = (what, where) => {
         switch (where) {
             case 'utility':
                 widgetsUtilityActive.push(what);
@@ -1064,44 +1064,55 @@ class Widgets extends Component {
 
     updateGameValue = (what, value) => {
         switch (what) {
-            case 'equipment':
+            case 'equipment': {
                 this.setState({
                     equipment: value
-                });        
+                });
                 break;
-            case 'gold':
+            };
+            case 'gold': {
                 this.setState({
                     gold: this.state.gold + value
-                });        
+                });
                 break;
-            case 'exp':
-                this.setState({
-                    stats: {
-                        ...this.state.stats,
-                        exp: this.state.stats.exp + value
-                    }
-                }, () => {
-                    if (this.state.stats.exp >= this.state.stats.maxExp) {
-                        let remainderExp = Math.abs(this.state.stats.maxExp - this.state.stats.exp);
-                        this.setState({
-                            stats: {
-                                ...this.state.stats,
-                                level: this.state.stats.level + 1,
-                                exp: remainderExp
-                            }
-                        }, () => {
-                            this.calculateMaxExp();
+            };
+            case 'exp': {
+                let didLevelUp = false;
+                this.setState((prev) => {
+                    let newExp = prev.stats.exp + value;
+                    let newLevel = prev.stats.level;
+                    let newStatPoints = prev.statPoints;
 
-                            if (this.state.stats.level < 20) {
-                                randomItem();
-                            } else {
-                                randomItem(Math.floor(this.state.stats.level / 10));
-                            };
-                        });
+                    if (newExp >= prev.stats.maxEXp) {
+                        const remainderExp = newExp - prev.stats.maxExp;
+                        newLevel += 1;
+                        newExp = remainderExp;
+                        newStatPoints += this.calculateStatPoints(newLevel);
+                        didLevelUp = true;
                     };
-                });        
+
+                    return {
+                        stats: {
+                            ...prev.stats,
+                            level: newLevel,
+                            exp: newExp
+                        },
+                        statPoints: newStatPoints
+                    };
+                }, () => {
+                    if (!didLevelUp) return;
+
+                    this.calculateMaxExp();
+
+                    if (this.state.stats.level < 20) {
+                        randomItem();
+                    } else {
+                        randomItem(Math.floor(this.state.stats.level / 10));
+                    };
+                });
                 break;
-            case 'stats':
+            };
+            case 'stats': {
                 this.setState({
                     stats: {
                         ...this.state.stats,
@@ -1109,16 +1120,18 @@ class Widgets extends Component {
                     }
                 });        
                 break;
-            case 'abilities':
+            };
+            case 'abilities': {
                 this.setState({
                     abilities: [...value]
-                });        
+                });
                 break;
-            default: break;
+            };
+            default: { break; };
         };
     };
     
-    calculateMaxExp() {
+    calculateMaxExp = () => {
         const equationMaxExp = this.state.stats.level * 100 * 1.25;
         this.setState({
             stats: {
@@ -1126,6 +1139,13 @@ class Widgets extends Component {
                 maxExp: equationMaxExp
             }
         });
+    };
+
+    calculateStatPoints = (level) => {
+        if (level === 1)        return 10;
+        if (level % 1000 === 0) return 100;
+        if (level % 100 === 0)  return 10;
+        return 1;
     };
 
     talk = (text) => {
@@ -1172,7 +1192,7 @@ class Widgets extends Component {
         };
     };
 
-    getTranscribedAudio(audio) {
+    getTranscribedAudio = (audio) => {
         let transcribedAudio = '';
         switch (audio) {
             case 'bite_small':
@@ -1228,7 +1248,28 @@ class Widgets extends Component {
         };
     };
 
-    generateDefaultProps(widget, type) {
+    calculateTotalStatPoints = (level) => {
+        let total = level;
+
+        if (level >= 1) total += 9;
+
+        total += Math.floor(level / 100) * 9;   /// Bonus at level 100
+        total += Math.floor(level / 1000) * 90; /// Bonus at level 1000
+
+        return total;
+    };
+
+    useStatPoint = (stat, amount = 1) => {
+        this.setState((prev) => ({
+            stats: {
+                ...prev.stats,
+                [stat] : [prev.stats[stat][0] + amount, prev.stats[stat][1]]
+            },
+            statPoints: prev.statPoints - 1
+        }));
+    };
+
+    generateDefaultProps = (widget, type) => {
         let defaultProps = {
             position: {
                 x: this.state.widgets[type][widget].position.x,
@@ -1625,7 +1666,7 @@ class Widgets extends Component {
             if (localStorageStatPoints !== null) {
                 dataStatPoints = JSON.parse(localStorageStatPoints);
             } else {
-                dataStatPoints = dataLocalStorageStats.level;
+                dataStatPoints = this.calculateTotalStatPoints(dataLocalStorageStats.level);
             };
 
             this.setState({

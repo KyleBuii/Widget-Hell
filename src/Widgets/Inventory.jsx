@@ -7,7 +7,6 @@ import { TbMoneybag } from 'react-icons/tb';
 // import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import DOMPurify from 'dompurify';
 import { memo } from 'react';
-import SimpleBar from 'simplebar-react';
 import { classStack, dataLoaded, decorationValue, getData } from '../data';
 
 const regexItemsLeftAndRight = /bracelet|wrist|glove|ring|hidden|boot/;
@@ -211,7 +210,7 @@ class WidgetInventory extends Component {
                     this.props.defaultProps.dragStop('inventory');
                     this.props.defaultProps.updatePosition('inventory', 'utility', data.x, data.y);
                 }}
-                cancel='button, span, .overlay, #inventory-tabs'
+                cancel='button, span, .overlay, #inventory-tabs, #inventory-popout-view-item'
                 bounds='parent'>
                 <section id='inventory-widget'
                     className='widget'
@@ -315,53 +314,42 @@ class WidgetInventory extends Component {
                         </Tabs> */}
                         {/* View Item Popout */}
                         <div id='inventory-popout-view-item'
-                            className='overlay rounded flex-center column gap font no-highlight'
                             onClick={() => {
                                 this.props.defaultProps.playAudio(audioItemClose);
                                 document.getElementById('inventory-popout-view-item').style.visibility = 'hidden';
                             }}>
-                            <span className='font bold large-medium'>{this.state.item.name}</span>
-                            <div className='flex-center row gap medium-gap space-nicely space-all'>
+                            <span className='item-name'>{this.state.item.name}</span>
+                            <div className='flex-center row gap medium-gap'>
                                 <img src={items[this.state.item.rarity]?.[this.state.item.name]?.image}
                                     alt='viewed inventory item'
                                     loading='lazy'
                                     decoding='async'/>
-                                <SimpleBar style={{ maxHeight: 80, width: 150 }}>
-                                    <table className='flex-center column font small'
-                                        aria-label='Item stats'>
-                                        <tbody>
-                                            <tr>
-                                                <td scope='row'>Rarity:</td>
-                                                <td>{this.state.item.rarity?.replace(/^./, (char) => char.toUpperCase())}</td>
-                                            </tr>
-                                            <tr>
-                                                <td scope='row'>Slot:</td>
-                                                <td>{items[this.state.item.rarity]?.[this.state.item.name]?.slot
-                                                    .replace(/^./, (char) => char.toUpperCase())
-                                                    .replace(/[0-9]/, '')}</td>
-                                            </tr>
-                                            {(/stat|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
-                                                ? Object.keys(items[this.state.item.rarity]?.[this.state.item.name]?.stats)
-                                                    .map((value, index) => {
-                                                        return <tr key={`row-stat-${index}`}>
-                                                            <td scope='row'>{value.replace(/^./, (char) => char.toUpperCase())}:</td>
-                                                            <td>
-                                                                {(Math.sign(items[this.state.item.rarity]?.[this.state.item.name].stats[value]) === -1)
-                                                                    ? ''
-                                                                    : '+'}
-                                                                {items[this.state.item.rarity]?.[this.state.item.name].stats[value]}
-                                                            </td>
-                                                        </tr>
-                                                    })
-                                                : <></>}
-                                            {(/ability|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
-                                                ? <tr>
-                                                    <td colSpan={2}>{items[this.state.item.rarity]?.[this.state.item.name].information}</td>
-                                                </tr>
-                                                : <></>}
-                                        </tbody>
-                                    </table>
-                                </SimpleBar>
+                                <div className='flex-center column align-items-left'>
+                                    <span className={`item-rarity item-${this.state.item.rarity}`}>{this.state.item.rarity?.replace(/^./, (char) => char.toUpperCase())}</span>
+                                    <span>{items[this.state.item.rarity]?.[this.state.item.name]?.slot
+                                        .replace(/^./, (char) => char.toUpperCase())
+                                        .replace(/[0-9]/, '')}</span>
+                                    <div className='scrollable'
+                                        style={{ height: '5rem' }}>
+                                        {(/stat|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
+                                            ? Object.keys(items[this.state.item.rarity]?.[this.state.item.name]?.stats)
+                                                .map((value, index) => {
+                                                    return <div key={`row-stat-${index}`}>
+                                                        <span className={value}>
+                                                            {(Math.sign(items[this.state.item.rarity]?.[this.state.item.name].stats[value]) === -1)
+                                                                ? ''
+                                                                : '+'}
+                                                            {items[this.state.item.rarity]?.[this.state.item.name].stats[value]}
+                                                        </span>
+                                                        <span className={value}> {value.replace(/^./, (char) => char.toUpperCase())}</span>
+                                                    </div>
+                                                })
+                                            : <></>}
+                                        {(/ability|both/.test(items[this.state.item.rarity]?.[this.state.item.name]?.type))
+                                            ? <span>{items[this.state.item.rarity]?.[this.state.item.name].information}</span>
+                                            : <></>}
+                                    </div>
+                                </div>
                             </div>
                             <span dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(items[this.state.item.rarity]?.[this.state.item.name]?.description)
@@ -375,7 +363,7 @@ class WidgetInventory extends Component {
                                 : <></>}
                             <span className='font micro transparent-normal'>Source: {items[this.state.item.rarity]?.[this.state.item.name]?.source}</span>
                             {(regexItemsLeftAndRight.test(items[this.state.item.rarity]?.[this.state.item.name]?.slot))
-                                ? <div className='flex-center row gap'>
+                                ? <div className='grid col-50-50 fill-width'>
                                     <button className='button-match space-nicely space-top not-bottom'
                                         onClick={(event) => this.equipItem(
                                             event,
@@ -393,13 +381,31 @@ class WidgetInventory extends Component {
                                             'right'
                                         )}>Equip Right</button>
                                 </div>
-                                : <button className='button-match space-nicely space-top not-bottom'
+                                : <button className='button-match space-nicely space-top not-bottom fill-width'
                                     onClick={(event) => this.equipItem(
                                         event,
                                         this.state.item.name,
                                         this.state.item.rarity,
                                         items[this.state.item.rarity]?.[this.state.item.name].slot
                                     )}>Equip</button>}
+
+                            {/* 
+                                <div className='flex-center column align-items-left'>
+                                </div>
+                            </div>
+                            <span dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(items?.[state.item.rarity]?.[state.item.name].description)
+                            }}></span>
+                            {(items?.[state.item.rarity]?.[state.item.name].requirement)
+                                ? <span className='font micro'
+                                    style={{
+                                        color: 'red',
+                                        opacity: '0.5'
+                                    }}>Requirement: {items?.[state.item.rarity]?.[state.item.name].requirement}</span>
+                                : <></>}
+                            <span className='font micro transparent-normal'>Source: {items?.[state.item.rarity]?.[state.item.name].source}</span>
+                            <button className='button-match space-nicely space-top not-bottom fill-width'
+                                onClick={(event) => unequipItem(event)}>Unequip</button> */}
                         </div>
                         {(this.props.defaultProps.values.authorNames)
                             ? <span className='font smaller transparent-normal author-name'>Created by Me</span>
