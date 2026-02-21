@@ -9,26 +9,39 @@ let velocityY = 0;
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, texture, x, y, bullets, bulletsAbilities) {
         super(scene, x, y);
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
+
         this.setCollideWorldBounds(true);
         this.setTexture(texture);
         this.setDrag(500, 500);
         this.setDepth(5);
         this.setSize(13, 13);
+
         this.displayWidth = 32;
         this.displayHeight = 50;
+
+        this.exp = 0;
+        this.level = 1;
+        this.neededExp = this.calculateNeededExp();
+
         this.speed = 300;
+
         this.weapons = [];
+
         this.abilities = {};
         this.abilitiesRaw = [];
         this.ability = null;
         this.abilityIndex = 0;
         this.abilityTimer = 0;
         this.abilityCooldown = 0;
+
         this.keyInitialized = false;
         this.sneakInitialized = false;
         this.mobileAbility = false;
+        this.isGamePaused = false;
+
         this.danmaku = new Danmaku(scene, bullets, {});
         this.danmakuAbilities = new Danmaku(scene, bulletsAbilities, {});
         this.bulletLastFired = 0;
@@ -36,6 +49,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     };
 
     preUpdate(time, delta) {
+        if (this.isGamePaused) return;
+
         super.preUpdate(time, delta);
         if (this.x !== this.danmaku.x || this.y !== this.danmaku.y) {
             this.danmaku.follow(this);
@@ -140,6 +155,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.abilityTimer += delta / 1000;
             };
             if ((this.keyAbility?.isDown || this.mobileAbility) && this.abilityTimer >= this.abilityCooldown) {
+                if (!this.ability) return;
+
                 this[this.ability]();
                 this.abilityTimer = 0;
             };
@@ -158,6 +175,39 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 );
             };
         };
+    };
+
+    updateStat(stat, amount = 1) {
+        const formattedStat = stat.toLowerCase().replace(' ', '-');
+        switch (formattedStat) {
+            case 'health':
+                // this.hp.updateGameValue(amount);
+                break;
+            default:
+                break;
+        };
+    };
+
+    addExp(amount) {
+        this.exp += amount;
+
+        let levelUpCount = 0;
+        while (this.exp >= this.neededExp) {
+            this.exp -= this.neededExp;
+            this.level++;
+            this.neededExp = this.calculateNeededExp();
+            
+            levelUpCount++;
+        };
+        return levelUpCount;
+    };
+
+    calculateNeededExp() {
+        return Math.floor(
+            20                                /// Base increase
+            + (this.level * 6)                /// Linear scaling
+            + ((this.level * this.level) * 3) /// Quadratic scaling
+        );
     };
 
     setAbilities() {
@@ -184,12 +234,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     break;
                 default: break;
             };
+
             if (Object.keys(this.abilities).find((ability) => ability === this.ability) === undefined) {
                 this.abilities[this.ability] = this.abilityCooldown;
                 this.abilityCooldown = this.abilityCooldown - (0.1 * Math.pow(1.5, this.int));
                 this.abilityTimer = this.abilityCooldown;
             };
         };
+
         this.abilityIndex = Object.keys(this.abilities).length;
         this.abilitiesRaw.length = 0;
     };
@@ -209,6 +261,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.enable = true;
         this.hp.reset();
         this.abilityTimer = this.abilityCooldown;
+        this.exp = 0;
+        this.level = 1;
+        this.neededExp = this.calculateNeededExp();
+    };
+
+    stopMoving() {
+        this.isGamePaused = true;
+        this.setVelocity(0);
+    };
+
+    startMoving() {
+        this.isGamePaused = false;
     };
 
     getAbilityVelocity(speed) {

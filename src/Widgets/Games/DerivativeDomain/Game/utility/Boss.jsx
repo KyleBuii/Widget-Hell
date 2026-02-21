@@ -601,10 +601,10 @@ export class Boss extends Enemy {
         let yMax = bounds.y + bounds.height;
         for (let i = 0; i < amount; i++) {
             do {
-                randomX = Math.random() * 530 + 30;
+                randomX = Math.random() * 825 + 25;
             } while ((randomX < xMin) && (randomX > xMax));
             do {
-                randomY = Math.random() * 825 + 25;
+                randomY = Math.random() * 530 + 30;
             } while ((randomY < yMin) && (randomY > yMax));
             this.createHollowCircle(randomX, randomY);
         };

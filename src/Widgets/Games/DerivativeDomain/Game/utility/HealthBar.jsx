@@ -7,6 +7,7 @@ export class HealthBar {
         scene.add.existing(this.bar);
         this.value = health;
         this.maxValue = health;
+        this.gameMaxValue = health;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.p = 19 / health;
@@ -19,12 +20,20 @@ export class HealthBar {
         this.draw();
     };
 
-    decrease(amount) {
-        this.value -= amount;
-        if (this.value < 0) {
-            this.value = 0;
-        };
-        return (this.value === 0);
+    setMaxValue(amount) {
+        this.maxValue = amount;
+        this.reset();
+    };
+
+    updateValue(amount) {
+        this.value += amount;
+        return (this.value <= 0);
+    };
+
+    updateGameValue(amount) {
+        this.value += amount;
+        this.gameMaxValue += amount;
+        this.p = 19 / this.value;
     };
 
     draw() {
@@ -33,7 +42,7 @@ export class HealthBar {
         this.bar.fillRect(this.x, this.y, 23, 7);
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(this.x + 2, this.y + 2, 19, 3);
-        if (this.value < (this.maxValue / 2)) {
+        if (this.value < (this.gameMaxValue / 2)) {
             this.bar.fillStyle(0xff0000);
         } else {
             this.bar.fillStyle(0x00ff00);
@@ -44,5 +53,6 @@ export class HealthBar {
 
     reset() {
         this.value = this.maxValue;
+        this.p = 19 / this.maxValue;
     };
 };

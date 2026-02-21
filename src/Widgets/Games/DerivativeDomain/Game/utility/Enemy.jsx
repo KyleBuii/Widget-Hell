@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { HealthBar } from './HealthBar';
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, texture, x, y, key, health, attack, defense, speed, healthXOffset = 7, target = null) {
+    constructor(scene, texture, x, y, key, exp, health, attack, defense, speed, healthXOffset = 7, target = null) {
         super(scene, x, y, 'enemy-atlas');
 
         scene.add.existing(this);
@@ -24,6 +24,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.key = key;
         this.target = target;
 
+        this.exp = exp;
+
         this.health = health;
         this.hp = new HealthBar(scene, health, this.displayWidth / healthXOffset, 11);
 
@@ -32,10 +34,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.spd = speed;
 
         this.alive = true;
+        this.isGamePaused = false;
+
         this.velocity = { x: 0, y: 0 };
     };
 
     preUpdate(time, delta) {
+        if (this.isGamePaused) return;
+
         super.preUpdate(time, delta);
         if (!this.alive) this.kill();
 
@@ -70,5 +76,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         };
 
         this.destroy();
+    };
+
+    stopMoving() {
+        this.isGamePaused = true;
+        this.setVelocity(0);
+    };
+
+    startMoving() {
+        this.isGamePaused = false;
     };
 };

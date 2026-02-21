@@ -7,15 +7,29 @@ import { EventBus } from './Game/EventBus';
 import { PhaserGame } from './Game/PhaserGame';
 
 
-const WidgetDerivativeDomain = ({ defaultProps, gameProps }) => {
+const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
     const phaserRef = useRef(null);
+    const { stats, abilities } = parentRef.state;
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeydown);
+        
         return () => {
             window.removeEventListener('keydown', handleKeydown);
         };
     }, []);
+
+    useEffect(() => {
+        EventBus.emit('new stats', {
+            data: stats
+        });
+    }, [stats]);
+    
+    useEffect(() => {
+        EventBus.emit('new abilities', {
+            data: abilities
+        });
+    }, [abilities]);
 
     const handleKeydown = (event) => {
         if (/87|65|83|68|37|38|39|40|16|17|32/.test(event.keyCode)) event.preventDefault();
@@ -23,6 +37,7 @@ const WidgetDerivativeDomain = ({ defaultProps, gameProps }) => {
 
     const changeScene = () => {
         const scene = phaserRef.current.scene;
+
         if (scene) {
             scene.changeScene();
         };

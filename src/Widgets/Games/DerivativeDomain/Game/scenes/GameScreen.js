@@ -23,6 +23,17 @@ import { Player } from '../utility/Player.jsx';
 
 const WIDTH = 850;
 const HEIGHT = 600;
+const dataStats = {
+    attack       : 'atk',
+    defense      : 'def',
+    strength     : 'str',
+    agility      : 'agi',
+    vitality     : 'vit',
+    resilience   : 'res',
+    intelligence : 'int',
+    dexterity    : 'dex',
+    luck         : 'lck'
+};
 const dataMenuEnemies = {
     yupina: {
         health: 10,
@@ -33,11 +44,21 @@ const dataMenuEnemies = {
 };
 const dataEnemies = {
     slime: {
+        exp: 1,
         health: 5,
         attack: 1,
         defense: 0,
         speed: 0.5,
     },
+};
+const dataLevelUpOptions = {
+    'Enemy Multiplier': 'Increases enemy spawn by 1.',
+    'Enemy Speed': 'Increases enemy speed by 1.',
+    'Fire Rate': 'Increases fire rate by 1.',
+    'Health': 'Increases health by 1.',
+    'Multi': 'Increases all projectiles by 1.',
+    'Speed': 'Increases speed by 1.',
+    'Velocity': 'Increases velocity by 1.',
 };
 
 export class GameScreen extends Scene {
@@ -45,15 +66,26 @@ export class GameScreen extends Scene {
         super('Game');
         this.mouseMovement = false;
         this.isMobile = false;
+        this.isInvulnerable = false;
+        this.isBossSpawned = false;
+
         this.player = null;
         this.boss = null;
+        
         this.debuffs = [];
-        this.gameTimer = null;
         this.menuTimers = [];
+        
+        this.gameTimer = null;
+        this.invulnTimer = null;
+
         this.elapsedSeconds = 0;
+        this.invulnSeconds = 0;
     };
 
     create() {
+        if (this.onNewStats) EventBus.off('new stats', this.onNewStats);
+        if (this.onNewAbilities) EventBus.off('new abilities', this.onNewAbilities);
+
         if ('maxTouchPoints' in navigator) {
             this.isMobile = navigator.maxTouchPoints > 0;
         };
@@ -73,8 +105,15 @@ export class GameScreen extends Scene {
         });
         this.gameTimer.paused = true;
 
+        this.onNewStats = (stats) => this.setPlayerStats(stats.data);
+        this.onNewAbilities = (abilities) => this.setPlayerAbilities(abilities.data);
+
+        EventBus.on('new stats', this.onNewStats);
+        EventBus.on('new abilities', this.onNewAbilities);
         EventBus.once('data', (data) => {
-            this.setData(data);
+            this.setPlayerStats(data.stats);
+            this.setPlayerAbilities(data.abilities);
+            this.setPlayerWeapons();
         });
         EventBus.emit('current-scene-ready', this);
     };
@@ -82,6 +121,13 @@ export class GameScreen extends Scene {
     handleTimer() {
         this.elapsedSeconds++;
         this.updateTimerText();
+
+        if (!this.isBossSpawned && (this.elapsedSeconds % 60) === 0) {
+            this.isBossSpawned = true;
+            this.spawnBoss();
+        };
+
+        if (this.isBossSpawned) return;
         this.updateSpawning();
     };
 
@@ -157,9 +203,48 @@ export class GameScreen extends Scene {
             .setDepth(2)
             .setOrigin(0.5);
 
-        this.textCurrentAbility = this.add.text(580, 830, "")
+        this.expBarBackground = this.add.rectangle(0, 0, WIDTH, 8, 0x1a1a1a)
+            .setVisible(false)
             .setDepth(2)
-            .setOrigin(1);
+            .setOrigin(0, 0);
+        this.expBarFill = this.add.rectangle(0, 0, 0, 8, 0x3cff00)
+            .setVisible(false)
+            .setDepth(2)
+            .setOrigin(0, 0);
+
+        this.levelUpContainers = this.add.container(0, 0)
+            .setVisible(false)
+            .setDepth(7);
+        this.levelUpSkillTexts = [];
+        this.levelUpDescTexts = [];
+        for (let i = 0; i < 3; i++) {
+            this[`levelUpOptionContainer${i}`] = this.add.container(WIDTH / 2 + (i - 1) * 200, HEIGHT / 2)
+                .setSize(185, 125)
+                .setInteractive()
+                .setDepth(2);
+
+            const bg = this.add.image(0, 0, 'box')
+                .setDisplaySize(185, 125)
+                .setAlpha(0.8);
+            const skillText = this.add.text(0, -30, 'Test (Lvl. 1)', {
+                fontSize: '16px',
+                color: '#fff',
+                align: 'center'
+            }).setOrigin(0.5);
+            const descText = this.add.text(0, 15, 'Test.', {
+                fontSize: '12px',
+                color: '#fff',
+                align: 'center',
+                wordWrap: { width: 150 }
+            }).setOrigin(0.5);
+
+            this.levelUpSkillTexts.push(skillText);
+            this.levelUpDescTexts.push(descText);
+
+            this[`levelUpOptionContainer${i}`].add([bg, skillText, descText]);
+            this.levelUpContainers.add(this[`levelUpOptionContainer${i}`]);
+        };
+
         this.textTimer = this.add.text(WIDTH / 2, 25, '00:00')
             .setVisible(false)
             .setDepth(2)
@@ -195,6 +280,10 @@ export class GameScreen extends Scene {
         };
     };
 
+    updateExpBar() {
+        this.expBarFill.width = this.expBarBackground.width * (this.player.exp / this.player.neededExp);
+    };
+
     handleButton(type) {
         switch(type) {
             case 'play':
@@ -205,7 +294,11 @@ export class GameScreen extends Scene {
 
                 this.elapsedSeconds = 0;
                 this.gameTimer.paused = false;
+                this.isBossSpawned = false;
+
                 this.textTimer.setVisible(true);
+                this.expBarBackground.setVisible(true);
+                this.expBarFill.setVisible(true);
                 break;
             case 'return':
                 this.clearEnemies(this.enemies);
@@ -226,7 +319,11 @@ export class GameScreen extends Scene {
                 this.gameTimer.paused = true;
                 this.elapsedSeconds = 0;
                 this.updateTimerText();
+
                 this.textTimer.setVisible(false);
+                this.expBarBackground.setVisible(false);
+                this.expBarFill.setVisible(false);
+                this.expBarFill.width = 0;
                 break;
             case 'mouse':
                 if (this.isMobile) return;
@@ -241,6 +338,8 @@ export class GameScreen extends Scene {
                 this.elapsedSeconds = 0;
                 this.updateTimerText();
                 this.gameTimer.paused = false;
+
+                this.expBarFill.width = 0;
 
                 this.player.revive();
                 this.playerAbilities.getChildren().forEach((ability) => {
@@ -287,19 +386,28 @@ export class GameScreen extends Scene {
         
         this.buttonTryAgain.setVisible(false);
         this.textTryAgain.setVisible(false);
+
+        this.levelUpContainers.setVisible(false);
     };
 
     resetBoss() {
         if (!this.boss) return;
+
+        this.isBossSpawned = false;
+
         this.boss.danmaku.resetDanmaku(this);
         this.bossBullets.getMatching("active", true).forEach((bullet) => {
             bullet.remove();
         });
+
         this.bossBulletsEmitter.stop();
         this.bossBulletsEmitter.forEachAlive((particle) => {
             particle.kill();
         });
+
         this.boss.kill(true);
+
+        this.bossBombs.clear(true, true);
     };
 
     stopMenuSpawns() {
@@ -359,6 +467,7 @@ export class GameScreen extends Scene {
                 return hit;
             }
         };
+
         this.bossBulletsEmitter = this.add.particles(0, 0, "bullet-atlas", {
             x: WIDTH / 2,
             y: 200,
@@ -465,6 +574,7 @@ export class GameScreen extends Scene {
                 randomEnemy,
                 randomX, randomY,
                 'enemy',
+                dataEnemies[randomEnemy].exp,
                 dataEnemies[randomEnemy].health,
                 dataEnemies[randomEnemy].attack,
                 dataEnemies[randomEnemy].defense,
@@ -486,6 +596,7 @@ export class GameScreen extends Scene {
             randomEnemy,
             randomX, 0,
             'menu',
+            dataMenuEnemies[randomEnemy].exp,
             dataMenuEnemies[randomEnemy].health,
             dataMenuEnemies[randomEnemy].attack,
             dataMenuEnemies[randomEnemy].defense,
@@ -497,19 +608,22 @@ export class GameScreen extends Scene {
 
     spawnBoss() {
         let randomBoss = Math.floor(Math.random() * 15 + 1);
+
         this.boss = new Boss(
             1, 200, 1, this.bossBullets, this, `boss-${randomBoss}`,
             WIDTH / 2, 0, 1000, 0, 100
         );
+
         if (this.debuffs.length !== 0) {
             this.debuffs.forEach((debuff) => {
                 this.boss.debuff(debuff);
             });
         };
+
         this.physics.add.overlap(this.boss, this.player, (boss, player) => {
-            if (player.hp.decrease(1)) {
+            if (player.hp.updateValue(-1)) {
                 player.dead();
-                this.clearScreen();
+                this.showMenu('game');
             };
         });
         this.physics.add.overlap(this.boss, this.playerBullets, (boss, bullet) => {
@@ -534,76 +648,80 @@ export class GameScreen extends Scene {
         this.physics.add.overlap(this.bossBombs, this.player, (player, bomb) => {
             bomb.destroy();
             if (((3 * Math.floor((this.bossBombs.getLength()) / 3)) === this.bossBombs.getLength())
-                && this.boss.hp.decrease(100)) {
+                && this.boss.hp.updateValue(-50)) {
                 this.boss.kill();
             };
         });
     };
 
-    setData(data) {
-        const totalHealth = data.stats.health[0] + data.stats.health[1];
-        this.player.hp = new HealthBar(
-            this,
-            (totalHealth < 10)
-                ? 1
-                : Math.floor(data.stats.health / 10),
-            10, 11
-        );
+    setPlayerStats(data) {
+        const totalHealth = data.health[0] + data.health[1];
+        const calculateHealth = (totalHealth < 10) ? 1 : Math.floor(data.health / 10);
 
-        const totalMana = data.stats.mana[0] + data.stats.mana[1];
-        this.player.mana = (totalMana < 10) ? 1 : Math.floor(totalMana / 10);
-        this.player.atk = data.stats.attack[0] + data.stats.attack[1];
-        this.player.def = data.stats.defense[0] + data.stats.defense[1];
-        this.player.str = data.stats.strength[0] + data.stats.strength[1];
-        this.player.agi = data.stats.agility[0] + data.stats.agility[1];
-        this.player.vit = data.stats.vitality[0] + data.stats.vitality[1];
-        this.player.res = data.stats.resilience[0] + data.stats.resilience[1];
-        this.player.int = data.stats.intelligence[0] + data.stats.intelligence[1];
-        this.player.dex = data.stats.dexterity[0] + data.stats.dexterity[1];
-        this.player.lck = data.stats.luck[0] + data.stats.luck[1];
+        this.player.maxHp = calculateHealth;
+        if (!this.player.hp) {
+            this.player.hp = new HealthBar(this, calculateHealth, 10, 11);
+        } else {
+            this.player.hp.setMaxValue(calculateHealth);
+            this.player.hp.reset();
+        };
+
+        const totalMana = data.mana[0] + data.mana[1];
+        const calculateMana = (totalMana < 10) ? 1 : Math.floor(totalMana / 10);
+
+        this.player.maxMana = calculateMana;
+        this.player.mana = calculateMana;
+
+        for (const [name, abbr] of Object.entries(dataStats)) {
+            const capalizedAbbr = abbr.replace(/^./, (char) => char.toUpperCase());
+            const totalStats = data[name][0] + data[name][1];
+
+            this.player[`max${capalizedAbbr}`] = totalStats;
+            this.player[abbr] = totalStats;
+        };
+    };
+
+    setPlayerAbilities(data) {
+        this.player.abilitiesRaw = [...data];
+        this.player.setAbilities();
+    };
+
+    setPlayerWeapons() {
         this.player.weapons.push(
-            { name: "DEFAULT",
+            { name: 'DEFAULT',
                 danmakuConfig: {
-                    type: "PARALLEL", countB: 1, 
+                    type: 'PARALLEL', countB: 1, 
                     angle: -90, 
                 },
                 cannonConfig: {
                     numberOfShots: 1,
                 },
                 bulletConfig: {
-                    class: "NORMAL",
+                    class: 'NORMAL',
                     damage: this.player.atk,
                     speed: 300 + (this.player.str * 10),
-                    frame: "circle-black",
+                    frame: 'circle-black',
                     alpha: 0.5
                 }
             },
-            { name: "SNEAK",
+            { name: 'SNEAK',
                 danmakuConfig: {
-                    type: "PARALLEL", countB: 1, 
+                    type: 'PARALLEL', countB: 1, 
                     angle: -90, 
                 },
                 cannonConfig: {   
                     numberOfShots: 1,
                 },
                 bulletConfig: {
-                    class: "NORMAL",
+                    class: 'NORMAL',
                     damage: this.player.atk / 3,
                     speed: 300 + (this.player.str * 10),
-                    frame: "circle-black",
+                    frame: 'circle-black',
                     alpha: 0.5
                 }
             }
         );
         this.player.danmaku.setProperties(this.scene, this.player.weapons[0]);
-        this.player.abilitiesRaw = [...data.abilities];
-        this.player.setAbilities();
-        this.textCurrentAbility.setText(
-            (this.player.ability !== null)
-                ? this.player.ability.replace(/^./, (char) => char.toUpperCase())
-                    .replace(/([A-Z])/g, " $1").trim()
-                : ""
-        );
     };
 
     playerEnemyHitCallback(enemy, player) {
@@ -620,7 +738,7 @@ export class GameScreen extends Scene {
     abilityHitCallback(bullet, ability) {
         if (bullet.active === true) {
             if (ability.sponge) {
-                if (ability.active && ability.hp.decrease(bullet.damage)) {
+                if (ability.active && ability.hp.updateValue(-bullet.damage)) {
                     ability.kill();
                 };
             };
@@ -661,14 +779,17 @@ export class GameScreen extends Scene {
                     ? this.player.atk / 4
                     : (bullet.damage || 0)
             );
+
             if (!bullet.attack && !bullet.sponge && !bullet.addition) {
                 bullet.remove();
             };
+
             let hit;
             switch (bullet.name) {
-                case "restInPeace":
-                case "restInPeaceHand":
-                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "rest-in-peace-hit")
+                case 'restInPeace':
+                case 'restInPeaceHand':
+                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, 'abilities-atlas')
+                        ?.setFrame('rest-in-peace-hit')
                         ?.setDepth(5);
                     if (hit) {
                         hit.setActive(true);
@@ -685,8 +806,9 @@ export class GameScreen extends Scene {
                         });
                     };   
                     break;
-                case "oceanicTerror":
-                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, "abilities-atlas", "oceanic-terror-hit")
+                case 'oceanicTerror':
+                    hit = this.playerAbilitiesHits.get(enemy.x, enemy.y, 'abilities-atlas')
+                        ?.setFrame('oceanic-terror-hit')
                         ?.setDepth(5);
                     if (hit) {
                         hit.setActive(true);
@@ -709,32 +831,97 @@ export class GameScreen extends Scene {
     };
 
     damagePlayer(player, damage) {
-        if (player.active && player.hp.decrease(damage)) {
+        if (this.isInvulnerable) return;
+
+        this.isInvulnerable = true;
+        this.invulnTimer = this.time.addEvent({
+            delay: 1000,
+            callback: () => {
+                this.isInvulnerable = false;
+            },
+            callbackScope: this,
+            loop: false,
+        });
+
+        if (player.active && player.hp.updateValue(-damage)) {
             player.dead();
-            this.clearScreen();
+            this.showMenu('game');
+
             this.gameTimer.paused = true;
         };
     };
     
     damageEnemy(enemy, damage) {
-        if (enemy.hp.decrease(damage)) {
+        if (enemy.hp.updateValue(-damage)) {
             enemy.kill();
+
             switch(enemy?.key) {
-                case 'menu':
+                case 'menu': {
                     this.spawnMenuEnemies();
                     break;
-                case 'enemy':
+                };
+                case 'enemy': {
+                    this.rewardExp(enemy.exp);
                     break;
-                case 'boss':
-                    this.clearScreen();   
+                };
+                case 'boss': {
+                    this.isBossSpawned = false;
+
+                    this.resetBoss();
+                    this.rewardExp(50);
                     break;
-                default: break;
+                };
+                default: { break; };
             };
         };
     };
 
-    clearScreen() {
-        this.showMenu('game');
-        this.bossBombs.clear(true, true);
+    rewardExp(amount) {
+        this.updateExpBar();
+        const timesLeveled = this.player.addExp(amount);
+
+        if (timesLeveled === 0) return;
+        this.showLevelUpOptions();
+    };
+
+    showLevelUpOptions() {
+        this.pauseScreen();
+        this.levelUpContainers.setVisible(true);
+
+        for (let i = 0; i < 3; i++) {
+            const keyLevelUpOptions = Object.keys(dataLevelUpOptions);
+            const randomLevelUpOption = keyLevelUpOptions[Math.floor(Math.random() * (keyLevelUpOptions.length - 1))];
+
+            this[`levelUpOptionContainer${i}`].on('pointerdown', () => this.handleLevelUpOption(randomLevelUpOption));
+            this.levelUpSkillTexts[i].setText(randomLevelUpOption);
+            this.levelUpDescTexts[i].setText(dataLevelUpOptions[randomLevelUpOption]);
+        };
+    };
+
+    handleLevelUpOption(option) {
+        this.player.updateStat(option);
+        this.levelUpContainers.setVisible(false);
+        this.unpauseScreen();
+    };
+
+    pauseScreen() {
+        this.bossBulletsEmitter.stop();
+        this.bossBulletsEmitter.forEachAlive((particle) => {
+            particle.kill();
+        });
+
+        this.enemies.children.each((enemy) => {
+            enemy.stopMoving();
+        });
+        this.player.stopMoving();
+        this.gameTimer.paused = true;
+    };
+
+    unpauseScreen() {
+        this.enemies.children.each((enemy) => {
+            enemy.startMoving();
+        });
+        this.player.startMoving();
+        this.gameTimer.paused = false;
     };
 };

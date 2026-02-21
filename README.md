@@ -2,12 +2,7 @@
 > Navigate the Chaos, Customize the Experience.
 
 ## **Description**
-Web application featuring a versatile array of draggable widgets! _EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more!_ You can display what widgets you want and move them however you will!
-
-## **Features**
-- 30+ widgets
-- Customizable design
-- ...and more
+Web application featuring a versatile array of draggable widgets. _EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more._ You can display what widgets you want and move them however you will.
 
 ## **Showcase**
 ![widget hell logo](https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/2048.webp)
@@ -40,5 +35,6 @@ Web application featuring a versatile array of draggable widgets! _EX: Randomly 
     <img src='https://raw.githubusercontent.com/KyleBuii/Widget-Hell/main/public/resources/showcase/weather.webp' width='200' alt='weather'/>
 </p>
 
-## **Plans**
-- Allow users to create their own widgets with a focus on high customization and user-friendly simplicity
+## **Make your own widget**
+1. Open /widgetTemplate.jsx.
+2. Follow the template guide.

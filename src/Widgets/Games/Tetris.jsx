@@ -50,26 +50,30 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 	}, []);
 
     const handleKeyDown = (event) => {
-        if (/38|87|37|65|39|68|40|83|32|70|16/.test(event.keyCode)) {
+        if (/38|87|90|37|65|39|68|40|83|32|70|16/.test(event.keyCode)) {
 			let key = event.keyCode || event.which;
 			if (GM.IsAlive) {
 				switch (key) {
-					/// Up arrow OR W = Rotate     
+					/// Up arrow OR W = Rotate Clockwise
 					case 38: 
-					case 87: 
-						Page.Game.IsDirty = GM.Pc.TryRotate(); 
+					case 87:
+						Page.Game.IsDirty = GM.Pc.TryRotate(1); 
+						break;
+					/// Z = Rotate Counter-Clockwise
+					case 90:
+						Page.Game.IsDirty = GM.Pc.TryRotate(-1); 
 						break;
 					/// Left arrow OR A = Move left
 					case 37: 
-					case 65: 
+					case 65:
 						Page.Game.IsDirty = GM.Pc.TryMove(-1,0);
 						break;
-					/// Right arrow OR D = Move right  
+					/// Right arrow OR D = Move right
 					case 39:
 					case 68:
 						Page.Game.IsDirty = GM.Pc.TryMove(1,0);
 						break;
-					/// Down arrow OR S = Move down  
+					/// Down arrow OR S = Move down
 					case 40:     
 					case 83:
 						Page.Game.IsDirty = GM.Pc.TryMove(0,1);
@@ -134,14 +138,17 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 	const gameOver = () => {
 		clearInterval(intervalLoop);
 		clearInterval(intervalTimer);
-		let gold = Math.floor(state.score / 1000);
+
+		let gold = Math.floor(GM.ScoreCur / 1000);
+
 		gameProps.updateGameValue('gold', gold);
 		gameProps.updateGameValue('exp', gold);
-		if (state.score >= 5000) {
-			let amount = Math.floor(state.score / 5000);
+
+		if (GM.ScoreCur >= 5000) {
+			let amount = Math.floor(GM.ScoreCur / 5000);
             gameProps.randomItem(amount);
-			console.log(amount, gold)
 		};
+
 		setState((prevState) => ({
 			...prevState,
 			gameOver: true,
@@ -724,38 +731,56 @@ let GM = {
 GM.PcObj = function(color, rotCount, units) {
 	this.x = 5;
 	this.y = 0;
+	this.rotation = 0;
 	this.color = color;
 	this.UO = {};
+
 	/// Rotate this piece by advancing to next unit obj of linked list
-	this.Rotate = function() {
-		this.UO = this.UO.nextUO;
+	this.Rotate = function(direction) {
+		if (direction === 1) {
+			this.UO = this.UO.nextUO;
+			this.rotation = (this.rotation + 1) % 4;
+		} else {
+			this.UO = this.UO.prevUO;
+			this.rotation = (this.rotation + 3) % 4;
+		};
 	};
+
 	/// Set up the piece unit object linked list to define rotations
 	this.SetUO = function(rotCount, units) {
 		let linkedListUO = [];
-		linkedListUO[0] = { nextUO: 0, arr:[] };
-		linkedListUO[0].arr = units;
+
 		for (let i = 0; i < rotCount; i++) {
-			linkedListUO[i] = { nextUO: 0, arr:[]};
-			if (i > 0) {
-				linkedListUO[i-1].nextUO = linkedListUO[i];
+			linkedListUO[i] = {
+				nextUO: null,
+				prevUO: null,
+				arr: []
 			};
+		};
+
+		for (let i = 0; i < rotCount; i++) {
 			for (let j = 0; j < units.length; j++) {
-				let unX,
-					unY;
+				let unX, unY;
 				if (i === 0) {
 					unX = units[j].x;
 					unY = units[j].y;
 				} else {
-					unX = linkedListUO[i-1].arr[j].y * -1;
-					unY = linkedListUO[i-1].arr[j].x;  
+					unX = linkedListUO[i - 1].arr[j].y * -1;
+					unY = linkedListUO[i - 1].arr[j].x;  
 				};
+
 				linkedListUO[i].arr[j] = { x: unX, y: unY };        
 			};      
 		};
-		linkedListUO[rotCount - 1].nextUO = linkedListUO[0];
+
+		for (let i = 0; i < rotCount; i++) {
+			linkedListUO[i].nextUO = linkedListUO[(i + 1) % rotCount];
+            linkedListUO[i].prevUO = linkedListUO[(i - 1 + rotCount) % rotCount];
+		};
+
 		this.UO = linkedListUO[0];
 	};
+
 	this.SetUO(rotCount, units);
 };
 
@@ -851,6 +876,39 @@ GM.T = function() {
 //#endregion
 
 //--------------------------------------------------//
+//    KICK TABLES                                   //
+//--------------------------------------------------//
+//#region
+const JLSTZ_KICKS = {
+    '0>1': [{ x:0, y:0 }, { x:-1, y:0 }, { x:-1, y:1  }, { x:0, y:-2 }, { x:-1, y:-2 }],
+    '1>0': [{ x:0, y:0 }, { x:1 , y:0 }, { x:1 , y:-1 }, { x:0, y:2  }, { x:1 , y:2  }],
+
+    '1>2': [{ x:0, y:0 }, { x:1 , y:0 }, { x:1 , y:-1 }, { x:0, y:2  }, { x:1 , y:2  }],
+    '2>1': [{ x:0, y:0 }, { x:-1, y:0 }, { x:-1, y:1  }, { x:0, y:-2 }, { x:-1, y:-2 }],
+
+    '2>3': [{ x:0, y:0 }, { x:1 , y:0 }, { x:1 , y:1  }, { x:0, y:-2 }, { x:1 , y:-2 }],
+    '3>2': [{ x:0, y:0 }, { x:-1, y:0 }, { x:-1, y:-1 }, { x:0, y:2  }, { x:-1, y:2  }],
+
+    '3>0': [{ x:0, y:0 }, { x:-1, y:0 }, { x:-1, y:-1 }, { x:0, y:2  }, { x:-1, y:2  }],
+    '0>3': [{ x:0, y:0 }, { x:1 , y:0 }, { x:1 , y:1  }, { x:0, y:-2 }, { x:1 , y:-2 }]
+};
+
+const I_KICKS = {
+    '0>1': [{ x:0, y:0 }, { x:-2, y:0 }, { x:1 , y:0 }, { x:-2, y:-1 }, { x:1 , y:2  }],
+    '1>0': [{ x:0, y:0 }, { x:2 , y:0 }, { x:-1, y:0 }, { x:2 , y:1  }, { x:-1, y:-2 }],
+
+    '1>2': [{ x:0, y:0 }, { x:-1, y:0 }, { x:2 , y:0 }, { x:-1, y:2  }, { x:2 , y:-1 }],
+    '2>1': [{ x:0, y:0 }, { x:1 , y:0 }, { x:-2, y:0 }, { x:1 , y:-2 }, { x:-2, y:1  }],
+
+    '2>3': [{ x:0, y:0 }, { x:2 , y:0 }, { x:-1, y:0 }, { x:2 , y:1  }, { x:-1, y:-2 }],
+    '3>2': [{ x:0, y:0 }, { x:-2, y:0 }, { x:1 , y:0 }, { x:-2, y:-1 }, { x:1 , y:2  }],
+
+    '3>0': [{ x:0, y:0 }, { x:1 , y:0 }, { x:-2, y:0 }, { x:1 , y:-2 }, { x:-2, y:1  }],
+    '0>3': [{ x:0, y:0 }, { x:-1, y:0 }, { x:2 , y:0 }, { x:-1, y:2  }, { x:2 , y:-1 }]
+};
+//#endregion
+
+//--------------------------------------------------//
 //    ACTIVE PIECE CONTROLLER                       //
 //--------------------------------------------------//
 // Controls the generation, movement, and placement of piece 
@@ -859,6 +917,7 @@ GM.Pc = {
 	Cur: 0, ProjY: 0, CanHold: true, LastLineSpawn: 0,
 	Upcoming: [0,0,0],
 	Held: 0,
+	LockDelay: 500, LockTimer: 0, IsTouching: false, LockResetCount: 0, MaxLockResets: 15,
 	Hold: function() {
 		if (this.CanHold) {
 			this.CanHold = false;
@@ -882,7 +941,12 @@ GM.Pc = {
 	Generate: function() {
 		this.Cur = this.Upcoming[0];
 		this.Upcoming[0] = this.Upcoming[1];
-		this.Upcoming[1] = this.Upcoming[2];    
+		this.Upcoming[1] = this.Upcoming[2];
+
+		this.LockTimer = 0;
+		this.IsTouching = false;
+		this.LockResetCount = 0;
+
 		/// Check if the player lost
 		if (this.Cur !== 0) {
 			let spawnCollisions = this.CheckCollisions(0,0,0);
@@ -894,6 +958,7 @@ GM.Pc = {
 				this.LastLineSpawn = 0;
 			};
 		};
+
 		if (GM.IsAlive !== 0) {
 			let randomPiece = pieces[Math.floor(Math.random() * pieces.length)];
 			this.LastLineSpawn = (randomPiece === "L") ? 0 : this.LastLineSpawn++;
@@ -934,57 +999,102 @@ GM.Pc = {
 	/// Apply gravity to the current piece, checking for collisions
 	DoGravity: function() {
 		if (this.Cur !== 0) {
-			let collisions = this.CheckCollisions(0,0,1);
+			let collisions = this.CheckCollisions(0, 0, 1);
 			if (collisions === 0) {
 				this.Cur.y++;
+				this.IsTouching = false;
+				this.LockTimer = 0;
 			} else {
-				this.Freeze();
+				if (!this.IsTouching) {
+					this.IsTouching = true;
+					this.LockTimer = Date.now();
+				} else {
+					if (Date.now() - this.LockTimer >= this.LockDelay) {
+						this.Freeze();
+					};
+				};
 			};
 		};
+
 		GM.RefreshTimer();
 	},
 	/// Attempt to rotate the current piece, returns bool
-	TryRotate: function() {
-		if (this.Cur !== 0) {
-			let collisions = this.CheckCollisions(1,0,0);
+	TryRotate: function(direction) {
+		if (this.Cur === 0) return false;
+
+		const oldRotation = this.Cur.rotation;
+		const newRotation = (direction === 1)
+			? (oldRotation + 1) % 4
+			: (oldRotation + 3) % 4;
+		const keyRotation = `${oldRotation}>${newRotation}`;
+
+		let kicks;
+
+		if (this.Cur.key === 'I') {
+			kicks = I_KICKS[keyRotation];
+		} else {
+			kicks = JLSTZ_KICKS[keyRotation];
+		};
+
+		if (!kicks) return false;
+
+		for (let i = 0; i < kicks.length; i++) {
+			const currentKick = kicks[i];
+			const collisions = this.CheckCollisions(1, currentKick.x, currentKick.y);
+
 			if (collisions === 0) {
-				this.Cur.Rotate();
+				this.Cur.x += currentKick.x;
+				this.Cur.y += currentKick.y;
+
+				this.Cur.Rotate(direction);
+
+				if (this.IsTouching && (this.LockResetCount < this.MaxLockResets)) {
+					this.LockTimer = Date.now();
+					this.LockResetCount++;
+				};
+
 				return true;
 			};
 		};
+
 		return false;
 	},
 	/// Attempt to move current piece base on given XY, returns bool
 	TryMove: function(moveX, moveY) {
-		if (this.Cur !== 0) {
-			let collisions = this.CheckCollisions(0,moveX,moveY);
-			if (collisions === 0) {
-				this.Cur.x += moveX;
-				this.Cur.y += moveY;
-				if (moveY > 0) {
-					GM.RefreshTimer();
-					GM.ScoreBonus++;
-				};
-				return true;
+		if (this.Cur === 0) return false;
+
+		let collisions = this.CheckCollisions(0,moveX,moveY);
+		if (collisions === 0) {
+			this.Cur.x += moveX;
+			this.Cur.y += moveY;
+
+			if (moveY > 0) {
+				GM.RefreshTimer();
+				GM.ScoreBonus++;
 			};
+
+			if (this.IsTouching && (this.LockResetCount < this.MaxLockResets)) {
+				this.LockTimer = Date.now();
+				this.LockResetCount++;
+			};
+
+			return true;
 		};
-		return false;
 	},
 	/// Attempt to drop the current piece until it collides, returns bool
 	TryDrop: function() {
-		let squaresDropped = 0;
-		if (this.Cur !== 0) {
-			while (this.TryMove(0,1) === true && squaresDropped < 22) {
-				squaresDropped++;
-			};      
+		if (this.Cur === 0) return false;
+
+		let dropDistance = this.TryProject();
+
+		if (dropDistance > 0) {
+			this.Cur.y += dropDistance;
+			GM.ScoreBonus += 2 * dropDistance;
 		};
-		if (squaresDropped > 0) {
-			GM.ScoreBonus += 2 * squaresDropped;
-			this.Freeze();
-			return true;
-		} else {
-			return false;
-		};
+
+		this.Freeze();
+
+		return true;
 	},
 	/// Attempt to find (and return) projected drop point of current piece
 	TryProject: function() {
@@ -1000,7 +1110,7 @@ GM.Pc = {
 	/// Return collision count OR -1 if test piece out of bounds
 	CheckCollisions: function(doRot, offsetX, offsetY) {
 		let unitArr,
-			collisionCount = 0;    
+			collisionCount = 0;  
 		if (doRot === 1) {
 			unitArr = this.Cur.UO.nextUO.arr;
 		} else {

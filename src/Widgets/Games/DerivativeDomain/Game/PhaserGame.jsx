@@ -3,15 +3,14 @@ import React, { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import { EventBus } from './EventBus';
 import StartGame from './main';
 
-
 export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene }, ref){
     const game = useRef();
 
     useLayoutEffect(() => {
-        if(game.current === undefined){
+        if (game.current === undefined) {
             game.current = StartGame('derivativedomain-game');
-            
-            if(ref !== null){
+
+            if (ref !== null) {
                 ref.current = {
                     game: game.current,
                     scene: null 
@@ -27,17 +26,19 @@ export const PhaserGame = forwardRef(function PhaserGame({ currentActiveScene },
 
     useEffect(() => {
         EventBus.on('current-scene-ready', (currentScene) => {
-            if(currentActiveScene instanceof Function){
+            if (currentActiveScene instanceof Function) {
                 currentActiveScene(currentScene);
             };
+
             ref.current.scene = currentScene;
         });
+
         return () => {
             EventBus.removeListener('current-scene-ready');
         };
     }, [currentActiveScene, ref]);
-    
-    return(
+
+    return (
         <div id='derivativedomain-game'></div>
     );
 });

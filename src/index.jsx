@@ -245,7 +245,6 @@ class Widgets extends Component {
                         rarity: ''
                     }
                 },
-                test: {name: ''},
                 consumable1: {
                     name: '',
                     rarity: ''

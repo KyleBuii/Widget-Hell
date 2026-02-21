@@ -30,12 +30,60 @@ const audioItemOpen = new Audio('/resources/audio/switch_006.wav');
 const audioItemClose = new Audio('/resources/audio/switch_007.wav');
 const audioItemUnequip = new Audio('/resources/audio/cloth.wav');
 const allStats = ['health', 'mana', 'attack', 'defense', 'strength', 'agility', 'vitality', 'resilience', 'intelligence', 'dexterity', 'luck'];
+let slotsMapping = {};
 let items = {};
 
 const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
     const [state, setState] = useState({
         item: { name: 'Creampuff', rarity: 'rare', slot: 'hidden' },
         abilities: []
+    });
+    const [equipmentSlots, setEquipmentSlots] = useState({
+        armour: {
+            head: {
+                headband: '',
+                helmet: '',
+                eyewear: '',
+            },
+            neck: {
+                necklace: '',
+            },
+            body: {
+                undershirt: '',
+                chestplate: '',
+                cape: '',
+            },
+            waist: {
+                braceletRight: '',
+                wristRight: '',
+                belt: '',
+                wristLeft: '',
+                braceletLeft: '',
+            },
+            leg: {
+                main: '',
+                gloveRight: '',
+                ringRight: '',
+                legging: '',
+                ringLeft: '',
+                gloveLeft: '',
+                offhand: '',
+            },
+            feet: {
+                hiddenRight: '',
+                bootRight: '',
+                bootLeft: '',
+                hiddenLeft: '',
+            },
+        },
+        consumable: {
+            1: '',
+            2: '',
+            3: '',
+            4: '',
+            5: '',
+            6: '',
+        },
     });
 
     const { updateGameValue, useStatPoint } = parentRef;
@@ -47,57 +95,45 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
 
         window.addEventListener('equip item', updateEquipment);
 
+        Object.keys(equipmentSlots.armour).forEach((slot) => {
+            Object.keys(equipmentSlots.armour[slot]).forEach((subSlot) => {
+                const cleaned = subSlot.replace(/(Left|Right)/, '');
+
+                if (!slotsMapping[cleaned]) {
+                    slotsMapping[cleaned] = slot;
+                };
+            });
+        });
+
         dataLoaded.then(() => {
             items = getData('items');
 
             /// Fill equipment slots with image of equipped item
-            let itemSlot;
+            const newEquipmentSlots = { ...equipmentSlots };
             for (let i in equipment) {
                 if (equipment[i].name !== '') {
                     /// Equipped items with no left and right
                     if (equipment[i].name !== undefined) {
-                        itemSlot = document.getElementById(`equipment-slot-${i}`);
-                        itemSlot.style.backgroundImage = `url(${items?.[equipment[i].rarity][equipment[i].name].image})`;
-                        itemSlot.style.opacity = '1';
-                        itemSlot.onclick = () => {
-                            viewItem({
-                                ...equipment[i],
-                                'slot': i
-                            });
+                        const isConsumable = /consumable/.test(i);
+
+                        if (isConsumable) {
+                            newEquipmentSlots.consumable[i.slice(-1)] = items?.[equipment[i].rarity][equipment[i].name].image;
+                        } else {
+                            newEquipmentSlots.armour[slotsMapping[i]][i] = items?.[equipment[i].rarity][equipment[i].name].image;
                         };
                     } else {
-                        /// Left equipped item
                         if (equipment[i].left.name !== '') {
-                            itemSlot = document.getElementById(`equipment-slot-${i}-left`);
-                            itemSlot.style.backgroundImage = `url(${items?.[equipment[i].left.rarity][equipment[i].left.name].image})`;
-                            itemSlot.style.transform = 'scaleX(-1)';
-                            itemSlot.style.opacity = '1';
-                            itemSlot.onclick = () => {
-                                viewItem({
-                                    ...equipment[i].left,
-                                    'slot': i,
-                                    'side': 'left'
-                                });
-                            };  
+                            newEquipmentSlots.armour[slotsMapping[i]][`${i}Left`] = items?.[equipment[i].left.rarity][equipment[i].left.name].image;
                         };
-                        /// Right equipped item
+
                         if (equipment[i].right.name !== '') {
-                            itemSlot = document.getElementById(`equipment-slot-${i}-right`);
-                            itemSlot.style.backgroundImage = `url(${items?.[equipment[i].right.rarity][equipment[i].right.name].image})`;
-                            itemSlot.style.transform = 'scaleX(1)';
-                            itemSlot.style.opacity = '1';
-                            itemSlot.onclick = () => {
-                                viewItem({
-                                    ...equipment[i].right,
-                                    'slot': i,
-                                    'side': 'right'
-                                });
-                            };         
+                            newEquipmentSlots.armour[slotsMapping[i]][`${i}Right`] = items?.[equipment[i].right.rarity][equipment[i].right.name].image;
                         };
                     };
                 };
             };
 
+            setEquipmentSlots(newEquipmentSlots);
             updateAbilities();
         });
 
@@ -113,6 +149,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
     const viewItem = (item) => {
         defaultProps.playAudio(audioItemOpen);
         document.getElementById('equipment-popout-view-item').style.visibility = 'visible';
+
         setState((prevState) => ({
             ...prevState,
             item: item
@@ -122,28 +159,52 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
     const unequipItem = (event) => {
         event.stopPropagation();
         defaultProps.playAudio(audioItemUnequip);
-        let itemSlot;
+
+        const newEquipmentSlots = { ...equipmentSlots };
         let newEquipment;
-        if (state.item.side) {
-            itemSlot = document.getElementById(`equipment-slot-${state.item.slot}-${state.item.side}`);
+
+        if (/consumable/.test(state.item.slot)) {
+            const formattedName = state.item.name.replace(' ', '').toLowerCase();
+            const consumableValues = Object.values(newEquipmentSlots.consumable);
+            const indexOfItem = consumableValues.indexOf(`/resources/items/${formattedName}.webp`);
+
+            newEquipmentSlots.consumable[indexOfItem + 1] = '';
             newEquipment = {
                 ...equipment,
-                [state.item.slot]: {
-                    ...equipment[state.item.slot],
+                [`${state.item.slot}${indexOfItem + 1}`]: {
+                    name: '',
+                    rarity: ''
+                }
+            };
+
+            window.dispatchEvent(new CustomEvent('unequip item', {
+                'detail': {
+                    'slot': `${state.item.slot}${indexOfItem + 1}`
+                }
+            }));
+        } else if (state.item.side) {
+            const removedRightLeft = state.item.slot.replace(/Right|Left/, '');
+
+            newEquipmentSlots.armour[slotsMapping[removedRightLeft]][state.item.slot] = '';
+            newEquipment = {
+                ...equipment,
+                [removedRightLeft]: {
+                    ...equipment[removedRightLeft],
                     [state.item.side]: {
                         name: '',
                         rarity: ''
                     }
                 }
             };
+
             window.dispatchEvent(new CustomEvent('unequip item', {
                 'detail': {
-                    'slot': state.item.slot,
+                    'slot': removedRightLeft,
                     'side': state.item.side
                 }
             }));
         } else {
-            itemSlot = document.getElementById(`equipment-slot-${state.item.slot}`);
+            newEquipmentSlots.armour[slotsMapping[state.item.slot]][state.item.slot] = '';
             newEquipment = {
                 ...equipment,
                 [state.item.slot]: {
@@ -151,67 +212,38 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                     rarity: ''
                 }
             };
+
             window.dispatchEvent(new CustomEvent('unequip item', {
                 'detail': {
                     'slot': state.item.slot
                 }
             }));
         };
-        if (/consumable/.test(state.item.slot)) {
-            itemSlot.style.backgroundImage = `url(/resources/inventory/consumable.webp)`;
-        } else {
-            itemSlot.style.backgroundImage = `url(/resources/inventory/${state.item.slot}.webp)`;
-        };
-        itemSlot.style.opacity = '0.5';
-        itemSlot.onclick = null;
+
+        setEquipmentSlots(newEquipmentSlots);
         updateGameValue('equipment', newEquipment);
         removeStats(state.item);
+
         document.getElementById('equipment-popout-view-item').style.visibility = 'hidden';
     };
 
     const updateEquipment = (event) => {
         const itemData = {
-            'name': event.detail.name,
-            'rarity': event.detail.rarity
+            name: event.detail.name,
+            rarity: event.detail.rarity
         };
+        const newEquipmentSlots = { ...equipmentSlots };
 
-        let itemSlot;
-
-        if (event.detail.side) {
-            if (equipment[event.detail.slot][event.detail.side].name !== event.detail.name
-                && equipment[event.detail.slot][event.detail.side].name === '') {
-                itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}-${event.detail.side}`);
-                itemSlot.style.backgroundImage = `url(${items?.[itemData.rarity][itemData.name].image})`;
-
-                if (event.detail.side === 'left') {
-                    itemSlot.style.transform = 'scaleX(-1)';
-                } else {
-                    itemSlot.style.transform = 'scaleX(1)';
-                };
-                
-                itemSlot.style.opacity = '1';
-                itemSlot.onclick = () => {
-                    viewItem({
-                        ...itemData,
-                        'slot': event.detail.slot,
-                        'side': event.detail.side
-                    });
-                };
-            };
+        if (/consumable/.test(event.detail.slot)) {
+            newEquipmentSlots.consumable[event.detail.slot.slice(-1)] = items?.[itemData.rarity][itemData.name].image;
+        } else if (event.detail.side) {
+            const formattedItemSlot = `${event.detail.slot}${event.detail.side.replace(/^./, (char) => char.toUpperCase())}`;
+            newEquipmentSlots.armour[slotsMapping[event.detail.slot]][formattedItemSlot] = items?.[itemData.rarity][itemData.name].image;
         } else {
-            if (equipment[event.detail.slot].name !== event.detail.name
-                && equipment[event.detail.slot].name === '') {
-                itemSlot = document.getElementById(`equipment-slot-${event.detail.slot}`);
-                itemSlot.style.backgroundImage = `url(${items?.[itemData.rarity][itemData.name].image})`;
-                itemSlot.style.opacity = '1';
-                itemSlot.onclick = () => {
-                    viewItem({
-                        ...itemData,
-                        'slot': event.detail.slot
-                    });
-                };
-            };
+            newEquipmentSlots.armour[slotsMapping[event.detail.slot]][event.detail.slot] = items?.[itemData.rarity][itemData.name].image;
         };
+
+        setEquipmentSlots(newEquipmentSlots);
     };
 
     const removeStats = (itemData) => {
@@ -242,7 +274,6 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                     stats[itemStats[i]][1] - currentStat
                 ];
             };
-
 
             updateGameValue('stats', newStats);
         };
@@ -331,213 +362,92 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                     {/* Armor Slots */}
                                     <div id='equipment-slots-armor'
                                         className='aesthetic-scale scale-button slot flex-center column gap'>
-                                        {/* Helmet Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Headband */}
-                                            <button id='equipment-slot-headband'
-                                                aria-label='Slot headband'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/headband.webp)`
-                                                }}></button>
-                                            {/* Helmet */}
-                                            <button id='equipment-slot-helmet'
-                                                aria-label='Slot helment'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/helmet.webp)`
-                                                }}></button>
-                                            {/* Eyewear */}
-                                            <button id='equipment-slot-eyewear'
-                                                aria-label='Slot eyewear'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/eyewear.webp)`,
-                                                    backgroundSize: '25px'
-                                                }}></button>
-                                        </div>
-                                        {/* Necklace Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Necklace */}
-                                            <button id='equipment-slot-necklace'
-                                                aria-label='Slot necklace'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/necklace.webp)`,
-                                                    backgroundSize: '25px'
-                                                }}></button>
-                                        </div>
-                                        {/* Chestplate Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Undershirt */}
-                                            <button id='equipment-slot-undershirt'
-                                                aria-label='Slot undershirt'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/undershirt.webp)`
-                                                }}></button>
-                                            {/* Chestplate */}
-                                            <button id='equipment-slot-chestplate'
-                                                aria-label='Slot chestplate'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/chestplate.webp)`
-                                                }}></button>
-                                            {/* Cape */}
-                                            <button id='equipment-slot-cape'
-                                                aria-label='Slot cape'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/cape.webp)`
-                                                }}></button>
-                                        </div>
-                                        {/* Belt Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Right Bracelet */}
-                                            <button id='equipment-slot-bracelet-right'
-                                                aria-label='Slot right bracelet'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/bracelet.webp)`,
-                                                    backgroundSize: '25px',
-                                                    transform: 'scaleX(-1)'
-                                                }}></button>
-                                            {/* Right Wrist */}
-                                            <button id='equipment-slot-wrist-right'
-                                                aria-label='Slot right wrist'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/wrist.webp)`,
-                                                    backgroundSize: '20px'
-                                                }}></button>
-                                            {/* Belt */}
-                                            <button id='equipment-slot-belt'
-                                                aria-label='Slot belt'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/belt.webp)`
-                                                }}></button>
-                                            {/* Left Wrist */}
-                                            <button id='equipment-slot-wrist-left'
-                                                aria-label='Slot left wrist'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/wrist.webp)`,
-                                                    backgroundSize: '20px'
-                                                }}></button>
-                                            {/* Left Bracelet */}
-                                            <button id='equipment-slot-bracelet-left'
-                                                aria-label='Slot left bracelet'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/bracelet.webp)`,
-                                                    backgroundSize: '25px'
-                                                }}></button>
-                                        </div>
-                                        {/* Legging Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Main Item */}
-                                            <button id='equipment-slot-main'
-                                                aria-label='Slot main item'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/main.webp)`
-                                                }}></button>
-                                            {/* Right Glove */}
-                                            <button id='equipment-slot-glove-right'
-                                                aria-label='Slot right glove'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/glove.webp)`,
-                                                    backgroundSize: '22px'
-                                                }}></button>
-                                            {/* Right Ring */}
-                                            <button id='equipment-slot-ring-right'
-                                                aria-label='Slot right ring'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/ring.webp)`,
-                                                    backgroundSize: '20px',
-                                                    transform: 'scaleX(-1)'
-                                                }}></button>
-                                            {/* Legging */}
-                                            <button id='equipment-slot-legging'
-                                                aria-label='Slot legging'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/legging.webp)`
-                                                }}></button>
-                                            {/* Left Ring */}
-                                            <button id='equipment-slot-ring-left'
-                                                aria-label='Slot left ring'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/ring.webp)`,
-                                                    backgroundSize: '20px'
-                                                }}></button>
-                                            {/* Left Glove */}
-                                            <button id='equipment-slot-glove-left'
-                                                aria-label='Slot left glove'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/glove.webp)`,
-                                                    backgroundSize: '22px',
-                                                    transform: 'scaleX(-1)'
-                                                }}></button>
-                                            {/* Offhand Item */}
-                                            <button id='equipment-slot-offhand'
-                                                aria-label='Slot offhand item'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/offhand.webp)`,
-                                                    backgroundSize: '40px'
-                                                }}></button>
-                                        </div>
-                                        {/* Boot Container */}
-                                        <div className='flex-center row gap'>
-                                            {/* Right Hidden Item in Boot */}
-                                            <button id='equipment-slot-hidden-right'
-                                                aria-label='Slot right hidden item in boot'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/hidden.webp)`
-                                                }}></button>
-                                            {/* Right Boot */}
-                                            <button id='equipment-slot-boot-right'
-                                                aria-label='Slot right boot'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/boot.webp)`,
-                                                    backgroundSize: '40px'
-                                                }}></button>
-                                            {/* Left Boot */}
-                                            <button id='equipment-slot-boot-left'
-                                                aria-label='Slot left boot'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/boot.webp)`,
-                                                    backgroundSize: '40px',
-                                                    transform: 'scaleX(-1)'
-                                                }}></button>
-                                            {/* Left Hidden Item in Boot */}
-                                            <button id='equipment-slot-hidden-left'
-                                                aria-label='Slot left hidden item in boot'
-                                                style={{
-                                                    backgroundImage: `url(/resources/inventory/hidden.webp)`
-                                                }}></button>
-                                        </div>
+                                        {Object.keys(equipmentSlots.armour).map((type) => {
+                                            return <div className='flex-center row gap'
+                                                key={`${type} container`}>
+                                                {Object.keys(equipmentSlots.armour[type]).map((subtype) => {
+                                                    const formattedSubtype = subtype.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+                                                    const removedRightLeft = formattedSubtype.replace(/-(right|left)/, '');
+
+                                                    const currentSlot = equipmentSlots.armour[type][subtype];
+                                                    const isSlotEmpty = currentSlot === '';
+                                                    const subtypeImage = isSlotEmpty
+                                                        ? `/resources/inventory/${removedRightLeft}.webp`
+                                                        : currentSlot;
+
+                                                    const isLeft = /left/.test(formattedSubtype);
+                                                    const isRight = /right/.test(formattedSubtype);
+
+                                                    let subtypeStyle = {};
+
+                                                    switch (formattedSubtype) {
+                                                        case 'wrist-right'    :
+                                                        case 'wrist-left'     :
+                                                        case 'ring-left'      : subtypeStyle = { backgroundSize: '20px' }; break;
+                                                        case 'glove-right'    : subtypeStyle = { backgroundSize: '22px' }; break;
+                                                        case 'eyewear'        :
+                                                        case 'necklace'       :
+                                                        case 'bracelet-left'  : subtypeStyle = { backgroundSize: '25px' }; break;
+                                                        case 'offhand'        :
+                                                        case 'boot-right'     : subtypeStyle = { backgroundSize: '40px' }; break;
+                                                        case 'ring-right'     : subtypeStyle = { backgroundSize: '20px' }; break;
+                                                        case 'glove-left'     : subtypeStyle = { backgroundSize: '22px' }; break;
+                                                        case 'bracelet-right' : subtypeStyle = { backgroundSize: '25px' }; break;
+                                                        case 'boot-left'      : subtypeStyle = { backgroundSize: '40px' }; break;
+                                                        default: break;
+                                                    };
+
+                                                    return <button id={`equipment-slot-${formattedSubtype}`}
+                                                        key={`${subtype} container`}
+                                                        aria-label={`Slot ${formattedSubtype}`}
+                                                        style={{
+                                                            ...subtypeStyle,
+                                                            ...(isLeft ? { transform: 'scaleX(-1)' } : {}),
+                                                            backgroundImage: `url(${subtypeImage})`,
+                                                            opacity: isSlotEmpty ? 0.5 : 1
+                                                        }}
+                                                        onClick={() => {
+                                                            if (isSlotEmpty) return;
+
+                                                            const equipmentSide = isLeft ? 'left'
+                                                                : isRight ? 'right'
+                                                                : undefined;
+                                                            viewItem({
+                                                                ...equipment[removedRightLeft][equipmentSide] || equipment[subtype],
+                                                                ...(equipmentSide && { side: equipmentSide }),
+                                                                slot: subtype
+                                                            });
+                                                        }}></button>
+                                                })}
+                                            </div>
+                                        })}
                                     </div>
                                     {/* Consumable Slots */}
                                     <div id='equipment-slots-consumable' 
                                         className='slot flex-center row gap'>
-                                        <button id='equipment-slot-consumable1'
-                                            aria-label='Slot consumable 1'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
-                                        <button id='equipment-slot-consumable2'
-                                            aria-label='Slot consumable 2'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
-                                        <button id='equipment-slot-consumable3'
-                                            aria-label='Slot consumable 3'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
-                                        <button id='equipment-slot-consumable4'
-                                            aria-label='Slot consumable 4'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
-                                        <button id='equipment-slot-consumable5'
-                                            aria-label='Slot consumable 5'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
-                                        <button id='equipment-slot-consumable6'
-                                            aria-label='Slot consumable 6'
-                                            style={{
-                                                backgroundImage: `url(/resources/inventory/consumable.webp)`
-                                            }}></button>
+                                        {Object.keys(equipmentSlots.consumable).map((consume) => {
+                                            const currentSlot = equipmentSlots.consumable[consume];
+                                            const isSlotEmpty = currentSlot === '';
+                                            const consumableImage = (currentSlot === '')
+                                                ? '/resources/inventory/consumable.webp'
+                                                : currentSlot;
+
+                                            return <button id={`equipment-slot-consumable${consume}`}
+                                                key={`consumable ${consume}`}
+                                                aria-label={`Slot consumable ${consume}`}
+                                                style={{
+                                                    backgroundImage: `url(${consumableImage})`,
+                                                    opacity: isSlotEmpty ? 0.5 : 1
+                                                }}
+                                                onClick={() => {
+                                                    if (isSlotEmpty) return;
+
+                                                    viewItem({
+                                                        ...equipment[`consumable${consume}`],
+                                                        slot: 'consumable'
+                                                    });
+                                                }}></button>
+                                        })}
                                     </div>
                                 </div>
                                 {/* Stats */}
@@ -555,7 +465,7 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allStats.map((stat, statIndex) => {
+                                        {allStats.map((stat) => {
                                             return <tr key={stat}>
                                                 <td>{stat.replace(/^./, (char) => char.toUpperCase())}:</td>
                                                 <td>{stats[stat][0] + stats[stat][1]} {(stats[stat][1] !== 0) && `+${stats[stat][1]}`}</td>
