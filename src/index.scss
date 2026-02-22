@@ -113,7 +113,6 @@
     --animeSearcherTopOffset: ;
 }
 
-
 //////////////////// Element Selectors ////////////////////
 //#region
 body {
@@ -3203,6 +3202,10 @@ $cursor-selectors: (
     border-radius: 20px;
     box-shadow: 0em 0em 0.6em 0.05em var(--randColor);
     max-width: 100vmin;
+
+    &:focus {
+        outline: none;
+    }
 }
 
 .popup-image {

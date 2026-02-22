@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -17,6 +17,8 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
     const [selectedIceberg, setSelectedIceberg] = useState({ label: '', value: 0 });
     const [selectedLevel, setSelectedLevel] = useState(0);
     const [selectedItem, setSelectedItem] = useState(0);
+
+    const refViewItemPopout = useRef(null);
 
     const { icebergs } = fetchedData || {};
 
@@ -57,6 +59,33 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
 
     const handleSelect = (event) => {
         setSelectedIceberg(event);
+    };
+
+    const handleKeyDown = (event) => {
+        if (!/a|d|ArrowLeft|ArrowRight/.test(event.key)) return;
+
+        const currentLevelKeys = Object.keys(icebergs[Object.keys(icebergs)[selectedIceberg.value]][selectedLevel]);
+        const keysLength = currentLevelKeys.length - 2; /// First entry is a _comment
+
+        if (/a|ArrowLeft/.test(event.key)) {
+            setSelectedItem((prev) => {
+                const nextIndex = prev - 1;
+
+                if (nextIndex < 0) return keysLength;
+
+                return prev - 1
+            });
+        };
+
+        if (/d|ArrowRight/.test(event.key)) {
+            setSelectedItem((prev) => {
+                const nextIndex = prev + 1;
+
+                if (nextIndex > keysLength) return 0;
+
+                return prev + 1
+            });
+        };
     };
 
     return (
@@ -132,12 +161,18 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
                         </div>
                     </div>
                     <Draggable defaultPosition={{ x: defaultProps.popouts.viewItem.position.x, y: defaultProps.popouts.viewItem.position.y }}
-                        onStop={(event, data) => defaultProps.updatePosition('iceberg', 'fun', data.x, data.y, 'popout', 'viewItem')}
+                        onStop={(event, data) => {
+                            refViewItemPopout.current?.focus();
+                            defaultProps.updatePosition('iceberg', 'fun', data.x, data.y, 'popout', 'viewItem');
+                        }}
                         cancel='a'
                         bounds={defaultProps.calculateBounds('iceberg-widget', 'iceberg-view-item-popout')}>
                         <div id='iceberg-view-item-popout'
-                            className='popout'>
-                            <div className={`popout-animation iceberg-view-item-popout-animation ${classStack}`}>
+                            className='popout'
+                            onKeyDown={handleKeyDown}>
+                            <div ref={refViewItemPopout}
+                                className={`popout-animation iceberg-view-item-popout-animation ${classStack}`}
+                                tabIndex={-1}>
                                 {(data.image)
                                     && data.image.map((item, itemIndex) => {
                                         return <img src={`/resources/iceberg/${item}`}

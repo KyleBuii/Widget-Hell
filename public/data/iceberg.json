@@ -659,5 +659,207 @@
 				}
 			}
 		}
+	],
+	"weird animals": [
+		{ "_comment": "Level 1 – Looks Normal",
+			"Raccoon": {
+                "image": [
+					"/weird-animals/raccoon/raccoon-1.webp",
+					"/weird-animals/raccoon/raccoon-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Raccoon",
+					"Rhododendrites": "https://commons.wikimedia.org/wiki/File:Raccoon_in_Central_Park_(35264).jpg",
+					"Darkone": "https://en.wikipedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Koala": {
+				"image": [
+					"/weird-animals/koala/koala-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Koala",
+					"Diliff": "https://en.wikipedia.org/wiki/File:Koala_climbing_tree.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Crow": {
+				"image": [
+					"/weird-animals/crow/crow-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Crow",
+					"Ian Kirk": "https://commons.wikimedia.org/wiki/File:Corvus_corone_-near_Canford_Cliffs,_Poole,_England-8.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Huntsman spider": {
+				"image": [
+					"/weird-animals/huntsman-spider/huntsman-spider-1.webp",
+					"/weird-animals/huntsman-spider/huntsman-spider-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Huntsman_spider",
+					"JonRichfield": "https://commons.wikimedia.org/wiki/File:Sparassidae_Palystes_castaneus_mature_female_9923s.jpg",
+					"Gabrielrbt": "https://commons.wikimedia.org/wiki/File:Huntsman_spider_of_Seychelles.png"
+				},
+				"information": [
+					""
+				]
+			},
+			"Opossum": {
+				"image": [
+					"/weird-animals/opossum/opossum-1.webp",
+					"/weird-animals/opossum/opossum-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Opossum",
+					"Sergey Yarmolyuk": "https://commons.wikimedia.org/wiki/File:Opossum_(Mar_2021).jpg",
+					"Oscar Marín": "https://commons.wikimedia.org/wiki/File:Didelphis_pernigra_29825860_1.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Catfish": {
+				"image": [
+					"/weird-animals/catfish/catfish-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Catfish",
+					"Image": "https://commons.wikimedia.org/wiki/File:Channelcat.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Stick bug": {
+				"image": [
+					"/weird-animals/stick-bug/stick-bug-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Phasmatodea",
+					"Fritz Geller-Grimm and Felix Grimm": "https://commons.wikimedia.org/wiki/File:Le_Caylar_fg01.JPG"
+				},
+				"information": [
+					""
+				]
+			}
+		},
+		{ "_comment": "Level 2 - Slightly Weird",
+			"Feather star": {
+				"image": [
+					"/weird-animals/feather-star/feather-star-1.webp",
+					"/weird-animals/feather-star/feather-star-2.webp",
+					"/weird-animals/feather-star/feather-star-3.webp",
+					"/weird-animals/feather-star/feather-star-4.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Crinoid",
+					"Alexander Vasenin (Batu Moncho)": "https://commons.wikimedia.org/wiki/File:Crinoid_on_the_reef_of_Batu_Moncho_Island.JPG",
+					"NOAA Photo library": "https://commons.wikimedia.org/wiki/File:Crinoide_vraie.jpg",
+					"Seascapeza": "https://commons.wikimedia.org/wiki/File:Elegant_feather_star9.jpg",
+					"Alexander Vasenin (Nusa Kode)": "https://commons.wikimedia.org/wiki/File:Multiple_crinoids_occupying_the_reef_of_Nusa_Kode_Island.JPG"
+				},
+				"information": [
+					""
+				]
+			},
+			"Sloth bear": {
+				"image": [
+					"/weird-animals/sloth-bear/sloth-bear-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Sloth_bear",
+					"flickr": "https://www.flickr.com/photos/mape_s/333862236/"
+				},
+				"information": [
+					""
+				]
+			},
+			"Great dane": {
+				"image": [
+					"/weird-animals/great-dane/great-dane-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Great_Dane",
+					"Lilly M": "https://commons.wikimedia.org/wiki/File:Dog_niemiecki_%C5%BC%C3%B3%C5%82ty_LM980.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Indian rose mantis": {
+				"image": [
+					"/weird-animals/indian-rose-mantis/indian-rose-mantis-1.webp",
+					"/weird-animals/indian-rose-mantis/indian-rose-mantis-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Gongylus_gongylodes",
+					"Monica Saini": "https://commons.wikimedia.org/wiki/File:Indian_rose_mantis.jpg",
+					"Jayendra Chiplunkar": "https://commons.wikimedia.org/wiki/File:Indian_Rose_Mantis_(Gongylus_gongylodes).jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Arabian sand boa": {
+				"image": [
+					"/weird-animals/arabian-sand-boa/arabian-sand-boa-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Eryx_jayakari",
+					"Omid Mozaffari": "https://commons.wikimedia.org/wiki/File:Eryx_jayakari_by_Omid_Mozaffari.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Sailfish": {
+				"image": [
+					"/weird-animals/sailfish/sailfish-1.webp",
+					"/weird-animals/sailfish/sailfish-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Sailfish",
+					"Alastair Pollock Photography": "https://www.alastairpollock.com/other-wildlife",
+					"Benjamint444": "https://commons.wikimedia.org/wiki/File:Pacific-sailfish.jpg"
+				},
+				"information": [
+					""
+				]
+			},
+			"Panda": {
+				"image": [
+					"/weird-animals/panda/panda-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Giant_panda",
+					"J. Patrick Fischer": "https://commons.wikimedia.org/wiki/File:Grosser_Panda.JPG"
+				},
+				"information": [
+					""
+				]
+			},
+			"Chameleon": {
+				"image": [
+					"/weird-animals/chameleon/chameleon-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Chameleon",
+					"Suyash Dwivedi": "https://commons.wikimedia.org/wiki/File:Chameleons%27_Eye_Coordination_01.jpg"
+				},
+				"information": [
+					""
+				]
+			}
+		}
 	]
 }
