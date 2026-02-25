@@ -2,6 +2,25 @@ import Phaser from 'phaser';
 import { Ability } from './Ability.jsx';
 import { Danmaku } from './Danmaku.jsx';
 
+const dataItems = {
+    'Redirects every attack against the user back to the attacker' : {
+        name: 'Code of Hammurabi',
+        cooldown: 60,
+    },
+    'Places a grass block' : {
+        name: 'Grass Block',
+        cooldown: 60,
+    },
+    'Slashes in a large radius' : {
+        name: 'Rest In Peace',
+        cooldown: 1,
+    },
+    'Fires a wave' : {
+        name: 'Oceanic Terror',
+        cooldown: 1,
+    },
+};
+const abilityDistance = 50;
 let isMobile = false;
 let velocityX = 0;
 let velocityY = 0;
@@ -22,11 +41,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.displayWidth = 32;
         this.displayHeight = 50;
 
+        this.layers = {};
+
         this.exp = 0;
         this.level = 1;
         this.neededExp = this.calculateNeededExp();
 
         this.speed = 300;
+
+        this.fireRate = 300;
+        this.addedFireRate = 0;
+
+        this.projectileRadians = this.generateRadians(16);
+        this.projectiles = 1;
 
         this.weapons = [];
 
@@ -52,6 +79,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.isGamePaused) return;
 
         super.preUpdate(time, delta);
+        this.updateLayers();
+
         if (this.x !== this.danmaku.x || this.y !== this.danmaku.y) {
             this.danmaku.follow(this);
         };
@@ -66,12 +95,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.keyA = this.scene.input.keyboard.addKey('A');
             this.keyS = this.scene.input.keyboard.addKey('S');
             this.keyD = this.scene.input.keyboard.addKey('D');
-            this.keyUp = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-            this.keyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+            this.keyUp    = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+            this.keyLeft  = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
             this.keyRight = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-            this.keyDown = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-            this.keyShift = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
-            this.keyAbility = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            this.keyDown  = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+            this.keyShift         = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+            this.keyAbility       = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
             this.keyAbilitySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);   
 
             if (isMobile) {
@@ -141,47 +170,128 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.danmaku.setProperties(this.scene, this.weapons[0]);
                 this.danmaku.startUpDanmaku(this.scene);
             };
-            if (time > this.bulletLastFired + (300 - (this.dex * 10))) {
+
+            const calcFireRate = this.fireRate - ((this.dex * 10) + this.addedFireRate);
+            if (time > this.bulletLastFired + calcFireRate) {
                 this.bulletLastFired = time;
 
                 const aimAngle = Phaser.Math.Angle.Between(0, 0, this.direction.x, this.direction.y);
-                this.danmaku.setRotation(aimAngle);
-                this.danmaku.fireDanmaku(this.scene);
+
+                for (let i = 0; i < this.projectiles; i++) {
+                    let calcRadians = this.projectileRadians[i];
+                    this.danmaku.setRotation(aimAngle + calcRadians);
+
+                    this.danmaku.fireDanmaku(this.scene);
+                };
             };
         };
         
         if (Object.keys(this.abilities).length !== 0) {
-            if (this.abilityTimer < this.abilityCooldown) {
-                this.abilityTimer += delta / 1000;
+            for (let abilityName in this.abilities) {
+                let abilityData = this.abilities[abilityName];
+
+                if (abilityData.timer === abilityData.cooldown) continue;
+                
+                abilityData.timer += delta / 1000;
+                if (abilityData.timer > abilityData.cooldown) abilityData.timer = abilityData.cooldown;
             };
-            if ((this.keyAbility?.isDown || this.mobileAbility) && this.abilityTimer >= this.abilityCooldown) {
+
+            const abilityData = this.abilities[this.ability];
+
+            if (
+                (this.keyAbility?.isDown || this.mobileAbility)
+                && abilityData
+                && abilityData.timer >= abilityData.cooldown
+            ) {
                 if (!this.ability) return;
 
-                this[this.ability]();
-                this.abilityTimer = 0;
+                const abilityFunction = this.ability.replace(/^./, (char) => char.toLowerCase())
+                                                    .replace(/\s(.)/g, (_, char) => char.toUpperCase());
+
+                this[abilityFunction]?.(this.projectiles);
+                abilityData.timer = 0;
             };
+
             if (Phaser.Input.Keyboard.JustDown(this.keyAbilitySwitch)
                 && Object.keys(this.abilities).length > 0) {
                 let keysAbilities = Object.keys(this.abilities);
                 this.abilityIndex++;
+
                 if (this.abilityIndex >= keysAbilities.length) {
                     this.abilityIndex = 0;
                 };
+
                 this.ability = keysAbilities[this.abilityIndex];
-                this.abilityCooldown = this.abilities[keysAbilities[this.abilityIndex]];
-                this.scene.textCurrentAbility.setText(
-                    this.ability.replace(/^./, (char) => char.toUpperCase())
-                        .replace(/([A-Z])/g, " $1").trim()
-                );
+                this.scene.textCurrentAbility.setText(this.ability);
             };
         };
     };
 
-    updateStat(stat, amount = 1) {
-        const formattedStat = stat.toLowerCase().replace(' ', '-');
-        switch (formattedStat) {
+    equip(slot, texture) {
+        let layer = this.layers[slot];
+
+        if (layer) {
+            layer.setTexture(texture);
+        } else {
+            layer = this.scene.add.sprite(this.x, this.y, texture);
+            layer.setDisplaySize(this.displayWidth, this.displayHeight);
+            this.layers[slot] = layer;
+        };
+
+        layer.setDepth(this.depth + 1);
+        layer.setVisible(true);
+    };
+
+    unequip(slot) {
+        const layer = this.layers[slot];
+
+        if (!layer) return;
+
+        layer.setVisible(false);
+    };
+
+    updateLayers() {
+        for (const layer of Object.values(this.layers)) {
+            if (!layer) continue;
+
+            layer.setPosition(this.x, this.y);
+            layer.setDepth(this.depth + 1);
+        };
+    };
+
+    generateRadians(count) {
+        const result = [];
+        const full = 2 * Math.PI;
+        const bits = Math.ceil(Math.log2(count));
+
+        for (let i = 0; i < count; i++) {
+            let reversed = 0;
+
+            for (let b = 0; b < bits; b++) {
+                if (i & (1 << b)) {
+                    reversed |= 1 << (bits - 1 - b);
+                };
+            };
+
+            result.push((reversed / count) * full);
+        };
+
+        return result;
+    };
+
+    updateStat(stat, amount) {
+        switch (stat) {
+            case 'fire rate':
+                this.addedFireRate += amount * 10;
+                break;
             case 'health':
-                // this.hp.updateGameValue(amount);
+                this.hp.updateGameValue(amount);
+                break;
+            case 'multi':
+                this.projectiles += amount;
+                break;
+            case 'speed':
+                this.speed += amount * 10;
                 break;
             default:
                 break;
@@ -211,39 +321,40 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     };
 
     setAbilities() {
+        this.abilities = {};
+
         for (let ability of this.abilitiesRaw) {
             switch (ability) {
-                case "Places a grass block":
-                    this.ability = "grassBlock";
-                    this.abilityCooldown = 60;
+                case 'Places a grass block':
+                case 'Redirects every attack against the user back to the attacker':
+                case 'Slashes in a large radius':
+                case 'Fires a wave': {
+                    const abilityData = dataItems[ability];
+                    this.ability = abilityData.name;
+                    this.abilityCooldown = abilityData.cooldown;
                     break;
-                case "Redirects every attack against the user back to the attacker":
-                    this.ability = "codeOfHammurabi";
-                    this.abilityCooldown = 60;
+                };
+                case 'Decreases the enemy morale': {
+                    this.scene.debuffs.push('morale');
                     break;
-                case "Decreases the enemy morale":
-                    this.scene.debuffs.push("morale");
-                    break;
-                case "Slashes in a large radius":
-                    this.ability = "restInPeace";
-                    this.abilityCooldown = 1;
-                    break;
-                case "Fires a wave":
-                    this.ability = "oceanicTerror";
-                    this.abilityCooldown = 1;
-                    break;
-                default: break;
+                };
+                default: { break; };
             };
 
-            if (Object.keys(this.abilities).find((ability) => ability === this.ability) === undefined) {
-                this.abilities[this.ability] = this.abilityCooldown;
-                this.abilityCooldown = this.abilityCooldown - (0.1 * Math.pow(1.5, this.int));
-                this.abilityTimer = this.abilityCooldown;
+            if (this.abilities[this.ability] === undefined) {
+                const calcCooldown = this.abilityCooldown - (0.1 * Math.pow(1.5, this.int));
+
+                this.abilities[this.ability] = {
+                    cooldown: calcCooldown,
+                    timer: calcCooldown
+                };
             };
         };
 
         this.abilityIndex = Object.keys(this.abilities).length;
         this.abilitiesRaw.length = 0;
+
+        this.scene.textCurrentAbility.setText(this.ability);
     };
 
     dead() {
@@ -259,11 +370,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     revive() {
         this.active = true;
         this.body.enable = true;
+
         this.hp.reset();
+
         this.abilityTimer = this.abilityCooldown;
+
         this.exp = 0;
         this.level = 1;
         this.neededExp = this.calculateNeededExp();
+
+        this.addedFireRate = 0;
+        this.projectiles = 1;
+        this.speed = 300;
     };
 
     stopMoving() {
@@ -302,196 +420,178 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         };
     };
 
-    grassBlock() {
-        if (this.scene.playerAbilities.getChildren().find((ability) => {
-            if (ability.name === "grassBlock") {
-                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
-                return true;
-            };
-        }) === undefined) {
-            this.scene.playerAbilities.add(
-                new Ability(this.scene, "grassBlock", "grass-block", this.x, this.y - this.height / 2, {
+    grassBlock(amount) {
+        const radians = this.projectileRadians;
+        const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
+
+        for (let i = 0; i < amount; i++) {
+            let block = this.scene.playerAbilities.getChildren().find(
+                (ability) => (ability.name === 'grassBlock') && !ability.active
+            );
+
+            if (block) {
+                block.enableBody(true, this.x, this.y - this.height / 2, true, true);
+            } else {
+                block = new Ability(this.scene, 'grassBlock', 'grass-block', this.x, this.y - this.height / 2, {
                     healthXOffset: 4.5,
                     sponge: true
-                })
-            );
+                });
+                this.scene.playerAbilities.add(block);
+            };
+
+            const angle = (i === 0) ? baseAngle : baseAngle + radians[i % radians.length];
+            const direction = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
+
+            block.setPosition(this.x + direction.x * abilityDistance, this.y + direction.y * abilityDistance);
         };
     };
 
-    codeOfHammurabi() {
-        if (this.scene.playerAbilities.getChildren().find((ability) => {
-            if (ability.name === "codeOfHammurabi") {
+    codeOfHammurabi(amount) {
+        const radians = this.projectileRadians;
+        const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
+
+        for (let i = 0; i < amount; i++) {
+            let ability = this.scene.playerAbilities.getChildren().find(
+                (ability) => (ability.name === 'codeOfHammurabi') && !ability.active
+            );
+
+            if (ability) {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
-                return true;
-            };
-        }) === undefined) {
-            this.scene.playerAbilities.add(
-                new Ability(this.scene, "codeOfHammurabi", "code-of-hammurabi", this.x, this.y - this.height / 2, {
+            } else {
+                ability = new Ability(this.scene, 'codeOfHammurabi', 'code-of-hammurabi', this.x, this.y - this.height / 2, {
                     healthXOffset: 3,
                     sponge: true,
                     reflect: true
-                })
-            );
+                });
+                this.scene.playerAbilities.add(ability);
+            };
+
+            const angle = (i === 0) ? baseAngle : baseAngle + radians[i % radians.length];
+            const direction = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
+
+            ability.setPosition(this.x + direction.x * abilityDistance, this.y + direction.y * abilityDistance);
         };
     };
 
-    restInPeace() {
-        if (this.scene.playerAbilities.getChildren().find((ability) => {
-            if ((ability.name === "restInPeace") && (this.scene.tweens.isTweening(ability))) {
-                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
-                ability.anims.play("rest-in-peace", true);
-                let abilityAdditions = this.scene.playerAbilitiesAdditions.getChildren();
-                this.applyDirectionToAbility(ability, {
-                    applyVelocity: false,
-                    rotationOffset: Math.PI / 2
+    restInPeace(amount) {
+        const radians = this.projectileRadians;
+        const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
+
+        for (let i = 0; i < amount; i++) {
+            let slash = this.scene.playerAbilities.getChildren().find(
+                (ability) => (ability.name === 'restInPeace') && this.scene.tweens.isTweening(ability)
+            );
+
+            if (slash) {
+                slash.enableBody(true, this.x, this.y - this.height / 2, true, true);
+                slash.anims.play('rest-in-peace', true);
+            } else {
+                slash = new Ability(this.scene, 'restInPeace', 'rest-in-peace-0', this.x, this.y - this.height / 2, {
+                    attack: true
                 });
 
-                let count = 1;
-                loop: for (let i = 0; i < abilityAdditions.length; i++) {
-                    if (abilityAdditions[i].name === "restInPeaceHand") {
-                        if (count > 7) break loop;
-                        let abilityPositionLeft = ability.getTopLeft();
-                        let abilityPositionRight = ability.getTopRight();
-                        let randomX = Phaser.Math.Between(abilityPositionLeft.x, abilityPositionRight.x);
-                        abilityAdditions[i]
-                            .setVisible(true)
-                            .setActive(true);
-                        abilityAdditions[i].x = randomX;
-                        abilityAdditions[i].y = abilityPositionLeft.y - (100 * count);
-                        if (abilityAdditions[i].y < -100) break loop;
-                        count++;
-                        this.scene.tweens.add({
-                            targets: abilityAdditions[i],
-                            alpha: 0,
-                            duration: 1000,
-                            onComplete: () => {
-                                abilityAdditions[i].setAlpha(1);
-                                abilityAdditions[i].setActive(false);
-                                abilityAdditions[i].setVisible(false);
-                            }
-                        });        
-                    };
-                };
-                return true;
-            };
-        }) === undefined) {
-            let slash = new Ability(this.scene, "restInPeace", "rest-in-peace-0", this.x, this.y - this.height / 2, {
-                attack: true
-            });
+                slash.anims.create({
+                    key: 'rest-in-peace',
+                    frames: this.anims.generateFrameNames('abilities-atlas', {
+                        prefix: 'rest-in-peace-',
+                        end: 4
+                    }),
+                    frameRate: 12
+                });
 
+                slash.on('animationcomplete', () => {
+                    this.scene.tweens.add({
+                        targets: slash,
+                        alpha: 0,
+                        duration: 200,
+                        onComplete: () => {
+                            slash.setAlpha(1);
+                            slash.kill();
+                        },
+                    });
+                });
+
+                this.scene.playerAbilities.add(slash);
+                slash.anims.play('rest-in-peace', true);
+            };
+
+            const angle = (i === 0) ? baseAngle : baseAngle + radians[i % radians.length];
+            const direction = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
+
+            const slashX = this.x + direction.x * abilityDistance;
+            const slashY = this.y + direction.y * abilityDistance;
+            slash.setPosition(slashX, slashY);
+
+            const prevDirection = this.direction.clone();
+            this.direction = direction;
             this.applyDirectionToAbility(slash, {
                 applyVelocity: false,
                 rotationOffset: Math.PI / 2
             });
+            this.direction = prevDirection;
 
-            slash.anims.create({
-                key: 'rest-in-peace',
-                frames: this.anims.generateFrameNames('abilities-atlas', {
-                    prefix: 'rest-in-peace-',
-                    end: 4
-                }),
-                frameRate: 12
-            });
+            const handsNeeded = 7;
+            const abilityAdditions = this.scene.playerAbilitiesAdditions.getChildren();
+            const slashCenter = slash.getCenter();
 
-            slash.on("animationcomplete", () => {
-                this.scene.tweens.add({
-                    targets: slash,
-                    alpha: 0,
-                    duration: 200,
-                    onComplete: () => {
-                        slash.setAlpha(1);
-                        slash.kill();
-                    },
-                });
-            });
+            for (let j = 1; j < handsNeeded; j++) {
+                let hand = abilityAdditions.find(
+                    (ability) => (ability.name === 'restInPeaceHand') && !ability.active
+                );
 
-            slash.anims.play("rest-in-peace", true);
-            this.scene.playerAbilities.add(slash);
-
-            for (let i = 1; i <= 14; i++) {
-                const hand = this.scene.add.sprite(0, 0, "abilities-atlas", "rest-in-peace-hand")
-                    .setActive(true)
-                    .setVisible(true)
-                    .setName("restInPeaceHand")
-                    .setDepth(9);
-
-                hand.addition = true;
-                this.scene.playerAbilitiesAdditions.add(hand);
-
-                if (i <= 7) {
-                    const directionCloned = this.direction.clone();
-                    if (directionCloned.lengthSq() === 0) directionCloned.set(0, -1);
-
-                    const isVertical = Math.abs(directionCloned.y) >= Math.abs(directionCloned.x);
-
-                    let slashPositionLeft = slash.getTopLeft();
-                    let slashPositionRight = slash.getTopRight();
-
-                    let randomX = 0;
-                    let randomY = 0;
-                    if (isVertical) {
-                        randomX = Phaser.Math.Between(slashPositionLeft.x, slashPositionRight.x);
-                        
-                        hand.x = randomX;
-                        hand.y = slashPositionLeft.y + (directionCloned.y * 100 * i);
-                    } else {
-                        randomY = Phaser.Math.Between(slash.y - slash.displayHeight / 2, slash.y + slash.displayHeight / 2);
-
-                        hand.x = slash.x + (directionCloned.x * 100 * i);
-                        hand.y = randomY;
-                    };
-
-                    if (hand.y < -100 || hand.x < -100) {
-                        hand.setActive(false).setVisible(false);
-                    } else {
-                        this.scene.tweens.add({
-                            targets: hand,
-                            alpha: 0,
-                            duration: 1000,
-                            onComplete: () => {
-                                hand.setActive(false);
-                                hand.setVisible(false);
-                                hand.setAlpha(1);
-                            }
-                        });
-                    };
+                if (hand) {
+                    hand.setActive(true)
+                        .setVisible(true);
                 } else {
-                    hand.setActive(false).setVisible(false);
+                    hand = this.scene.add.sprite(0, 0, 'abilities-atlas', 'rest-in-peace-hand')
+                        .setActive(true)
+                        .setVisible(true)
+                        .setName('restInPeaceHand')
+                        .setDepth(9);
+                    hand.addition = true;
+                    this.scene.playerAbilitiesAdditions.add(hand);
                 };
+
+                const handDistance = 100 * j;
+
+                const perp = new Phaser.Math.Vector2(-direction.y, direction.x);
+                const offset = Phaser.Math.Between(-40, 40);
+
+                hand.x = slashCenter.x + direction.x * handDistance + perp.x * offset;
+                hand.y = slashCenter.y + direction.y * handDistance + perp.y * offset;
+
+                this.scene.tweens.add({
+                    targets: hand,
+                    alpha: 0,
+                    duration: 1000,
+                    onComplete: () => {
+                        hand.setAlpha(1);
+                        hand.setActive(false);
+                        hand.setVisible(false);
+                    }
+                });
             };
         };
     };
 
-    oceanicTerror() {
-        if (this.scene.playerAbilities.getChildren().find((ability) => {
-            if ((ability.name === "oceanicTerror" && !ability.active)) {
-                ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
+    oceanicTerror(amount) {
+        const radians = this.projectileRadians;
+        const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
 
-                this.applyDirectionToAbility(ability, {
-                    speed: 300,
-                    rotationOffset: Math.PI / 2
-                });
+        for (let i = 0; i < amount; i++) {
+            let wave = this.scene.playerAbilities.getChildren().find(
+                (ability) => ability.name === 'oceanicTerror' && !ability.active
+            );
 
-                if (this.scene.playerAbilitiesTimeEvents.find((timeEvent, index) => {
-                    if ((timeEvent.callback.name === "oceanicTerrorSpawnSeaCritter")
-                        && timeEvent.paused) {
-                        timeEvent.args = [
-                            ability,
-                            index
-                        ];
-                        timeEvent.paused = false;
-                        return true;
-                    };
-                }));
-                return true;
-            };
-        }) === undefined) {
-            for (let i = 0; i < 4; i++) {
-                let wave = new Ability(this.scene, "oceanicTerror", "oceanic-terror-wave", this.x, this.y - this.height / 2, {
+            if (wave) {
+                wave.enableBody(true, this.x, this.y - this.height / 2, true, true);
+            } else {
+                wave = new Ability(this.scene, 'oceanicTerror', 'oceanic-terror-wave', this.x, this.y - this.height / 2, {
                     attack: true
                 });
                 this.scene.playerAbilities.add(wave);
-                let timeEvent = this.scene.time.addEvent({
+
+                const timeEvent = this.scene.time.addEvent({
                     delay: 500,
                     loop: true,
                     callback: this.oceanicTerrorSpawnSeaCritter,
@@ -499,64 +599,64 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     args: [wave, this.scene.playerAbilitiesTimeEvents.length]
                 });
                 this.scene.playerAbilitiesTimeEvents.push(timeEvent);    
-                if (i === 0) {
-                    timeEvent.paused = false;
-                    this.applyDirectionToAbility(wave, {
-                        speed: 300,
-                        rotationOffset: Math.PI / 2
-                    });
-                } else {
-                    wave.kill();
-                    timeEvent.paused = true;  
-                };;
             };
+
+            const angle = (i === 0) ? baseAngle : baseAngle + radians[i % radians.length];
+            const direction = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
+
+            const waveX = this.x + direction.x * abilityDistance;
+            const waveY = this.y + direction.y * abilityDistance;
+            wave.setPosition(waveX, waveY);
+
+            const prevDirection = this.direction.clone();
+            this.direction = direction;
+
+            this.applyDirectionToAbility(wave, {
+                speed: 300,
+                rotationOffset: Math.PI / 2
+            });
+
+            this.direction = prevDirection;
         };
     };
     oceanicTerrorSpawnSeaCritter(wave, timeEventIndex) {
         if (wave.y < 0) {
             this.scene.playerAbilitiesTimeEvents[timeEventIndex].paused = true;
+            return;
         };
-        let chiocesSeaCritters = ["fish", "shark", "tentacle"];
-        let randomSeaCritter = chiocesSeaCritters[Math.floor(Math.random() * chiocesSeaCritters.length)];
-        if (this.scene.playerAbilitiesAdditions.getChildren().find((ability) => {
-            if ((ability.name === `oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`) && !ability.active) {
-                let wavePositionLeft = wave.getTopLeft();
-                let wavePositionRight = wave.getTopRight();
-                let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
-                ability.setActive(true)
-                    .setVisible(true)
-                    .setPosition(randomX, wave.y);
-                this.scene.tweens.add({
-                    targets: ability,
-                    scale: 0,
-                    duration: 5000,
-                    onComplete: () => {
-                        ability.setScale(1);
-                        ability.setActive(false);
-                        ability.setVisible(false);
-                    }
-                });        
-                return true;
-            };
-        }) === undefined) {
-            let wavePositionLeft = wave.getTopLeft();
-            let wavePositionRight = wave.getTopRight();
-            let randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
-            let seaCritter = this.scene.add.sprite(randomX, wave.y, "abilities-atlas", `oceanic-terror-${randomSeaCritter}`)
-                .setName(`oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`);
-            seaCritter.addition = true;
-            this.scene.tweens.add({
-                targets: seaCritter,
-                scale: 0,
-                duration: 5000,
-                onComplete: () => {
-                    seaCritter.setScale(1);
-                    seaCritter.setActive(false);
-                    seaCritter.setVisible(false);
-                }
-            });
-            this.scene.playerAbilitiesAdditions.add(seaCritter);
 
+        const chiocesSeaCritters = ['fish', 'shark', 'tentacle'];
+        const randomSeaCritter = chiocesSeaCritters[Math.floor(Math.random() * chiocesSeaCritters.length)];
+        const nameSeaCritter = `oceanicTerrorSeaCritter${randomSeaCritter.replace(/^./, (char) => char.toUpperCase())}`;
+
+        let seaCritter = this.scene.playerAbilitiesAdditions.getChildren().find(
+            ability => (ability.name === nameSeaCritter) && !ability.active
+        );
+
+        const wavePositionLeft = wave.getTopLeft();
+        const wavePositionRight = wave.getTopRight();
+        const randomX = Phaser.Math.Between(wavePositionLeft.x, wavePositionRight.x);
+
+        if (seaCritter) {
+            seaCritter.setActive(true)
+                      .setVisible(true)
+                      .setPosition(randomX, wave.y);
+        } else {
+            seaCritter = this.scene.add.sprite(randomX, wave.y, 'abilities-atlas', `oceanic-terror-${randomSeaCritter}`)
+                .setName(nameSeaCritter);
+            seaCritter.addition = true;
+            this.scene.playerAbilitiesAdditions.add(seaCritter);
         };
+
+        this.scene.tweens.add({
+            targets: seaCritter,
+            scale: 0,
+            duration: 5000,
+            onComplete: () => {
+                seaCritter.setScale(1);
+                seaCritter.setActive(false);
+                seaCritter.setVisible(false);
+            }
+        });
     };
 };

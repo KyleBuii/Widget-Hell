@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { HealthBar } from './HealthBar.jsx';
 
-export class Ability extends Phaser.Physics.Arcade.Sprite{
+export class Ability extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, name, texture, x, y, {
         pushable = false,
         healthXOffset = 1,

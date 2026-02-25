@@ -181,6 +181,10 @@ const information = {
             ],
             controls: [
                 {
+                    control: 'Escape',
+                    action: 'Pause/Unpause',
+                },
+                {
                     control: 'WASD/Arrow Keys/Mouse',
                     action: 'Move',
                 },
@@ -195,6 +199,10 @@ const information = {
                 {
                     control: 'Ctrl',
                     action: 'Switch ability',
+                },
+                {
+                    control: '1/2/3',
+                    action: 'Select level up option',
                 },
             ],
             stats: {
@@ -399,7 +407,7 @@ const information = {
         { name: 'Iceberg',
             description: [
                 'Widget for viewing an iceberg meme',
-                'Getting Rickrolled means there are multiple sources',
+                'Pressing A/D or Left Arrow/Right Arrow will go to the next entry in the selected level',
             ],
         },
         { name: 'Picker Wheel',

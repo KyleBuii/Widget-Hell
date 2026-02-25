@@ -229,7 +229,7 @@
 		"Code of Hammurabi": {
 			"slot": "offhand",
 			"type": "ability",
-			"information": "Redirects every \"attack\" against the user back to the \"attack'er\"",
+			"information": "Redirects every attack against the user back to the attacker",
 			"description": "An eye for an eye, a tooth for a tooth.",
 			"image": "/resources/items/codeofhammurabi.webp",
 			"source": "Tomb Raider King"

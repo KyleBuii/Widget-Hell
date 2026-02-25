@@ -13,11 +13,13 @@ import { Player } from '../utility/Player.jsx';
 2 - Menu
 3 - Player bullets / Ability bullets
 4 - Boss
-5 - Player / Hit effects
+5 - Hit effects
 6 - Health
 7 - Boss bullets
 8 - Bomb
 9 - Abilities / Abilities additions
+10 - Current Ability Text / Pause Button
+11 - Player
 */
 //#endregion
 
@@ -51,19 +53,60 @@ const dataEnemies = {
         speed: 0.5,
     },
 };
-const dataLevelUpOptions = {
-    'Enemy Multiplier': 'Increases enemy spawn by 1.',
-    'Enemy Speed': 'Increases enemy speed by 1.',
-    'Fire Rate': 'Increases fire rate by 1.',
-    'Health': 'Increases health by 1.',
-    'Multi': 'Increases all projectiles by 1.',
-    'Speed': 'Increases speed by 1.',
-    'Velocity': 'Increases velocity by 1.',
+const dataLevelUp = {
+    'Enemy Multiplier': {
+        description: 'Multiplies enemy spawn by x.',
+        value: 2,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    },
+    'Enemy Speed': {
+        description: 'Increases enemy speed by 1.',
+        value: 1,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    },
+    'Fire Rate': {
+        description: 'Increases fire rate by 1.',
+        value: 1,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    },
+    'Health': {
+        description: 'Increases health by 1.',
+        value: 1,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    },
+    'Multi': {
+        description: 'Increases all projectiles by 1.',
+        value: 0,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    },
+    'Speed': {
+        description: 'Increases speed by 1.',
+        value: 1,
+        addedValue: 0,
+        addedMultiplier: 1,
+        level: 1,
+    }
 };
+let enemyBase = 20;
+let enemyScaling = 1.5;
 
 export class GameScreen extends Scene {
     constructor() {
         super('Game');
+        this.isGameStarted = false;
+        this.isGameOver = false;
+        this.isLeveledUp = false;
+        this.isPaused = false;
         this.mouseMovement = false;
         this.isMobile = false;
         this.isInvulnerable = false;
@@ -80,6 +123,8 @@ export class GameScreen extends Scene {
 
         this.elapsedSeconds = 0;
         this.invulnSeconds = 0;
+        
+        this.levelUpOptions = [];
     };
 
     create() {
@@ -105,6 +150,28 @@ export class GameScreen extends Scene {
         });
         this.gameTimer.paused = true;
 
+        const pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        pauseKey.on('down', () => {
+            if (!this.isGameStarted || this.isGameOver) return;
+
+            this.isPaused = !this.isPaused;
+
+            (this.isPaused) ? this.pauseScreen() : this.unpauseScreen();
+        });
+
+        const levelUpKeys = [
+            Phaser.Input.Keyboard.KeyCodes.ONE,
+            Phaser.Input.Keyboard.KeyCodes.TWO,
+            Phaser.Input.Keyboard.KeyCodes.THREE,
+        ];
+
+        levelUpKeys.forEach((key, keyIndex) => {
+            this.input.keyboard.addKey(key).on('down', () => {
+                if (!this.isLeveledUp) return;
+                this.handleLevelUpOption(this.levelUpOptions[keyIndex]);
+            });
+        });
+        
         this.onNewStats = (stats) => this.setPlayerStats(stats.data);
         this.onNewAbilities = (abilities) => this.setPlayerAbilities(abilities.data);
 
@@ -149,21 +216,21 @@ export class GameScreen extends Scene {
     };
 
     getTargetEnemyCount() {
-        const base = 20;
-        const scaling = 1.5;
+        const dataMultiplier = dataLevelUp['Enemy Multiplier'];
+        const calcMultiplier = dataMultiplier.value + dataMultiplier.addedValue;
+        const calcBase = enemyBase * calcMultiplier * dataMultiplier.addedMultiplier;
+        const calcScale = enemyScaling * calcMultiplier * dataMultiplier.addedMultiplier;
 
-        return Math.floor(
-            base + this.elapsedSeconds * scaling
-        );
+        return Math.floor(calcBase + this.elapsedSeconds * calcScale);
     };
 
     createUI() {
-        this.buttonContainer = this.add.image(95, 72, "box")
+        this.buttonContainer = this.add.image(95, 65, "box")
             .setDepth(2)
             .setDisplaySize(165, 105)
             .setAlpha(0.8);
 
-        this.buttonPlay = this.add.image(95, 50, "button")
+        this.buttonPlay = this.add.image(95, 43, "button")
             .setDepth(2)
             .setDisplaySize(140, 40)
             .setInteractive()
@@ -172,7 +239,7 @@ export class GameScreen extends Scene {
             .setDepth(2)
             .setOrigin(0.5);
 
-        this.buttonMouseMovement = this.add.image(95, 95, "button")
+        this.buttonMouseMovement = this.add.image(95, 88, "button")
             .setDepth(2)
             .setDisplaySize(140, 40)
             .setInteractive()
@@ -181,7 +248,7 @@ export class GameScreen extends Scene {
             .setDepth(2)
             .setOrigin(0.5);
 
-        this.buttonReturn = this.add.image(95, 95, "button")
+        this.buttonReturn = this.add.image(95, 88, "button")
             .setVisible(false)
             .setDepth(2)
             .setDisplaySize(140, 40)
@@ -192,7 +259,7 @@ export class GameScreen extends Scene {
             .setDepth(2)
             .setOrigin(0.5);
 
-        this.buttonTryAgain = this.add.image(95, 50, "button")
+        this.buttonTryAgain = this.add.image(95, 43, "button")
             .setVisible(false)
             .setDepth(2)
             .setDisplaySize(140, 40)
@@ -249,6 +316,9 @@ export class GameScreen extends Scene {
             .setVisible(false)
             .setDepth(2)
             .setOrigin(0.5, 0);
+        this.textCurrentAbility = this.add.text(WIDTH - 15, HEIGHT - 15, '')
+            .setDepth(10)
+            .setOrigin(1);
 
         if (this.isMobile) {
             this.buttonAbility = this.add.image(60, 810, "button")
@@ -285,7 +355,7 @@ export class GameScreen extends Scene {
     };
 
     handleButton(type) {
-        switch(type) {
+        switch (type) {
             case 'play':
                 this.stopMenuSpawns();
                 this.clearEnemies(this.menuEnemies);
@@ -294,6 +364,7 @@ export class GameScreen extends Scene {
 
                 this.elapsedSeconds = 0;
                 this.gameTimer.paused = false;
+                this.isGameStarted = true;
                 this.isBossSpawned = false;
 
                 this.textTimer.setVisible(true);
@@ -301,6 +372,9 @@ export class GameScreen extends Scene {
                 this.expBarFill.setVisible(true);
                 break;
             case 'return':
+                this.isGameStarted = false;
+                this.isGameOver = false;
+
                 this.clearEnemies(this.enemies);
                 this.resetBoss();
 
@@ -330,6 +404,8 @@ export class GameScreen extends Scene {
                 this.mouseMovement = !this.mouseMovement;
                 break;
             case 'try again':
+                this.isGameOver = false;
+
                 this.clearEnemies(this.enemies);
                 this.resetBoss();
 
@@ -353,7 +429,7 @@ export class GameScreen extends Scene {
     showMenu(type) {
         this.hideMenu();
         this.buttonContainer.setVisible(true);
-        switch(type) {
+        switch (type) {
             case 'home':
                 this.buttonPlay.setVisible(true);
                 this.textPlay.setVisible(true);
@@ -426,9 +502,7 @@ export class GameScreen extends Scene {
     createPlayer() {
         this.playerBullets = new Bullets(this, 100)
             .setDepth(3);
-        this.playerAbilities = this.physics.add.group({
-            classType: Phaser.GameObjects.Sprite,
-        }).setDepth(9);
+        this.playerAbilities = this.physics.add.group({ classType: Phaser.GameObjects.Sprite }).setDepth(9);
         this.playerAbilitiesBullets = new Bullets(this, 100)
             .setDepth(3);
         this.playerAbilitiesHits = this.add.group({
@@ -440,7 +514,8 @@ export class GameScreen extends Scene {
             .setDepth(9);
         this.playerAbilitiesTimeEvents = [];
         this.player = new Player(this, 'player-default', WIDTH / 2, HEIGHT - 100, this.playerBullets, this.playerAbilitiesBullets)
-            .setOffset(37, 60);
+            .setOffset(37, 60)
+            .setDepth(11);
     };
 
     createEnemy() {
@@ -457,21 +532,14 @@ export class GameScreen extends Scene {
     };
 
     createBoss() {
-        const playerCollider = {
-            contains: (x, y) => {
-                let hit = false;
-                if (this.player.body.hitTest(x, y)) {
-                    hit = true;
-                    this.damagePlayer(this.player, 1);
-                };
-                return hit;
-            }
+        const bossBulletsCollider = {
+            contains: (x, y) => this.bossBulletHitCallback(x, y)
         };
 
         this.bossBulletsEmitter = this.add.particles(0, 0, "bullet-atlas", {
             x: WIDTH / 2,
             y: 200,
-            frame: "circle-blue",
+            frame: 'circle-blue',
             lifespan: Infinity,
             speed: { min: 100, max: 300 },
             quantity: 20,
@@ -479,7 +547,7 @@ export class GameScreen extends Scene {
             deathZone: [
                 {
                     type: 'onEnter',
-                    source: playerCollider
+                    source: bossBulletsCollider
                 },
                 {
                     type: 'onLeave',
@@ -492,6 +560,60 @@ export class GameScreen extends Scene {
             .setDepth(7);
         this.bossBombs = this.physics.add.group({ classType: Phaser.GameObjects.Sprite })
             .setDepth(8);
+    };
+
+    bossBulletHitCallback(x, y) {
+        if (!this.player.active) return false;
+
+        let hit = false;
+
+        if (this.player.body.hitTest(x, y)) {
+            hit = true;
+            this.damagePlayer(this.player, 1);
+        };
+
+        this.playerAbilities.children.each((ability) => {
+            if (!ability.active || !ability.body) return;
+
+            if (ability.body.hitTest(x, y)) {
+                hit = true;
+                this.abilityHitCallback(ability, 1);
+            };
+        });
+
+        return hit;
+    };
+
+    abilityHitCallback(ability, damage) {
+        if (ability.sponge) {
+            if (ability.active && ability.hp.updateValue(-damage)) {
+                ability.kill();
+            };
+        };
+
+        if (ability.reflect) {
+            this.player.danmakuAbilities.resetDanmaku(this);
+            this.player.danmakuAbilities.setProperties(this,
+                { name: 'REFLECT',
+                    danmakuConfig: {
+                        type: 'PARALLEL', countB: 1, 
+                        angle: -90, 
+                    },
+                    cannonConfig: {
+                        numberOfShots: 1,
+                    },
+                    bulletConfig: {
+                        class: 'NORMAL',
+                        damage: damage,
+                        speed: 200 + (this.player.str * 10),
+                        frame: this.bossBulletsEmitter.frame,
+                        alpha: 0.5
+                    }
+                }
+            );
+            this.player.danmakuAbilities.follow(ability);
+            this.player.danmakuAbilities.fireDanmaku(this);
+        };
     };
 
     createColliders() {
@@ -508,13 +630,6 @@ export class GameScreen extends Scene {
                     break;
                 default: break;
             };
-        });
-
-        this.physics.add.overlap(this.player, this.enemyBullets, (player, bullet) => {
-            this.playerHitCallback(bullet, player);
-        });
-        this.physics.add.overlap(this.player, this.bossBullets, (player, bullet) => {
-            this.playerHitCallback(bullet, player);
         });
 
         this.physics.add.overlap(this.menuEnemies, this.playerBullets, (enemy, bullet) => {
@@ -545,10 +660,6 @@ export class GameScreen extends Scene {
         this.physics.add.overlap(this.enemies, this.player, (enemy, player) => {
             this.playerEnemyHitCallback(player, enemy);
         });
-        
-        this.physics.add.overlap(this.playerAbilities, this.bossBullets, (ability, bullet) => {
-            this.abilityHitCallback(bullet, ability);
-        });
     };
 
     spawnEnemies(amount) {
@@ -578,7 +689,7 @@ export class GameScreen extends Scene {
                 dataEnemies[randomEnemy].health,
                 dataEnemies[randomEnemy].attack,
                 dataEnemies[randomEnemy].defense,
-                dataEnemies[randomEnemy].speed,
+                dataEnemies[randomEnemy].speed + (0.1 * dataLevelUp.Speed.level * dataLevelUp.Speed.addedMultiplier),
                 dataEnemies[randomEnemy]?.healthXOffset,
                 this.player
             );
@@ -729,48 +840,6 @@ export class GameScreen extends Scene {
         this.damagePlayer(player, enemy.atk);
     };
 
-    playerHitCallback(bullet, player) {
-        if (bullet.active === false) return;
-        this.damagePlayer(player, bullet.damage);
-        bullet.remove();
-    };
-    
-    abilityHitCallback(bullet, ability) {
-        if (bullet.active === true) {
-            if (ability.sponge) {
-                if (ability.active && ability.hp.updateValue(-bullet.damage)) {
-                    ability.kill();
-                };
-            };
-            if (ability.reflect) {
-                this.player.danmakuAbilities.resetDanmaku(this);
-                this.player.danmakuAbilities.setProperties(this,
-                    { name: "REFLECT",
-                        danmakuConfig: {
-                            type: "PARALLEL", countB: 1, 
-                            angle: -90, 
-                        },
-                        cannonConfig: {
-                            numberOfShots: 1,
-                        },
-                        bulletConfig: {
-                            class: "NORMAL",
-                            damage: bullet.damage,
-                            speed: 200 + (this.player.str * 10),
-                            frame: bullet.frame.name,
-                            alpha: 0.5
-                        }
-                    }
-                );
-                this.player.danmakuAbilities.follow(ability);
-                this.player.danmakuAbilities.fireDanmaku(this);
-            };
-            if (!ability.attack) {
-                bullet.remove();
-            };
-        };    
-    };
-
     enemyHitCallback(bullet, enemy) {
         if (bullet.active === true && enemy.active === true) {
             this.damageEnemy(enemy, (bullet.attack)
@@ -843,19 +912,14 @@ export class GameScreen extends Scene {
             loop: false,
         });
 
-        if (player.active && player.hp.updateValue(-damage)) {
-            player.dead();
-            this.showMenu('game');
-
-            this.gameTimer.paused = true;
-        };
+        if (player.active && player.hp.updateValue(-damage)) this.gameOver();
     };
     
     damageEnemy(enemy, damage) {
         if (enemy.hp.updateValue(-damage)) {
             enemy.kill();
 
-            switch(enemy?.key) {
+            switch (enemy?.key) {
                 case 'menu': {
                     this.spawnMenuEnemies();
                     break;
@@ -882,26 +946,50 @@ export class GameScreen extends Scene {
 
         if (timesLeveled === 0) return;
         this.showLevelUpOptions();
+        this.isLeveledUp = true;
     };
 
     showLevelUpOptions() {
         this.pauseScreen();
         this.levelUpContainers.setVisible(true);
+        this.levelUpOptions.length = 0;
 
         for (let i = 0; i < 3; i++) {
-            const keyLevelUpOptions = Object.keys(dataLevelUpOptions);
+            const keyLevelUpOptions = Object.keys(dataLevelUp);
             const randomLevelUpOption = keyLevelUpOptions[Math.floor(Math.random() * (keyLevelUpOptions.length - 1))];
 
             this[`levelUpOptionContainer${i}`].on('pointerdown', () => this.handleLevelUpOption(randomLevelUpOption));
             this.levelUpSkillTexts[i].setText(randomLevelUpOption);
-            this.levelUpDescTexts[i].setText(dataLevelUpOptions[randomLevelUpOption]);
+            this.levelUpDescTexts[i].setText(dataLevelUp[randomLevelUpOption].description);
+
+            this.levelUpOptions.push(randomLevelUpOption);
         };
     };
 
     handleLevelUpOption(option) {
-        this.player.updateStat(option);
+        const lowerCaseOption = option.toLowerCase();
+        const dataOption = dataLevelUp[option];
+
+        switch (lowerCaseOption) {
+            case 'enemy multiplier':
+            case 'enemy speed': {
+                dataLevelUp[option].level += 1;
+                break;
+            };
+            case 'fire rate':
+            case 'health':
+            case 'multi':
+            case 'speed': {
+                const calcOption = (dataOption.value + dataOption.addedValue + dataOption.level) * dataOption.addedMultiplier;
+                this.player.updateStat(lowerCaseOption, calcOption);
+                break;
+            };
+            default: { break; };
+        };
+
         this.levelUpContainers.setVisible(false);
         this.unpauseScreen();
+        this.isLeveledUp = false;
     };
 
     pauseScreen() {
@@ -923,5 +1011,14 @@ export class GameScreen extends Scene {
         });
         this.player.startMoving();
         this.gameTimer.paused = false;
+    };
+
+    gameOver() {
+        this.isGameOver = true;
+
+        this.player.dead();
+        this.showMenu('game');
+
+        this.gameTimer.paused = true;
     };
 };

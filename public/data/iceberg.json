@@ -661,7 +661,7 @@
 		}
 	],
 	"weird animals": [
-		{ "_comment": "Level 1 – Looks Normal",
+		{ "_comment": "Level 1 - Looks Normal",
 			"Raccoon": {
                 "image": [
 					"/weird-animals/raccoon/raccoon-1.webp",
@@ -671,10 +671,7 @@
 					"Wikipedia": "https://en.wikipedia.org/wiki/Raccoon",
 					"Rhododendrites": "https://commons.wikimedia.org/wiki/File:Raccoon_in_Central_Park_(35264).jpg",
 					"Darkone": "https://en.wikipedia.org/wiki/File:Raccoon_(Procyon_lotor)_2.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Koala": {
 				"image": [
@@ -683,10 +680,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Koala",
 					"Diliff": "https://en.wikipedia.org/wiki/File:Koala_climbing_tree.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Crow": {
 				"image": [
@@ -695,10 +689,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Crow",
 					"Ian Kirk": "https://commons.wikimedia.org/wiki/File:Corvus_corone_-near_Canford_Cliffs,_Poole,_England-8.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Huntsman spider": {
 				"image": [
@@ -709,10 +700,7 @@
 					"Wikipedia": "https://en.wikipedia.org/wiki/Huntsman_spider",
 					"JonRichfield": "https://commons.wikimedia.org/wiki/File:Sparassidae_Palystes_castaneus_mature_female_9923s.jpg",
 					"Gabrielrbt": "https://commons.wikimedia.org/wiki/File:Huntsman_spider_of_Seychelles.png"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Opossum": {
 				"image": [
@@ -723,10 +711,7 @@
 					"Wikipedia": "https://en.wikipedia.org/wiki/Opossum",
 					"Sergey Yarmolyuk": "https://commons.wikimedia.org/wiki/File:Opossum_(Mar_2021).jpg",
 					"Oscar Marín": "https://commons.wikimedia.org/wiki/File:Didelphis_pernigra_29825860_1.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Catfish": {
 				"image": [
@@ -735,10 +720,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Catfish",
 					"Image": "https://commons.wikimedia.org/wiki/File:Channelcat.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Stick bug": {
 				"image": [
@@ -747,10 +729,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Phasmatodea",
 					"Fritz Geller-Grimm and Felix Grimm": "https://commons.wikimedia.org/wiki/File:Le_Caylar_fg01.JPG"
-				},
-				"information": [
-					""
-				]
+				}
 			}
 		},
 		{ "_comment": "Level 2 - Slightly Weird",
@@ -767,10 +746,7 @@
 					"NOAA Photo library": "https://commons.wikimedia.org/wiki/File:Crinoide_vraie.jpg",
 					"Seascapeza": "https://commons.wikimedia.org/wiki/File:Elegant_feather_star9.jpg",
 					"Alexander Vasenin (Nusa Kode)": "https://commons.wikimedia.org/wiki/File:Multiple_crinoids_occupying_the_reef_of_Nusa_Kode_Island.JPG"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Sloth bear": {
 				"image": [
@@ -779,10 +755,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Sloth_bear",
 					"flickr": "https://www.flickr.com/photos/mape_s/333862236/"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Great dane": {
 				"image": [
@@ -791,10 +764,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Great_Dane",
 					"Lilly M": "https://commons.wikimedia.org/wiki/File:Dog_niemiecki_%C5%BC%C3%B3%C5%82ty_LM980.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Indian rose mantis": {
 				"image": [
@@ -805,10 +775,7 @@
 					"Wikipedia": "https://en.wikipedia.org/wiki/Gongylus_gongylodes",
 					"Monica Saini": "https://commons.wikimedia.org/wiki/File:Indian_rose_mantis.jpg",
 					"Jayendra Chiplunkar": "https://commons.wikimedia.org/wiki/File:Indian_Rose_Mantis_(Gongylus_gongylodes).jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Arabian sand boa": {
 				"image": [
@@ -817,10 +784,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Eryx_jayakari",
 					"Omid Mozaffari": "https://commons.wikimedia.org/wiki/File:Eryx_jayakari_by_Omid_Mozaffari.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Sailfish": {
 				"image": [
@@ -831,10 +795,7 @@
 					"Wikipedia": "https://en.wikipedia.org/wiki/Sailfish",
 					"Alastair Pollock Photography": "https://www.alastairpollock.com/other-wildlife",
 					"Benjamint444": "https://commons.wikimedia.org/wiki/File:Pacific-sailfish.jpg"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Panda": {
 				"image": [
@@ -843,10 +804,7 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Giant_panda",
 					"J. Patrick Fischer": "https://commons.wikimedia.org/wiki/File:Grosser_Panda.JPG"
-				},
-				"information": [
-					""
-				]
+				}
 			},
 			"Chameleon": {
 				"image": [
@@ -855,10 +813,123 @@
 				"source": {
 					"Wikipedia": "https://en.wikipedia.org/wiki/Chameleon",
 					"Suyash Dwivedi": "https://commons.wikimedia.org/wiki/File:Chameleons%27_Eye_Coordination_01.jpg"
-				},
-				"information": [
-					""
-				]
+				}
+			}
+		},
+		{ "_comment": "Level 3 - Odd Anatomy",
+			"Ghost pipefish": {
+				"image": [
+					"/weird-animals/ghost-pipefish/ghost-pipefish-1.webp",
+					"/weird-animals/ghost-pipefish/ghost-pipefish-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Solenostomus_paradoxus",
+					"Jnpet (pink)": "https://commons.wikimedia.org/wiki/File:Solenostomus_paradoxus_black_on_pink.jpg",
+					"Jnpet (black)": "https://commons.wikimedia.org/wiki/File:Solenostomus_paradoxus_black.jpg"
+				}
+			},
+			"Viscacha": {
+				"image": [
+					"/weird-animals/viscacha/viscacha-1.webp",
+					"/weird-animals/viscacha/viscacha-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Viscacha",
+					"Alexandre Buisse (Atacama)": "https://commons.wikimedia.org/wiki/File:Vizcacha_in_the_Atacama.jpg",
+					"Alexandre Buisse (Bolivian)": "https://en.wikipedia.org/wiki/File:Bolivian_vizcacha.jpg"
+				}
+			},
+			"Yapok": {
+				"image": [
+					"/weird-animals/yapok/yapok-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Water_opossum",
+					"Enrique González": "https://commons.wikimedia.org/wiki/File:Yapok_(Chironectes_minimus),_Uruguay,_1998.jpg"
+				}
+			},
+			"Saiga": {
+				"image": [
+					"/weird-animals/saiga/saiga-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Saiga_antelope",
+					"Andrey Giljov": "https://commons.wikimedia.org/wiki/File:Saiga_antelope_at_the_Stepnoi_Sanctuary.jpg"
+				}
+			},
+			"Starry handfish": {
+				"image": [
+					"/weird-animals/starry-handfish/starry-handfish-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Starry_handfish",
+					"Daiju Azuma": "https://commons.wikimedia.org/wiki/File:Halieutaea_stellata_by_DaijuAzuma.jpg"
+				}
+			},
+			"Elephant shrew": {
+				"image": [
+					"/weird-animals/elephant-shrew/elephant-shrew-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Elephant_shrew",
+					"Joey Makalintal": "https://commons.wikimedia.org/wiki/File:Rhynchocyon_petersi_from_side.jpg"
+				}
+			},
+			"Spirula": {
+				"image": [
+					"/weird-animals/spirula/spirula-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Spirula",
+					"Schmidt Ocean Institute": "https://schmidtocean.org/about/our-story/"
+				}
+			},
+			"Pangolin": {
+				"image": [
+					"/weird-animals/pangolin/pangolin-1.webp",
+					"/weird-animals/pangolin/pangolin-2.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Pangolin",
+					"Licheng Shih": "https://commons.wikimedia.org/wiki/File:Manis_pentadactyla_I.jpg",
+					"Manis temminckii": "https://commons.wikimedia.org/wiki/File:Manis_temminckii_(29390603130).jpg"
+				}
+			},
+			"Synodontis nigriventris": {
+				"image": [
+					"/weird-animals/synodontis-nigriventris/synodontis-nigriventris-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Synodontis_nigriventris",
+					"Neale Monks": "https://commons.wikimedia.org/wiki/File:Synodontis.jpg"
+				}
+			},
+			"Kiwi": {
+				"image": [
+					"/weird-animals/kiwi/kiwi-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Kiwi_(bird)",
+					"Maungatautari Ecological Island Trust": "https://commons.wikimedia.org/wiki/File:TeTuatahianui.jpg"
+				}
+			},
+			"Electric eel": {
+				"image": [
+					"/weird-animals/electric-eel/electric-eel-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Electrophorus_electricus",
+					"Steven G. Johnson": "https://commons.wikimedia.org/wiki/File:Electric-eel2.jpg"
+				}
+			},
+			"Microraptor": {
+				"image": [
+					"/weird-animals/microraptor/microraptor-1.webp"
+				],
+				"source": {
+					"Wikipedia": "https://en.wikipedia.org/wiki/Microraptoria",
+					"Emily Willoughby": "https://commons.wikimedia.org/wiki/File:Changyuraptor.png"
+				}
 			}
 		}
 	]

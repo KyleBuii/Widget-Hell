@@ -13,7 +13,7 @@ const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeydown);
-        
+
         return () => {
             window.removeEventListener('keydown', handleKeydown);
         };
@@ -24,7 +24,7 @@ const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
             data: stats
         });
     }, [stats]);
-    
+
     useEffect(() => {
         EventBus.emit('new abilities', {
             data: abilities
@@ -51,7 +51,7 @@ const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
             });
         };
     };
-    
+
     return (
         <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
             disabled={defaultProps.dragDisabled}
