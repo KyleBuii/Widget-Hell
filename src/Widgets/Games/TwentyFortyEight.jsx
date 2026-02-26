@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal, FaRegClock } from 'react-icons/fa';
@@ -16,6 +16,8 @@ const WidgetTwentyFortyEight = ({ defaultProps, gameProps }) => {
         timer: 0
     });
 
+    const refIsGameOver = useRef(false);
+
     useEffect(() => {
         return () => {
             clearInterval(intervalTimer);
@@ -24,7 +26,11 @@ const WidgetTwentyFortyEight = ({ defaultProps, gameProps }) => {
 
     const handleKeyDown = (event) => {
         if (state.board.hasWon() || state.board.hasLost()) {
-            gameOver();
+            if (!refIsGameOver.current) {
+                refIsGameOver.current = true;
+                gameOver();
+            };
+
             return;
         };
         let direction;
@@ -64,22 +70,31 @@ const WidgetTwentyFortyEight = ({ defaultProps, gameProps }) => {
 
     const gameOver = () => {
         document.getElementById('twentyfortyeight-overlay-gameover').style.visibility = 'visible';
+
         intervalTimer = clearInterval(intervalTimer);
+
         let gold = Math.floor((1/4) * state.board.score);
+
         setState((prevState) => ({
             ...prevState,
             goldEarned: gold
         }));
+
         gameProps.updateGameValue('gold', gold);
         gameProps.updateGameValue('exp', gold);
-        if (state.board.hasWon()) {
-            gameProps.randomItem(1);
+
+        if (state.board.score >= 500) {
+            const amount =  Math.floor(state.board.score / 500);
+            gameProps.randomItem(amount);
         };
     };
 
     const resetGame = () => {
         document.getElementById('twentyfortyeight-overlay-gameover').style.visibility = 'hidden';
+
+        refIsGameOver.current = false;
         intervalTimer = clearInterval(intervalTimer);
+
         setState((prevState) => ({
             ...prevState,
             board: new Board(),

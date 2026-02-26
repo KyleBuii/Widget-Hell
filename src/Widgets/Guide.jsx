@@ -169,7 +169,7 @@ const information = {
                 },
             ],
             exp: 'Equal to bricks broken',
-            restriction: 'Every 100 bricks destroyed',
+            rewards: 'Every 20 bricks destroyed',
             stats: {
                 health: 'Allows the ball to bounce off the bottom for every 10',
             },
@@ -238,7 +238,7 @@ const information = {
                 'Goal is to capture the opposing king',
             ],
             exp: 'Equal to pieces captured',
-            restriction: 'Every 5 pieces captured',
+            rewards: 'Every 4 pieces captured',
         },
         { name: 'Circle Beat',
             description: [
@@ -252,7 +252,7 @@ const information = {
                 'Goal is to remember as many colors',
             ],
             exp: 'Equal to correct guesses',
-            restriction: 'Every 10 correct guesses',
+            rewards: 'Every 10 correct guesses',
         },
         { name: 'Grindshot',
             description: [
@@ -275,7 +275,7 @@ const information = {
                 },
             ],
             exp: 'Equal to mines on complete',
-            restriction: 'Every 10 mines',
+            rewards: 'Every 10 mines',
             stats: {
                 health: 'Allows tanking a mine for every 10',
             },
@@ -286,7 +286,7 @@ const information = {
                 'Goal is to play a shape that will beat the opposing shape',
             ],
             exp: 'Equal to correct guesses',
-            restriction: 'Every 2 correct guesses',
+            rewards: 'Every 2 correct guesses',
         },
         { name: 'Simon Game',
             description: [
@@ -294,7 +294,7 @@ const information = {
                 'Goal is to press as many colors in the correct order',
             ],
             exp: 'Equal to correct guesses',
-            restriction: 'Every 7 guesses',
+            rewards: 'Every 4 guesses',
             stats: {
                 health: 'Allows surviving an incorrect guess for every 10',
             },
@@ -315,7 +315,7 @@ const information = {
                 },
             ],
             exp: 'Equal to food eaten',
-            restriction: 'Every 10 food eaten',
+            rewards: 'Every 10 food eaten',
             stats: {
                 health: 'Allows tanking the wall for every 10',
             },
@@ -352,7 +352,7 @@ const information = {
                 },
             ],
             exp: 'Equal to 1 gold for every 1000 score',
-            restriction: 'Every 5000 score',
+            rewards: 'Every 5000 score',
         },
         { name: 'Trivia',
             description: [
@@ -360,7 +360,7 @@ const information = {
                 'Goal is to get every question correct',
             ],
             exp: 'Equal to correct guesses',
-            restriction: 'Every 5 correct answers',
+            rewards: 'Every 2 correct answers',
             stats: {
                 health: 'Allows a wrong guess for every 10',
             },
@@ -377,7 +377,7 @@ const information = {
                 },
             ],
             exp: 'Equal to 1/4 of score',
-            restriction: 'On getting 2048',
+            rewards: 'Every 500 score',
         },
         { name: 'Typing Test',
             description: [
@@ -385,7 +385,7 @@ const information = {
                 'Goal is to type the text fast',
             ],
             exp: 'Equal to half of WPM',
-            restriction: 'Every 40 wpm',
+            rewards: 'Every 20 WPM',
         },
     ],
     fun: [
@@ -617,13 +617,13 @@ const Page = ({
                     </tbody>
                 </table>
             </PageConstructor>
-        case 'restrictions':
+        case 'rewards':
             return <PageConstructor className='page-table'
                 pageNum={pageNum}
                 pageIndex={pageIndex}
                 pageClick={pageClick}>
                 <table className='table'
-                    aria-label='Restrictions'>
+                    aria-label='Rewards'>
                     <thead>
                         <tr>
                             <th scope='col'>Game</th>
@@ -634,7 +634,7 @@ const Page = ({
                         {Object.values(information.games).map((game) => {
                             return <tr key={game.name}>
                                 <td>{game.name}</td>
-                                <td>{game.restriction}</td>
+                                <td>{game.rewards}</td>
                             </tr>
                         })}
                     </tbody>
@@ -765,15 +765,15 @@ const WidgetGuide = ({ defaultProps }) => {
             })
         });
         if ((Object.values(information).reduce((total, value) => value.length + total, 0)) % 2 === 0)
-            tempPages.push({ type: 'spacer', });
+        tempPages.push({ type: 'spacer', });
         tempPages.push({ type: 'title',  title: 'CONTROLS', });
         tempPages.push({ type: 'controls', });
         tempPages.push({ type: 'title',  title: 'GOLD AND EXP', });
         tempPages.push({ type: 'gold-exp', });
         tempPages.push({ type: 'title',  title: 'DROP RATES', });
         tempPages.push({ type: 'drop-rates', });
-        tempPages.push({ type: 'title',  title: 'RESTRICTIONS', });
-        tempPages.push({ type: 'restrictions', });
+        tempPages.push({ type: 'title',  title: 'REWARDS', });
+        tempPages.push({ type: 'rewards', });
         tempPages.push({ type: 'title',  title: 'STATS', });
         tempPages.push({ type: 'stats-info', });
         Object.values(information.games).forEach((game, gameIndex) => {

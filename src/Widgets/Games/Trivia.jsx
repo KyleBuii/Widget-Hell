@@ -251,15 +251,18 @@ const WidgetTrivia = ({ defaultProps, gameProps, parentRef }) => {
     const gameOver = () => {
         let indexButtonCorrect = state.choices[state.questionCount].indexOf(state.correctChoices[state.questionCount]);
         document.getElementById(`trivia-button-${indexButtonCorrect}`).className += ' button-correct';
+
         setState((prevState) => ({
             ...prevState,
             gameOver: true
         }));
+
         intervalTimer = clearInterval(intervalTimer);
-        if ((state.questionCount + 1) >= 5) {
-            let amount = Math.floor((state.questionCount + 1) / 5);
+        if ((state.questionCount + 1) >= 2) {
+            let amount = Math.floor((state.questionCount + 1) / 2);
             gameProps.randomItem(amount);
         };
+
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
     };

@@ -1082,7 +1082,7 @@ class Widgets extends Component {
                     let newLevel = prev.stats.level;
                     let newStatPoints = prev.statPoints;
 
-                    if (newExp >= prev.stats.maxEXp) {
+                    if (newExp >= prev.stats.maxExp) {
                         const remainderExp = newExp - prev.stats.maxExp;
                         newLevel += 1;
                         newExp = remainderExp;

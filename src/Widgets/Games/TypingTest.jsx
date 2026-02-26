@@ -17,7 +17,6 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
         mistakes: [],
         mistakesCount: 0,
         wrongStrokes: 0,
-        wpm: 0,
         cpm: 0,
         characterCount: 0,
         characterIndex: 0,
@@ -28,7 +27,9 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
             fontSmall: false
         }
     });
+    const [wpm, setWpm] = useState(0);
 
+    const refWpm = useRef(0);
     const refTime = useRef(state.time);
     const refCharacterCount = useRef(state.characterCount);
     const refMistakesCount = useRef(state.mistakesCount);
@@ -114,25 +115,30 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
             if (!state.isTyping) {
                 timer = setInterval(() => {
                     if (refTime.current > 0) {
-                        let wpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
-                        wpm = (wpm < 0 || !wpm || wpm === Infinity)
+                        let calcWpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
+                        calcWpm = (calcWpm < 0 || !calcWpm || calcWpm === Infinity)
                             ? 0
-                            : wpm;
+                            : calcWpm;
+
                         let cpm = (refCharacterCount.current - refMistakesCount.current - 1) * (60 / (timeMax - refTime.current));
                         cpm = (cpm < 0 || !cpm || cpm === Infinity)
                             ? 0
                             : cpm;
+
                         setState((prevState) => ({
                             ...prevState,
                             time: prevState.time - 1,
-                            wpm: wpm,
                             cpm: parseInt(cpm, 10)
                         }));
+
+                        refWpm.current = calcWpm;
+                        setWpm(refWpm.current);
                     } else {
                         textField.style.opacity = '0.5';
                         gameOver();
                     };
                 }, 1000);
+
                 setState((prevState) => ({
                     ...prevState,
                     isTyping: true
@@ -179,35 +185,44 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
                     characters[state.characterIndex + 1].classList.add('active');
                 };    
             };
-            let wpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
-            wpm = wpm < 0
-                || !wpm
-                || wpm === Infinity ? 0
-                : wpm;
+            let calcWpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
+            calcWpm = calcWpm < 0
+                || !calcWpm
+                || calcWpm === Infinity ? 0
+                : calcWpm;
+
             let cpm = (refCharacterCount.current - refMistakesCount.current - 1) * (60 / (timeMax - refTime.current));
             cpm = cpm < 0
                 || !cpm
                 || cpm === Infinity ? 0
                 : cpm;
+
             setState((prevState) => ({
                 ...prevState,
-                wpm: wpm,
                 cpm: parseInt(cpm, 10)
             }));
+
+            refWpm.current = calcWpm;
+            setWpm(refWpm.current);
         };
     };
 
     const gameOver = () => {
-        if (state.wpm >= 40) {
-            let amount = Math.floor(state.wpm / 40);
+        const valueWpm = refWpm.current;
+
+        if (valueWpm >= 20) {
+            let amount = Math.floor(valueWpm / 20);
             gameProps.randomItem(amount);
         };
+
         clearInterval(timer);
-        let gold = state.wpm / 2;
+
+        let gold = valueWpm / 2;
         setState((prevState) => ({
             ...prevState,
             goldEarned: gold
         }));
+
         gameProps.updateGameValue('gold', gold);
         gameProps.updateGameValue('exp', gold);
     };
@@ -383,7 +398,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
                         </div>
                         <div className='text-animation flex-center row gap'>
                             <span className='font medium bold'>WPM: </span>
-                            <span className='font medium'>{state.wpm}</span>
+                            <span className='font medium'>{wpm}</span>
                         </div>
                         <div className='text-animation flex-center row gap'>
                             <span className='font medium bold'>CPM: </span>

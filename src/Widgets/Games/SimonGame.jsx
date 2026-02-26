@@ -223,12 +223,15 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
 
     const gameover = () => {
         clearInterval(intervalTimer);
-        if (state.score >= 7) {
-            let amount = Math.floor(state.score / 7);
+
+        if (state.score >= 4) {
+            let amount = Math.floor(state.score / 4);
             gameProps.randomItem(amount);
         };
+        
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
+
         setState((prevState) => ({
             ...prevState,
             highscore: (state.highscore > state.score)
@@ -236,6 +239,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                 : state.score,
             gameover: true
         }));
+
         document.getElementById('simongame-overlay-gameover').style.visibility = 'visible';
     };
 

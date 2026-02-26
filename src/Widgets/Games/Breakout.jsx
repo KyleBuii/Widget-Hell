@@ -42,11 +42,14 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
         maxHealth: 1,
         health: 1
     });
+    const [score, setScore] = useState(0);
+    const [goldEarned, setGoldEarned] = useState(0);
 
     const refPaddle = useRef(state.paddle);
     const refBricks = useRef(state.bricks);
     const refBall = useRef(state.ball);
-    const refHighscore = useRef(state.highscore);
+    const refScore = useRef(0);
+    const refHighscore = useRef(0);
     const refKeyPressed = useRef({
         ArrowLeft: false,
         ArrowRight: false,
@@ -224,12 +227,13 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
                             const newState = {
                                 ...prevState,
                                 count: prevState.count - 1,
-                                score: prevState.score + 1,
                                 goldEarned: prevState.goldEarned + 1
                             };
                             if (newState.count === 0) generateBricks();
                             return newState;
                         });
+                        refScore.current += 1;
+                        setScore(refScore.current);
                     };
                 };
             };
@@ -337,6 +341,7 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
     const start = () => {
         dx = 2;
         dy = -2;
+
         let elementCanvas = document.getElementById('breakout-canvas');
         setState((prevState) => ({
             ...prevState,
@@ -347,10 +352,13 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
             },
             goldEarned: 0,
             timer: 0,
-            score: 0,
             health: state.maxHealth
         }));
+        refScore.current = 0;
+        setScore(0);
+
         generateBricks();
+
         intervalGame = setInterval(playing, 10);
         intervalTimer = setInterval(() => {
             setState((prevState) => ({
@@ -358,6 +366,7 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
                 timer: prevState.timer + 1
             }));
         }, 1000);
+
         document.getElementById('breakout-overlay-gameover').style.visibility = 'hidden';
     };
 
@@ -373,15 +382,20 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
     const gameOver = () => {
         clearInterval(intervalGame);
         clearInterval(intervalTimer);
+
+        const valueScore = refScore.current;
+
         setState((prevState) => ({
             ...prevState,
             gameover: true,
-            highscore: (state.score > state.highscore) ? state.score : state.highscore
+            highscore: (valueScore > state.highscore) ? valueScore : state.highscore
         }));
-        if (state.score >= 100) {
-            let amount = Math.floor(state.score / 100);
+
+        if (valueScore >= 20) {
+            let amount = Math.floor(valueScore / 20);
             gameProps.randomItem(amount);
         };
+
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
         document.getElementById('breakout-overlay-gameover').style.visibility = 'visible';
@@ -477,7 +491,7 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
                         {(state.gameover)
                             ? <div className='flex-center column gap'>
                                 <span className='font large bold'>GAME OVER!</span>
-                                <span className='font medium'>Score: {state.score}</span>
+                                <span className='font medium'>Score: {score}</span>
                                 <span className='font medium space-nicely space-bottom'>Highscore: {state.highscore}</span>
                             </div>
                             : <></>}

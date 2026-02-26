@@ -296,14 +296,17 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
 
     const gameOver = () => {
         clearInterval(intervalTimer);
+
         setState((prevState) => ({
             ...prevState,
             gameover: true
         }));
-        if (state.capturedWhitePiecesCount >= 5) {
-            let amount = Math.floor(state.capturedWhitePiecesCount / 5);
+
+        if (state.capturedWhitePiecesCount >= 4) {
+            let amount = Math.floor(state.capturedWhitePiecesCount / 4);
             gameProps.randomItem(amount);
         };
+
         gameProps.updateGameValue('gold', state.goldEarned);
         gameProps.updateGameValue('exp', state.goldEarned);
     };
