@@ -13,6 +13,7 @@ const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeydown);
+        defaultProps.incrementWidgetCounter();
 
         return () => {
             window.removeEventListener('keydown', handleKeydown);

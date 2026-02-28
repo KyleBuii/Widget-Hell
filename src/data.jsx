@@ -76,7 +76,7 @@ export const
         },
         'Motivation'        : { name: 'Motivation' },
     },
-    widgetsGames = {
+    widgetsGames   = {
         'Breakout'         : { name: 'Breakout' },
         'DerivativeDomain' : { name: 'Derivative Domain' },
         'Chess'            : { name: 'Chess' },
@@ -101,7 +101,7 @@ export const
         'TwentyFortyEight' : { name: '2048' },
         'TypingTest'       : { name: 'Typing Test' },
     },
-    widgetsFun = {
+    widgetsFun     = {
         'AiImageGenerator' : {
             name: 'Ai Image Generator',
             popouts: {
@@ -135,15 +135,15 @@ export const
 /* eslint-disable */
 const specialModules = import.meta.glob('./Widgets/*.jsx');
 const utilityModules = import.meta.glob('./Widgets/Utility/*.jsx');
-const gamesModules = import.meta.glob('./Widgets/Games//**/*.jsx');
-const funModules = import.meta.glob('./Widgets/Fun/*.jsx');
+const gamesModules   = import.meta.glob('./Widgets/Games//**/*.jsx');
+const funModules     = import.meta.glob('./Widgets/Fun/*.jsx');
 /* eslint-enable */
 
 const widgetTypes = {
-    'Special': [specialModules, widgetsSpecialLookup],
-    'Utility': [utilityModules, widgetsUtilityLookup],
-    'Games'  : [gamesModules, widgetsGamesLookup],
-    'Fun'    : [funModules, widgetsFunLookup]
+    'Special' : [specialModules, widgetsSpecialLookup],
+    'Utility' : [utilityModules, widgetsUtilityLookup],
+    'Games'   : [gamesModules, widgetsGamesLookup],
+    'Fun'     : [funModules, widgetsFunLookup]
 };
 
 for (let type in widgetTypes) {

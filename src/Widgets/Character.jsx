@@ -45,6 +45,9 @@ const WidgetCharacter = ({ defaultProps, parentRef }) => {
                 };
             };
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('equip item', addItem);
             window.removeEventListener('unequip item', removeItem);    

@@ -18,16 +18,18 @@ const WidgetDonutAnimation = ({ defaultProps }) => {
     });
 
     useEffect(() => {
+        setMargin();
+        defaultProps.incrementWidgetCounter();
+    }, []);
+
+    useEffect(() => {
         const intervalDraw = setInterval(drawAsciiFrame, 50);
         setMargin();
+
         return () => {
             clearInterval(intervalDraw);
         };
     }, [state]);
-
-    useEffect(() => {
-        setMargin();
-    }, []);
 
     const handleSlider = (what, value) => {
         setState((prevState) => ({

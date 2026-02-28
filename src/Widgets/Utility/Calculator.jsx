@@ -42,6 +42,8 @@ const WidgetCalculator = ({ defaultProps }) => {
             });
         };
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             inputField.removeEventListener('keydown', handleKeypress);
 

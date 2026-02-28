@@ -1043,6 +1043,8 @@ class WidgetMusicPlayer extends Component {
         setTimeout(() => {
             document.getElementById('musicplayer-playlist').style.display = 'unset';
         }, 100);
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
 
     componentWillUnmount() {

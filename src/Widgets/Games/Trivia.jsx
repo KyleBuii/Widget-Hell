@@ -62,6 +62,7 @@ const WidgetTrivia = ({ defaultProps, gameProps, parentRef }) => {
 
     useEffect(() => {
         document.getElementById('trivia-overlay-customize').style.display = 'block';
+
         /// Populate category options
         if (optionsCategory[0]['options'].length <= 1) {
             const fetchData = async () => {
@@ -82,18 +83,22 @@ const WidgetTrivia = ({ defaultProps, gameProps, parentRef }) => {
             fetchData();
         };
         sortSelect(optionsCategory);
+
         if (sessionStorage.getItem('trivia') !== null) {
             setState((prevState) => ({
                 ...prevState,
                 sessionToken: sessionStorage.getItem('trivia')
             }));
         };
+
         let calculateMaxHealth = calculateHealth();
         setState((prevState) => ({
             ...prevState,
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     useEffect(() => {

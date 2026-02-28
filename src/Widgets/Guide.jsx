@@ -807,6 +807,8 @@ const WidgetGuide = ({ defaultProps }) => {
         //#endregion
 
         setElementPages([ ...tempPages ]);
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     const handlePageClick = (event) => {

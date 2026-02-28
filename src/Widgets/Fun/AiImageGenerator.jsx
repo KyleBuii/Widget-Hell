@@ -40,6 +40,7 @@ const WidgetAiImageGenerator = ({ defaultProps, parentRef }) => {
 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
+
         if (localStorage.getItem('widgets') !== null) {
             const dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             const dataAiImageGenerator = dataLocalStorage['fun']['aiimagegenerator'];
@@ -52,7 +53,11 @@ const WidgetAiImageGenerator = ({ defaultProps, parentRef }) => {
                 }));
             };
         };
+
         document.getElementById('aiimagegenerator-button-download').style.visibility = 'hidden';
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();    

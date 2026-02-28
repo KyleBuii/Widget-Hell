@@ -102,6 +102,8 @@ const WidgetBreakout = ({ defaultProps, gameProps }) => {
 
         document.getElementById('breakout-overlay-gameover').style.visibility = 'visible';
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             window.removeEventListener('keydown', handleKeyDown);

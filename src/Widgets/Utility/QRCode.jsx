@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -28,6 +28,10 @@ const WidgetQRCode = ({ defaultProps, parentRef }) => {
         backgroundColor: 'white',
         foregroundColor: 'black'
     });
+
+    useEffect(() => {
+        defaultProps.incrementWidgetCounter();
+    }, []);
 
     const handleChange = (what, where) => {
         setState((prevState) => ({

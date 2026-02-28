@@ -966,6 +966,8 @@ class WidgetAnimeSearcher extends Component {
         };
 
         this.refMultipleSearches.current.style.display = 'none';
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
     
     render() {

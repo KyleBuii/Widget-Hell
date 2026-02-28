@@ -1061,6 +1061,7 @@ class WidgetTranslator extends Component{
         /// Sort the 'translate-to' optgroups options alphabetically
         sortSelect(optionsTranslateFrom);
         sortSelect(optionsTranslateTo);
+
         /// Default values
         if (sessionStorage.getItem('translator') === null) {
             this.setState({
@@ -1083,6 +1084,8 @@ class WidgetTranslator extends Component{
                 this.handleBackground();
             });
         };
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
 
     componentWillUnmount() {

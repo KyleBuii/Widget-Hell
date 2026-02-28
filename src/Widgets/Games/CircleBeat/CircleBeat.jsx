@@ -72,6 +72,8 @@ const WidgetCircleBeat = ({ defaultProps }) => {
         });
         EventBus.on('clicked disc', (disc) => handleDiscClick(disc));
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             EventBus.removeAllListeners();

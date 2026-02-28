@@ -137,6 +137,8 @@ const WidgetEquipment = ({ defaultProps, gameProps, parentRef }) => {
             updateAbilities();
         });
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('equip item', updateEquipment);
         };

@@ -51,7 +51,9 @@ const WidgetGoogleTranslator = ({ defaultProps, parentRef }) => {
                 label: languages[curr]
             });
         };
+
         optionsTranslateFrom[0]['options'] = [...optionsTranslateFrom[0]['options'], ...optionsTranslateTo[0]['options']];
+
         /// Default values
         if (sessionStorage.getItem('googletranslator') === null) {
             setState((prevState) => ({
@@ -67,6 +69,9 @@ const WidgetGoogleTranslator = ({ defaultProps, parentRef }) => {
                 to: dataSessionStorage.to
             }));    
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             let data = {
                 from: refState.current.from,

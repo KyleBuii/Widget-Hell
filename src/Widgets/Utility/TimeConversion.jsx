@@ -216,6 +216,7 @@ class WidgetTimeConversion extends Component {
             year: temp[2],
             time: temp[3]
         })
+
         if (sessionStorage.getItem('timeconversion') === null) {
             this.setState({
                 timezone: { value: 'est', label: 'EST (UTC-5)' }
@@ -226,7 +227,10 @@ class WidgetTimeConversion extends Component {
                 timezone: dataSessionStorage.timezone
             });
         };
+
         sortSelect(optionsTimzones);
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
 
     componentWillUnmount() {

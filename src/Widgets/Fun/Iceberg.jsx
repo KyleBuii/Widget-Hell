@@ -50,6 +50,8 @@ const WidgetIceberg = ({ defaultProps, parentRef }) => {
 
         const randomIceberg = newOptions[0].options[Math.floor(Math.random() * newOptions[0].options.length)];
         setSelectedIceberg(randomIceberg);
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     const handleButton = (levelIndex, itemIndex) => {

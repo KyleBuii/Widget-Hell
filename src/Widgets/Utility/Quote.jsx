@@ -213,8 +213,11 @@ class WidgetQuote extends Component {
         };
 
         window.addEventListener('beforeunload', this.storeData);
+
         this.handleNewQuote();
         this.loadFallingImage();
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
     
     componentWillUnmount() {

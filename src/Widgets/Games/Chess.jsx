@@ -29,6 +29,8 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
     });
 
     useEffect(() => {
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             clearInterval(intervalTimer);
             clearTimeout(timeoutRandomMove);    
@@ -326,23 +328,6 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                 aria-labelledby='chess-widget-heading'>
                 <h2 id='chess-widget-heading'
                     className='screen-reader-only'>Chess Widget</h2>
-                {/* Chess Board */}
-                <div id='chess-board'>
-                    <Chessboard animationDuration={200}
-                        arePiecesDraggable={false}
-                        position={state.game.fen()}
-                        onSquareClick={onSquareClick}
-                        onSquareRightClick={onSquareRightClick}
-                        onPromotionPieceSelect={onPromotionPieceSelect}
-                        customSquareStyles={{
-                            ...state.moveSquares,
-                            ...state.optionSquares,
-                            ...state.rightClickedSquares
-                        }}
-                        customArrowColor='var(--randColor)'
-                        promotionToSquare={state.moveTo}
-                        showPromotionDialog={state.promotionDialog}/>
-                </div>
                 <div id='chess-widget-animation'
                     className={`widget-animation ${classStack}`}>
                     <span id='chess-widget-draggable'
@@ -361,48 +346,67 @@ const WidgetChess = ({ defaultProps, gameProps }) => {
                         loading='lazy'
                         decoding='async'/>
                     {defaultProps.renderHotbar('chess', 'games')}
-                    {/* Information Container */}
-                    <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
-                        {/* Pieces Captured */}
-                        <span className='text-animation flex-center row'>
-                            <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#000', className: 'global-class-name' }}>
-                                <FaRegChessPawn/>
-                            </IconContext.Provider>
-                            {state.capturedWhitePiecesCount}
-                        </span>
-                        {/* Gold Earned */}
-                        <span className='text-animation flex-center row'>
-                            <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
-                                <TbMoneybag/>
-                            </IconContext.Provider>
-                            <span className='font small bold'>+</span>
-                            {state.goldEarned}
-                        </span>
-                        {/* Total Gold */}
-                        <span className='text-animation flex-center row'>
-                            <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
-                                <TbMoneybag/>
-                            </IconContext.Provider>
-                            {gameProps.formatNumber(gameProps.gold, 1)}
-                        </span>
-                        {/* Timer */}
-                        <span className='text-animation flex-center row gap'>
-                            <IconContext.Provider value={{ size: gameProps.gameIconSize, className: 'global-class-name' }}>
-                                <FaRegClock/>
-                            </IconContext.Provider>
-                            {state.timer}
-                        </span>
+                    {/* Chess Board */}
+                    <div id='chess-board'>
+                        <Chessboard animationDuration={200}
+                            arePiecesDraggable={false}
+                            position={state.game.fen()}
+                            onSquareClick={onSquareClick}
+                            onSquareRightClick={onSquareRightClick}
+                            onPromotionPieceSelect={onPromotionPieceSelect}
+                            customSquareStyles={{
+                                ...state.moveSquares,
+                                ...state.optionSquares,
+                                ...state.rightClickedSquares
+                            }}
+                            customArrowColor='var(--randColor)'
+                            promotionToSquare={state.moveTo}
+                            showPromotionDialog={state.promotionDialog}/>
                     </div>
-                    {/* Buttons */}
-                    <div className='flex-center column gap'>
-                        <button className='button-match option opt-long'
-                            onClick={() => handleButton('reset')}>Reset</button>
-                        <button className='button-match option opt-long'
-                            onClick={() => handleButton('undo')}>Undo</button>
-                    </div>
-                    {/* Captured Pieces */}
-                    <div className='flex-center'>
-                        <div id='chess-captured-pieces-black'></div>
+                    <div>
+                        {/* Information Container */}
+                        <div className='aesthetic-scale scale-span element-ends space-nicely space-bottom font medium bold'>
+                            {/* Pieces Captured */}
+                            <span className='text-animation flex-center row'>
+                                <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#000', className: 'global-class-name' }}>
+                                    <FaRegChessPawn/>
+                                </IconContext.Provider>
+                                {state.capturedWhitePiecesCount}
+                            </span>
+                            {/* Gold Earned */}
+                            <span className='text-animation flex-center row'>
+                                <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                <span className='font small bold'>+</span>
+                                {state.goldEarned}
+                            </span>
+                            {/* Total Gold */}
+                            <span className='text-animation flex-center row'>
+                                <IconContext.Provider value={{ size: gameProps.gameIconSize, color: '#f9d700', className: 'global-class-name' }}>
+                                    <TbMoneybag/>
+                                </IconContext.Provider>
+                                {gameProps.formatNumber(gameProps.gold, 1)}
+                            </span>
+                            {/* Timer */}
+                            <span className='text-animation flex-center row gap'>
+                                <IconContext.Provider value={{ size: gameProps.gameIconSize, className: 'global-class-name' }}>
+                                    <FaRegClock/>
+                                </IconContext.Provider>
+                                {state.timer}
+                            </span>
+                        </div>
+                        {/* Buttons */}
+                        <div className='flex-center column gap'>
+                            <button className='button-match option opt-long'
+                                onClick={() => handleButton('reset')}>Reset</button>
+                            <button className='button-match option opt-long'
+                                onClick={() => handleButton('undo')}>Undo</button>
+                        </div>
+                        {/* Captured Pieces */}
+                        <div className='flex-center'>
+                            <div id='chess-captured-pieces-black'></div>
+                        </div>
                     </div>
                     {(defaultProps.values.authorNames)
                         ? <span className='font smaller transparent-normal author-name'>Created by Me</span>

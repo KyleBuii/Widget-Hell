@@ -44,6 +44,7 @@ const WidgetCurrencyConverter = ({ defaultProps, parentRef }) => {
                 to: dataSessionStorage.to
             }));
         };
+
         /// Populate options
         for (let i = 0; i < moneyConversions.length; i+=2) {
             optionsMoneyConversion[0]['options'].push({
@@ -51,11 +52,15 @@ const WidgetCurrencyConverter = ({ defaultProps, parentRef }) => {
                 label: moneyConversions[i]
             });
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             sessionStorage.setItem('currencyconverter', JSON.stringify({
                 from: refState.current.from,
                 to: refState.current.to
             }));
+
             clearTimeout(timeoutTextShadow);    
         };
     }, []);

@@ -118,6 +118,10 @@ class WidgetImageColorPicker extends Component {
             onClick={onClick}></button>
     };
 
+    componentDidMount() {
+        this.props.defaultProps.incrementWidgetCounter();
+    };
+
     render() {
         return (
             <Draggable defaultPosition={{ x: this.props.defaultProps.position.x, y: this.props.defaultProps.position.y }}

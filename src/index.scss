@@ -4863,6 +4863,12 @@ $cursor-selectors: (
     transform: scale(0);
 }
 
+[id$='-widget']:has(.collapsed) {
+    width: 64px !important;
+    min-width: 64px !important;
+    height: 64px !important;
+}
+
 .collapse-animation {
     transform: scale(0);
     transition-property: transform;
@@ -5660,8 +5666,9 @@ $cursor-selectors: (
 }
 
 .font-author {
+    display: flex;
+    justify-content: flex-end;
     font-size: 0.9em;
-    float: right;
     font-style: italic;
     margin: 0.6rem 1.85rem 0.94rem 0rem;
     color: var(--randColor);
@@ -6467,9 +6474,6 @@ $cursor-selectors: (
 }
 
 #battery-widget {
-    max-width: 18.5rem;
-    width: 100%;
-
     .battery-pet {
         @extend .float, .middle;
         bottom: 110%;
@@ -6905,8 +6909,6 @@ $cursor-selectors: (
 
 #googletranslator-widget {
     font-size: 1.11em;
-    max-width: 26.24em;
-    width: 100vmin;
 
     #googletranslator-preview-cut-corner {
         margin-top: 0.9rem;
@@ -7448,11 +7450,11 @@ $cursor-selectors: (
         display: flex;
         flex-direction: row;
         margin-top: 1rem;
+    }
 
-        #quote-text {
-            padding-top: 0.6rem;
-            transition: text-shadow 0.4s;
-        }
+    #quote-text {
+        padding-top: 0.6rem;
+        transition: text-shadow 0.4s;
     }
 
     #quote-slider-total {
@@ -7642,7 +7644,6 @@ $cursor-selectors: (
 
 #timeconversion-widget {
     max-width: 40em;
-    width: 100vmin;
 
     #timeconversion-container {
         @include grid-auto-fill(220px);
@@ -7721,6 +7722,10 @@ $cursor-selectors: (
 
 #chess-widget {
     #chess-board {
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translate(-50%);
         max-width: 25em;
         max-height: 25em;
         width: 100vmin;
@@ -7767,7 +7772,7 @@ $cursor-selectors: (
 #colormemory-widget {
     max-width: 21em;
     min-width: 14em;
-    width: 100vmin;
+    width: 100%;
 
     #colormemory-image {
         max-width: 15.5em;
@@ -7779,16 +7784,16 @@ $cursor-selectors: (
         background-color: var(--randColorLight);
         background-repeat: no-repeat;
         background-size: contain;
+    }
 
-        #colormemory-name {
-            display: block;
-            position: relative;
-            text-align: center;
-        }
+    #colormemory-name {
+        display: block;
+        position: relative;
+        text-align: center;
+    }
 
-        #colormemory-button-start {
-            position: relative;
-        }
+    #colormemory-button-start {
+        position: relative;
     }
 
     #colormemory-gameover-colors {

@@ -6,7 +6,7 @@ import { TbMoneybag } from 'react-icons/tb';
 import { classStack, decorationValue } from '../../data';
 import { randSentence } from '../../helpers';
 
-const timeMax = 60;
+const timeMax = 10;
 const wordLimit = 100;
 let timer;
 
@@ -33,6 +33,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
     const refTime = useRef(state.time);
     const refCharacterCount = useRef(state.characterCount);
     const refMistakesCount = useRef(state.mistakesCount);
+    const refPrevLength = useRef(0);
 
     refTime.current = state.time;
     refCharacterCount.current = state.characterCount;
@@ -42,9 +43,14 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
         const handleClick = () => {
             document.getElementById('typingtest-input-field').focus();
         };
+
         const elementText = document.getElementById('typingtest-text');
         elementText.addEventListener('click', handleClick);
+
         handleLoadText();
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             elementText.removeEventListener('click', handleClick);
             clearInterval(timer);
@@ -106,12 +112,20 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
     };
 
     const handleTyping = () => {
-        let textField = document.getElementById('typingtest-text');
-        let inputField = document.getElementById('typingtest-input-field');
-        let characters = textField.querySelectorAll('span');
-        let characterTyped = inputField.value.split('')[state.characterIndex];
-        if (state.characterIndex < characters.length
-            && refTime.current > 0) {
+        const textField = document.getElementById('typingtest-text');
+        const inputField = document.getElementById('typingtest-input-field');
+        const characters = textField.querySelectorAll('span');
+
+        const wordLength = inputField.value.length;
+        const prevLength = refPrevLength.current;
+
+        const deletedAmount = prevLength - wordLength;
+
+        refPrevLength.current = wordLength;
+
+        const characterTyped = inputField.value.split('')[state.characterIndex];
+
+        if ((state.characterIndex < characters.length) && refTime.current > 0) {
             if (!state.isTyping) {
                 timer = setInterval(() => {
                     if (refTime.current > 0) {
@@ -144,14 +158,30 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
                     isTyping: true
                 }));
             };
+
             if (characterTyped == null) {
-                if (state.characterIndex > 0) {
+                if (deletedAmount > 0) {
+                    const newIndex = Math.max(0, state.characterIndex - deletedAmount);
+
                     setState((prevState) => ({
                         ...prevState,
-                        characterCount: prevState.characterCount - 1,
-                        characterIndex: prevState.characterIndex - 1
-                    }));            
+                        characterCount: Math.max(0, prevState.characterCount - deletedAmount),
+                        characterIndex: newIndex
+                    }));
+
+                    characters.forEach((span) => {
+                        span.classList.remove('active');
+                    });
+
+                    for (let i = newIndex; i < state.characterIndex; i++) {
+                        characters[i]?.classList.remove('correct', 'incorrect');
+                    };
+
+                    characters[newIndex]?.classList.add('active');
+
+                    return;
                 };
+
                 characters.forEach((span) => {
                     span.classList.remove('active');
                 });
@@ -166,14 +196,17 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
                     }));
                     characters[state.characterIndex].classList.add('incorrect');
                 };
+
                 setState((prevState) => ({
                     ...prevState,
                     characterCount: prevState.characterCount + 1,
                     characterIndex: prevState.characterIndex + 1
                 }));
+
                 characters.forEach((span) => {
                     span.classList.remove('active');
                 });
+
                 /// End of sentence
                 if (state.characterIndex + 1 === characters.length) {
                     inputField.value = '';
@@ -185,6 +218,7 @@ const WidgetTypingTest = ({ defaultProps, gameProps }) => {
                     characters[state.characterIndex + 1].classList.add('active');
                 };    
             };
+
             let calcWpm = Math.round(((refCharacterCount.current - refMistakesCount.current) / 5) / (timeMax - refTime.current) * 60);
             calcWpm = calcWpm < 0
                 || !calcWpm

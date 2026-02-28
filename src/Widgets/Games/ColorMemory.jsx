@@ -27,6 +27,8 @@ const WidgetColorMemory = ({ defaultProps, gameProps, parentRef }) => {
     });
 
     useEffect(() => {
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             clearInterval(intervalTimer);
             seenColorsHex.length = 0;

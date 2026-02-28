@@ -13,6 +13,8 @@ const WidgetMotivation = ({ defaultProps }) => {
     useEffect(() => {
         playedIndexs = [...Array(motivationVideos.length).keys()];
         getRandomIndex();
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     const getRandomIndex = () => {

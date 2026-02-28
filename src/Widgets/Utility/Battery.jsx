@@ -61,6 +61,8 @@ const WidgetBattery = ({ defaultProps, parentRef }) => {
 
         window.addEventListener('beforeunload', storeData);
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             clearInterval(refInterval.current);

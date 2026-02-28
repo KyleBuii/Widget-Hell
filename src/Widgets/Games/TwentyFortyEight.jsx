@@ -19,6 +19,8 @@ const WidgetTwentyFortyEight = ({ defaultProps, gameProps }) => {
     const refIsGameOver = useRef(false);
 
     useEffect(() => {
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             clearInterval(intervalTimer);
         };

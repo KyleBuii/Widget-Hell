@@ -14,8 +14,6 @@ import './index.scss';
 import Particle from './particle.jsx';
 import WidgetSetting from './Widgets/Utility/Setting.jsx';
 
-//////////////////// Temp Variables ////////////////////
-//#region
 export let
     healthDisplay,
     lootDisplay,
@@ -24,17 +22,18 @@ export const
     widgetsUtilityActive = [],
     widgetsGamesActive = [],
     widgetsFunActive = [];
+const widgetDates = ['facts', 'animesearcher'];
 let timeoutText,
     intervalHorror,
     voices;
 let widgetsTextActive = [];
+let widgetsCollapsed = {};
 window.username = 'Anon';
-//#endregion
 
-//////////////////// Widgets ///////////////////////
 class Widgets extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             selectTheme: {},
             values: {
@@ -290,6 +289,8 @@ class Widgets extends Component {
             statPoints: 0,
             abilities: [],
         };
+        this.widgetExpected = 0;
+        this.widgetCounter = 0;
     };
 
     randomColor = (forcedColorR, forcedColorG, forcedColorB, bypass = false) => {
@@ -370,6 +371,7 @@ class Widgets extends Component {
             e.style.visibility = 'hidden';
             this.handleAnimation(what, where, true);
         };
+
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         };
@@ -492,7 +494,8 @@ class Widgets extends Component {
                                     ...prevState.widgets[where],
                                     [what]: {
                                         ...prevState.widgets[where][what],
-                                        active: false
+                                        active: false,
+                                        collapsed: false,
                                     }
                                 }
                             }
@@ -514,7 +517,8 @@ class Widgets extends Component {
                         ...prevState.widgets[where],
                         [what]: {
                             ...prevState.widgets[where][what],
-                            active: false
+                            active: false,
+                            collapsed: false,
                         }
                     }
                 }
@@ -564,7 +568,7 @@ class Widgets extends Component {
                 break;
             };
             case 'resetPosition': {
-                this.setState(prevState => ({
+                this.setState((prevState) => ({
                     widgets: {
                         ...prevState.widgets,
                         [where]: {
@@ -604,42 +608,81 @@ class Widgets extends Component {
                 let e = document.getElementById(`${element}-widget`);
                 let eAnimation = document.getElementById(`${element}-widget-animation`);
 
-                if (eAnimation.classList.contains(`${what}-animation`)) {
-                    eAnimation.classList.remove(`${what}-animation`);
+                if (eAnimation.classList.contains('collapse-animation')) {
+                    eAnimation.classList.remove('collapse-animation');
                 } else {
-                    eAnimation.classList.add(`${what}-animation`);
+                    eAnimation.classList.add('collapse-animation');
                 };
 
                 const yinYangExist = e.querySelector('.yin-yang');
                 if (yinYangExist) {
                     e.removeChild(yinYangExist);
                 } else {
-                    eAnimation.ontransitionend = (event) => {
-                        if (event.propertyName !== 'transform') return;
-
-                        eAnimation.classList.remove(`${what}-animation`);
-                        eAnimation.classList.add('collapsed');
-                    };
-
-                    const elementYinYang = document.createElement('div');
-                    elementYinYang.className = 'yin-yang float center';
-
-                    const elementName = document.createElement('span');
-                    elementName.innerText = element.replace(/^./, (char) => char.toUpperCase());
-                    elementName.className = 'yin-yang-name';
-                    elementName.onclick = () => {
-                        e.removeChild(e.querySelector('.yin-yang'));
-                        e.removeChild(e.querySelector('.yin-yang-name'));
-                        eAnimation.classList.remove(`${what}-animation`, 'collapsed');
-                    };
-
-                    e.appendChild(elementName);
-                    e.appendChild(elementYinYang);
+                    this.collapseWidget(where, element, true);
                 };
+
+                this.setState((prevState) => ({
+                    widgets: {
+                        ...prevState.widgets,
+                        [where]: {
+                            ...prevState.widgets[where],
+                            [element]: {
+                                ...prevState.widgets[where][element],
+                                collapsed: !prevState.widgets[where][element].collapsed
+                            }
+                        }
+                    }
+                }));
                 break;
             };
             default: { break; };
         };
+    };
+
+    collapseWidget = (type, widget, isAnimated = false) => {
+        let e = document.getElementById(`${widget}-widget`);
+        let eAnimation = document.getElementById(`${widget}-widget-animation`);
+
+        if ((e === null) || (eAnimation === null)) return;
+
+        if (isAnimated) {
+            eAnimation.ontransitionend = (event) => {
+                if (event.propertyName !== 'transform') return;
+    
+                eAnimation.classList.remove('collapse-animation');
+                eAnimation.classList.add('collapsed');
+            };
+        } else {
+            eAnimation.classList.add('collapsed');
+        };
+
+        const elementYinYang = document.createElement('div');
+        elementYinYang.className = 'yin-yang float center';
+
+        const elementName = document.createElement('span');
+        elementName.innerText = widget.replace(/^./, (char) => char.toUpperCase());
+        elementName.className = 'yin-yang-name';
+        elementName.onclick = () => {
+            e.removeChild(e.querySelector('.yin-yang'));
+            e.removeChild(e.querySelector('.yin-yang-name'));
+            eAnimation.classList.remove('collapse-animation', 'collapsed');
+
+            this.setState((prevState) => ({
+                widgets: {
+                    ...prevState.widgets,
+                    [type]: {
+                        ...prevState.widgets[type],
+                        [widget]: {
+                            ...prevState.widgets[type][widget],
+                            collapsed: !prevState.widgets[type][widget].collapsed
+                        }
+                    }
+                }
+            }));
+        };
+
+        e.appendChild(elementName);
+        e.appendChild(elementYinYang);
     };
 
     renderHotbar = (widget, type) => {
@@ -1268,6 +1311,22 @@ class Widgets extends Component {
         }));
     };
 
+    incrementWidgetCounter = () => {
+        this.widgetCounter++;
+
+        if (this.widgetCounter === this.widgetExpected) this.allWidgetsLoaded();
+    };
+
+    allWidgetsLoaded = () => {
+        for(const type in widgetsCollapsed) {
+            widgetsCollapsed[type].forEach((widget) => {
+                this.collapseWidget(type, widget);
+            });
+        };
+
+        widgetsCollapsed = {};
+    };
+
     generateDefaultProps = (widget, type) => {
         let defaultProps = {
             position: {
@@ -1286,6 +1345,7 @@ class Widgets extends Component {
             playAudio: this.playAudio,
             calculateBounds: calculateBounds,
             renderHotbar: this.renderHotbar,
+            incrementWidgetCounter: this.incrementWidgetCounter,
             largeIcon: largeIcon
         };
         if (this.state.widgets[type][widget].popouts !== null) {
@@ -1295,6 +1355,7 @@ class Widgets extends Component {
     };
 
     storeData = (firstLoadData) => {
+        const widgetTypes = ['utility', 'games', 'fun'];
         let data = {
             utility: {},
             games:   {},
@@ -1303,44 +1364,29 @@ class Widgets extends Component {
 
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-            
-            for (let i in this.state.widgets.utility) {
-                data.utility[i] = {
-                    ...dataLocalStorage['utility'][i],
-                    active: this.state.widgets.utility[i].active,
-                    position: this.state.widgets.utility[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.utility[i].popouts = this.state.widgets.utility[i].popouts;
-                };
-                if (i === 'setting') {
-                    data['utility']['setting'] = {
-                        ...data['utility']['setting'],
-                        values: {
-                            ...data['utility']['setting']['values'],
-                            ...this.state.values
-                        }
+
+            for (const type of widgetTypes) {
+                for (const widget in this.state.widgets[type]) {
+                    data[type][widget] = {
+                        ...dataLocalStorage[type][widget],
+                        active: this.state.widgets[type][widget].active,
+                        collapsed: this.state.widgets[type][widget].collapsed,
+                        position: this.state.widgets[type][widget].position
                     };
-                };
-            };
-            for (let i in this.state.widgets.games) {
-                data.games[i] = {
-                    ...dataLocalStorage['games'][i],
-                    active: this.state.widgets.games[i].active,
-                    position: this.state.widgets.games[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.games[i].popouts = this.state.widgets.games[i].popouts;
-                };
-            };
-            for (let i in this.state.widgets.fun) {
-                data.fun[i] = {
-                    ...dataLocalStorage['fun'][i],
-                    active: this.state.widgets.fun[i].active,
-                    position: this.state.widgets.fun[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.fun[i].popouts = this.state.widgets.fun[i].popouts;
+
+                    if (this.state.values.savePositionPopout) {
+                        data[type][widget].popouts = this.state.widgets[type][widget].popouts;
+                    };
+
+                    if (widget === 'setting') {
+                        data.utility.setting = {
+                            ...data.utility.setting,
+                            values: {
+                                ...data.utility.setting.values,
+                                ...this.state.values
+                            }
+                        };
+                    };
                 };
             };
         } else {
@@ -1353,47 +1399,33 @@ class Widgets extends Component {
                 }
             };
 
-            for (let i in newWidgetData.utility) {
-                data.utility[i] = {
-                    active: false,
-                    position: newWidgetData.utility[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.utility[i].popouts = newWidgetData.utility[i].popouts;
-                };
-                if (i === 'setting') {
-                    data['utility']['setting'] = {
-                        ...data['utility']['setting'],
-                        values: {
-                            ...this.state.values,
-                            close: true
-                        }
+            for (const type of widgetTypes) {
+                for (const widget in newWidgetData[type]) {
+                    data.utility[widget] = {
+                        active: false,
+                        collapsed: false,
+                        position: newWidgetData[type][widget].position
+                    };
+
+                    if (this.state.values.savePositionPopout) {
+                        data[type][widget].popouts = newWidgetData[type][widget].popouts;
+                    };
+
+                    if (widget === 'setting') {
+                        data.utility.setting = {
+                            ...data.utility.setting,
+                            values: {
+                                ...this.state.values,
+                                close: true
+                            }
+                        };
                     };
                 };
             };
-            for (let i in newWidgetData.games) {
-                data.games[i] = {
-                    active: false,
-                    position: newWidgetData.games[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.games[i].popouts = newWidgetData.games[i].popouts;
-                };
-            };
-            for (let i in newWidgetData.fun) {
-                data.fun[i] = {
-                    active: false,
-                    position: newWidgetData.fun[i].position
-                };
-                if (this.state.values.savePositionPopout) {
-                    data.fun[i].popouts = newWidgetData.fun[i].popouts;
-                };
-            };
 
-            const widgetDates = ['facts', 'animesearcher'];
             let objectWidgetDates = {};
 
-            for (let i of widgetDates) {
+            for (const i of widgetDates) {
                 objectWidgetDates[i] = new Date().getDate();
             };
 
@@ -1413,9 +1445,9 @@ class Widgets extends Component {
         this.randomColor();
 
         let newWidgets = {
-            utility: {},
-            games:   {},
-            fun:     {}
+            utility : {},
+            games   : {},
+            fun     : {}
         };
         const widgetTypes = [
             ['utility', widgetsUtility],
@@ -1428,6 +1460,7 @@ class Widgets extends Component {
                 newWidgets[widgetType][name.toLowerCase()] = {
                     ...data,
                     active: false,
+                    collapsed: false,
                     position: { x: 0, y: 0 },
                     drag: { disabled: false }
                 };
@@ -1441,79 +1474,69 @@ class Widgets extends Component {
 
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-            
+
             let newWidgetsUtility = {},
                 newWidgetsGames   = {},
                 newWidgetsFun     = {};
+            const widgetsTypeMapping = {
+                utility : newWidgetsUtility,
+                games   : newWidgetsGames,
+                fun     : newWidgetsFun
+            };
 
-            for (let i in dataLocalStorage.utility) {
-                newWidgetsUtility[i] = {
-                    ...this.state.widgets.utility[i],
-                    ...dataLocalStorage.utility[i]
-                };
-
-                if (dataLocalStorage.utility[i].active) {
-                    this.updateWidgetsActive(i, 'utility');
-                };
-
-                /// For specific widgets that have unique state values
-                let localStorageValues = dataLocalStorage['utility']['setting']?.['values'];
-                
-                switch (i) {
-                    case 'setting': {
-                        let objectValues = {};
-
-                        for (let i in this.state.values) {
-                            objectValues[i] = localStorageValues[i];
-                        };
-
-                        this.setState({
-                            values: {
-                                ...objectValues
-                            }
-                        }, () => {
-                            if (this.state.values.shadow === true) {
-                                this.updateDesign('shadow', true);
-                            };
-                            if (this.state.values.randomText) {
-                                this.randomTimeoutText();
-                            };
-                            if (this.state.values.horror) {
-                                this.randomTimeoutHorror();
-                            };
-                            if (this.state.values.noColorChange) {
-                                const colorChangeValue = [...this.state.values.colorChange];
-                                this.randomColor(colorChangeValue[0], colorChangeValue[1], colorChangeValue[2], true);
-                            };
-                        });
-
-                        /// Setting global variables
-                        healthDisplay = localStorageValues['health'];
-                        lootDisplay = localStorageValues['loot'];
-
-                        break;
+            for (const type in widgetsTypeMapping) {
+                for (const widget in dataLocalStorage[type]) {
+                    widgetsTypeMapping[type][widget] = {
+                        ...this.state.widgets[type][widget],
+                        ...dataLocalStorage[type][widget]
                     };
-                    default: { break; };
-                };
-            };
-            for (let i in dataLocalStorage.games) {
-                newWidgetsGames[i] = {
-                    ...this.state.widgets.games[i],
-                    ...dataLocalStorage.games[i]
-                };
 
-                if (dataLocalStorage.games[i].active) {
-                    this.updateWidgetsActive(i, 'games');
-                };
-            };
-            for (let i in dataLocalStorage.fun) {
-                newWidgetsFun[i] = {
-                    ...this.state.widgets.fun[i],
-                    ...dataLocalStorage.fun[i]
-                };
+                    if (dataLocalStorage[type][widget].active) {
+                        this.updateWidgetsActive(widget, type);
+                        this.widgetExpected++;
 
-                if (dataLocalStorage.fun[i].active) {
-                    this.updateWidgetsActive(i, 'fun');
+                        if (dataLocalStorage[type][widget].collapsed) {
+                            widgetsCollapsed[type] = [...(widgetsCollapsed[type] || []), widget];
+                        };
+                    };
+
+                    switch (widget) {
+                        case 'setting': {
+                            let localStorageValues = dataLocalStorage['utility']['setting']?.['values'];
+                            let objectValues = {};
+
+                            for (const i in this.state.values) {
+                                objectValues[i] = localStorageValues[i];
+                            };
+
+                            this.setState({
+                                values: {
+                                    ...objectValues
+                                }
+                            }, () => {
+                                if (this.state.values.shadow === true) {
+                                    this.updateDesign('shadow', true);
+                                };
+                                if (this.state.values.randomText) {
+                                    this.randomTimeoutText();
+                                };
+                                if (this.state.values.horror) {
+                                    this.randomTimeoutHorror();
+                                };
+                                if (this.state.values.noColorChange) {
+                                    const colorChangeValue = [...this.state.values.colorChange];
+                                    this.randomColor(colorChangeValue[0], colorChangeValue[1], colorChangeValue[2], true);
+                                };
+                            });
+
+                            /// Setting global variables
+                            healthDisplay = localStorageValues['health'];
+                            lootDisplay = localStorageValues['loot'];
+
+                            break;
+                        };
+                        default: { break; };
+                    };
                 };
             };
 
@@ -1823,7 +1846,6 @@ class Widgets extends Component {
     };
 };
 
-//////////////////// Render to page ////////////////////
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 root.render(

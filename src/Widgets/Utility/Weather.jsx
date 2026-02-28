@@ -60,6 +60,9 @@ const WidgetWeather = ({ defaultProps }) => {
                 return newState;
             });
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             let data = {
                 'input': refInput.current

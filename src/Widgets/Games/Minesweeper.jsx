@@ -61,6 +61,8 @@ const WidgetMinesweeper = ({ defaultProps, gameProps }) => {
             window.dragscroll.reset();
         };
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             storeData();
             clearInterval(intervalTimer);

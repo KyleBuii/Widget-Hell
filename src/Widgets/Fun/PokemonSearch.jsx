@@ -44,8 +44,12 @@ const WidgetPokemonSearch = ({ defaultProps }) => {
     useEffect(() => {
         let inputPokemonSearch = document.getElementById('pokemonsearch-input-search');
         inputPokemonSearch.addEventListener('keydown', handleKeyPress);
+
         fetchPokemon('furret');
         showExtraInformation();
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             inputPokemonSearch.removeEventListener('keydown', handleKeyPress);
             clearTimeout(timeoutReset);    

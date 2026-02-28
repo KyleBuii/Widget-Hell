@@ -20,6 +20,8 @@ const WidgetRockPaperScissor = ({ defaultProps, gameProps }) => {
     });
 
     useEffect(() => {
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             clearInterval(intervalTimer);
         };

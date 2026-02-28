@@ -12,6 +12,7 @@ const WidgetFacts = ({ defaultProps }) => {
     useEffect(() => {
         const dateLocalStorage = JSON.parse(localStorage.getItem('date'));
         const currentDate = new Date().getDate();
+
         if ((sessionStorage.getItem('facts') !== null)
             && (dateLocalStorage['facts'] === currentDate)) {
             setState((prevState) => ({
@@ -25,6 +26,8 @@ const WidgetFacts = ({ defaultProps }) => {
                 facts: currentDate
             }));
         };
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     useEffect(() => {

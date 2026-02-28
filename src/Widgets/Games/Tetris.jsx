@@ -27,8 +27,11 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 
 	useEffect(() => {
 		window.addEventListener('beforeunload', storeData);
+
         initialize();
+
 		intervalLoop = setInterval(loop, 1000 / 60);
+
 		if (localStorage.getItem('widgets') !== null) {
 			let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
 			if (dataLocalStorage['games']['tetris']['highscore'] !== undefined) {
@@ -39,12 +42,18 @@ const WidgetTetris = ({ defaultProps, gameProps }) => {
 				GM.ScoreHigh = dataLocalStorage['games']['tetris']['highscore'];
 			};
 		};
+
+        defaultProps.incrementWidgetCounter();
+
 		return () => {
 			window.removeEventListener('beforeunload', storeData);
+
 			clearInterval(intervalLoop);
 			clearInterval(intervalTimer);
+
 			Page.IsSetup = false;
 			GM.IsAlive = false;
+
 			storeData();	
 		};
 	}, []);

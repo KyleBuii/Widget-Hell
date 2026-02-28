@@ -48,6 +48,7 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
     useEffect(() => {
         document.getElementById('simongame-overlay-gameover').style.visibility = 'visible';
         window.addEventListener('beforeunload', storeData);
+
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let localStorageSimonGame = dataLocalStorage['games']['simongame'];
@@ -59,12 +60,16 @@ const WidgetSimonGame = ({ defaultProps, gameProps }) => {
                 }));    
             };
         };
+
         let calculateMaxHealth = calculateHealth();
         setState((prevState) => ({
             ...prevState,
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();

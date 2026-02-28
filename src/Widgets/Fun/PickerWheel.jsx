@@ -49,6 +49,9 @@ const WidgetPickerWheel = ({ defaultProps }) => {
                 draw();
             };
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();

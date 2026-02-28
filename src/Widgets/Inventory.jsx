@@ -167,6 +167,7 @@ class WidgetInventory extends Component {
 
     componentDidMount() {
         window.addEventListener('new item', this.addItem);
+
         if (this.props.parentRef.state.inventory.length === 0) {
             let slots = new Array(16);
             for (let i = 0; i < 16; i++) {
@@ -195,6 +196,8 @@ class WidgetInventory extends Component {
                 });
             });
         };
+
+        this.props.defaultProps.incrementWidgetCounter();
     };
 
     componentWillUnmount() {

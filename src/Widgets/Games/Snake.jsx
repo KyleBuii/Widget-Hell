@@ -133,6 +133,7 @@ const WidgetSnake = ({ defaultProps, gameProps }) => {
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
         window.addEventListener('resize', calculateSize);
+
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
             let localStorageSnake = dataLocalStorage['games']['snake'];
@@ -144,14 +145,20 @@ const WidgetSnake = ({ defaultProps, gameProps }) => {
                 }));
             };
         };
+
         document.getElementById('snake-overlay').style.visibility = 'visible';
+
         calculateSize();
+
         let calculateMaxHealth = calculateHealth();
         setState((prevState) => ({
             ...prevState,
             maxHealth: calculateMaxHealth,
             health: calculateMaxHealth
         }));
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             removeTimers();

@@ -141,6 +141,8 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
         setCurrentDay(now.getDate());
         setInputFuturePlanMonth(optionsMonth[0]['options'][nowMonth + 1]);
 
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
 

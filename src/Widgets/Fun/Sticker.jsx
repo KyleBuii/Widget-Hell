@@ -13,6 +13,8 @@ const WidgetSticker = ({ defaultProps, parentRef }) => {
                 createPositionEditor(refStickers[i], refStickers[i + 1]);
             };
         };
+
+        defaultProps.incrementWidgetCounter();
     }, []);
 
     const handleFile = () => {

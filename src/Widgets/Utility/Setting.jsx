@@ -835,8 +835,8 @@ class WidgetSetting extends Component {
 
     createWidgetButtons() {
         this.buttonsUtility = [];
-        this.buttonsGames = [];
-        this.buttonsFun = [];
+        this.buttonsGames   = [];
+        this.buttonsFun     = [];
 
         let tabs = ['utility', 'games', 'fun'];
 

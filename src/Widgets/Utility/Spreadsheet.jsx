@@ -24,6 +24,7 @@ const WidgetSpreadsheet = ({ defaultProps }) => {
 
     useEffect(() => {
         window.addEventListener('beforeunload', storeData);
+
         /// Load widget's data from local storage
         if (localStorage.getItem('widgets') !== null) {
             let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
@@ -61,6 +62,9 @@ const WidgetSpreadsheet = ({ defaultProps }) => {
                 data: temp
             }));
         };
+
+        defaultProps.incrementWidgetCounter();
+
         return () => {
             window.removeEventListener('beforeunload', storeData);
             storeData();
