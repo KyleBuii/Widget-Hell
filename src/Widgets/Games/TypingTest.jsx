@@ -6,7 +6,7 @@ import { TbMoneybag } from 'react-icons/tb';
 import { classStack, decorationValue } from '../../data';
 import { randSentence } from '../../helpers';
 
-const timeMax = 10;
+const timeMax = 60;
 const wordLimit = 100;
 let timer;
 
