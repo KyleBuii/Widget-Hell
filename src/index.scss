@@ -4811,55 +4811,72 @@ $cursor-selectors: (
         }
     }
 }
+
 /// Made by Natália F. da Silva [https://codepen.io/nataliafdev/pen/KKjLoOY]
 /// Modified by me
 .ufo {
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 0;
 
     .top {
         z-index: 1;
         position: relative;
         background: var(--randColorLight);
-        width: 20vmin;
-        height: 6vmin;
+        width: 1.25vmin;
+        height: 0.375vmin;
         border-radius: 50% 50% 10% 10% / 80% 80% 10% 10%;
         background: radial-gradient(circle at 50% 30%, var(--randColorLight) 0%, color-mix(in srgb, var(--randColorLight) 70%, black) 100%);
-        box-shadow: 0 1vmin 1.5vmin rgba(0,0,0,0.5);
+        box-shadow: 0 0.0625vmin 0.09375vmin rgba(0,0,0,0.5);
     }
 
     .mid {
         z-index: 2;
         position: relative;
-        width: 35vmin;
-        height: 3.5vmin;
+        width: 2.1875vmin;
+        height: 0.21875vmin;
         border-radius: 50% / 70% 70% 20% 20%;
         background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--randColor) 60%, white) 0%, color-mix(in srgb, var(--randColor) 60%, black) 100%);
         box-shadow:
-            inset 0 0.3vmin 0.5vmin rgba(255,255,255,0.5),
-            0 0.5vmin 1vmin rgba(0,0,0,0.3);
+            inset 0 0.01875vmin 0.03125vmin rgba(255,255,255,0.5),
+            0 0.03125vmin 0.0625vmin rgba(0,0,0,0.3);
         overflow: hidden;
-        transform: translateY(-2vmin);
+        transform: translateY(-0.125vmin);
 
         &::before{
             content: '';
             position: absolute;
             top: 50%;
-            width: 43vmin;
-            height: 1.82vmin;
+            width: 2.6875vmin;
+            height: 0.11375vmin;
             transform: translate(-19.4%, -50%);
-            border-bottom: 1.4vmin dotted white;
-            animation: ufoLamps .8s infinite linear;
+            border-bottom: 0.0875vmin dotted white;
         }
     }
 
     .bottom {
         background: lightskyblue;
-        width: 28vmin;
-        height: 6vmin;
+        width: 1.75vmin;
+        height: 0.375vmin;
         border-radius: 10% 10% 50% 50% / 20% 20% 80% 80%;
         filter: brightness(.7);
+    }
+
+    &.one {
+        animation: ufoPath1 20s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        animation-delay: 3s;
+    }
+
+    &.two {
+        animation: ufoPath2 24s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        animation-delay: 10s;
+    }
+
+    &.three {
+        animation: ufoPath3 28s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+        animation-delay: 18s;
     }
 }
 
@@ -7946,7 +7963,7 @@ $cursor-selectors: (
         padding: 1em 1em 1em 2em;
         border-radius: 0 25px 25px 0;
         transform: translateX(0);
-        transition-property: transform right;
+        transition-property: transform, right, filter;
         transition-duration: 0.5s;
 
         section {
@@ -7986,6 +8003,13 @@ $cursor-selectors: (
             .transparent-normal {
                 color: rgba(256, 256, 256, 0.7);
             }
+        }
+
+        &.musicplayer-playlist-knife-active {
+            filter:
+                drop-shadow(0 0 0.05rem white)
+                drop-shadow(0 0 0.30rem #65c9e3)
+                drop-shadow(0 0 0.65rem #3baed7);
         }
     }
 
@@ -8323,16 +8347,13 @@ $cursor-selectors: (
     }
 
     #timeconversion-hotbar {
+        z-index: 0;
         position: relative;
         top: 0;
         right: 0;
         padding-bottom: 2rem;
         margin-top: -2rem;
         transform: translateY(2rem);
-    }
-
-    .timeconversion-ufo {
-        padding-bottom: 2rem;
     }
 }
 
@@ -9581,6 +9602,36 @@ $cursor-selectors: (
     10%  { opacity: 1; }
     90%  { opacity: 1; }
     100% { transform: translate(-300px, 800px); opacity: 0; }
+}
+
+@keyframes ufoPath1 {
+    0%   { transform: translate(-200px, -100px) rotate(0deg); opacity: 0; }
+    15%  { transform: translate(calc(150px), calc(50px + 5px)) rotate(8deg); opacity: 1; }
+    45%  { transform: translate(calc(500px), calc(250px - 5px)) rotate(-10deg); opacity: 1; }
+    75%  { transform: translate(calc(850px), calc(500px + 5px)) rotate(12deg); opacity: 1; }
+    100% { transform: translate(1100px, 700px) rotate(0deg); opacity: 0; }
+}
+
+@keyframes ufoPath2 {
+    0%   { transform: translate(-300px, 200px) rotate(0deg); opacity: 0; }
+    20%  { transform: translate(calc(100px), calc(100px + 4px)) rotate(-12deg); opacity: 1; }
+    50%  { transform: translate(calc(450px), calc(-50px - 4px)) rotate(10deg); opacity: 1; }
+    80%  { transform: translate(calc(850px), calc(-250px + 4px)) rotate(-8deg); opacity: 1; }
+    100% { transform: translate(1100px, -400px) rotate(0deg); opacity: 0; }
+}
+
+@keyframes ufoPath3 {
+    0%   { transform: translate(1200px, -200px) rotate(0deg); opacity: 0; }
+    20%  { transform: translate(calc(900px), calc(50px - 3px)) rotate(15deg); opacity: 1; }
+    50%  { transform: translate(calc(600px), calc(300px + 3px)) rotate(-15deg); opacity: 1; }
+    80%  { transform: translate(calc(200px), calc(600px - 3px)) rotate(10deg); opacity: 1; }
+    100% { transform: translate(-300px, 800px) rotate(0deg); opacity: 0; }
+}
+
+@keyframes horrorFace {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% {opacity: 0;}
 }
 //#endregion
 

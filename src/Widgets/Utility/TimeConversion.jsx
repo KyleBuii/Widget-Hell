@@ -244,156 +244,167 @@ const WidgetTimeConversion = ({ defaultProps }) => {
                         decoding='async'/>
                     <div className='flex-center column'>
                         {defaultProps.renderHotbar('timeconversion', 'utility')}
-                        <div className='timeconversion-ufo ufo'>
-                            <div className='top'></div>
-                            <div className='mid'></div>
-                            <div className='bot'></div>
-                        </div>
-                    </div>
-                    <div className='flex-center row'>
-                        <div className={`sun-moon left-side ${fromClass}`}>
-                            <div className='flex-center column'>
-                                <label className='screen-reader-only'
-                                    htmlFor='timeconversion-select-timezone-from'>Select starting timezone</label>
-                                <select id='timeconversion-select-timezone-from'
-                                    className='select-invisible'
-                                    value={timeZoneFrom}
-                                    onChange={(event) => handleSelect(event.target.value, 'from')}>
-                                    {optionTimeZones.map((option) => {
-                                        return <option value={option.value}
-                                            key={option.value}>
-                                            {option.label}
-                                        </option>
-                                    })}
-                                </select>
-                                <div className='flex-center row'>
-                                    <input ref={(element) => refElementDateFrom.current[0] = element}
-                                        className='input-invisible'
-                                        type='number'
-                                        name='input-month-from'
-                                        value={dateFrom.month}
-                                        onChange={(event) => handleInput(event, 'from', 'month')}
-                                        min={1}
-                                        max={12}/>/
-                                    <input ref={(element) => refElementDateFrom.current[1] = element}
-                                        className='input-invisible'
-                                        type='number'
-                                        name='input-day-from'
-                                        value={dateFrom.day}
-                                        onChange={(event) => handleInput(event, 'from', 'day')}
-                                        min={1}
-                                        max={31}/>/
-                                    <input ref={(element) => refElementDateFrom.current[2] = element}
-                                        className='input-invisible'
-                                        type='number'
-                                        name='input-year-from'
-                                        value={dateFrom.year}
-                                        onChange={(event) => handleInput(event, 'from', 'year')}
-                                        min={1}
-                                        max={9999}/>
-                                </div>
-                                <div className='flex-center row'>
-                                    <input ref={(element) => refElementDateFrom.current[3] = element}
-                                        className='input-invisible'
-                                        type='number'
-                                        name='input-hour-from'
-                                        value={dateFrom.hour}
-                                        onChange={(event) => handleInput(event, 'from', 'hour')}
-                                        min={0}
-                                        max={23}/>:
-                                    <input ref={(element) => refElementDateFrom.current[4] = element}
-                                        className='input-invisible'
-                                        type='number'
-                                        name='input-minute-from'
-                                        value={dateFrom.minute}
-                                        onChange={(event) => handleInput(event, 'from', 'minute')}
-                                        min={0}
-                                        max={59}/>
+                        <div className='flex-center row'
+                            style={{ zIndex: 1 }}>
+                            <div className={`sun-moon left-side ${fromClass}`}>
+                                <div className='flex-center column'>
+                                    <label className='screen-reader-only'
+                                        htmlFor='timeconversion-select-timezone-from'>Select starting timezone</label>
+                                    <select id='timeconversion-select-timezone-from'
+                                        className='select-invisible'
+                                        value={timeZoneFrom}
+                                        onChange={(event) => handleSelect(event.target.value, 'from')}>
+                                        {optionTimeZones.map((option) => {
+                                            return <option value={option.value}
+                                                key={option.value}>
+                                                {option.label}
+                                            </option>
+                                        })}
+                                    </select>
+                                    <div className='flex-center row'>
+                                        <input ref={(element) => refElementDateFrom.current[0] = element}
+                                            className='input-invisible'
+                                            type='number'
+                                            name='input-month-from'
+                                            value={dateFrom.month}
+                                            onChange={(event) => handleInput(event, 'from', 'month')}
+                                            min={1}
+                                            max={12}/>/
+                                        <input ref={(element) => refElementDateFrom.current[1] = element}
+                                            className='input-invisible'
+                                            type='number'
+                                            name='input-day-from'
+                                            value={dateFrom.day}
+                                            onChange={(event) => handleInput(event, 'from', 'day')}
+                                            min={1}
+                                            max={31}/>/
+                                        <input ref={(element) => refElementDateFrom.current[2] = element}
+                                            className='input-invisible'
+                                            type='number'
+                                            name='input-year-from'
+                                            value={dateFrom.year}
+                                            onChange={(event) => handleInput(event, 'from', 'year')}
+                                            min={1}
+                                            max={9999}/>
+                                    </div>
+                                    <div className='flex-center row'>
+                                        <input ref={(element) => refElementDateFrom.current[3] = element}
+                                            className='input-invisible'
+                                            type='number'
+                                            name='input-hour-from'
+                                            value={dateFrom.hour}
+                                            onChange={(event) => handleInput(event, 'from', 'hour')}
+                                            min={0}
+                                            max={23}/>:
+                                        <input ref={(element) => refElementDateFrom.current[4] = element}
+                                            className='input-invisible'
+                                            type='number'
+                                            name='input-minute-from'
+                                            value={dateFrom.minute}
+                                            onChange={(event) => handleInput(event, 'from', 'minute')}
+                                            min={0}
+                                            max={59}/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={`sun-moon right-side ${toClass}`}>
-                            <div className='flex-center column'>
-                                <label className='screen-reader-only'
-                                    htmlFor='timeconversion-select-timezone-to'>Select ending timezone</label>
-                                <select id='timeconversion-select-timezone-to'
-                                    className='select-invisible'
-                                    value={timeZoneTo}
-                                    onChange={(event) => handleSelect(event.target.value, 'to')}>
-                                    {optionTimeZones.map((option) => {
-                                        return <option value={option.value}
-                                            key={option.value}>
-                                            {option.label}
-                                        </option>
-                                    })}
-                                </select>
-                                <div className='flex-center row'>
-                                    <span ref={(element) => refElementDateTo.current[0] = element}>
-                                        {dateTo.month}
-                                    </span>/
-                                    <span ref={(element) => refElementDateTo.current[1] = element}>
-                                        {dateTo.day}
-                                    </span>/
-                                    <span ref={(element) => refElementDateTo.current[2] = element}>
-                                        {dateTo.year}
-                                    </span>
-                                </div>
-                                <div className='flex-center row'>
-                                    <span ref={(element) => refElementDateTo.current[3] = element}>
-                                        {dateTo.hour}
-                                    </span>:
-                                    <span ref={(element) => refElementDateTo.current[4] = element}>
-                                        {dateTo.minute}
-                                    </span>
+                            <div className={`sun-moon right-side ${toClass}`}>
+                                <div className='flex-center column'>
+                                    <label className='screen-reader-only'
+                                        htmlFor='timeconversion-select-timezone-to'>Select ending timezone</label>
+                                    <select id='timeconversion-select-timezone-to'
+                                        className='select-invisible'
+                                        value={timeZoneTo}
+                                        onChange={(event) => handleSelect(event.target.value, 'to')}>
+                                        {optionTimeZones.map((option) => {
+                                            return <option value={option.value}
+                                                key={option.value}>
+                                                {option.label}
+                                            </option>
+                                        })}
+                                    </select>
+                                    <div className='flex-center row'>
+                                        <span ref={(element) => refElementDateTo.current[0] = element}>
+                                            {dateTo.month}
+                                        </span>/
+                                        <span ref={(element) => refElementDateTo.current[1] = element}>
+                                            {dateTo.day}
+                                        </span>/
+                                        <span ref={(element) => refElementDateTo.current[2] = element}>
+                                            {dateTo.year}
+                                        </span>
+                                    </div>
+                                    <div className='flex-center row'>
+                                        <span ref={(element) => refElementDateTo.current[3] = element}>
+                                            {dateTo.hour}
+                                        </span>:
+                                        <span ref={(element) => refElementDateTo.current[4] = element}>
+                                            {dateTo.minute}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className='space'>
-                            <div className='stars'></div>
-                            <div className='cluster one'>
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i}></span>
-                                ))}
-                            </div>
-                            <div className='cluster two'>
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i}></span>
-                                ))}
-                            </div>
-                            <div className='comet one'></div>
-                            <div className='comet two'></div>
-                            <div className='comet three'></div>
-                            <div className='solar-system'>
-                                <div className='orbit mercury'>
-                                    <div className='planet'></div>
+                            <div className='space'>
+                                <div className='stars'></div>
+                                <div className='cluster one'>
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <span key={i}></span>
+                                    ))}
                                 </div>
-                                <div className='orbit venus'>
-                                    <div className='planet'></div>
+                                <div className='cluster two'>
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <span key={i}></span>
+                                    ))}
                                 </div>
-                                <div className='orbit earth'>
-                                    <div className='planet'>
-                                        <div className='moon-orbit'>
-                                            <div className='moon-space'></div>
+                                <div className='comet one'></div>
+                                <div className='comet two'></div>
+                                <div className='comet three'></div>
+                                <div className='ufo one'>
+                                    <div className='top'></div>
+                                    <div className='mid'></div>
+                                    <div className='bot'></div>
+                                </div>
+                                <div className='ufo two'>
+                                    <div className='top'></div>
+                                    <div className='mid'></div>
+                                    <div className='bot'></div>
+                                </div>
+                                <div className='ufo three'>
+                                    <div className='top'></div>
+                                    <div className='mid'></div>
+                                    <div className='bot'></div>
+                                </div>
+                                <div className='solar-system'>
+                                    <div className='orbit mercury'>
+                                        <div className='planet'></div>
+                                    </div>
+                                    <div className='orbit venus'>
+                                        <div className='planet'></div>
+                                    </div>
+                                    <div className='orbit earth'>
+                                        <div className='planet'>
+                                            <div className='moon-orbit'>
+                                                <div className='moon-space'></div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className='orbit mars'>
-                                    <div className='planet'></div>
-                                </div>
-                                <div className='asteroid-belt'></div>
-                                <div className='orbit jupiter'>
-                                    <div className='planet'></div>
-                                </div>
-                                <div className='orbit saturn'>
-                                    <div className='planet'>
-                                        <div className='ring'></div>
+                                    <div className='orbit mars'>
+                                        <div className='planet'></div>
                                     </div>
-                                </div>
-                                <div className='orbit uranus'>
-                                    <div className='planet'></div>
-                                </div>
-                                <div className='orbit neptune'>
-                                    <div className='planet'></div>
+                                    <div className='asteroid-belt'></div>
+                                    <div className='orbit jupiter'>
+                                        <div className='planet'></div>
+                                    </div>
+                                    <div className='orbit saturn'>
+                                        <div className='planet'>
+                                            <div className='ring'></div>
+                                        </div>
+                                    </div>
+                                    <div className='orbit uranus'>
+                                        <div className='planet'></div>
+                                    </div>
+                                    <div className='orbit neptune'>
+                                        <div className='planet'></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

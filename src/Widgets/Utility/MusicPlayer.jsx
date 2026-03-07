@@ -931,8 +931,11 @@ class WidgetMusicPlayer extends Component {
     };
 
     handleKnifeButton() {
+        this.refPlaylist.el.classList.toggle('musicplayer-playlist-knife-active');
+        console.log(this.refPlaylist.el)
         this.refElementKnife.current.classList.remove('musicplayer-knife-active-animation');
         this.refElementKnife.current.classList.toggle('musicplayer-knife-active');
+
         this.setState((prev) => ({
             isKnifeActive: !prev.isKnifeActive
         }));

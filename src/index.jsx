@@ -24,7 +24,7 @@ export const
     widgetsFunActive = [];
 const widgetDates = ['facts', 'animesearcher'];
 let timeoutText,
-    intervalHorror,
+    timeoutHorrorText,
     voices;
 let widgetsTextActive = [];
 let widgetsCollapsed = {};
@@ -289,6 +289,7 @@ class Widgets extends Component {
             statPoints: 0,
             abilities: [],
         };
+
         this.widgetExpected = 0;
         this.widgetCounter = 0;
     };
@@ -811,7 +812,7 @@ class Widgets extends Component {
             if (this.state.values.horror) {
                 this.randomTimeoutHorror();
             } else if (!this.state.values.horror) {
-                intervalHorror = clearInterval(intervalHorror);
+                timeoutHorrorText = clearTimeout(timeoutHorrorText);
             };
         });
     };
@@ -856,44 +857,9 @@ class Widgets extends Component {
     };
 
     randomTimeoutHorror = () => {
-        /// Creating a shadow image
-        let randomNumber = Math.random() * 1200000 + 300000;
-        let elementShadow = document.createElement('img');
-        elementShadow.src = '/resources/singles/guy.webp';
-        elementShadow.alt = 'shadow guy';
-        elementShadow.loading = 'lazy';
-        elementShadow.encoding = 'async';
-        let elementContainer = document.getElementById('widget-container');
-        let elementContainerSize = elementContainer.getBoundingClientRect();
-        elementShadow.onload = () => {
-            elementShadow.style.filter = 'brightness(0%)';
-            elementShadow.style.maxHeight = '256px';
-            elementShadow.style.position = 'absolute';
-        };
-        intervalHorror = setInterval(() => {
-            /// Displays a shadow outside of the screen that peaks its head
-            elementContainer.appendChild(elementShadow);
-            let sides = ['top', 'right', 'bottom', 'left'];
-            let randomSide = sides[Math.floor(Math.random() * sides.length)];
-            let realWidth = 256 * (elementShadow.naturalWidth / elementShadow.naturalHeight);
-            if (/left|right/.test(randomSide)) {
-                let randomY = Math.random() * (elementContainerSize.height - 256);
-                elementShadow.style.top = `${randomY}px`;
-                elementShadow.style[randomSide] = `-${realWidth}px`;
-            } else {
-                if (randomSide === 'top') {
-                    elementShadow.style.transform = 'scale(-1)';
-                };
-                let randomX = Math.random() * (elementContainerSize.width - realWidth);
-                elementShadow.style.left = `${randomX}px`;
-                elementShadow.style[randomSide] = '-256px';
-            };
-            window.requestAnimationFrame(() => {
-                elementShadow.style.animation = `characterPeak${randomSide.replace(/^./, char => char.toUpperCase())} 4s`;
-                elementShadow.onanimationend = () => {
-                    elementContainer.removeChild(elementShadow);
-                };
-            });
+        const randomNumber = Math.floor(Math.random() * 120000) + 10000;
+
+        timeoutHorrorText = setTimeout(() => {
             /// Changes text to a random horror message
             let elementsText = document.getElementsByClassName('text-animation');
             if (elementsText.length !== 0) {
@@ -901,6 +867,8 @@ class Widgets extends Component {
                 let randomSentenceHorror = sentencesHorror[Math.floor(Math.random() * sentencesHorror.length)];
                 randomElementText.innerText = randomSentenceHorror;
             };
+
+            this.randomTimeoutHorror();
         }, randomNumber);
     };
 
@@ -1724,7 +1692,7 @@ class Widgets extends Component {
         window.removeEventListener('gold bag', this.addGoldBag);
         window.removeEventListener('equip item', this.equipItem);
         clearTimeout(timeoutText);
-        clearInterval(intervalHorror);
+        clearTimeout(timeoutHorrorText);
     };
     
     render() {
