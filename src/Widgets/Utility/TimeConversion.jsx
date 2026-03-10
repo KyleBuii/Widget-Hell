@@ -355,6 +355,15 @@ const WidgetTimeConversion = ({ defaultProps }) => {
                                         <span key={i}></span>
                                     ))}
                                 </div>
+                                <div className='black-hole'>
+                                    <div className='black-hole-hole'></div>
+                                    <div className='black-hole-ring'></div>
+                                    <div className='black-hole-ring-detail'></div>
+                                    <div className='black-hole-ring-2'></div>
+                                    <div className='black-hole-ring-2'></div>
+                                    <div className='black-hole-ring-2-detail'></div>
+                                    <div className='black-hole-ring-2-gloom'></div>
+                                </div>
                                 <div className='comet one'></div>
                                 <div className='comet two'></div>
                                 <div className='comet three'></div>

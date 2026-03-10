@@ -730,13 +730,13 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                 <div className='note-lines'>
                                     <div className='note-line'
                                         onClick={(event) => toggleNotepad(event)}>{cells[cellIndex].month} {cells[cellIndex].day}</div>
-                                    {cells[cellIndex].holidays?.slice(holidaysOffset, holidaysOffset + holidaysShown).map((holiday, holidayIndex) => {
+                                    {cells[cellIndex]?.holidays?.slice(holidaysOffset, holidaysOffset + holidaysShown).map((holiday, holidayIndex) => {
                                         return <div className='note-line'
                                             key={`notepad-line-holiday-${holidaysOffset + holidayIndex}`}>
                                             {holiday}
                                         </div>
                                     })}
-                                    {cells[cellIndex].plans?.slice(plansOffset, plansOffset + plansShown).map((plan, planIndex) => {
+                                    {cells[cellIndex]?.plans?.slice(plansOffset, plansOffset + plansShown).map((plan, planIndex) => {
                                         const realIndex = plansOffset + planIndex;
                                         const lineID = `note-line-${realIndex}`;
 
@@ -785,7 +785,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                             </span>}
                                         <div className='dailyplanner-plans'
                                             style={{ margin: '0.3rem' }}>
-                                            {cell.holidays?.map((holiday, holidayIndex) => {
+                                            {cell?.holidays?.map((holiday, holidayIndex) => {
                                                 return <div className={`calendar-plan holiday ${holiday
                                                         .toLowerCase()
                                                         .replace(/[^a-z0-9]+/g, '-')
@@ -799,7 +799,7 @@ const WidgetDailyPlanner = ({ defaultProps, parentRef }) => {
                                                     <span>{holiday}</span>
                                                 </div>
                                             })}
-                                            {cell.plans?.map((plan, planIndex) => {
+                                            {cell?.plans?.map((plan, planIndex) => {
                                                 return <div className={`calendar-plan ${plan.completed && 'completed'}`}
                                                     role='button'
                                                     onClick={(event) => handlePlanClick(event, cellIndex, planIndex)}
