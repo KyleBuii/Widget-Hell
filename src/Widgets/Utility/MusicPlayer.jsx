@@ -12,6 +12,7 @@ import SimpleBar from 'simplebar-react';
 import { classStack, decorationValue } from '../../data';
 import { copyToClipboard, formatNumber } from '../../helpers';
 
+const statisticMaxYears = 5;
 const audio = new Audio();
 let timeoutAnimationRemove, timeoutAnimationPrevious, timeoutAnimationNext, timeoutPlaylistClear, timeoutPlaylistPanel;
 let urlsAdd = [];
@@ -93,6 +94,15 @@ class WidgetMusicPlayer extends Component {
                     minutes: 0,
                     seconds: 0,
                 },
+            },
+            statisticPrev: {
+                played: 0,
+                time: {
+                    days: 0,
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0,
+                }, 
             },
             isKnifeActive: false,
         };
@@ -867,8 +877,10 @@ class WidgetMusicPlayer extends Component {
         timePlayed = 0;
     };
 
-    formatTime() {
-        const { days, hours, minutes, seconds } = this.state.statistic.time;
+    formatTime(time) {
+        if (!time) return;
+
+        const { days, hours, minutes, seconds } = time;
         const textDays = (days !== 0) ? `${formatNumber(days, 2)} days ` : '';
         const textHours = (hours !== 0) ? `${hours} hours ` : '';
         const textMinutes = (minutes !== 0) ? `${minutes} minutes ` : '';
@@ -898,13 +910,6 @@ class WidgetMusicPlayer extends Component {
                 seconds: DHMS.seconds,
             },
         };
-
-        let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-        dataLocalStorage['utility']['musicplayer'] = {
-            ...dataLocalStorage['utility']['musicplayer'],
-            statistic: { ...newStatistic },
-        };
-        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
 
         this.setState({
             statistic: { ...newStatistic },
@@ -941,47 +946,72 @@ class WidgetMusicPlayer extends Component {
     };
 
     storeData() {
-        if (localStorage.getItem('widgets') !== null) {
-            if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
-            let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
-            let addData = [...this.state.urls, ...dataSongsAdd];
-            let matchingDataInRemove = [];
-            let dataLocalStorageDeleted = (dataLocalStorage['utility']['musicplayer']?.deleted === undefined)
-                ? []
-                : dataLocalStorage['utility']['musicplayer']['deleted'];
-            let deletedData = Object.values([...dataLocalStorageDeleted, ...dataSongsRemoved].reduce((prev, curr) => {
-                if (prev[curr.name]) {
-                    prev[curr.name].timePlayed += curr.timePlayed;
-                } else {
-                    prev[curr.name] = { ...curr };
-                };
-                return prev;
-            }, {}));
-            deletedData = [...deletedData].filter((song) => {
-                if (addData.some((songAdd) => songAdd.name === song.name)) {
-                    matchingDataInRemove.push(song);
-                } else {
-                    return song;   
-                };
-            });
-            let addTimePlayed = Object.values([...addData, ...matchingDataInRemove].reduce((prev, curr) => {
-                if (prev[curr.name]) {
-                    prev[curr.name].timePlayed += curr.timePlayed;
-                } else {
-                    prev[curr.name] = { ...curr };
-                };
-                return prev;
-            }, {}));
-            dataLocalStorage['utility']['musicplayer'] = {
-                ...dataLocalStorage['utility']['musicplayer'],
-                urls: [...addTimePlayed],
-                deleted: [...deletedData],
-                shuffle: this.state.shuffle
+        if (localStorage.getItem('widgets') === null) return;
+
+        if (this.state.rawCurrentDuration !== 0) this.saveDataMusic(this.state.name);
+
+        let dataLocalStorage = JSON.parse(localStorage.getItem('widgets'));
+        let addData = [...this.state.urls, ...dataSongsAdd];
+        let matchingDataInRemove = [];
+        let dataLocalStorageDeleted = (dataLocalStorage['utility']['musicplayer']?.deleted === undefined)
+            ? []
+            : dataLocalStorage['utility']['musicplayer']['deleted'];
+
+        let deletedData = Object.values([...dataLocalStorageDeleted, ...dataSongsRemoved].reduce((prev, curr) => {
+            if (prev[curr.name]) {
+                prev[curr.name].timePlayed += curr.timePlayed;
+            } else {
+                prev[curr.name] = { ...curr };
             };
-            localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
-            dataSongsRemoved.length = 0;
-            dataSongsAdd.length = 0;
+            return prev;
+        }, {}));
+        deletedData = [...deletedData].filter((song) => {
+            if (addData.some((songAdd) => songAdd.name === song.name)) {
+                matchingDataInRemove.push(song);
+            } else {
+                return song;   
+            };
+        });
+
+        let addTimePlayed = Object.values([...addData, ...matchingDataInRemove].reduce((prev, curr) => {
+            if (prev[curr.name]) {
+                prev[curr.name].timePlayed += curr.timePlayed;
+            } else {
+                prev[curr.name] = { ...curr };
+            };
+            return prev;
+        }, {}));
+
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+
+        let newStatistic = { ...dataLocalStorage.utility.musicplayer.statistic };
+
+        if (!newStatistic[currentYear]) newStatistic[currentYear] = {};
+
+        newStatistic[currentYear][currentMonth] = { ...this.state.statistic };
+
+        const statisticYears = Object.keys(newStatistic);
+        if (statisticYears.length > statisticMaxYears) {
+            for (const year in newStatistic) {
+                delete newStatistic[year];
+                break;
+            };
         };
+
+        dataLocalStorage.utility.musicplayer = {
+            ...dataLocalStorage.utility.musicplayer,
+            urls: [...addTimePlayed],
+            deleted: [...deletedData],
+            shuffle: this.state.shuffle,
+            statistic: newStatistic,
+        };
+
+        localStorage.setItem('widgets', JSON.stringify(dataLocalStorage));
+
+        dataSongsRemoved.length = 0;
+        dataSongsAdd.length = 0;
     };
 
     async componentDidMount() {
@@ -1010,9 +1040,19 @@ class WidgetMusicPlayer extends Component {
                     newUrls = await this.fetchMissingDuration(dataMusicPlayer['urls']);
                 };
 
+                const currentDate = new Date();
+                let calcYear = currentDate.getFullYear();
+                let calcMonth = currentDate.getMonth() - 1;
+
+                if (calcMonth === -1) {
+                    calcYear--;
+                    calcMonth = 12;
+                };
+
                 this.setState({
                     urls: [...newUrls],
-                    shuffle: dataMusicPlayer.shuffle
+                    shuffle: dataMusicPlayer.shuffle,
+                    statisticPrev: dataMusicPlayer['statistic'][calcYear][calcMonth] || {},
                 }, () => {
                     if (this.state.urls.length !== 0) {
                         unplayedSongsIndex = [...Array(this.state.urls.length).keys()];
@@ -1024,16 +1064,7 @@ class WidgetMusicPlayer extends Component {
                         document.getElementById('musicplayer-button-shuffle').classList.remove('disabled');
                     };
 
-                    if ((new Date().getDate() === 1)
-                        || !dataMusicPlayer['statistic']
-                        || ((dataMusicPlayer['statistic']['played'] === 0) && (dataMusicPlayer['urls'][0]['timePlayed'] !== 0))
-                        || (dataMusicPlayer['statistic']['played'] === null)) {
-                        this.calculateStatistic();
-                    } else {
-                        this.setState({
-                            statistic: { ...dataMusicPlayer['statistic'] }
-                        });
-                    };
+                    this.calculateStatistic();
                 });
             } else {
                 this.setState({}, () => {
@@ -1332,11 +1363,20 @@ class WidgetMusicPlayer extends Component {
                             <div id='musicplayer-statistic-title'
                                 className='flex-center row gap small-gap only-align-items'>
                                 <h3>Statistic</h3>
-                                <span>(Updates every start of the month)</span>
+                                <span>Updates at the start of every month</span>
                             </div>
                             <div className='flex-center column gap align-items-left'>
-                                <span>Played: {formatNumber(this.state.statistic.played, 2)}</span>
-                                <span>Time: {this.formatTime()}</span>
+                                <div className='flex-center row gap'>
+                                    <span>Played:</span>
+                                    <span className='font bold'>{formatNumber(this.state.statistic.played, 2)}</span>
+                                    <span className='font light'>{formatNumber(this.state.statisticPrev.played, 2)}</span>
+                                </div>
+                                <div className='flex-center row gap'
+                                    style={{ alignItems: 'flex-start' }}>
+                                    <span>Time:</span>
+                                    <span className='font bold'>{this.formatTime(this.state.statistic.time)}</span>
+                                    <span className='font light'>{this.formatTime(this.state.statisticPrev.time)}</span>
+                                </div>
                                 <ul>
                                     {this.state.urls
                                         .sort((a, b) => (b.timePlayed / b.duration) - (a.timePlayed / a.duration))

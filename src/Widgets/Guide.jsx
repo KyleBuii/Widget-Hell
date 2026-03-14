@@ -25,7 +25,7 @@
    Path: ./documentation.txt
 */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { Fragment, memo, useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { FaGripHorizontal } from 'react-icons/fa';
@@ -217,18 +217,29 @@ const information = {
                 'code of hammurabi': {
                     type: 'active',
                     information: 'Creates a stone that reflects bullets',
+                    stat: {
+                        strength: 'Increases reflected bullet speed and damage by 1 per STR',
+                        mana: 'Increases health by 1 per MP',
+                    },
                 },
                 'grass block': {
                     type: 'active',
                     information: 'Creates a grass block that blocks bullets',
+                    stat: {
+                        mana: 'Increases health by 1 per MP',
+                    },
                 },
                 'rest in peace': {
                     type: 'active',
-                    information: 'Slashes multiple times, sending tremors through the ground and awakening skeleton hands that rise from the earth',
+                    information: 'Slashes multiple times, sending tremors through the ground and awakening skeleton hands',
                 },
                 'door knocker': {
                     type: 'passive',
                     information: 'Debuffs the enemy with decreased morale',
+                },
+                'oceanic terror': {
+                    type: 'active',
+                    information: 'Summons a wave, creating sea critters in its path',
                 },
             },
         },
@@ -708,11 +719,29 @@ const Page = ({
                     <tbody>
                         {(Object.entries(items).length !== 0)
                             ? Object.entries(items).map(([itemName, itemData]) => {
-                                return <tr key={itemName}>
-                                <td>{itemName.replace(/\b\w/g, (char) => char.toUpperCase())}</td>
-                                    <td>{itemData.type.replace(/^./, (char) => char.toUpperCase())}</td>
-                                    <td>{itemData.information}</td>
-                                </tr>
+                                return <Fragment key={itemName}>
+                                    <tr className='table-row-no-style'>
+                                        <td>{itemName.replace(/\b\w/g, (char) => char.toUpperCase())}</td>
+                                        <td>{itemData.type.replace(/^./, (char) => char.toUpperCase())}</td>
+                                        <td>{itemData.information}</td>
+                                    </tr>
+                                    {(itemData.stat)
+                                        ? Object.entries(itemData.stat).map(([statName, statData]) => {
+                                            return <tr className={statName}
+                                                style={{ backgroundColor: 'rgba(var(--randColorOpacity), 0.15)' }}
+                                                key={statName}>
+                                                <td>{statName.replace(/^./, (char) => char.toUpperCase())}</td>
+                                                <td colSpan={2}>{statData}</td>
+                                            </tr>
+                                        })
+                                        : <tr>
+                                            <td style={{ opacity: 0.5, textAlign: 'center' }}
+                                                colSpan={3}>
+                                                No stat scaling
+                                            </td>
+                                        </tr>
+                                    }
+                                </Fragment>
                             })
                             : <tr key={`${widgetName} no items`}>
                                 <td style={{ opacity: 0.5, textAlign: 'center' }}

@@ -577,7 +577,7 @@ export class GameScreen extends Scene {
 
             if (ability.body.hitTest(x, y)) {
                 hit = true;
-                this.abilityHitCallback(ability, 1);
+                this.abilityHitCallback(ability, this.player.str);
             };
         });
 

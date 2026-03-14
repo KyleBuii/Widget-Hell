@@ -420,48 +420,26 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         };
     };
 
-    grassBlock(amount) {
-        const radians = this.projectileRadians;
-        const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
-
-        for (let i = 0; i < amount; i++) {
-            let block = this.scene.playerAbilities.getChildren().find(
-                (ability) => (ability.name === 'grassBlock') && !ability.active
-            );
-
-            if (block) {
-                block.enableBody(true, this.x, this.y - this.height / 2, true, true);
-            } else {
-                block = new Ability(this.scene, 'grassBlock', 'grass-block', this.x, this.y - this.height / 2, {
-                    healthXOffset: 4.5,
-                    sponge: true
-                });
-                this.scene.playerAbilities.add(block);
-            };
-
-            const angle = (i === 0) ? baseAngle : baseAngle + radians[i % radians.length];
-            const direction = new Phaser.Math.Vector2(Math.cos(angle), Math.sin(angle)).normalize();
-
-            block.setPosition(this.x + direction.x * abilityDistance, this.y + direction.y * abilityDistance);
-        };
-    };
-
-    codeOfHammurabi(amount) {
+    createAbility({
+        name, amount, hpOffset,
+        isSponge = false, isReflect = false
+    }) {
+        const formattedName = name.replace(/-(.)/g, (char) => char.toUpperCase());
         const radians = this.projectileRadians;
         const baseAngle = Phaser.Math.Angle.Between(0., 0, this.direction.x, this.direction.y);
 
         for (let i = 0; i < amount; i++) {
             let ability = this.scene.playerAbilities.getChildren().find(
-                (ability) => (ability.name === 'codeOfHammurabi') && !ability.active
+                (ability) => (ability.name === formattedName) && !ability.active
             );
 
             if (ability) {
                 ability.enableBody(true, this.x, this.y - this.height / 2, true, true);
             } else {
-                ability = new Ability(this.scene, 'codeOfHammurabi', 'code-of-hammurabi', this.x, this.y - this.height / 2, {
-                    healthXOffset: 3,
-                    sponge: true,
-                    reflect: true
+                ability = new Ability(this.scene, formattedName, name, this.x, this.y - this.height / 2, {
+                    healthXOffset: hpOffset,
+                    sponge: isSponge,
+                    reflect: isReflect,
                 });
                 this.scene.playerAbilities.add(ability);
             };
@@ -471,6 +449,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             ability.setPosition(this.x + direction.x * abilityDistance, this.y + direction.y * abilityDistance);
         };
+    };
+
+    grassBlock(amount) {
+        this.createAbility({
+            name: 'grass-block',
+            amount,
+            hpOffset: 4.5,
+            isSponge: true
+        });
+    };
+
+    codeOfHammurabi(amount) {
+        this.createAbility({
+            name: 'code-of-hammurabi',
+            amount,
+            hpOffset: 3,
+            isSponge: true,
+            isReflect: true
+        });
     };
 
     restInPeace(amount) {

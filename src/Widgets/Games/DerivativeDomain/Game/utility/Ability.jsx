@@ -10,17 +10,21 @@ export class Ability extends Phaser.Physics.Arcade.Sprite {
         attack = false
     }) {
         super(scene, 0, 0, "abilities-atlas");
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
+
         this.setPushable(pushable);
         this.setFrame(texture);
         this.setPosition(x, y);
         this.setDepth(9);
         this.setSize(this.width, this.height);
+
         if (sponge) {
-            this.health = this.scene.player.mana;
+            this.health = this.scene.player.mana + 1;
             this.hp = new HealthBar(scene, this.health, this.width / healthXOffset, 11, 10);
         };
+
         this.name = name;
         this.sponge = sponge;
         this.reflect = reflect;
@@ -29,6 +33,7 @@ export class Ability extends Phaser.Physics.Arcade.Sprite {
     
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
+
         if (this.sponge && (this.x !== this.hp.x || this.y !== this.hp.y)) {
             this.hp.move(this.x, this.y);
         };

@@ -3897,8 +3897,8 @@ $cursor-selectors: (
     }
 }
 
-.table-no-style {
-    background-color: white;
+.table-no-style, .table-row-no-style {
+    background-color: white !important;
 }
 
 .overlay {
@@ -6456,6 +6456,7 @@ $cursor-selectors: (
 	&.bold   { font-weight: bold; }
     
     /// Text colors
+    &.light    { color: var(--randColorLight); }
 	&.no-color { color: white; }
 	&.white    { color: white; }
 	&.black    { color: black; }
