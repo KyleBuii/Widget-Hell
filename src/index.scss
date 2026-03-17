@@ -4506,6 +4506,7 @@ $cursor-selectors: (
 .page {
     @extend .font, .scrollable;
 
+    position: relative;
     width: 30vw;
     height: 44vw;
     background-color: #111111;
@@ -4567,6 +4568,18 @@ $cursor-selectors: (
 
         padding: 2rem;
         text-align: center;
+        overflow: visible;
+        backface-visibility: visible;
+
+        &:not(&.flipped) {
+            .booknote {
+                transform: scaleX(-1);
+
+                &:hover {
+                    padding: 0 0.5rem 0 1rem;
+                }
+            }
+        }
     }
 
     &.page-description {
@@ -4648,6 +4661,76 @@ $cursor-selectors: (
         left: unset;
         right: 1rem;
     }
+}
+
+.booknote {
+    @extend .no-highlight;
+
+    pointer-events: auto;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: absolute;
+    right: calc(100% - 0.8rem);
+    max-width: 1rem;
+    height: 2rem;
+    color: #4A4A4A;
+    font-size: 1rem;
+    padding: 0 0.5rem;
+    background-color: #f7ecbb;
+    box-shadow: 0 0 1px black;
+    white-space: nowrap;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition-property: max-width, padding;
+    transition-duration: 0.3s;
+
+    span {
+        pointer-events: none;
+        transition-property: opacity;
+        transition-duration: 0.3s;
+        opacity: 0;
+    }
+    
+    &:hover {
+        max-width: 20rem;
+        padding-right: 1rem;
+
+        span {
+            opacity: 1;
+        }
+    }
+
+    //#region Positions
+    &.widgets {
+        top: 0.5rem;
+    }
+
+    &.controls {
+        top: 3rem;
+    }
+
+    &.gold-and-exp {
+        top: 5.5rem;
+    }
+
+    &.drop-rates {
+        top: 8rem;
+    }
+
+    &.rewards {
+        top: 10.5rem;
+    }
+
+    &.stats {
+        top: 13rem;
+    }
+
+    &.items {
+        top: 15.5rem;
+    }
+    //#endregion
 }
 
 .dots-between-text {

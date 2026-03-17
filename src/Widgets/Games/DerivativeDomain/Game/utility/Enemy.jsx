@@ -40,10 +40,9 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     };
 
     preUpdate(time, delta) {
-        if (this.isGamePaused) return;
-
         super.preUpdate(time, delta);
-        if (!this.alive) this.kill();
+
+        if (this.isGamePaused || !this.alive) return;
 
         if (this.x !== this.hp.x || this.y !== this.hp.y) {
             this.hp.move(this.x, this.y);
@@ -60,22 +59,29 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         };
     };
 
-    destroy(scene) {
-        if (this.hp?.bar) {
-            this.hp.bar.destroy();
-            this.hp.bar = null;
+    revive(x, y) {
+        this.setActive(true);
+        this.setVisible(true);
+        this.setPosition(x, y);
+
+        this.alive = true;
+        this.hp.reset();
+
+        if (this.body) {
+            this.body.enable = true;
         };
-        super.destroy(scene);
     };
 
     kill() {
+        this.setActive(false);
+        this.setVisible(false);
+
         this.alive = false;
+        this.hp.hide();
 
         if (this.body) {
             this.body.enable = false;
         };
-
-        this.destroy();
     };
 
     stopMoving() {
@@ -85,5 +91,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     startMoving() {
         this.isGamePaused = false;
+    };
+
+    destroy(scene) {
+        super.destroy(scene);
+
+        if (this.hp?.bar) {
+            this.hp.bar.destroy();
+            this.hp.bar = null;
+        };
     };
 };

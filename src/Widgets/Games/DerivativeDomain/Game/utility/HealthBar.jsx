@@ -58,7 +58,15 @@ export class HealthBar {
         this.bar.fillRect(this.x + 2, this.y + 2, d, 3);
     };
 
+    hide() {
+        this.bar.setVisible(false);
+        this.bar.setActive(false);
+    };
+
     reset() {
+        this.bar.setVisible(true);
+        this.bar.setActive(true);
+
         this.value = this.maxValue;
         this.gameMaxValue = this.maxValue;
         this.p = 19 / this.maxValue;

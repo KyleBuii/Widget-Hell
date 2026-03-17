@@ -79,6 +79,7 @@ export const
     widgetsGames   = {
         'Breakout'         : { name: 'Breakout' },
         'DerivativeDomain' : { name: 'Derivative Domain' },
+        'DuckBounce'       : { name: 'Duck Bounce' },
         'Chess'            : { name: 'Chess' },
         'CircleBeat'       : { name: 'Circle Beat' },
         'ColorMemory'      : { name: 'Color Memory' },

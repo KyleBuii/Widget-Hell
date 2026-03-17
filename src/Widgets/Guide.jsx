@@ -243,6 +243,22 @@ const information = {
                 },
             },
         },
+        { name: 'Duck Bounce',
+            description: [
+                'Widget for playing a duck bouncing game',
+                'Goal is to get the duck to the other side',
+            ],
+            controls: [
+                {
+                    control: 'Escape',
+                    action: 'Pause/Unpause',
+                },
+                {
+                    control: 'Mouse',
+                    action: 'Move',
+                },
+            ],
+        },
         { name: 'Chess',
             description: [
                 'Widget for playing chess',
@@ -454,6 +470,7 @@ const Page = ({
     toc, flipped, propValues,
     firstSection, sectionName, widgetName, widgetDescription,
     stats, items,
+    isBooknote, booknoteClick,
 }) => {
     switch (type) {
         case 'cover':
@@ -480,6 +497,14 @@ const Page = ({
                 pageIndex={pageIndex}
                 pageClick={pageClick}>
                 {title}
+                {(isBooknote)
+                    && (
+                        <div className={`booknote ${title.replace(/\s/g, '-').toLowerCase()}`}
+                            onClick={booknoteClick}>
+                            <span>{title}</span>
+                        </div>
+                    )
+                }
             </PageConstructor>
         case 'toc':
             return <PageConstructor pageNum={pageNum}
@@ -503,15 +528,7 @@ const Page = ({
                 pageClick={pageClick}>
                 <div></div>
                 <div>
-                    <span>Web application featuring a versatile array of draggable widgets! EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more! You can display what widgets you want and move them however you will!</span>
-                    <div>
-                        <span className='font bold'>Features</span>
-                        <ul>
-                            <li>30+ widgets</li>
-                            <li>Customizable design</li>
-                            <li>...and more</li>
-                        </ul>
-                    </div>
+                    <span>Web application featuring a versatile array of draggable widgets. EX: Randomly generate quotes, translate or modify text, calculate computations, check the weather, play games, and more. You can display what widgets you want and move them however you will.</span>
                 </div>
             </PageConstructor>
         case 'bookmark':
@@ -769,19 +786,23 @@ const Page = ({
 
 const WidgetGuide = ({ defaultProps }) => {
     const [elementPages, setElementPages] = useState([]);
+    const [clickedPage, setClickedPage] = useState(0);
 
     useEffect(() => {
         let tempPages = [];
 
         //#region Pages
-        tempPages.push({ type: 'cover', propValues: defaultProps.values, });
-        tempPages.push({ type: 'title',  title: 'TABLE OF CONTENTS', });
-        tempPages.push({ type: 'toc', toc: [], });
-        tempPages.push({ type: 'title',  title: 'DESCRIPTION', });
-        tempPages.push({ type: 'bookmark', });
-        tempPages.push({ type: 'bookmark', flipped: true, });
-        tempPages.push({ type: 'description', });
-        tempPages.push({ type: 'title',  title: 'WIDGETS', });
+        tempPages.push({ type: 'cover', propValues: defaultProps.values });
+        tempPages.push({ type: 'title',  title: 'TABLE OF CONTENTS' });
+        tempPages.push({ type: 'toc', toc: [] });
+        tempPages.push({ type: 'title',  title: 'DESCRIPTION' });
+
+        tempPages.push({ type: 'bookmark' });
+        tempPages.push({ type: 'bookmark', flipped: true });
+
+        tempPages.push({ type: 'description' });
+
+        tempPages.push({ type: 'title',  title: 'WIDGETS', isBooknote: true });
         Object.entries(information).forEach((info) => {
             info[1].forEach((widget, widgetIndex) => {
                 tempPages.push({
@@ -793,18 +814,24 @@ const WidgetGuide = ({ defaultProps }) => {
                 });
             })
         });
+
         if ((Object.values(information).reduce((total, value) => value.length + total, 0)) % 2 === 0)
-        tempPages.push({ type: 'spacer', });
-        tempPages.push({ type: 'title',  title: 'CONTROLS', });
-        tempPages.push({ type: 'controls', });
-        tempPages.push({ type: 'title',  title: 'GOLD AND EXP', });
-        tempPages.push({ type: 'gold-exp', });
-        tempPages.push({ type: 'title',  title: 'DROP RATES', });
-        tempPages.push({ type: 'drop-rates', });
-        tempPages.push({ type: 'title',  title: 'REWARDS', });
-        tempPages.push({ type: 'rewards', });
-        tempPages.push({ type: 'title',  title: 'STATS', });
-        tempPages.push({ type: 'stats-info', });
+            tempPages.push({ type: 'spacer' });
+
+        tempPages.push({ type: 'title',  title: 'CONTROLS', isBooknote: true });
+        tempPages.push({ type: 'controls' });
+
+        tempPages.push({ type: 'title',  title: 'GOLD AND EXP', isBooknote: true });
+        tempPages.push({ type: 'gold-exp' });
+
+        tempPages.push({ type: 'title',  title: 'DROP RATES', isBooknote: true });
+        tempPages.push({ type: 'drop-rates' });
+
+        tempPages.push({ type: 'title',  title: 'REWARDS', isBooknote: true });
+        tempPages.push({ type: 'rewards' });
+
+        tempPages.push({ type: 'title',  title: 'STATS', isBooknote: true });
+        tempPages.push({ type: 'stats-info' });
         Object.values(information.games).forEach((game, gameIndex) => {
             tempPages.push({
                 type: 'stats',
@@ -813,9 +840,11 @@ const WidgetGuide = ({ defaultProps }) => {
                 stats: { ...game.stats },
             });
         });
+
         if (Object.keys(information.games).length % 2 !== 0)
-            tempPages.push({ type: 'spacer', });
-        tempPages.push({ type: 'title',  title: 'ITEMS', });
+            tempPages.push({ type: 'spacer' });
+
+        tempPages.push({ type: 'title',  title: 'ITEMS', isBooknote: true });
         Object.values(information.games).forEach((game, gameIndex) => {
             tempPages.push({
                 type: 'items',
@@ -824,14 +853,18 @@ const WidgetGuide = ({ defaultProps }) => {
                 items: { ...game.items },
             });
         });
-        (Object.keys(information.games).length % 2 === 0)
-            tempPages.push({ type: 'spacer', });
-        tempPages.push({ type: 'spacer', });
+
+        if (Object.keys(information.games).length % 2 === 0)
+            tempPages.push({ type: 'spacer' });
+
+        tempPages.push({ type: 'spacer' });
 
         for (let pageIndex = 0; pageIndex < tempPages.length; pageIndex++) {
             const currentPage = tempPages[pageIndex];
+
             if (currentPage.title === undefined) continue;
-            tempPages[2].toc.push({ title: currentPage.title || currentPage.type, page: pageIndex, });
+
+            tempPages[2].toc.push({ title: currentPage.title || currentPage.type, page: pageIndex });
         };
         //#endregion
 
@@ -842,16 +875,18 @@ const WidgetGuide = ({ defaultProps }) => {
 
     const handlePageClick = (event) => {
         if (event.target.closest('.bookmark')) return;
-        
+
         const page = event.currentTarget;
 
-        if (page.dataset.pageNum % 2 === 0) {
+        if ((page.dataset.pageNum % 2) === 0) {
             page.classList.add('flipped');
             page.nextElementSibling.classList.add('flipped');
         } else {
             page.classList.remove('flipped');
             page.previousElementSibling.classList.remove('flipped');
         };
+
+        setClickedPage(page.dataset.pageNum);
 
         if (page.classList.contains('page-invisible')) {
             const nextPage = event.currentTarget.nextElementSibling.nextElementSibling;
@@ -868,8 +903,71 @@ const WidgetGuide = ({ defaultProps }) => {
                 
                 clearTimeout(pageTimeout);
             }, 200);
+
+            const pageNumber = Number(page.dataset.pageNum);
+
+            setClickedPage((number) => {
+                let calcNumber = Number(number);
+
+                if ((pageNumber % 2) === 0) {
+                    calcNumber += 3;
+                } else {
+                    calcNumber -= 3;
+                };
+
+                return calcNumber;
+            });
         };
     };
+
+    const handleBooknoteClick = async (event) => {
+        event.stopPropagation();
+
+        const page = event.target.parentElement;
+        const pages = document.querySelector('.pages').children;
+        const pageNumber = Number(clickedPage);
+
+        let pagesToTravel = page.dataset.pageNum - clickedPage;
+        const direction = (pagesToTravel < 0) ? -1 : 1; /// Right = -1, Left = 1
+        pagesToTravel = Math.abs(pagesToTravel);
+
+        const isPageEven = (pagesToTravel % 2);
+        pagesToTravel =
+            (isPageEven || (direction === 1))
+            ? pagesToTravel + 1
+            : pagesToTravel - 2;
+
+        for (let currentPage = 0; currentPage < pagesToTravel; currentPage += 2) {
+            if (direction === 1) {
+                if (isPageEven) {
+                    pages[pageNumber + currentPage].classList.add('flipped');
+                    pages[(pageNumber + currentPage) + 1].classList.add('flipped');
+                } else {
+                    pages[(pageNumber + currentPage) - 1].classList.add('flipped');
+                    pages[pageNumber + currentPage].classList.add('flipped');
+                };
+            } else {
+                if (isPageEven) {
+                    pages[(pageNumber - currentPage) + 1].classList.remove('flipped');
+                    pages[pageNumber - currentPage].classList.remove('flipped');
+                } else {
+                    pages[(pageNumber - currentPage)].classList.remove('flipped');
+                    pages[(pageNumber - currentPage) - 1].classList.remove('flipped');
+                };
+            };
+
+            await sleep(100);
+        };
+
+        if ((direction === -1) && !isPageEven) {
+            pages[Number(page.dataset.pageNum) + 1].classList.remove('flipped');
+            pages[Number(page.dataset.pageNum) + 2].classList.remove('flipped');
+        };
+
+        setClickedPage(page.dataset.pageNum);
+    };
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     return (
         <Draggable defaultPosition={{ x: defaultProps.position.x, y: defaultProps.position.y }}
@@ -911,7 +1009,8 @@ const WidgetGuide = ({ defaultProps }) => {
                                 {...page}
                                 pageNum={pageIndex}
                                 pageIndex={(pageIndex % 2 === 0) && elementPages.length - pageIndex}
-                                pageClick={handlePageClick}>
+                                pageClick={handlePageClick}
+                                booknoteClick={handleBooknoteClick}>
                             </Page>
                         })}
                     </div>

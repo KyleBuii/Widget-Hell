@@ -1,5 +1,5 @@
 ## **MIT License**
-Copyright (c) 2025 Kyle Bui
+Copyright (c) 2026 Kyle Bui
 
 Portions of this software are based on third-party works:
 - Rich East (https://codepen.io/REast/pen/bGMyqP) - Tetris
@@ -30,6 +30,8 @@ Assets listed below are licensed separately from the MIT-licensed code and may h
     - [Hundred Dollar Bill](https://pixabay.com/illustrations/one-hundred-dollar-bill-money-163442/) by PublicDomainPictures
 - **Daily Planner**
     - [New Years Day: Fireworks](https://pixabay.com/gifs/fireworks-celebration-pyrotechnics-9582/) by Placidplace
+- **Duck Bounce**
+    - [Sky Background](https://opengameart.org/content/sky-backgrounds) by TAD
 - **Equipment**
     - Equipment Slots by [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) [Crawl Tiles](http://code.google.com/p/crawl-tiles/) [Cheshire](https://jeevo.itch.io/dungeoneering-eq-icon-pack) [Craftpix](https://craftpix.net/freebies/free-belt-rpg-pixel-art-icons/) [7Soul](https://opengameart.org/content/98-pixel-art-rpg-icons) [Alex's Assets](https://alexs-assets.itch.io/16x16-rpg-item-pack)
 - **Grindshot**

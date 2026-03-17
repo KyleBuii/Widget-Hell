@@ -6,7 +6,6 @@ import { classStack, decorationValue } from '../../../data';
 import { EventBus } from './Game/EventBus';
 import { PhaserGame } from './Game/PhaserGame';
 
-
 const WidgetDerivativeDomain = ({ defaultProps, gameProps, parentRef }) => {
     const phaserRef = useRef(null);
     const { stats, abilities } = parentRef.state;

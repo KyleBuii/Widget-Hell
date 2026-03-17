@@ -7,7 +7,7 @@ export class Boot extends Scene{
     };
 
     preload() {
-        this.load.image('background', 'resources/derivativedomain/main-menu.webp',);
+        this.load.image('background', 'resources/derivativedomain/main-menu.webp');
     };
     
     create() {

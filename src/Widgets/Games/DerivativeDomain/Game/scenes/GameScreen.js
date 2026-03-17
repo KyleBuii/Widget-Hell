@@ -103,6 +103,7 @@ let enemyScaling = 1.5;
 export class GameScreen extends Scene {
     constructor() {
         super('Game');
+
         this.isGameStarted = false;
         this.isGameOver = false;
         this.isLeveledUp = false;
@@ -111,6 +112,8 @@ export class GameScreen extends Scene {
         this.isMobile = false;
         this.isInvulnerable = false;
         this.isBossSpawned = false;
+
+        this.bossSpawnCount = 0;
 
         this.player = null;
         this.boss = null;
@@ -137,7 +140,7 @@ export class GameScreen extends Scene {
 
         this.createUI();
         this.createPlayer();
-        this.createUIEnemy();
+        this.createMenuEnemy();
         this.createEnemy();
         this.createBoss();
         this.createColliders();
@@ -189,9 +192,14 @@ export class GameScreen extends Scene {
         this.elapsedSeconds++;
         this.updateTimerText();
 
-        if (!this.isBossSpawned && (this.elapsedSeconds % 60) === 0) {
+        if (!this.isBossSpawned && (this.bossSpawnCount > 0)) {
             this.isBossSpawned = true;
+            this.bossSpawnCount--;
             this.spawnBoss();
+        };
+
+        if ((this.elapsedSeconds % 60) === 0) {
+            this.bossSpawnCount++;
         };
 
         if (this.isBossSpawned) return;
@@ -522,7 +530,7 @@ export class GameScreen extends Scene {
         this.enemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
     };
 
-    createUIEnemy() {
+    createMenuEnemy() {
         this.menuEnemies = this.physics.add.group({ classType: Phaser.GameObjects.Sprite });
         this.menuTimers = [
             this.time.delayedCall(0   , this.spawnMenuEnemies, [], this),
@@ -680,21 +688,26 @@ export class GameScreen extends Scene {
                 randomY = Math.random() * HEIGHT;
             };
 
-            let enemy = new Enemy(
-                this,
-                randomEnemy,
-                randomX, randomY,
-                'enemy',
-                dataEnemies[randomEnemy].exp,
-                dataEnemies[randomEnemy].health,
-                dataEnemies[randomEnemy].attack,
-                dataEnemies[randomEnemy].defense,
-                dataEnemies[randomEnemy].speed + (0.1 * dataLevelUp.Speed.level * dataLevelUp.Speed.addedMultiplier),
-                dataEnemies[randomEnemy]?.healthXOffset,
-                this.player
-            );
+            let enemy = this.enemies.getFirstDead();
 
-            this.enemies.add(enemy);
+            if (enemy) {
+                enemy.revive();
+            } else {
+                let enemy = new Enemy(
+                    this,
+                    randomEnemy,
+                    randomX, randomY,
+                    'enemy',
+                    dataEnemies[randomEnemy].exp,
+                    dataEnemies[randomEnemy].health,
+                    dataEnemies[randomEnemy].attack,
+                    dataEnemies[randomEnemy].defense,
+                    dataEnemies[randomEnemy].speed + (0.1 * dataLevelUp.Speed.level * dataLevelUp.Speed.addedMultiplier),
+                    dataEnemies[randomEnemy]?.healthXOffset,
+                    this.player
+                );
+                this.enemies.add(enemy);
+            };
         };
     };
 
@@ -702,19 +715,26 @@ export class GameScreen extends Scene {
         let enemiesKeys = Object.keys(dataMenuEnemies);
         let randomEnemy = enemiesKeys[Math.floor(Math.random() * enemiesKeys.length)];
         let randomX = Math.random() * 500 + 100;
-        let enemy = new Enemy(
-            this,
-            randomEnemy,
-            randomX, 0,
-            'menu',
-            dataMenuEnemies[randomEnemy].exp,
-            dataMenuEnemies[randomEnemy].health,
-            dataMenuEnemies[randomEnemy].attack,
-            dataMenuEnemies[randomEnemy].defense,
-            dataMenuEnemies[randomEnemy].speed,
-            dataMenuEnemies[randomEnemy]?.healthXOffset
-        );
-        this.menuEnemies.add(enemy);
+
+        let enemy = this.menuEnemies.getFirstDead();
+
+        if (enemy) {
+            enemy.revive(randomX, 0);
+        } else {
+            enemy = new Enemy(
+                this,
+                randomEnemy,
+                randomX, 0,
+                'menu',
+                dataMenuEnemies[randomEnemy].exp,
+                dataMenuEnemies[randomEnemy].health,
+                dataMenuEnemies[randomEnemy].attack,
+                dataMenuEnemies[randomEnemy].defense,
+                dataMenuEnemies[randomEnemy].speed,
+                dataMenuEnemies[randomEnemy]?.healthXOffset
+            );
+            this.menuEnemies.add(enemy);
+        };
     };
 
     spawnBoss() {
