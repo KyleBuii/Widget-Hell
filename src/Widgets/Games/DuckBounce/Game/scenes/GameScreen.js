@@ -1,13 +1,18 @@
 /* eslint-disable no-undef */
 import { Scene } from 'phaser';
 
+/// Duck hits Turtle every 1600 ms
+/// Duck reaches the peak in 200 ms after every hit
+
 const WIDTH = 850;
 const HEIGHT = 600;
 const waves = {
-    0: {
-        count: 3,
-        increment: 1000,
-    },
+    0: [0, 1000, 2000],
+    1: [0, 900, 1800, 2700],
+    2: [0, 1200, 2500, 3800, 5200],
+    3: [0, 700, 1400, 2100, 2800, 3500],
+    4: [0, 300, 900, 1500, 3000, 4000],
+    5: [0, 600, 1200, 1800, 2400, 3000, 3600],
 };
 
 export class GameScreen extends Scene {
@@ -15,8 +20,15 @@ export class GameScreen extends Scene {
         super('Game');
 
         this.isGameover = false;
+
         this.ducksToSpawn = 0;
         this.duckCounter = 0;
+        this.duckTimers = [];
+
+        this.waveCounter = 0;
+        this.waveHighest = -1;
+
+        this.tryCounter = 0;
     };
 
     create() {
@@ -36,8 +48,21 @@ export class GameScreen extends Scene {
         );
 
         if (this.duckCounter === this.ducksToSpawn) {
+            if (this.waveHighest !== -1) {
+                this.waveCounter = this.waveHighest;
+                this.waveHighest = -1;
+            };
+
+            this.textWave.text = this.waveCounter + 1;
+            this.textTry.text = this.tryCounter;
+
+            this.spawnWave(this.waveCounter);
+
             this.duckCounter = 0;
-            this.spawnWave(0);
+            this.waveCounter++;
+            this.tryCounter++;
+
+            if (this.waveCounter > (Object.keys(waves).length - 1)) this.waveCounter = 0;
         };
     };
 
@@ -57,6 +82,15 @@ export class GameScreen extends Scene {
         this.buttonRestart.add([bgRestart, textRestart])
             .setVisible(false);
 
+        this.textWave = this.add.text(WIDTH / 2, (HEIGHT / 2) - 100, 0, {
+            fontSize: '40px',
+            color: '#000000'
+        }).setOrigin(0.5);
+        this.textTry = this.add.text(WIDTH / 2, (HEIGHT / 2) - 65, 0, {
+            fontSize: '25px',
+            color: '#9e9e9e',
+        }).setOrigin(0.5);
+
         this.grassLeft = this.add.rectangle(-150, HEIGHT, 300, 300, 0x4F7942).setOrigin(0, 0.5);
         this.grassRight = this.add.rectangle(WIDTH + 150, HEIGHT, 300, 300, 0x4F7942).setOrigin(1, 0.5);
         this.water = this.add.rectangle(WIDTH / 2, HEIGHT, WIDTH - 300, 100, 0x6495ED);
@@ -69,17 +103,20 @@ export class GameScreen extends Scene {
         this.ducks = this.physics.add.group();
         this.turtle = this.physics.add.sprite(WIDTH / 2, HEIGHT - 50, 'turtle')
             .setScale(1.5)
-            .setImmovable(true)
-            .setSize(this.width, 1)
-            .setOffset(0, 0);
+            .setImmovable(true);
+
+        this.turtle.body.checkCollision.up = true;
+        this.turtle.body.checkCollision.right = false;
+        this.turtle.body.checkCollision.down = false;
+        this.turtle.body.checkCollision.left = false;
     };
 
     createStoppers() {
         const boundsGrassLeft = this.grassLeft.getBounds();
         const boundsGrassRight = this.grassRight.getBounds();
 
-        this.stopperBounce = this.add.rectangle(boundsGrassLeft.right - 25, boundsGrassLeft.top - 5, 10, 10);
-        this.stopperRight = this.add.rectangle(boundsGrassRight.left + 220, boundsGrassRight.top - 5, 10, 10);
+        this.stopperBounce = this.add.rectangle(boundsGrassLeft.right - 25, boundsGrassLeft.top + 4, 10, 10);
+        this.stopperRight = this.add.rectangle(boundsGrassRight.left + 220, boundsGrassRight.top + 4, 10, 10);
         this.stopperBottom = this.add.rectangle(WIDTH / 2, HEIGHT + 55, WIDTH, 0);
 
         this.stoppers = [this.stopperBounce, this.stopperRight, this.stopperBottom];
@@ -121,11 +158,16 @@ export class GameScreen extends Scene {
     };
 
     spawnWave(number) {
-        this.ducksToSpawn = waves[number].count;
+        const waveData = waves[number];
 
-        for (let i = 0; i < this.ducksToSpawn; i++) {
-            this.time.delayedCall(i * waves[number].increment, () => this.spawnDuck());
-        };
+        this.ducksToSpawn = waveData.length;
+        this.duckTimers.length = 0;
+
+        waveData.forEach((delay) => {
+            this.duckTimers.push(
+                this.time.delayedCall(delay, () => this.spawnDuck())
+            );
+        });
     };
 
     spawnDuck() {
@@ -134,13 +176,18 @@ export class GameScreen extends Scene {
         if (duck) {
             this.activateDuck(duck);
         } else {
-            const newDuck = this.physics.add.sprite(-40, this.grassLeft.getBounds().top - 30, 'duck');
+            const newDuck = this.physics.add.sprite(-40, this.grassLeft.getBounds().top - 24, 'duck');
+
+            newDuck.body.checkCollision.up = false;
+            newDuck.body.checkCollision.right = false;
+            newDuck.body.checkCollision.down = true;
+            newDuck.body.checkCollision.left = false;
 
             this.ducks.add(newDuck);
 
             newDuck.setOrigin(0.5, 0.5)
                    .setGravityY(500)
-                   .setBounce(0.6)
+                   .setBounce(1)
                    .setVelocityX(100);
         };
     };
@@ -153,7 +200,7 @@ export class GameScreen extends Scene {
     };
 
     activateDuck(duck) {
-        duck.setPosition(-40, this.grassLeft.getBounds().top - 30);
+        duck.setPosition(-40, this.grassLeft.getBounds().top - 24);
         duck.setVelocityX(100);
         duck.setVisible(true);
         duck.setActive(true);
@@ -166,15 +213,20 @@ export class GameScreen extends Scene {
             this.deactivateDuck(duck);
         });
         this.buttonRestart.setVisible(false);
+
+        this.ducksToSpawn = 0;
+        this.duckCounter = 0;
+
+        this.waveHighest = this.waveCounter;
+        this.waveCounter = 0;
     };
 
     gameover() {
         this.isGameover = true;
-        this.ducksToSpawn = 0;
-        this.duckCounter = 0;
-
         this.ducks.children.entries.forEach((duck) => {
             duck.body.enable = false;
         });
+        this.duckTimers.forEach((timer) => timer.remove());
+        this.waveCounter--;
     };
 };
